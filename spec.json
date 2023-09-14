@@ -1,0 +1,2657 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "contact": {
+      "email": "support@cloudquery.io",
+      "name": "CloudQuery Support Team",
+      "url": "https://cloudquery.io"
+    },
+    "description": "API to interact with CloudQuery Cloud",
+    "license": {
+      "name": "MIT",
+      "url": "https://spdx.org/licenses/MIT"
+    },
+    "termsOfService": "https://www.cloudquery.io/terms",
+    "title": "CloudQuery OpenAPI Spec",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.cloudquery.io/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "users"
+    },
+    {
+      "name": "teams"
+    },
+    {
+      "name": "plugins"
+    },
+    {
+      "name": "uploads"
+    },
+    {
+      "name": "images"
+    },
+    {
+      "name": "healthcheck"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Health check endpoint, returns 200",
+        "operationId": "HealthCheck",
+        "responses": {
+          "200": {
+            "description": "Response"
+          }
+        },
+        "security": [],
+        "tags": [
+          "healthcheck"
+        ]
+      }
+    },
+    "/upload/image": {
+      "post": {
+        "description": "Get a URL to upload image that will be publicly accessible",
+        "operationId": "UploadImage",
+        "parameters": [],
+        "tags": [
+          "uploads",
+          "images"
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageURL"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/plugins": {
+      "get": {
+        "description": "List all plugins",
+        "operationId": "ListPlugins",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/plugin_sort_by"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Plugin"
+                      },
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "aws-source",
+                          "team_name": "cloudquery",
+                          "display_name": "AWS Source Plugin",
+                          "category": "cloud-infrastructure",
+                          "created_at": "2017-07-14T16:53:42Z",
+                          "homepage": "https://cloudquery.io",
+                          "logo": "https://images.cloudquery.io/logos/aws.png",
+                          "official": true,
+                          "short_description": "Sync data from AWS to any destination",
+                          "repository": "https://github.com/cloudquery/cloudquery",
+                          "tier": "free",
+                          "source": true,
+                          "destination": false
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "post": {
+        "description": "Create a plugin owned by the specified team. User must be part of that team.",
+        "operationId": "CreatePlugin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plugin"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}": {
+      "get": {
+        "description": "Get details about a given plugin.",
+        "operationId": "GetPlugin",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plugin"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "put": {
+        "description": "Update a plugin",
+        "operationId": "UpdatePlugin",
+        "tags": [
+          "plugins"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plugin"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions": {
+      "get": {
+        "description": "List all versions for a given plugin",
+        "operationId": "ListPluginVersions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_sort_by"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/PluginVersion"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "post": {
+        "description": "Create a new plugin version",
+        "operationId": "CreatePluginVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "message",
+                  "protocols",
+                  "supported_targets",
+                  "package_type",
+                  "checksums"
+                ],
+                "properties": {
+                  "name": {
+                    "$ref": "#/components/schemas/VersionName"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "A message describing what's new or changed in this version.\nThis message will be displayed to users in the plugin's changelog.\nSupports limited markdown syntax.\n"
+                  },
+                  "protocols": {
+                    "type": "array",
+                    "description": "List of protocols supported by this plugin version",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "supported_targets": {
+                    "type": "array",
+                    "description": "The targets supported by this plugin version, formatted as <os>_<arch>",
+                    "example": [
+                      "linux_arm64",
+                      "darwin_amd64",
+                      "windows_amd64"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "checksums": {
+                    "type": "array",
+                    "description": "List of SHA-256 checksums for this plugin version, one for each supported target.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "package_type": {
+                    "type": "string",
+                    "description": "The package type of the plugin assets",
+                    "enum": [
+                      "native",
+                      "docker"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginVersion"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions/{version_name}": {
+      "get": {
+        "description": "Get details about a given plugin version. Use `latest` as version to get the latest version.",
+        "operationId": "GetPluginVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginVersion"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "patch": {
+        "description": "Update a given plugin version",
+        "operationId": "UpdatePluginVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginVersionUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginVersion"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/docs": {
+      "get": {
+        "description": "List all documentation pages for a given plugin version.",
+        "operationId": "ListPluginVersionDocs",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/PluginDocsPage"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "put": {
+        "description": "Create or update one or more plugin version docs pages.",
+        "operationId": "CreatePluginVersionDocs",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "pages"
+                ],
+                "properties": {
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PluginDocsPage"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      },
+      "delete": {
+        "description": "Delete one or more plugin version docs pages.",
+        "operationId": "DeletePluginVersionDocs",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "names"
+                ],
+                "properties": {
+                  "names": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PluginDocsPageName"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/tables": {
+      "get": {
+        "description": "List tables for a given plugin version. This only applies to source plugins.",
+        "operationId": "ListPluginVersionTables",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/PluginTable"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "put": {
+        "description": "Create or update one or more plugin version tables. This only applies to source plugins, and can only be done if the plugin version is in draft.",
+        "operationId": "CreatePluginVersionTables",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tables"
+                ],
+                "properties": {
+                  "tables": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PluginTable"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      },
+      "delete": {
+        "description": "Delete one or more plugin version tables.",
+        "operationId": "DeletePluginVersionTables",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "names"
+                ],
+                "properties": {
+                  "names": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PluginTableName"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/tables/{table_name}": {
+      "get": {
+        "description": "Get schema for a given table and plugin version. This only applies to source plugins.",
+        "operationId": "GetPluginVersionTable",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          },
+          {
+            "in": "path",
+            "name": "table_name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginTableDetails"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/assets/{target_name}": {
+      "get": {
+        "description": "Download an asset for a given plugin version and target",
+        "operationId": "DownloadPluginAsset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          },
+          {
+            "$ref": "#/components/parameters/target_name"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Response",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "post": {
+        "description": "Get a URL to upload an asset for a given plugin version and target",
+        "operationId": "UploadPluginAsset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          },
+          {
+            "$ref": "#/components/parameters/target_name"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseURL"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/teams": {
+      "get": {
+        "description": "List all teams",
+        "operationId": "ListTeams",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Team"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "users"
+        ]
+      },
+      "post": {
+        "description": "Create a team owned by the current user.",
+        "operationId": "CreateTeam",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "display_name"
+                ],
+                "properties": {
+                  "name": {
+                    "$ref": "#/components/schemas/TeamName"
+                  },
+                  "display_name": {
+                    "type": "string",
+                    "description": "The team's display name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
+    "/teams/{team_name}": {
+      "get": {
+        "description": "Get a team by name",
+        "operationId": "GetTeamByName",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
+    "/teams/{team_name}/plugins": {
+      "get": {
+        "description": "List all plugins for the current team.",
+        "operationId": "ListPluginsByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Plugin"
+                      },
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "aws-source",
+                          "team_name": "cloudquery",
+                          "display_name": "AWS Source Plugin",
+                          "category": "cloud-infrastructure",
+                          "created_at": "2017-07-14T16:53:42Z",
+                          "homepage": "https://cloudquery.io",
+                          "logo": "https://images.cloudquery.io/logos/aws.png",
+                          "official": true,
+                          "short_description": "Sync data from AWS to any destination",
+                          "repository": "https://github.com/cloudquery/cloudquery",
+                          "tier": "free",
+                          "source": true,
+                          "destination": false
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/teams/{team_name}/memberships": {
+      "get": {
+        "description": "Get memberships to the team.",
+        "operationId": "GetTeamMemberships",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Membership"
+                      },
+                      "type": "array",
+                      "example": [
+                        {
+                          "role": "admin",
+                          "team": {
+                            "created_at": "2017-07-14T16:53:42Z",
+                            "name": "cloudquery",
+                            "display_name": "CloudQuery"
+                          },
+                          "user": {
+                            "created_at": "2017-07-14T16:53:42Z",
+                            "email": "user@clouduery.io",
+                            "name": "user",
+                            "updated_at": "2017-07-14T16:53:42Z"
+                          }
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "users"
+        ]
+      }
+    },
+    "/teams/{team_name}/invitations": {
+      "get": {
+        "operationId": "ListTeamInvitations",
+        "description": "List of open invitations to the team",
+        "tags": [
+          "teams",
+          "users"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Invitation"
+                      }
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "operationId": "EmailTeamInvitation",
+        "description": "Invite a user to join a team with their email address",
+        "tags": [
+          "teams",
+          "users"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "role"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invitation"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/invitations/accept": {
+      "post": {
+        "operationId": "AcceptTeamInvitation",
+        "description": "Accept an invitation to the team, creating a user membership",
+        "tags": [
+          "teams",
+          "users"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The invitation has been accepted and the authenticated user is now a member of the team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Membership"
+                }
+              }
+            }
+          },
+          "303": {
+            "description": "The authenticated user is already a member of this team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Membership"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have an invitation to join this team.",
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/invitations/{email}": {
+      "delete": {
+        "operationId": "CancelTeamInvitation",
+        "description": "Cancel an invitation to the team, preventing the user becoming a team member",
+        "tags": [
+          "teams",
+          "users"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/email"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/users": {
+      "get": {
+        "description": "List all users in the current team.",
+        "operationId": "ListUsersByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "users"
+        ]
+      }
+    },
+    "/user": {
+      "get": {
+        "description": "Get the current authenticated user from the OAuth token\n",
+        "operationId": "GetCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/user/invitations": {
+      "get": {
+        "operationId": "ListCurrentUserInvitations",
+        "description": "List of the current user's unaccepted invitations",
+        "tags": [
+          "teams",
+          "users"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Invitation"
+                      }
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/user/memberships": {
+      "get": {
+        "description": "Get memberships that the user has accepted.",
+        "operationId": "GetCurrentUserMemberships",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "metadata",
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Membership"
+                      },
+                      "type": "array",
+                      "example": [
+                        {
+                          "role": "admin",
+                          "team": {
+                            "created_at": "2017-07-14T16:53:42Z",
+                            "name": "cloudquery",
+                            "display_name": "CloudQuery"
+                          },
+                          "user": {
+                            "created_at": "2017-07-14T16:53:42Z",
+                            "email": "user@clouduery.io",
+                            "name": "user",
+                            "updated_at": "2017-07-14T16:53:42Z"
+                          }
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "users"
+        ]
+      }
+    },
+    "/teams/{team_name}/apikeys": {
+      "get": {
+        "description": "List all API Keys for the curren team",
+        "operationId": "ListTeamApiKeys",
+        "tags": [
+          "teams"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/ApiKey"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create new API Key for the current team. This is useful in CI",
+        "operationId": "CreateTeamApiKey",
+        "tags": [
+          "teams"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKey"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/apikeys/{apikey_name}": {
+      "delete": {
+        "description": "Delete API Key. This will remove any future access by this API Key.",
+        "operationId": "DeleteTeamApiKey",
+        "tags": [
+          "teams"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/apikey_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "ImageURL": {
+        "properties": {
+          "upload_url": {
+            "type": "string",
+            "example": "https://cloudquery.io/api/v1/upload/1234567890abcdef1234567890abcdef"
+          },
+          "download_url": {
+            "type": "string",
+            "example": "https://cloudquery.io/api/v1/download/1234567890abcdef1234567890abcdef"
+          }
+        },
+        "required": [
+          "upload_url",
+          "download_url"
+        ]
+      },
+      "BasicError": {
+        "additionalProperties": false,
+        "description": "Basic Error",
+        "required": [
+          "message",
+          "status"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          }
+        },
+        "title": "Basic Error",
+        "type": "object"
+      },
+      "TeamName": {
+        "description": "The unique name for the team.",
+        "maxLength": 255,
+        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "cloudquery"
+      },
+      "PluginName": {
+        "description": "The unique name for the plugin.",
+        "maxLength": 255,
+        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "aws-source"
+      },
+      "PluginCategory": {
+        "description": "Supported categories for plugins",
+        "type": "string",
+        "enum": [
+          "cloud-infrastructure",
+          "databases",
+          "sales-marketing",
+          "engineering-analytics",
+          "other"
+        ]
+      },
+      "PluginTier": {
+        "description": "Supported tiers for plugins",
+        "type": "string",
+        "enum": [
+          "free",
+          "paid"
+        ]
+      },
+      "Plugin": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin",
+        "properties": {
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "category": {
+            "$ref": "#/components/schemas/PluginCategory"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "homepage": {
+            "type": "string",
+            "example": "https://cloudquery.io"
+          },
+          "logo": {
+            "type": "string",
+            "example": "https://images.cloudquery.io/logos/aws.png"
+          },
+          "display_name": {
+            "description": "The plugin's display name",
+            "type": "string",
+            "example": "AWS Source Plugin"
+          },
+          "official": {
+            "type": "boolean"
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "short_description": {
+            "type": "string",
+            "example": "Sync data from AWS to any destination"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/PluginTier"
+          },
+          "source": {
+            "type": "boolean"
+          },
+          "destination": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "team_name",
+          "name",
+          "category",
+          "created_at",
+          "logo",
+          "display_name",
+          "official",
+          "short_description",
+          "tier",
+          "source",
+          "destination"
+        ],
+        "title": "CloudQuery Plugin",
+        "type": "object"
+      },
+      "ListMetadata": {
+        "properties": {
+          "total_count": {
+            "type": "integer"
+          },
+          "last_page": {
+            "type": "integer"
+          }
+        }
+      },
+      "PluginCreate": {
+        "type": "object",
+        "required": [
+          "team_name",
+          "name",
+          "category",
+          "tier",
+          "display_name",
+          "short_description",
+          "source",
+          "destination",
+          "logo"
+        ],
+        "properties": {
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "category": {
+            "$ref": "#/components/schemas/PluginCategory"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/PluginTier"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "The plugin's display name, as shown in the CloudQuery Hub.",
+            "example": "AWS Source Plugin"
+          },
+          "short_description": {
+            "type": "string",
+            "description": "Short description of the plugin. This will be shown in the CloudQuery Hub.",
+            "example": "Sync data from AWS to any destination"
+          },
+          "homepage": {
+            "type": "string",
+            "example": "https://cloudquery.io"
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "source": {
+            "type": "boolean"
+          },
+          "destination": {
+            "type": "boolean"
+          },
+          "logo": {
+            "type": "string",
+            "description": "URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...",
+            "example": "https://images.cloudquery.io/logos/aws.png"
+          }
+        }
+      },
+      "ValidationError": {
+        "additionalProperties": false,
+        "required": [
+          "message",
+          "status"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "field_errors": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "PluginUpdate": {
+        "type": "object",
+        "required": [
+          "category",
+          "tier",
+          "display_name",
+          "short_description",
+          "source",
+          "destination",
+          "logo"
+        ],
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/PluginCategory"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/PluginTier"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "The plugin's display name, as shown in the CloudQuery Hub.",
+            "example": "AWS Source Plugin"
+          },
+          "short_description": {
+            "type": "string",
+            "description": "Short description of the plugin. This will be shown in the CloudQuery Hub.",
+            "example": "Sync data from AWS to any destination"
+          },
+          "homepage": {
+            "type": "string",
+            "example": "https://cloudquery.io"
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "source": {
+            "type": "boolean"
+          },
+          "destination": {
+            "type": "boolean"
+          },
+          "logo": {
+            "type": "string",
+            "description": "URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...",
+            "example": "https://images.cloudquery.io/logos/aws.png"
+          },
+          "listed": {
+            "type": "boolean",
+            "description": "If plugin is not listed, it won't be visible or accessible in the registry."
+          }
+        }
+      },
+      "VersionName": {
+        "type": "string",
+        "description": "The version in semantic version format.",
+        "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+      },
+      "PluginVersion": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Version",
+        "required": [
+          "created_at",
+          "name",
+          "message",
+          "draft",
+          "retracted",
+          "protocols",
+          "supported_targets",
+          "checksums",
+          "package_type"
+        ],
+        "properties": {
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the plugin version was created."
+          },
+          "name": {
+            "$ref": "#/components/schemas/VersionName"
+          },
+          "message": {
+            "type": "string",
+            "description": "Description of what's new or changed in this version (supports markdown)",
+            "example": "- Added support for AWS S3 - Added support for AWS EC2"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version."
+          },
+          "retracted": {
+            "type": "boolean",
+            "description": "If a plugin version is retracted, assets will not be available and it will not be counted as the latest version."
+          },
+          "protocols": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "The CloudQuery protocols supported by this plugin version",
+            "example": [
+              1,
+              2
+            ]
+          },
+          "supported_targets": {
+            "type": "array",
+            "description": "The targets supported by this plugin version, formatted as <os>_<arch>",
+            "example": [
+              "linux_arm64",
+              "darwin_amd64",
+              "windows_amd64"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "checksums": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The checksums of the plugin assets"
+          },
+          "package_type": {
+            "type": "string",
+            "description": "The package type of the plugin assets",
+            "enum": [
+              "native",
+              "docker"
+            ]
+          }
+        },
+        "title": "CloudQuery Plugin Version",
+        "type": "object"
+      },
+      "PluginVersionUpdate": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Description of what's new or changed in this version (supports markdown)",
+            "example": "- Added support for *AWS S3* - Added support for *AWS EC2*"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version. Once draft is set to false, only certain fields can be updated."
+          },
+          "retracted": {
+            "type": "boolean",
+            "description": "If a plugin version is retracted, assets will not be available and it will not be counted as the latest version."
+          },
+          "protocols": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "The supported CloudQuery protocols by this plugin version",
+            "example": [
+              1,
+              2
+            ]
+          },
+          "supported_targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "checksums": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The SHA-256 checksums of the plugin binaries, one per supported target."
+          },
+          "package_type": {
+            "type": "string",
+            "description": "The package type of the plugin binaries"
+          }
+        }
+      },
+      "PluginDocsPageName": {
+        "description": "The unique name for the plugin documentation page.",
+        "maxLength": 255,
+        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "overview"
+      },
+      "PluginDocsPage": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Documentation Page",
+        "required": [
+          "name",
+          "title",
+          "content"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/PluginDocsPageName"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the documentation page",
+            "example": "Getting Started"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the documentation page. Supports markdown.",
+            "example": "# Getting Started\n\nThis is the getting started page."
+          }
+        },
+        "title": "CloudQuery Plugin Documentation Page",
+        "type": "object"
+      },
+      "PluginTableName": {
+        "description": "Name of the table",
+        "maxLength": 255,
+        "pattern": "^[a-z](_?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "aws_ec2_instances"
+      },
+      "PluginTable": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Table",
+        "properties": {
+          "description": {
+            "description": "Description of the table",
+            "type": "string",
+            "example": "AWS S3 Buckets"
+          },
+          "is_incremental": {
+            "description": "Whether the table is incremental",
+            "type": "boolean"
+          },
+          "name": {
+            "$ref": "#/components/schemas/PluginTableName"
+          },
+          "parent": {
+            "description": "Name of the parent table, if any",
+            "type": "string",
+            "example": "nil"
+          },
+          "relations": {
+            "description": "Names of the tables that depend on this table",
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "example": [
+              "aws_s3_bucket_cors_rules"
+            ]
+          },
+          "title": {
+            "description": "Title of the table",
+            "type": "string",
+            "example": "AWS S3 Buckets"
+          }
+        },
+        "title": "CloudQuery Plugin Table",
+        "type": "object"
+      },
+      "PluginTableColumn": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Column",
+        "properties": {
+          "description": {
+            "description": "Description of the column",
+            "type": "string"
+          },
+          "incremental_key": {
+            "description": "Whether the column is used as an incremental key",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Name of the column",
+            "type": "string"
+          },
+          "not_null": {
+            "description": "Whether the column is nullable",
+            "type": "boolean"
+          },
+          "primary_key": {
+            "description": "Whether the column is part of the primary key",
+            "type": "boolean"
+          },
+          "type": {
+            "description": "Arrow Type of the column",
+            "type": "string"
+          },
+          "is_unique": {
+            "description": "Whether the column has a unique constraint",
+            "type": "boolean"
+          }
+        },
+        "title": "CloudQuery Plugin Table Column",
+        "type": "object"
+      },
+      "PluginTableDetails": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "description": "List of columns",
+            "items": {
+              "$ref": "#/components/schemas/PluginTableColumn"
+            },
+            "type": "array"
+          },
+          "description": {
+            "description": "Description of the table",
+            "type": "string"
+          },
+          "is_incremental": {
+            "description": "Whether the table is incremental",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Name of the table",
+            "type": "string"
+          },
+          "parent": {
+            "description": "Name of the parent table, if any",
+            "type": "string"
+          },
+          "relations": {
+            "description": "Names of the tables that depend on this table",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "description": "Title of the table",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ReleaseURL": {
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "Team": {
+        "additionalProperties": false,
+        "description": "CloudQuery Team",
+        "properties": {
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "display_name": {
+            "description": "The team's display name",
+            "maxLength": 255,
+            "type": "string",
+            "example": "CloudQuery"
+          }
+        },
+        "required": [
+          "name",
+          "display_name"
+        ],
+        "title": "Team",
+        "type": "object"
+      },
+      "Email": {
+        "type": "string",
+        "example": "user@cloudquery.io"
+      },
+      "UserName": {
+        "description": "The unique name for the user.",
+        "maxLength": 255,
+        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "user"
+      },
+      "User": {
+        "additionalProperties": false,
+        "description": "CloudQuery User",
+        "properties": {
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "name": {
+            "$ref": "#/components/schemas/UserName"
+          },
+          "updated_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "CloudQuery User",
+        "type": "object"
+      },
+      "Membership": {
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "team": {
+            "$ref": "#/components/schemas/Team"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "title": "CloudQuery Team Membership",
+        "type": "object"
+      },
+      "Invitation": {
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "email",
+          "team_name",
+          "created_at"
+        ],
+        "properties": {
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        }
+      },
+      "ApiKey": {
+        "description": "API Key to interact with CloudQuery Cloud under specific team",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "cli-api-key"
+          },
+          "created_by": {
+            "$ref": "#/components/schemas/Email",
+            "description": "email of the user that created the API key"
+          },
+          "key": {
+            "type": "string",
+            "description": "API key. Will be shown only in the response when creating the key.",
+            "example": "1234567890abcdef1234567890abcdef"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          }
+        }
+      }
+    },
+    "responses": {
+      "InternalError": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Internal Error"
+      },
+      "RequiresAuthentication": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Requires authentication"
+      },
+      "Forbidden": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Forbidden"
+      },
+      "UnprocessableEntity": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        },
+        "description": "Unprocessable Entity"
+      },
+      "NotFound": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Resource not found"
+      }
+    },
+    "parameters": {
+      "plugin_sort_by": {
+        "description": "The field to sort by",
+        "in": "query",
+        "name": "sort_by",
+        "required": false,
+        "schema": {
+          "enum": [
+            "created_at",
+            "updated_at",
+            "name",
+            "downloads"
+          ],
+          "type": "string"
+        }
+      },
+      "page": {
+        "description": "Page number of the results to fetch",
+        "in": "query",
+        "name": "page",
+        "required": false,
+        "schema": {
+          "default": 1,
+          "minimum": 1,
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "per_page": {
+        "description": "The number of results per page (max 1000).",
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "schema": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "team_name": {
+        "in": "path",
+        "name": "team_name",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/TeamName"
+        }
+      },
+      "plugin_name": {
+        "in": "path",
+        "name": "plugin_name",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/PluginName"
+        }
+      },
+      "version_sort_by": {
+        "description": "The field to sort by",
+        "in": "query",
+        "name": "sort_by",
+        "required": false,
+        "schema": {
+          "enum": [
+            "created_at"
+          ],
+          "type": "string"
+        }
+      },
+      "version_name": {
+        "in": "path",
+        "name": "version_name",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/VersionName"
+        }
+      },
+      "target_name": {
+        "in": "path",
+        "name": "target_name",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "email": {
+        "in": "path",
+        "name": "email",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/Email"
+        }
+      },
+      "apikey_name": {
+        "name": "apikey_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "cli-api-key"
+        },
+        "x-go-name": "ApiKeyName"
+      }
+    }
+  }
+}
