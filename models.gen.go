@@ -534,6 +534,12 @@ type CreateTeamJSONBody struct {
 	Name TeamName `json:"name"`
 }
 
+// UpdateTeamJSONBody defines parameters for UpdateTeam.
+type UpdateTeamJSONBody struct {
+	// DisplayName The team's display name
+	DisplayName *string `json:"display_name,omitempty"`
+}
+
 // ListTeamApiKeysParams defines parameters for ListTeamApiKeys.
 type ListTeamApiKeysParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -629,6 +635,9 @@ type CreatePluginVersionTablesJSONRequestBody CreatePluginVersionTablesJSONBody
 
 // CreateTeamJSONRequestBody defines body for CreateTeam for application/json ContentType.
 type CreateTeamJSONRequestBody CreateTeamJSONBody
+
+// UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
+type UpdateTeamJSONRequestBody UpdateTeamJSONBody
 
 // EmailTeamInvitationJSONRequestBody defines body for EmailTeamInvitation for application/json ContentType.
 type EmailTeamInvitationJSONRequestBody EmailTeamInvitationJSONBody
