@@ -170,6 +170,11 @@ type ClientInterface interface {
 	// GetTeamByName request
 	GetTeamByName(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UpdateTeamWithBody request with any body
+	UpdateTeamWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateTeam(ctx context.Context, teamName TeamName, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamApiKeys request
 	ListTeamApiKeys(ctx context.Context, teamName TeamName, params *ListTeamApiKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -565,6 +570,30 @@ func (c *Client) CreateTeam(ctx context.Context, body CreateTeamJSONRequestBody,
 
 func (c *Client) GetTeamByName(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTeamByNameRequest(c.Server, teamName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateTeamWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTeamRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateTeam(ctx context.Context, teamName TeamName, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTeamRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1976,6 +2005,53 @@ func NewGetTeamByNameRequest(server string, teamName TeamName) (*http.Request, e
 	return req, nil
 }
 
+// NewUpdateTeamRequest calls the generic UpdateTeam builder with application/json body
+func NewUpdateTeamRequest(server string, teamName TeamName, body UpdateTeamJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateTeamRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewUpdateTeamRequestWithBody generates requests for UpdateTeam with any type of body
+func NewUpdateTeamRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListTeamApiKeysRequest generates requests for ListTeamApiKeys
 func NewListTeamApiKeysRequest(server string, teamName TeamName, params *ListTeamApiKeysParams) (*http.Request, error) {
 	var err error
@@ -2841,6 +2917,11 @@ type ClientWithResponsesInterface interface {
 	// GetTeamByNameWithResponse request
 	GetTeamByNameWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*GetTeamByNameResponse, error)
 
+	// UpdateTeamWithBodyWithResponse request with any body
+	UpdateTeamWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
+
+	UpdateTeamWithResponse(ctx context.Context, teamName TeamName, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
+
 	// ListTeamApiKeysWithResponse request
 	ListTeamApiKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamApiKeysParams, reqEditors ...RequestEditorFn) (*ListTeamApiKeysResponse, error)
 
@@ -3409,6 +3490,33 @@ func (r GetTeamByNameResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetTeamByNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Team
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateTeamResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4041,6 +4149,23 @@ func (c *ClientWithResponses) GetTeamByNameWithResponse(ctx context.Context, tea
 		return nil, err
 	}
 	return ParseGetTeamByNameResponse(rsp)
+}
+
+// UpdateTeamWithBodyWithResponse request with arbitrary body returning *UpdateTeamResponse
+func (c *ClientWithResponses) UpdateTeamWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error) {
+	rsp, err := c.UpdateTeamWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTeamResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateTeamWithResponse(ctx context.Context, teamName TeamName, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error) {
+	rsp, err := c.UpdateTeam(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTeamResponse(rsp)
 }
 
 // ListTeamApiKeysWithResponse request returning *ListTeamApiKeysResponse
@@ -5035,6 +5160,67 @@ func ParseGetTeamByNameResponse(rsp *http.Response) (*GetTeamByNameResponse, err
 	}
 
 	response := &GetTeamByNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Team
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateTeamResponse parses an HTTP response from a UpdateTeamWithResponse call
+func ParseUpdateTeamResponse(rsp *http.Response) (*UpdateTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateTeamResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
