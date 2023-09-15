@@ -181,6 +181,9 @@ type PluginDocsPage struct {
 	// Name The unique name for the plugin documentation page.
 	Name PluginDocsPageName `json:"name"`
 
+	// OrdinalPosition The position of the page in the documentation
+	OrdinalPosition *int `json:"ordinal_position,omitempty"`
+
 	// Title The title of the documentation page
 	Title string `json:"title"`
 }
@@ -314,7 +317,7 @@ type PluginVersion struct {
 	// Protocols The CloudQuery protocols supported by this plugin version
 	Protocols []int `json:"protocols"`
 
-	// Retracted If a plugin version is retracted, assets will not be available and it will not be counted as the latest version.
+	// Retracted If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version.
 	Retracted bool `json:"retracted"`
 
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
@@ -341,7 +344,7 @@ type PluginVersionUpdate struct {
 	// Protocols The supported CloudQuery protocols by this plugin version
 	Protocols *[]int `json:"protocols,omitempty"`
 
-	// Retracted If a plugin version is retracted, assets will not be available and it will not be counted as the latest version.
+	// Retracted If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version.
 	Retracted        *bool     `json:"retracted,omitempty"`
 	SupportedTargets *[]string `json:"supported_targets,omitempty"`
 }
@@ -461,9 +464,6 @@ type CreatePluginVersionJSONBody struct {
 	// This message will be displayed to users in the plugin's changelog.
 	// Supports limited markdown syntax.
 	Message string `json:"message"`
-
-	// Name The version in semantic version format.
-	Name VersionName `json:"name"`
 
 	// PackageType The package type of the plugin assets
 	PackageType CreatePluginVersionJSONBodyPackageType `json:"package_type"`
@@ -615,11 +615,11 @@ type CreatePluginJSONRequestBody = PluginCreate
 // UpdatePluginJSONRequestBody defines body for UpdatePlugin for application/json ContentType.
 type UpdatePluginJSONRequestBody = PluginUpdate
 
-// CreatePluginVersionJSONRequestBody defines body for CreatePluginVersion for application/json ContentType.
-type CreatePluginVersionJSONRequestBody CreatePluginVersionJSONBody
-
 // UpdatePluginVersionJSONRequestBody defines body for UpdatePluginVersion for application/json ContentType.
 type UpdatePluginVersionJSONRequestBody = PluginVersionUpdate
+
+// CreatePluginVersionJSONRequestBody defines body for CreatePluginVersion for application/json ContentType.
+type CreatePluginVersionJSONRequestBody CreatePluginVersionJSONBody
 
 // DeletePluginVersionDocsJSONRequestBody defines body for DeletePluginVersionDocs for application/json ContentType.
 type DeletePluginVersionDocsJSONRequestBody DeletePluginVersionDocsJSONBody
