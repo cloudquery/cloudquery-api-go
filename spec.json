@@ -199,6 +199,41 @@
         ]
       }
     },
+    "/plugins/{team_name}": {
+      "delete": {
+        "description": "Delete plugins by team",
+        "operationId": "DeletePluginsByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins"
+        ]
+      }
+    },
     "/plugins/{team_name}/{plugin_name}": {
       "get": {
         "description": "Get details about a given plugin.",
@@ -281,6 +316,42 @@
             "$ref": "#/components/responses/InternalError"
           }
         }
+      },
+      "delete": {
+        "description": "Delete plugin by team and plugin name",
+        "operationId": "DeletePluginByTeamAndPluginName",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins"
+        ]
       }
     },
     "/plugins/{team_name}/{plugin_name}/versions": {
@@ -343,9 +414,54 @@
         "tags": [
           "plugins"
         ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_name}/versions/{version_name}": {
+      "get": {
+        "description": "Get details about a given plugin version. Use `latest` as version to get the latest version.",
+        "operationId": "GetPluginVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginVersion"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
       },
-      "post": {
-        "description": "Create a new plugin version",
+      "put": {
+        "description": "Create a new plugin version, or update a draft version",
         "operationId": "CreatePluginVersion",
         "parameters": [
           {
@@ -353,6 +469,9 @@
           },
           {
             "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
           }
         ],
         "requestBody": {
@@ -361,7 +480,6 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "name",
                   "message",
                   "protocols",
                   "supported_targets",
@@ -369,9 +487,6 @@
                   "checksums"
                 ],
                 "properties": {
-                  "name": {
-                    "$ref": "#/components/schemas/VersionName"
-                  },
                   "message": {
                     "type": "string",
                     "description": "A message describing what's new or changed in this version.\nThis message will be displayed to users in the plugin's changelog.\nSupports limited markdown syntax.\n"
@@ -416,8 +531,18 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "Success (the plugin version was updated)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginVersion"
+                }
+              }
+            }
+          },
           "201": {
-            "description": "Response",
+            "description": "Success (the plugin version was created)",
             "content": {
               "application/json": {
                 "schema": {
@@ -434,51 +559,6 @@
           },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntity"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "security": [],
-        "tags": [
-          "plugins"
-        ]
-      }
-    },
-    "/plugins/{team_name}/{plugin_name}/versions/{version_name}": {
-      "get": {
-        "description": "Get details about a given plugin version. Use `latest` as version to get the latest version.",
-        "operationId": "GetPluginVersion",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/team_name"
-          },
-          {
-            "$ref": "#/components/parameters/plugin_name"
-          },
-          {
-            "$ref": "#/components/parameters/version_name"
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PluginVersion"
-                }
-              }
-            },
-            "description": "Response"
-          },
-          "401": {
-            "$ref": "#/components/responses/RequiresAuthentication"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -597,6 +677,9 @@
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -640,6 +723,41 @@
             }
           }
         },
+        "responses": {
+          "201": {
+            "description": "Successfully created or updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "names": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PluginDocsPageName"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
         "tags": [
           "plugins"
         ]
@@ -676,6 +794,26 @@
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
           }
         },
         "tags": [
@@ -781,6 +919,41 @@
             }
           }
         },
+        "responses": {
+          "201": {
+            "description": "Successfully created or updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "names": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PluginTableName"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
         "tags": [
           "plugins"
         ]
@@ -817,6 +990,26 @@
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The resource was deleted successfully."
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
           }
         },
         "tags": [
@@ -2164,7 +2357,7 @@
           },
           "retracted": {
             "type": "boolean",
-            "description": "If a plugin version is retracted, assets will not be available and it will not be counted as the latest version."
+            "description": "If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version."
           },
           "protocols": {
             "type": "array",
@@ -2222,7 +2415,7 @@
           },
           "retracted": {
             "type": "boolean",
-            "description": "If a plugin version is retracted, assets will not be available and it will not be counted as the latest version."
+            "description": "If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version."
           },
           "protocols": {
             "type": "array",
@@ -2277,6 +2470,11 @@
             "type": "string",
             "description": "The title of the documentation page",
             "example": "Getting Started"
+          },
+          "ordinal_position": {
+            "type": "integer",
+            "description": "The position of the page in the documentation",
+            "example": 1
           },
           "content": {
             "type": "string",
