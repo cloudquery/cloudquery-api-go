@@ -11,6 +11,12 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
+// Defines values for APIKeyScope.
+const (
+	APIKeyScopeReadAndWrite APIKeyScope = "read-and-write"
+	APIKeyScopeReadOnly     APIKeyScope = "read-only"
+)
+
 // Defines values for PluginCategory.
 const (
 	CloudInfrastructure  PluginCategory = "cloud-infrastructure"
@@ -64,15 +70,30 @@ const (
 	CreatePluginVersionJSONBodyPackageTypeNative CreatePluginVersionJSONBodyPackageType = "native"
 )
 
-// ApiKey API Key to interact with CloudQuery Cloud under specific team
-type ApiKey struct {
+// Defines values for CreateTeamAPIKeyJSONBodyScope.
+const (
+	CreateTeamAPIKeyJSONBodyScopeReadOnly  CreateTeamAPIKeyJSONBodyScope = "read-only"
+	CreateTeamAPIKeyJSONBodyScopeReadWrite CreateTeamAPIKeyJSONBodyScope = "read-write"
+)
+
+// APIKey API Key to interact with CloudQuery Cloud under specific team
+type APIKey struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	CreatedBy *Email     `json:"created_by,omitempty"`
 
+	// ExpiresAt Timestamp at which API key will stop working
+	ExpiresAt time.Time `json:"expires_at"`
+
 	// Key API key. Will be shown only in the response when creating the key.
 	Key  *string `json:"key,omitempty"`
-	Name *string `json:"name,omitempty"`
+	Name string  `json:"name"`
+
+	// Scope Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.
+	Scope APIKeyScope `json:"scope"`
 }
+
+// APIKeyScope Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.
+type APIKeyScope string
 
 // BasicError Basic Error
 type BasicError struct {
@@ -126,14 +147,19 @@ type Plugin struct {
 	// DisplayName The plugin's display name
 	DisplayName string  `json:"display_name"`
 	Homepage    *string `json:"homepage,omitempty"`
-	Logo        string  `json:"logo"`
+
+	// Listed True if the plugin is publicly listed, false otherwise
+	Listed *bool  `json:"listed,omitempty"`
+	Logo   string `json:"logo"`
 
 	// Name The unique name for the plugin.
-	Name             PluginName `json:"name"`
-	Official         bool       `json:"official"`
-	Repository       *string    `json:"repository,omitempty"`
-	ShortDescription string     `json:"short_description"`
-	Source           bool       `json:"source"`
+	Name PluginName `json:"name"`
+
+	// Official True if the plugin is maintained by CloudQuery, false otherwise
+	Official         bool    `json:"official"`
+	Repository       *string `json:"repository,omitempty"`
+	ShortDescription string  `json:"short_description"`
+	Source           bool    `json:"source"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -188,6 +214,21 @@ type PluginDocsPage struct {
 	Title string `json:"title"`
 }
 
+// PluginDocsPageCreate CloudQuery Plugin Documentation Page
+type PluginDocsPageCreate struct {
+	// Content The content of the documentation page. Supports markdown.
+	Content string `json:"content"`
+
+	// Name The unique name for the plugin documentation page.
+	Name PluginDocsPageName `json:"name"`
+
+	// OrdinalPosition The position of the page in the documentation
+	OrdinalPosition *int `json:"ordinal_position,omitempty"`
+
+	// Title The title of the documentation page
+	Title string `json:"title"`
+}
+
 // PluginDocsPageName The unique name for the plugin documentation page.
 type PluginDocsPageName = string
 
@@ -197,53 +238,50 @@ type PluginName = string
 // PluginTable CloudQuery Plugin Table
 type PluginTable struct {
 	// Description Description of the table
-	Description *string `json:"description,omitempty"`
+	Description string `json:"description"`
 
 	// IsIncremental Whether the table is incremental
-	IsIncremental *bool `json:"is_incremental,omitempty"`
+	IsIncremental bool `json:"is_incremental"`
 
 	// Name Name of the table
-	Name *PluginTableName `json:"name,omitempty"`
+	Name PluginTableName `json:"name"`
 
 	// Parent Name of the parent table, if any
 	Parent *string `json:"parent,omitempty"`
 
 	// Relations Names of the tables that depend on this table
-	Relations *[]string `json:"relations,omitempty"`
+	Relations []string `json:"relations"`
 
 	// Title Title of the table
-	Title *string `json:"title,omitempty"`
+	Title string `json:"title"`
 }
 
 // PluginTableColumn CloudQuery Plugin Column
 type PluginTableColumn struct {
 	// Description Description of the column
-	Description *string `json:"description,omitempty"`
+	Description string `json:"description"`
 
 	// IncrementalKey Whether the column is used as an incremental key
-	IncrementalKey *bool `json:"incremental_key,omitempty"`
+	IncrementalKey bool `json:"incremental_key"`
 
 	// IsUnique Whether the column has a unique constraint
-	IsUnique *bool `json:"is_unique,omitempty"`
+	IsUnique bool `json:"is_unique"`
 
 	// Name Name of the column
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	// NotNull Whether the column is nullable
-	NotNull *bool `json:"not_null,omitempty"`
+	NotNull bool `json:"not_null"`
 
 	// PrimaryKey Whether the column is part of the primary key
-	PrimaryKey *bool `json:"primary_key,omitempty"`
+	PrimaryKey bool `json:"primary_key"`
 
 	// Type Arrow Type of the column
-	Type *string `json:"type,omitempty"`
+	Type string `json:"type"`
 }
 
-// PluginTableDetails defines model for PluginTableDetails.
-type PluginTableDetails struct {
-	// Columns List of columns
-	Columns *[]PluginTableColumn `json:"columns,omitempty"`
-
+// PluginTableCreate CloudQuery Plugin Table
+type PluginTableCreate struct {
 	// Description Description of the table
 	Description *string `json:"description,omitempty"`
 
@@ -251,7 +289,7 @@ type PluginTableDetails struct {
 	IsIncremental *bool `json:"is_incremental,omitempty"`
 
 	// Name Name of the table
-	Name *string `json:"name,omitempty"`
+	Name PluginTableName `json:"name"`
 
 	// Parent Name of the parent table, if any
 	Parent *string `json:"parent,omitempty"`
@@ -261,6 +299,30 @@ type PluginTableDetails struct {
 
 	// Title Title of the table
 	Title *string `json:"title,omitempty"`
+}
+
+// PluginTableDetails defines model for PluginTableDetails.
+type PluginTableDetails struct {
+	// Columns List of columns
+	Columns []PluginTableColumn `json:"columns"`
+
+	// Description Description of the table
+	Description string `json:"description"`
+
+	// IsIncremental Whether the table is incremental
+	IsIncremental bool `json:"is_incremental"`
+
+	// Name Name of the table
+	Name string `json:"name"`
+
+	// Parent Name of the parent table, if any
+	Parent *string `json:"parent,omitempty"`
+
+	// Relations Names of the tables that depend on this table
+	Relations []string `json:"relations"`
+
+	// Title Title of the table
+	Title string `json:"title"`
 }
 
 // PluginTableName Name of the table
@@ -317,6 +379,9 @@ type PluginVersion struct {
 	// Protocols The CloudQuery protocols supported by this plugin version
 	Protocols []int `json:"protocols"`
 
+	// PublishedAt The date and time the plugin version was set to non-draft (published).
+	PublishedAt *time.Time `json:"published_at,omitempty"`
+
 	// Retracted If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version.
 	Retracted bool `json:"retracted"`
 
@@ -351,7 +416,7 @@ type PluginVersionUpdate struct {
 
 // ReleaseURL defines model for ReleaseURL.
 type ReleaseURL struct {
-	Url *string `json:"url,omitempty"`
+	Url string `json:"url"`
 }
 
 // Team CloudQuery Team
@@ -392,8 +457,14 @@ type ValidationError struct {
 // VersionName The version in semantic version format.
 type VersionName = string
 
-// ApiKeyName defines model for apikey_name.
-type ApiKeyName = string
+// APIKeyName defines model for apikey_name.
+type APIKeyName = string
+
+// IncludeDrafts defines model for include_drafts.
+type IncludeDrafts = bool
+
+// IncludeUnlisted defines model for include_unlisted.
+type IncludeUnlisted = bool
 
 // Page defines model for page.
 type Page = int64
@@ -415,6 +486,9 @@ type Forbidden = BasicError
 
 // InternalError Basic Error
 type InternalError = BasicError
+
+// MethodNotAllowed Basic Error
+type MethodNotAllowed = BasicError
 
 // NotFound Basic Error
 type NotFound = BasicError
@@ -450,6 +524,9 @@ type ListPluginVersionsParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// IncludeDrafts Whether to include draft plugins
+	IncludeDrafts *IncludeDrafts `form:"include_drafts,omitempty" json:"include_drafts,omitempty"`
 }
 
 // ListPluginVersionsParamsSortBy defines parameters for ListPluginVersions.
@@ -494,7 +571,7 @@ type ListPluginVersionDocsParams struct {
 
 // CreatePluginVersionDocsJSONBody defines parameters for CreatePluginVersionDocs.
 type CreatePluginVersionDocsJSONBody struct {
-	Pages []PluginDocsPage `json:"pages"`
+	Pages []PluginDocsPageCreate `json:"pages"`
 }
 
 // DeletePluginVersionTablesJSONBody defines parameters for DeletePluginVersionTables.
@@ -513,7 +590,7 @@ type ListPluginVersionTablesParams struct {
 
 // CreatePluginVersionTablesJSONBody defines parameters for CreatePluginVersionTables.
 type CreatePluginVersionTablesJSONBody struct {
-	Tables []PluginTable `json:"tables"`
+	Tables []PluginTableCreate `json:"tables"`
 }
 
 // ListTeamsParams defines parameters for ListTeams.
@@ -540,14 +617,24 @@ type UpdateTeamJSONBody struct {
 	DisplayName *string `json:"display_name,omitempty"`
 }
 
-// ListTeamApiKeysParams defines parameters for ListTeamApiKeys.
-type ListTeamApiKeysParams struct {
+// ListTeamAPIKeysParams defines parameters for ListTeamAPIKeys.
+type ListTeamAPIKeysParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
 	// Page Page number of the results to fetch
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
+
+// CreateTeamAPIKeyJSONBody defines parameters for CreateTeamAPIKey.
+type CreateTeamAPIKeyJSONBody struct {
+	ExpiresAt time.Time                      `json:"expires_at"`
+	Name      string                         `json:"name"`
+	Scope     *CreateTeamAPIKeyJSONBodyScope `json:"scope,omitempty"`
+}
+
+// CreateTeamAPIKeyJSONBodyScope defines parameters for CreateTeamAPIKey.
+type CreateTeamAPIKeyJSONBodyScope string
 
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
 type ListTeamInvitationsParams struct {
@@ -580,6 +667,9 @@ type ListPluginsByTeamParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// IncludeUnlisted Whether to include unlisted plugins
+	IncludeUnlisted *IncludeUnlisted `form:"include_unlisted,omitempty" json:"include_unlisted,omitempty"`
 }
 
 // ListUsersByTeamParams defines parameters for ListUsersByTeam.
@@ -589,6 +679,12 @@ type ListUsersByTeamParams struct {
 
 	// Page Page number of the results to fetch
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UpdateCurrentUserJSONBody defines parameters for UpdateCurrentUser.
+type UpdateCurrentUserJSONBody struct {
+	// Name The user's name
+	Name *string `json:"name,omitempty"`
 }
 
 // ListCurrentUserInvitationsParams defines parameters for ListCurrentUserInvitations.
@@ -639,5 +735,11 @@ type CreateTeamJSONRequestBody CreateTeamJSONBody
 // UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
 type UpdateTeamJSONRequestBody UpdateTeamJSONBody
 
+// CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
+type CreateTeamAPIKeyJSONRequestBody CreateTeamAPIKeyJSONBody
+
 // EmailTeamInvitationJSONRequestBody defines body for EmailTeamInvitation for application/json ContentType.
 type EmailTeamInvitationJSONRequestBody EmailTeamInvitationJSONBody
+
+// UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
+type UpdateCurrentUserJSONRequestBody UpdateCurrentUserJSONBody

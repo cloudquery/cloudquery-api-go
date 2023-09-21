@@ -199,41 +199,6 @@
         ]
       }
     },
-    "/plugins/{team_name}": {
-      "delete": {
-        "description": "Delete plugins by team",
-        "operationId": "DeletePluginsByTeam",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/team_name"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Response"
-          },
-          "401": {
-            "$ref": "#/components/responses/RequiresAuthentication"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "tags": [
-          "teams",
-          "plugins"
-        ]
-      }
-    },
     "/plugins/{team_name}/{plugin_name}": {
       "get": {
         "description": "Get details about a given plugin.",
@@ -373,6 +338,9 @@
           },
           {
             "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/include_drafts"
           }
         ],
         "responses": {
@@ -715,7 +683,7 @@
                   "pages": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PluginDocsPage"
+                      "$ref": "#/components/schemas/PluginDocsPageCreate"
                     }
                   }
                 }
@@ -911,7 +879,7 @@
                   "tables": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/PluginTable"
+                      "$ref": "#/components/schemas/PluginTableCreate"
                     }
                   }
                 }
@@ -1257,6 +1225,12 @@
             },
             "description": "Created"
           },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntity"
           },
@@ -1367,7 +1341,7 @@
     },
     "/teams/{team_name}/plugins": {
       "get": {
-        "description": "List all plugins for the current team.",
+        "description": "List all plugins for the team.",
         "operationId": "ListPluginsByTeam",
         "parameters": [
           {
@@ -1378,6 +1352,9 @@
           },
           {
             "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/include_unlisted"
           }
         ],
         "responses": {
@@ -1434,6 +1411,39 @@
         },
         "security": [],
         "tags": [
+          "plugins"
+        ]
+      },
+      "delete": {
+        "description": "Delete plugins by team",
+        "operationId": "DeletePluginsByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
           "plugins"
         ]
       }
@@ -1797,6 +1807,57 @@
         "tags": [
           "users"
         ]
+      },
+      "patch": {
+        "description": "Update attributes for the current authenticated user from the OAuth token",
+        "operationId": "UpdateCurrentUser",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The user's name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "users"
+        ]
       }
     },
     "/user/invitations": {
@@ -1917,8 +1978,8 @@
     },
     "/teams/{team_name}/apikeys": {
       "get": {
-        "description": "List all API Keys for the curren team",
-        "operationId": "ListTeamApiKeys",
+        "description": "List all team API Keys",
+        "operationId": "ListTeamAPIKeys",
         "tags": [
           "teams"
         ],
@@ -1946,7 +2007,7 @@
                   "properties": {
                     "items": {
                       "items": {
-                        "$ref": "#/components/schemas/ApiKey"
+                        "$ref": "#/components/schemas/APIKey"
                       },
                       "type": "array"
                     },
@@ -1967,8 +2028,8 @@
         }
       },
       "post": {
-        "description": "Create new API Key for the current team. This is useful in CI",
-        "operationId": "CreateTeamApiKey",
+        "description": "Create new team API Key. This is useful in CI",
+        "operationId": "CreateTeamAPIKey",
         "tags": [
           "teams"
         ],
@@ -1977,19 +2038,52 @@
             "$ref": "#/components/parameters/team_name"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "expires_at",
+                  "role",
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "expires_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": [
+                      "read-only",
+                      "read-write"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiKey"
+                  "$ref": "#/components/schemas/APIKey"
                 }
               }
             }
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -2000,7 +2094,7 @@
     "/teams/{team_name}/apikeys/{apikey_name}": {
       "delete": {
         "description": "Delete API Key. This will remove any future access by this API Key.",
-        "operationId": "DeleteTeamApiKey",
+        "operationId": "DeleteTeamAPIKey",
         "tags": [
           "teams"
         ],
@@ -2018,6 +2112,12 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -2133,6 +2233,7 @@
             "example": "AWS Source Plugin"
           },
           "official": {
+            "description": "True if the plugin is maintained by CloudQuery, false otherwise",
             "type": "boolean"
           },
           "repository": {
@@ -2150,6 +2251,10 @@
             "type": "boolean"
           },
           "destination": {
+            "type": "boolean"
+          },
+          "listed": {
+            "description": "True if the plugin is publicly listed, false otherwise",
             "type": "boolean"
           }
         },
@@ -2237,32 +2342,28 @@
         }
       },
       "ValidationError": {
-        "additionalProperties": false,
-        "required": [
-          "message",
-          "status"
-        ],
-        "properties": {
-          "message": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicError"
           },
-          "status": {
-            "type": "integer"
-          },
-          "errors": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "field_errors": {
-            "additionalProperties": {
-              "type": "string"
+          {
+            "properties": {
+              "errors": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "field_errors": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
             },
             "type": "object"
           }
-        },
-        "type": "object"
+        ]
       },
       "PluginUpdate": {
         "type": "object",
@@ -2320,7 +2421,7 @@
       "VersionName": {
         "type": "string",
         "description": "The version in semantic version format.",
-        "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+        "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
       },
       "PluginVersion": {
         "additionalProperties": false,
@@ -2342,6 +2443,12 @@
             "format": "date-time",
             "type": "string",
             "description": "The date and time the plugin version was created."
+          },
+          "published_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the plugin version was set to non-draft (published)."
           },
           "name": {
             "$ref": "#/components/schemas/VersionName"
@@ -2485,6 +2592,37 @@
         "title": "CloudQuery Plugin Documentation Page",
         "type": "object"
       },
+      "PluginDocsPageCreate": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Documentation Page",
+        "required": [
+          "name",
+          "title",
+          "content"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/PluginDocsPageName"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the documentation page",
+            "example": "Getting Started"
+          },
+          "ordinal_position": {
+            "type": "integer",
+            "description": "The position of the page in the documentation",
+            "example": 1
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the documentation page. Supports markdown.",
+            "example": "# Getting Started\n\nThis is the getting started page."
+          }
+        },
+        "title": "CloudQuery Plugin Documentation Page",
+        "type": "object"
+      },
       "PluginTableName": {
         "description": "Name of the table",
         "maxLength": 255,
@@ -2495,6 +2633,56 @@
       "PluginTable": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Table",
+        "required": [
+          "description",
+          "is_incremental",
+          "name",
+          "relations",
+          "title"
+        ],
+        "properties": {
+          "description": {
+            "description": "Description of the table",
+            "type": "string",
+            "example": "AWS S3 Buckets"
+          },
+          "is_incremental": {
+            "description": "Whether the table is incremental",
+            "type": "boolean"
+          },
+          "name": {
+            "$ref": "#/components/schemas/PluginTableName"
+          },
+          "parent": {
+            "description": "Name of the parent table, if any",
+            "type": "string",
+            "example": "nil"
+          },
+          "relations": {
+            "description": "Names of the tables that depend on this table",
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "example": [
+              "aws_s3_bucket_cors_rules"
+            ]
+          },
+          "title": {
+            "description": "Title of the table",
+            "type": "string",
+            "example": "AWS S3 Buckets"
+          }
+        },
+        "title": "CloudQuery Plugin Table",
+        "type": "object"
+      },
+      "PluginTableCreate": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Table",
+        "required": [
+          "name"
+        ],
         "properties": {
           "description": {
             "description": "Description of the table",
@@ -2535,6 +2723,15 @@
       "PluginTableColumn": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Column",
+        "required": [
+          "description",
+          "incremental_key",
+          "name",
+          "not_null",
+          "primary_key",
+          "type",
+          "is_unique"
+        ],
         "properties": {
           "description": {
             "description": "Description of the column",
@@ -2570,6 +2767,14 @@
       },
       "PluginTableDetails": {
         "additionalProperties": false,
+        "required": [
+          "columns",
+          "description",
+          "is_incremental",
+          "name",
+          "relations",
+          "title"
+        ],
         "properties": {
           "columns": {
             "description": "List of columns",
@@ -2609,6 +2814,9 @@
         "type": "object"
       },
       "ReleaseURL": {
+        "required": [
+          "url"
+        ],
         "properties": {
           "url": {
             "type": "string"
@@ -2725,9 +2933,22 @@
           }
         }
       },
-      "ApiKey": {
+      "APIKeyScope": {
+        "description": "Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.",
+        "type": "string",
+        "enum": [
+          "read-only",
+          "read-and-write"
+        ]
+      },
+      "APIKey": {
         "description": "API Key to interact with CloudQuery Cloud under specific team",
         "type": "object",
+        "required": [
+          "name",
+          "scope",
+          "expires_at"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -2746,6 +2967,15 @@
             "type": "string",
             "format": "date-time",
             "example": "2017-07-14T16:53:42Z"
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "Timestamp at which API key will stop working",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/APIKeyScope"
           }
         }
       }
@@ -2800,6 +3030,16 @@
           }
         },
         "description": "Resource not found"
+      },
+      "MethodNotAllowed": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Method not allowed"
       }
     },
     "parameters": {
@@ -2871,6 +3111,15 @@
           "type": "string"
         }
       },
+      "include_drafts": {
+        "description": "Whether to include draft plugins",
+        "in": "query",
+        "name": "include_drafts",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
       "version_name": {
         "in": "path",
         "name": "version_name",
@@ -2885,6 +3134,15 @@
         "required": true,
         "schema": {
           "type": "string"
+        }
+      },
+      "include_unlisted": {
+        "description": "Whether to include unlisted plugins",
+        "in": "query",
+        "name": "include_unlisted",
+        "required": false,
+        "schema": {
+          "type": "boolean"
         }
       },
       "email": {
@@ -2903,7 +3161,7 @@
           "type": "string",
           "example": "cli-api-key"
         },
-        "x-go-name": "ApiKeyName"
+        "x-go-name": "APIKeyName"
       }
     }
   }
