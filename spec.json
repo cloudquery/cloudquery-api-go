@@ -119,7 +119,8 @@
                       "type": "array",
                       "example": [
                         {
-                          "name": "aws-source",
+                          "name": "aws",
+                          "kind": "source",
                           "team_name": "cloudquery",
                           "display_name": "AWS Source Plugin",
                           "category": "cloud-infrastructure",
@@ -129,9 +130,7 @@
                           "official": true,
                           "short_description": "Sync data from AWS to any destination",
                           "repository": "https://github.com/cloudquery/cloudquery",
-                          "tier": "free",
-                          "source": true,
-                          "destination": false
+                          "tier": "free"
                         }
                       ]
                     },
@@ -199,13 +198,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}": {
       "get": {
         "description": "Get details about a given plugin.",
         "operationId": "GetPlugin",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -246,6 +248,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -290,6 +295,9 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
             "$ref": "#/components/parameters/plugin_name"
           }
         ],
@@ -319,13 +327,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}/versions": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions": {
       "get": {
         "description": "List all versions for a given plugin",
         "operationId": "ListPluginVersions",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -384,13 +395,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}/versions/{version_name}": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}": {
       "get": {
         "description": "Get details about a given plugin version. Use `latest` as version to get the latest version.",
         "operationId": "GetPluginVersion",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -434,6 +448,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -545,6 +562,9 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
             "$ref": "#/components/parameters/plugin_name"
           },
           {
@@ -593,13 +613,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/docs": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/docs": {
       "get": {
         "description": "List all documentation pages for a given plugin version.",
         "operationId": "ListPluginVersionDocs",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -663,6 +686,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -738,6 +764,9 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
             "$ref": "#/components/parameters/plugin_name"
           },
           {
@@ -789,13 +818,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/tables": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/tables": {
       "get": {
         "description": "List tables for a given plugin version. This only applies to source plugins.",
         "operationId": "ListPluginVersionTables",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -859,6 +891,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -934,6 +969,9 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
             "$ref": "#/components/parameters/plugin_name"
           },
           {
@@ -985,13 +1023,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/tables/{table_name}": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/tables/{table_name}": {
       "get": {
         "description": "Get schema for a given table and plugin version. This only applies to source plugins.",
         "operationId": "GetPluginVersionTable",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -1038,13 +1079,16 @@
         ]
       }
     },
-    "/plugins/{team_name}/{plugin_name}/versions/{version_name}/assets/{target_name}": {
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/assets/{target_name}": {
       "get": {
         "description": "Download an asset for a given plugin version and target",
         "operationId": "DownloadPluginAsset",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -1091,6 +1135,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
           },
           {
             "$ref": "#/components/parameters/plugin_name"
@@ -1376,6 +1423,7 @@
                       "example": [
                         {
                           "name": "aws-source",
+                          "kind": "source",
                           "team_name": "cloudquery",
                           "display_name": "AWS Source Plugin",
                           "category": "cloud-infrastructure",
@@ -1385,9 +1433,7 @@
                           "official": true,
                           "short_description": "Sync data from AWS to any destination",
                           "repository": "https://github.com/cloudquery/cloudquery",
-                          "tier": "free",
-                          "source": true,
-                          "destination": false
+                          "tier": "free"
                         }
                       ]
                     },
@@ -2182,6 +2228,15 @@
         "type": "string",
         "example": "aws-source"
       },
+      "PluginKind": {
+        "description": "The kind of plugin, ie. source or destination.",
+        "type": "string",
+        "example": "source",
+        "enum": [
+          "source",
+          "destination"
+        ]
+      },
       "PluginCategory": {
         "description": "Supported categories for plugins",
         "type": "string",
@@ -2210,6 +2265,9 @@
           },
           "name": {
             "$ref": "#/components/schemas/PluginName"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PluginKind"
           },
           "category": {
             "$ref": "#/components/schemas/PluginCategory"
@@ -2247,12 +2305,6 @@
           "tier": {
             "$ref": "#/components/schemas/PluginTier"
           },
-          "source": {
-            "type": "boolean"
-          },
-          "destination": {
-            "type": "boolean"
-          },
           "listed": {
             "description": "True if the plugin is publicly listed, false otherwise",
             "type": "boolean"
@@ -2261,15 +2313,14 @@
         "required": [
           "team_name",
           "name",
+          "kind",
           "category",
           "created_at",
           "logo",
           "display_name",
           "official",
           "short_description",
-          "tier",
-          "source",
-          "destination"
+          "tier"
         ],
         "title": "CloudQuery Plugin",
         "type": "object"
@@ -2288,18 +2339,20 @@
         "type": "object",
         "required": [
           "team_name",
+          "kind",
           "name",
           "category",
           "tier",
           "display_name",
           "short_description",
-          "source",
-          "destination",
           "logo"
         ],
         "properties": {
           "team_name": {
             "$ref": "#/components/schemas/TeamName"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PluginKind"
           },
           "name": {
             "$ref": "#/components/schemas/PluginName"
@@ -3089,6 +3142,14 @@
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TeamName"
+        }
+      },
+      "plugin_kind": {
+        "in": "path",
+        "name": "plugin_kind",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/PluginKind"
         }
       },
       "plugin_name": {
