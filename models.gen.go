@@ -347,8 +347,7 @@ type PluginTier string
 // PluginUpdate defines model for PluginUpdate.
 type PluginUpdate struct {
 	// Category Supported categories for plugins
-	Category    PluginCategory `json:"category"`
-	Destination bool           `json:"destination"`
+	Category PluginCategory `json:"category"`
 
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
 	DisplayName string  `json:"display_name"`
@@ -363,7 +362,6 @@ type PluginUpdate struct {
 
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription string `json:"short_description"`
-	Source           bool   `json:"source"`
 
 	// Tier Supported tiers for plugins
 	Tier PluginTier `json:"tier"`
