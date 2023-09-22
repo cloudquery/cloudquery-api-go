@@ -2425,8 +2425,6 @@
           "tier",
           "display_name",
           "short_description",
-          "source",
-          "destination",
           "logo"
         ],
         "properties": {
@@ -2453,12 +2451,6 @@
           "repository": {
             "type": "string",
             "example": "https://github.com/cloudquery/cloudquery"
-          },
-          "source": {
-            "type": "boolean"
-          },
-          "destination": {
-            "type": "boolean"
           },
           "logo": {
             "type": "string",
