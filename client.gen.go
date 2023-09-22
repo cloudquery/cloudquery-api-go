@@ -101,66 +101,66 @@ type ClientInterface interface {
 	CreatePlugin(ctx context.Context, body CreatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePluginByTeamAndPluginName request
-	DeletePluginByTeamAndPluginName(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeletePluginByTeamAndPluginName(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPlugin request
-	GetPlugin(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetPlugin(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdatePluginWithBody request with any body
-	UpdatePluginWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdatePluginWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdatePlugin(ctx context.Context, teamName TeamName, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdatePlugin(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPluginVersions request
-	ListPluginVersions(ctx context.Context, teamName TeamName, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListPluginVersions(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPluginVersion request
-	GetPluginVersion(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetPluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdatePluginVersionWithBody request with any body
-	UpdatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdatePluginVersion(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdatePluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreatePluginVersionWithBody request with any body
-	CreatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreatePluginVersion(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadPluginAsset request
-	DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UploadPluginAsset request
-	UploadPluginAsset(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UploadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePluginVersionDocsWithBody request with any body
-	DeletePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeletePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	DeletePluginVersionDocs(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeletePluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPluginVersionDocs request
-	ListPluginVersionDocs(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListPluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreatePluginVersionDocsWithBody request with any body
-	CreatePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreatePluginVersionDocs(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePluginVersionTablesWithBody request with any body
-	DeletePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeletePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	DeletePluginVersionTables(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeletePluginVersionTables(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPluginVersionTables request
-	ListPluginVersionTables(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListPluginVersionTables(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreatePluginVersionTablesWithBody request with any body
-	CreatePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreatePluginVersionTables(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreatePluginVersionTables(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPluginVersionTable request
-	GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeams request
 	ListTeams(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -281,8 +281,8 @@ func (c *Client) CreatePlugin(ctx context.Context, body CreatePluginJSONRequestB
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeletePluginByTeamAndPluginName(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeletePluginByTeamAndPluginNameRequest(c.Server, teamName, pluginName)
+func (c *Client) DeletePluginByTeamAndPluginName(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginByTeamAndPluginNameRequest(c.Server, teamName, pluginKind, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -293,8 +293,8 @@ func (c *Client) DeletePluginByTeamAndPluginName(ctx context.Context, teamName T
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetPlugin(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPluginRequest(c.Server, teamName, pluginName)
+func (c *Client) GetPlugin(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPluginRequest(c.Server, teamName, pluginKind, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -305,8 +305,8 @@ func (c *Client) GetPlugin(ctx context.Context, teamName TeamName, pluginName Pl
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdatePluginWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdatePluginRequestWithBody(c.Server, teamName, pluginName, contentType, body)
+func (c *Client) UpdatePluginWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePluginRequestWithBody(c.Server, teamName, pluginKind, pluginName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -317,8 +317,8 @@ func (c *Client) UpdatePluginWithBody(ctx context.Context, teamName TeamName, pl
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdatePlugin(ctx context.Context, teamName TeamName, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdatePluginRequest(c.Server, teamName, pluginName, body)
+func (c *Client) UpdatePlugin(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePluginRequest(c.Server, teamName, pluginKind, pluginName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -329,8 +329,8 @@ func (c *Client) UpdatePlugin(ctx context.Context, teamName TeamName, pluginName
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListPluginVersions(ctx context.Context, teamName TeamName, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListPluginVersionsRequest(c.Server, teamName, pluginName, params)
+func (c *Client) ListPluginVersions(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPluginVersionsRequest(c.Server, teamName, pluginKind, pluginName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -341,8 +341,8 @@ func (c *Client) ListPluginVersions(ctx context.Context, teamName TeamName, plug
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetPluginVersion(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPluginVersionRequest(c.Server, teamName, pluginName, versionName)
+func (c *Client) GetPluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPluginVersionRequest(c.Server, teamName, pluginKind, pluginName, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -353,8 +353,8 @@ func (c *Client) GetPluginVersion(ctx context.Context, teamName TeamName, plugin
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdatePluginVersionRequestWithBody(c.Server, teamName, pluginName, versionName, contentType, body)
+func (c *Client) UpdatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePluginVersionRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -365,8 +365,8 @@ func (c *Client) UpdatePluginVersionWithBody(ctx context.Context, teamName TeamN
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdatePluginVersion(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdatePluginVersionRequest(c.Server, teamName, pluginName, versionName, body)
+func (c *Client) UpdatePluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePluginVersionRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -377,8 +377,8 @@ func (c *Client) UpdatePluginVersion(ctx context.Context, teamName TeamName, plu
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePluginVersionRequestWithBody(c.Server, teamName, pluginName, versionName, contentType, body)
+func (c *Client) CreatePluginVersionWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginVersionRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -389,8 +389,8 @@ func (c *Client) CreatePluginVersionWithBody(ctx context.Context, teamName TeamN
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePluginVersion(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePluginVersionRequest(c.Server, teamName, pluginName, versionName, body)
+func (c *Client) CreatePluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginVersionRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -401,8 +401,8 @@ func (c *Client) CreatePluginVersion(ctx context.Context, teamName TeamName, plu
 	return c.Client.Do(req)
 }
 
-func (c *Client) DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDownloadPluginAssetRequest(c.Server, teamName, pluginName, versionName, targetName)
+func (c *Client) DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadPluginAssetRequest(c.Server, teamName, pluginKind, pluginName, versionName, targetName)
 	if err != nil {
 		return nil, err
 	}
@@ -413,8 +413,8 @@ func (c *Client) DownloadPluginAsset(ctx context.Context, teamName TeamName, plu
 	return c.Client.Do(req)
 }
 
-func (c *Client) UploadPluginAsset(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUploadPluginAssetRequest(c.Server, teamName, pluginName, versionName, targetName)
+func (c *Client) UploadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadPluginAssetRequest(c.Server, teamName, pluginKind, pluginName, versionName, targetName)
 	if err != nil {
 		return nil, err
 	}
@@ -425,8 +425,8 @@ func (c *Client) UploadPluginAsset(ctx context.Context, teamName TeamName, plugi
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeletePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeletePluginVersionDocsRequestWithBody(c.Server, teamName, pluginName, versionName, contentType, body)
+func (c *Client) DeletePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginVersionDocsRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -437,8 +437,8 @@ func (c *Client) DeletePluginVersionDocsWithBody(ctx context.Context, teamName T
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeletePluginVersionDocs(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeletePluginVersionDocsRequest(c.Server, teamName, pluginName, versionName, body)
+func (c *Client) DeletePluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginVersionDocsRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -449,8 +449,8 @@ func (c *Client) DeletePluginVersionDocs(ctx context.Context, teamName TeamName,
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListPluginVersionDocs(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListPluginVersionDocsRequest(c.Server, teamName, pluginName, versionName, params)
+func (c *Client) ListPluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPluginVersionDocsRequest(c.Server, teamName, pluginKind, pluginName, versionName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -461,8 +461,8 @@ func (c *Client) ListPluginVersionDocs(ctx context.Context, teamName TeamName, p
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePluginVersionDocsRequestWithBody(c.Server, teamName, pluginName, versionName, contentType, body)
+func (c *Client) CreatePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginVersionDocsRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -473,8 +473,8 @@ func (c *Client) CreatePluginVersionDocsWithBody(ctx context.Context, teamName T
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePluginVersionDocs(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePluginVersionDocsRequest(c.Server, teamName, pluginName, versionName, body)
+func (c *Client) CreatePluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginVersionDocsRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -485,8 +485,8 @@ func (c *Client) CreatePluginVersionDocs(ctx context.Context, teamName TeamName,
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeletePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeletePluginVersionTablesRequestWithBody(c.Server, teamName, pluginName, versionName, contentType, body)
+func (c *Client) DeletePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginVersionTablesRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -497,8 +497,8 @@ func (c *Client) DeletePluginVersionTablesWithBody(ctx context.Context, teamName
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeletePluginVersionTables(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeletePluginVersionTablesRequest(c.Server, teamName, pluginName, versionName, body)
+func (c *Client) DeletePluginVersionTables(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginVersionTablesRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -509,8 +509,8 @@ func (c *Client) DeletePluginVersionTables(ctx context.Context, teamName TeamNam
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListPluginVersionTables(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListPluginVersionTablesRequest(c.Server, teamName, pluginName, versionName, params)
+func (c *Client) ListPluginVersionTables(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPluginVersionTablesRequest(c.Server, teamName, pluginKind, pluginName, versionName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -521,8 +521,8 @@ func (c *Client) ListPluginVersionTables(ctx context.Context, teamName TeamName,
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePluginVersionTablesRequestWithBody(c.Server, teamName, pluginName, versionName, contentType, body)
+func (c *Client) CreatePluginVersionTablesWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginVersionTablesRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -533,8 +533,8 @@ func (c *Client) CreatePluginVersionTablesWithBody(ctx context.Context, teamName
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreatePluginVersionTables(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreatePluginVersionTablesRequest(c.Server, teamName, pluginName, versionName, body)
+func (c *Client) CreatePluginVersionTables(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginVersionTablesRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -545,8 +545,8 @@ func (c *Client) CreatePluginVersionTables(ctx context.Context, teamName TeamNam
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPluginVersionTableRequest(c.Server, teamName, pluginName, versionName, tableName)
+func (c *Client) GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPluginVersionTableRequest(c.Server, teamName, pluginKind, pluginName, versionName, tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -1006,7 +1006,7 @@ func NewCreatePluginRequestWithBody(server string, contentType string, body io.R
 }
 
 // NewDeletePluginByTeamAndPluginNameRequest generates requests for DeletePluginByTeamAndPluginName
-func NewDeletePluginByTeamAndPluginNameRequest(server string, teamName TeamName, pluginName PluginName) (*http.Request, error) {
+func NewDeletePluginByTeamAndPluginNameRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1018,7 +1018,14 @@ func NewDeletePluginByTeamAndPluginNameRequest(server string, teamName TeamName,
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -1028,7 +1035,7 @@ func NewDeletePluginByTeamAndPluginNameRequest(server string, teamName TeamName,
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1047,7 +1054,7 @@ func NewDeletePluginByTeamAndPluginNameRequest(server string, teamName TeamName,
 }
 
 // NewGetPluginRequest generates requests for GetPlugin
-func NewGetPluginRequest(server string, teamName TeamName, pluginName PluginName) (*http.Request, error) {
+func NewGetPluginRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1059,7 +1066,14 @@ func NewGetPluginRequest(server string, teamName TeamName, pluginName PluginName
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -1069,7 +1083,7 @@ func NewGetPluginRequest(server string, teamName TeamName, pluginName PluginName
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1088,18 +1102,18 @@ func NewGetPluginRequest(server string, teamName TeamName, pluginName PluginName
 }
 
 // NewUpdatePluginRequest calls the generic UpdatePlugin builder with application/json body
-func NewUpdatePluginRequest(server string, teamName TeamName, pluginName PluginName, body UpdatePluginJSONRequestBody) (*http.Request, error) {
+func NewUpdatePluginRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdatePluginRequestWithBody(server, teamName, pluginName, "application/json", bodyReader)
+	return NewUpdatePluginRequestWithBody(server, teamName, pluginKind, pluginName, "application/json", bodyReader)
 }
 
 // NewUpdatePluginRequestWithBody generates requests for UpdatePlugin with any type of body
-func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginName PluginName, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1111,7 +1125,14 @@ func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginName
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -1121,7 +1142,7 @@ func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginName
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1142,7 +1163,7 @@ func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginName
 }
 
 // NewListPluginVersionsRequest generates requests for ListPluginVersions
-func NewListPluginVersionsRequest(server string, teamName TeamName, pluginName PluginName, params *ListPluginVersionsParams) (*http.Request, error) {
+func NewListPluginVersionsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1154,7 +1175,14 @@ func NewListPluginVersionsRequest(server string, teamName TeamName, pluginName P
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -1164,7 +1192,7 @@ func NewListPluginVersionsRequest(server string, teamName TeamName, pluginName P
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1253,7 +1281,7 @@ func NewListPluginVersionsRequest(server string, teamName TeamName, pluginName P
 }
 
 // NewGetPluginVersionRequest generates requests for GetPluginVersion
-func NewGetPluginVersionRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName) (*http.Request, error) {
+func NewGetPluginVersionRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1265,14 +1293,21 @@ func NewGetPluginVersionRequest(server string, teamName TeamName, pluginName Plu
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1282,7 +1317,7 @@ func NewGetPluginVersionRequest(server string, teamName TeamName, pluginName Plu
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1301,18 +1336,18 @@ func NewGetPluginVersionRequest(server string, teamName TeamName, pluginName Plu
 }
 
 // NewUpdatePluginVersionRequest calls the generic UpdatePluginVersion builder with application/json body
-func NewUpdatePluginVersionRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody) (*http.Request, error) {
+func NewUpdatePluginVersionRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdatePluginVersionRequestWithBody(server, teamName, pluginName, versionName, "application/json", bodyReader)
+	return NewUpdatePluginVersionRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
 }
 
 // NewUpdatePluginVersionRequestWithBody generates requests for UpdatePluginVersion with any type of body
-func NewUpdatePluginVersionRequestWithBody(server string, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdatePluginVersionRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1324,14 +1359,21 @@ func NewUpdatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1341,7 +1383,7 @@ func NewUpdatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1362,18 +1404,18 @@ func NewUpdatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 }
 
 // NewCreatePluginVersionRequest calls the generic CreatePluginVersion builder with application/json body
-func NewCreatePluginVersionRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody) (*http.Request, error) {
+func NewCreatePluginVersionRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreatePluginVersionRequestWithBody(server, teamName, pluginName, versionName, "application/json", bodyReader)
+	return NewCreatePluginVersionRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
 }
 
 // NewCreatePluginVersionRequestWithBody generates requests for CreatePluginVersion with any type of body
-func NewCreatePluginVersionRequestWithBody(server string, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreatePluginVersionRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1385,14 +1427,21 @@ func NewCreatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1402,7 +1451,7 @@ func NewCreatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1423,7 +1472,7 @@ func NewCreatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 }
 
 // NewDownloadPluginAssetRequest generates requests for DownloadPluginAsset
-func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
+func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1435,21 +1484,28 @@ func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginName 
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam3 string
 
-	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "target_name", runtime.ParamLocationPath, targetName)
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam4 string
+
+	pathParam4, err = runtime.StyleParamWithLocation("simple", false, "target_name", runtime.ParamLocationPath, targetName)
 	if err != nil {
 		return nil, err
 	}
@@ -1459,7 +1515,7 @@ func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginName 
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/assets/%s", pathParam0, pathParam1, pathParam2, pathParam3)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/assets/%s", pathParam0, pathParam1, pathParam2, pathParam3, pathParam4)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1478,7 +1534,7 @@ func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginName 
 }
 
 // NewUploadPluginAssetRequest generates requests for UploadPluginAsset
-func NewUploadPluginAssetRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
+func NewUploadPluginAssetRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1490,21 +1546,28 @@ func NewUploadPluginAssetRequest(server string, teamName TeamName, pluginName Pl
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam3 string
 
-	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "target_name", runtime.ParamLocationPath, targetName)
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam4 string
+
+	pathParam4, err = runtime.StyleParamWithLocation("simple", false, "target_name", runtime.ParamLocationPath, targetName)
 	if err != nil {
 		return nil, err
 	}
@@ -1514,7 +1577,7 @@ func NewUploadPluginAssetRequest(server string, teamName TeamName, pluginName Pl
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/assets/%s", pathParam0, pathParam1, pathParam2, pathParam3)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/assets/%s", pathParam0, pathParam1, pathParam2, pathParam3, pathParam4)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1533,18 +1596,18 @@ func NewUploadPluginAssetRequest(server string, teamName TeamName, pluginName Pl
 }
 
 // NewDeletePluginVersionDocsRequest calls the generic DeletePluginVersionDocs builder with application/json body
-func NewDeletePluginVersionDocsRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody) (*http.Request, error) {
+func NewDeletePluginVersionDocsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewDeletePluginVersionDocsRequestWithBody(server, teamName, pluginName, versionName, "application/json", bodyReader)
+	return NewDeletePluginVersionDocsRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
 }
 
 // NewDeletePluginVersionDocsRequestWithBody generates requests for DeletePluginVersionDocs with any type of body
-func NewDeletePluginVersionDocsRequestWithBody(server string, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewDeletePluginVersionDocsRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1556,14 +1619,21 @@ func NewDeletePluginVersionDocsRequestWithBody(server string, teamName TeamName,
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1573,7 +1643,7 @@ func NewDeletePluginVersionDocsRequestWithBody(server string, teamName TeamName,
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1594,7 +1664,7 @@ func NewDeletePluginVersionDocsRequestWithBody(server string, teamName TeamName,
 }
 
 // NewListPluginVersionDocsRequest generates requests for ListPluginVersionDocs
-func NewListPluginVersionDocsRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams) (*http.Request, error) {
+func NewListPluginVersionDocsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1606,14 +1676,21 @@ func NewListPluginVersionDocsRequest(server string, teamName TeamName, pluginNam
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1623,7 +1700,7 @@ func NewListPluginVersionDocsRequest(server string, teamName TeamName, pluginNam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1680,18 +1757,18 @@ func NewListPluginVersionDocsRequest(server string, teamName TeamName, pluginNam
 }
 
 // NewCreatePluginVersionDocsRequest calls the generic CreatePluginVersionDocs builder with application/json body
-func NewCreatePluginVersionDocsRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody) (*http.Request, error) {
+func NewCreatePluginVersionDocsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreatePluginVersionDocsRequestWithBody(server, teamName, pluginName, versionName, "application/json", bodyReader)
+	return NewCreatePluginVersionDocsRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
 }
 
 // NewCreatePluginVersionDocsRequestWithBody generates requests for CreatePluginVersionDocs with any type of body
-func NewCreatePluginVersionDocsRequestWithBody(server string, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreatePluginVersionDocsRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1703,14 +1780,21 @@ func NewCreatePluginVersionDocsRequestWithBody(server string, teamName TeamName,
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1720,7 +1804,7 @@ func NewCreatePluginVersionDocsRequestWithBody(server string, teamName TeamName,
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1741,18 +1825,18 @@ func NewCreatePluginVersionDocsRequestWithBody(server string, teamName TeamName,
 }
 
 // NewDeletePluginVersionTablesRequest calls the generic DeletePluginVersionTables builder with application/json body
-func NewDeletePluginVersionTablesRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody) (*http.Request, error) {
+func NewDeletePluginVersionTablesRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewDeletePluginVersionTablesRequestWithBody(server, teamName, pluginName, versionName, "application/json", bodyReader)
+	return NewDeletePluginVersionTablesRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
 }
 
 // NewDeletePluginVersionTablesRequestWithBody generates requests for DeletePluginVersionTables with any type of body
-func NewDeletePluginVersionTablesRequestWithBody(server string, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewDeletePluginVersionTablesRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1764,14 +1848,21 @@ func NewDeletePluginVersionTablesRequestWithBody(server string, teamName TeamNam
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1781,7 +1872,7 @@ func NewDeletePluginVersionTablesRequestWithBody(server string, teamName TeamNam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/tables", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/tables", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1802,7 +1893,7 @@ func NewDeletePluginVersionTablesRequestWithBody(server string, teamName TeamNam
 }
 
 // NewListPluginVersionTablesRequest generates requests for ListPluginVersionTables
-func NewListPluginVersionTablesRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams) (*http.Request, error) {
+func NewListPluginVersionTablesRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1814,14 +1905,21 @@ func NewListPluginVersionTablesRequest(server string, teamName TeamName, pluginN
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1831,7 +1929,7 @@ func NewListPluginVersionTablesRequest(server string, teamName TeamName, pluginN
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/tables", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/tables", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1888,18 +1986,18 @@ func NewListPluginVersionTablesRequest(server string, teamName TeamName, pluginN
 }
 
 // NewCreatePluginVersionTablesRequest calls the generic CreatePluginVersionTables builder with application/json body
-func NewCreatePluginVersionTablesRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody) (*http.Request, error) {
+func NewCreatePluginVersionTablesRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreatePluginVersionTablesRequestWithBody(server, teamName, pluginName, versionName, "application/json", bodyReader)
+	return NewCreatePluginVersionTablesRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
 }
 
 // NewCreatePluginVersionTablesRequestWithBody generates requests for CreatePluginVersionTables with any type of body
-func NewCreatePluginVersionTablesRequestWithBody(server string, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreatePluginVersionTablesRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1911,14 +2009,21 @@ func NewCreatePluginVersionTablesRequestWithBody(server string, teamName TeamNam
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1928,7 +2033,7 @@ func NewCreatePluginVersionTablesRequestWithBody(server string, teamName TeamNam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/tables", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/tables", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1949,7 +2054,7 @@ func NewCreatePluginVersionTablesRequestWithBody(server string, teamName TeamNam
 }
 
 // NewGetPluginVersionTableRequest generates requests for GetPluginVersionTable
-func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginName PluginName, versionName VersionName, tableName string) (*http.Request, error) {
+func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1961,21 +2066,28 @@ func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginNam
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam3 string
 
-	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "table_name", runtime.ParamLocationPath, tableName)
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam4 string
+
+	pathParam4, err = runtime.StyleParamWithLocation("simple", false, "table_name", runtime.ParamLocationPath, tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -1985,7 +2097,7 @@ func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginNam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/plugins/%s/%s/versions/%s/tables/%s", pathParam0, pathParam1, pathParam2, pathParam3)
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/tables/%s", pathParam0, pathParam1, pathParam2, pathParam3, pathParam4)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -3088,66 +3200,66 @@ type ClientWithResponsesInterface interface {
 	CreatePluginWithResponse(ctx context.Context, body CreatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginResponse, error)
 
 	// DeletePluginByTeamAndPluginNameWithResponse request
-	DeletePluginByTeamAndPluginNameWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginByTeamAndPluginNameResponse, error)
+	DeletePluginByTeamAndPluginNameWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginByTeamAndPluginNameResponse, error)
 
 	// GetPluginWithResponse request
-	GetPluginWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetPluginResponse, error)
+	GetPluginWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetPluginResponse, error)
 
 	// UpdatePluginWithBodyWithResponse request with any body
-	UpdatePluginWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error)
+	UpdatePluginWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error)
 
-	UpdatePluginWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error)
+	UpdatePluginWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error)
 
 	// ListPluginVersionsWithResponse request
-	ListPluginVersionsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionsResponse, error)
+	ListPluginVersionsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionsResponse, error)
 
 	// GetPluginVersionWithResponse request
-	GetPluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetPluginVersionResponse, error)
+	GetPluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetPluginVersionResponse, error)
 
 	// UpdatePluginVersionWithBodyWithResponse request with any body
-	UpdatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error)
+	UpdatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error)
 
-	UpdatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error)
+	UpdatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error)
 
 	// CreatePluginVersionWithBodyWithResponse request with any body
-	CreatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error)
+	CreatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error)
 
-	CreatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error)
+	CreatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error)
 
 	// DownloadPluginAssetWithResponse request
-	DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error)
+	DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error)
 
 	// UploadPluginAssetWithResponse request
-	UploadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*UploadPluginAssetResponse, error)
+	UploadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*UploadPluginAssetResponse, error)
 
 	// DeletePluginVersionDocsWithBodyWithResponse request with any body
-	DeletePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error)
+	DeletePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error)
 
-	DeletePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error)
+	DeletePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error)
 
 	// ListPluginVersionDocsWithResponse request
-	ListPluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionDocsResponse, error)
+	ListPluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionDocsResponse, error)
 
 	// CreatePluginVersionDocsWithBodyWithResponse request with any body
-	CreatePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error)
+	CreatePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error)
 
-	CreatePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error)
+	CreatePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error)
 
 	// DeletePluginVersionTablesWithBodyWithResponse request with any body
-	DeletePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error)
+	DeletePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error)
 
-	DeletePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error)
+	DeletePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error)
 
 	// ListPluginVersionTablesWithResponse request
-	ListPluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*ListPluginVersionTablesResponse, error)
+	ListPluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*ListPluginVersionTablesResponse, error)
 
 	// CreatePluginVersionTablesWithBodyWithResponse request with any body
-	CreatePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error)
+	CreatePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error)
 
-	CreatePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error)
+	CreatePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error)
 
 	// GetPluginVersionTableWithResponse request
-	GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error)
+	GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error)
 
 	// ListTeamsWithResponse request
 	ListTeamsWithResponse(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error)
@@ -4291,8 +4403,8 @@ func (c *ClientWithResponses) CreatePluginWithResponse(ctx context.Context, body
 }
 
 // DeletePluginByTeamAndPluginNameWithResponse request returning *DeletePluginByTeamAndPluginNameResponse
-func (c *ClientWithResponses) DeletePluginByTeamAndPluginNameWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginByTeamAndPluginNameResponse, error) {
-	rsp, err := c.DeletePluginByTeamAndPluginName(ctx, teamName, pluginName, reqEditors...)
+func (c *ClientWithResponses) DeletePluginByTeamAndPluginNameWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginByTeamAndPluginNameResponse, error) {
+	rsp, err := c.DeletePluginByTeamAndPluginName(ctx, teamName, pluginKind, pluginName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4300,8 +4412,8 @@ func (c *ClientWithResponses) DeletePluginByTeamAndPluginNameWithResponse(ctx co
 }
 
 // GetPluginWithResponse request returning *GetPluginResponse
-func (c *ClientWithResponses) GetPluginWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetPluginResponse, error) {
-	rsp, err := c.GetPlugin(ctx, teamName, pluginName, reqEditors...)
+func (c *ClientWithResponses) GetPluginWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetPluginResponse, error) {
+	rsp, err := c.GetPlugin(ctx, teamName, pluginKind, pluginName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4309,16 +4421,16 @@ func (c *ClientWithResponses) GetPluginWithResponse(ctx context.Context, teamNam
 }
 
 // UpdatePluginWithBodyWithResponse request with arbitrary body returning *UpdatePluginResponse
-func (c *ClientWithResponses) UpdatePluginWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error) {
-	rsp, err := c.UpdatePluginWithBody(ctx, teamName, pluginName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdatePluginWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error) {
+	rsp, err := c.UpdatePluginWithBody(ctx, teamName, pluginKind, pluginName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdatePluginResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdatePluginWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error) {
-	rsp, err := c.UpdatePlugin(ctx, teamName, pluginName, body, reqEditors...)
+func (c *ClientWithResponses) UpdatePluginWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error) {
+	rsp, err := c.UpdatePlugin(ctx, teamName, pluginKind, pluginName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4326,8 +4438,8 @@ func (c *ClientWithResponses) UpdatePluginWithResponse(ctx context.Context, team
 }
 
 // ListPluginVersionsWithResponse request returning *ListPluginVersionsResponse
-func (c *ClientWithResponses) ListPluginVersionsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionsResponse, error) {
-	rsp, err := c.ListPluginVersions(ctx, teamName, pluginName, params, reqEditors...)
+func (c *ClientWithResponses) ListPluginVersionsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionsResponse, error) {
+	rsp, err := c.ListPluginVersions(ctx, teamName, pluginKind, pluginName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4335,8 +4447,8 @@ func (c *ClientWithResponses) ListPluginVersionsWithResponse(ctx context.Context
 }
 
 // GetPluginVersionWithResponse request returning *GetPluginVersionResponse
-func (c *ClientWithResponses) GetPluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetPluginVersionResponse, error) {
-	rsp, err := c.GetPluginVersion(ctx, teamName, pluginName, versionName, reqEditors...)
+func (c *ClientWithResponses) GetPluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetPluginVersionResponse, error) {
+	rsp, err := c.GetPluginVersion(ctx, teamName, pluginKind, pluginName, versionName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4344,16 +4456,16 @@ func (c *ClientWithResponses) GetPluginVersionWithResponse(ctx context.Context, 
 }
 
 // UpdatePluginVersionWithBodyWithResponse request with arbitrary body returning *UpdatePluginVersionResponse
-func (c *ClientWithResponses) UpdatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error) {
-	rsp, err := c.UpdatePluginVersionWithBody(ctx, teamName, pluginName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error) {
+	rsp, err := c.UpdatePluginVersionWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdatePluginVersionResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error) {
-	rsp, err := c.UpdatePluginVersion(ctx, teamName, pluginName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) UpdatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UpdatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginVersionResponse, error) {
+	rsp, err := c.UpdatePluginVersion(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4361,16 +4473,16 @@ func (c *ClientWithResponses) UpdatePluginVersionWithResponse(ctx context.Contex
 }
 
 // CreatePluginVersionWithBodyWithResponse request with arbitrary body returning *CreatePluginVersionResponse
-func (c *ClientWithResponses) CreatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error) {
-	rsp, err := c.CreatePluginVersionWithBody(ctx, teamName, pluginName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreatePluginVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error) {
+	rsp, err := c.CreatePluginVersionWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreatePluginVersionResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error) {
-	rsp, err := c.CreatePluginVersion(ctx, teamName, pluginName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) CreatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error) {
+	rsp, err := c.CreatePluginVersion(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4378,8 +4490,8 @@ func (c *ClientWithResponses) CreatePluginVersionWithResponse(ctx context.Contex
 }
 
 // DownloadPluginAssetWithResponse request returning *DownloadPluginAssetResponse
-func (c *ClientWithResponses) DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error) {
-	rsp, err := c.DownloadPluginAsset(ctx, teamName, pluginName, versionName, targetName, reqEditors...)
+func (c *ClientWithResponses) DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error) {
+	rsp, err := c.DownloadPluginAsset(ctx, teamName, pluginKind, pluginName, versionName, targetName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4387,8 +4499,8 @@ func (c *ClientWithResponses) DownloadPluginAssetWithResponse(ctx context.Contex
 }
 
 // UploadPluginAssetWithResponse request returning *UploadPluginAssetResponse
-func (c *ClientWithResponses) UploadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*UploadPluginAssetResponse, error) {
-	rsp, err := c.UploadPluginAsset(ctx, teamName, pluginName, versionName, targetName, reqEditors...)
+func (c *ClientWithResponses) UploadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*UploadPluginAssetResponse, error) {
+	rsp, err := c.UploadPluginAsset(ctx, teamName, pluginKind, pluginName, versionName, targetName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4396,16 +4508,16 @@ func (c *ClientWithResponses) UploadPluginAssetWithResponse(ctx context.Context,
 }
 
 // DeletePluginVersionDocsWithBodyWithResponse request with arbitrary body returning *DeletePluginVersionDocsResponse
-func (c *ClientWithResponses) DeletePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error) {
-	rsp, err := c.DeletePluginVersionDocsWithBody(ctx, teamName, pluginName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) DeletePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error) {
+	rsp, err := c.DeletePluginVersionDocsWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseDeletePluginVersionDocsResponse(rsp)
 }
 
-func (c *ClientWithResponses) DeletePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error) {
-	rsp, err := c.DeletePluginVersionDocs(ctx, teamName, pluginName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) DeletePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionDocsResponse, error) {
+	rsp, err := c.DeletePluginVersionDocs(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4413,8 +4525,8 @@ func (c *ClientWithResponses) DeletePluginVersionDocsWithResponse(ctx context.Co
 }
 
 // ListPluginVersionDocsWithResponse request returning *ListPluginVersionDocsResponse
-func (c *ClientWithResponses) ListPluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionDocsResponse, error) {
-	rsp, err := c.ListPluginVersionDocs(ctx, teamName, pluginName, versionName, params, reqEditors...)
+func (c *ClientWithResponses) ListPluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionDocsResponse, error) {
+	rsp, err := c.ListPluginVersionDocs(ctx, teamName, pluginKind, pluginName, versionName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4422,16 +4534,16 @@ func (c *ClientWithResponses) ListPluginVersionDocsWithResponse(ctx context.Cont
 }
 
 // CreatePluginVersionDocsWithBodyWithResponse request with arbitrary body returning *CreatePluginVersionDocsResponse
-func (c *ClientWithResponses) CreatePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error) {
-	rsp, err := c.CreatePluginVersionDocsWithBody(ctx, teamName, pluginName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreatePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error) {
+	rsp, err := c.CreatePluginVersionDocsWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreatePluginVersionDocsResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreatePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error) {
-	rsp, err := c.CreatePluginVersionDocs(ctx, teamName, pluginName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) CreatePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error) {
+	rsp, err := c.CreatePluginVersionDocs(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4439,16 +4551,16 @@ func (c *ClientWithResponses) CreatePluginVersionDocsWithResponse(ctx context.Co
 }
 
 // DeletePluginVersionTablesWithBodyWithResponse request with arbitrary body returning *DeletePluginVersionTablesResponse
-func (c *ClientWithResponses) DeletePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error) {
-	rsp, err := c.DeletePluginVersionTablesWithBody(ctx, teamName, pluginName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) DeletePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error) {
+	rsp, err := c.DeletePluginVersionTablesWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseDeletePluginVersionTablesResponse(rsp)
 }
 
-func (c *ClientWithResponses) DeletePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error) {
-	rsp, err := c.DeletePluginVersionTables(ctx, teamName, pluginName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) DeletePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body DeletePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*DeletePluginVersionTablesResponse, error) {
+	rsp, err := c.DeletePluginVersionTables(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4456,8 +4568,8 @@ func (c *ClientWithResponses) DeletePluginVersionTablesWithResponse(ctx context.
 }
 
 // ListPluginVersionTablesWithResponse request returning *ListPluginVersionTablesResponse
-func (c *ClientWithResponses) ListPluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*ListPluginVersionTablesResponse, error) {
-	rsp, err := c.ListPluginVersionTables(ctx, teamName, pluginName, versionName, params, reqEditors...)
+func (c *ClientWithResponses) ListPluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionTablesParams, reqEditors ...RequestEditorFn) (*ListPluginVersionTablesResponse, error) {
+	rsp, err := c.ListPluginVersionTables(ctx, teamName, pluginKind, pluginName, versionName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4465,16 +4577,16 @@ func (c *ClientWithResponses) ListPluginVersionTablesWithResponse(ctx context.Co
 }
 
 // CreatePluginVersionTablesWithBodyWithResponse request with arbitrary body returning *CreatePluginVersionTablesResponse
-func (c *ClientWithResponses) CreatePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error) {
-	rsp, err := c.CreatePluginVersionTablesWithBody(ctx, teamName, pluginName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreatePluginVersionTablesWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error) {
+	rsp, err := c.CreatePluginVersionTablesWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreatePluginVersionTablesResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreatePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error) {
-	rsp, err := c.CreatePluginVersionTables(ctx, teamName, pluginName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) CreatePluginVersionTablesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionTablesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionTablesResponse, error) {
+	rsp, err := c.CreatePluginVersionTables(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4482,8 +4594,8 @@ func (c *ClientWithResponses) CreatePluginVersionTablesWithResponse(ctx context.
 }
 
 // GetPluginVersionTableWithResponse request returning *GetPluginVersionTableResponse
-func (c *ClientWithResponses) GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error) {
-	rsp, err := c.GetPluginVersionTable(ctx, teamName, pluginName, versionName, tableName, reqEditors...)
+func (c *ClientWithResponses) GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error) {
+	rsp, err := c.GetPluginVersionTable(ctx, teamName, pluginKind, pluginName, versionName, tableName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}

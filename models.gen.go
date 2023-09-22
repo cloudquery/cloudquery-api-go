@@ -26,6 +26,12 @@ const (
 	SalesMarketing       PluginCategory = "sales-marketing"
 )
 
+// Defines values for PluginKind.
+const (
+	Destination PluginKind = "destination"
+	Source      PluginKind = "source"
+)
+
 // Defines values for PluginTier.
 const (
 	Free PluginTier = "free"
@@ -140,13 +146,15 @@ type Membership struct {
 // Plugin CloudQuery Plugin
 type Plugin struct {
 	// Category Supported categories for plugins
-	Category    PluginCategory `json:"category"`
-	CreatedAt   time.Time      `json:"created_at"`
-	Destination bool           `json:"destination"`
+	Category  PluginCategory `json:"category"`
+	CreatedAt time.Time      `json:"created_at"`
 
 	// DisplayName The plugin's display name
 	DisplayName string  `json:"display_name"`
 	Homepage    *string `json:"homepage,omitempty"`
+
+	// Kind The kind of plugin, ie. source or destination.
+	Kind PluginKind `json:"kind"`
 
 	// Listed True if the plugin is publicly listed, false otherwise
 	Listed *bool  `json:"listed,omitempty"`
@@ -159,7 +167,6 @@ type Plugin struct {
 	Official         bool    `json:"official"`
 	Repository       *string `json:"repository,omitempty"`
 	ShortDescription string  `json:"short_description"`
-	Source           bool    `json:"source"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -175,11 +182,14 @@ type PluginCategory string
 type PluginCreate struct {
 	// Category Supported categories for plugins
 	Category    PluginCategory `json:"category"`
-	Destination bool           `json:"destination"`
+	Destination *bool          `json:"destination,omitempty"`
 
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
 	DisplayName string  `json:"display_name"`
 	Homepage    *string `json:"homepage,omitempty"`
+
+	// Kind The kind of plugin, ie. source or destination.
+	Kind PluginKind `json:"kind"`
 
 	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...
 	Logo string `json:"logo"`
@@ -190,7 +200,7 @@ type PluginCreate struct {
 
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription string `json:"short_description"`
-	Source           bool   `json:"source"`
+	Source           *bool  `json:"source,omitempty"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -231,6 +241,9 @@ type PluginDocsPageCreate struct {
 
 // PluginDocsPageName The unique name for the plugin documentation page.
 type PluginDocsPageName = string
+
+// PluginKind The kind of plugin, ie. source or destination.
+type PluginKind string
 
 // PluginName The unique name for the plugin.
 type PluginName = string
