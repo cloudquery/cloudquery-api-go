@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.1.0...v1.2.0) (2023-09-22)
+
+
+### Features
+
+* Revert "feat: Support Go 1.19 ([#14](https://github.com/cloudquery/cloudquery-api-go/issues/14))" ([#16](https://github.com/cloudquery/cloudquery-api-go/issues/16)) ([d9f5557](https://github.com/cloudquery/cloudquery-api-go/commit/d9f55574f596ee503216cb8b87ce11bc328a5e64))
+
 ## [1.1.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.0.3...v1.1.0) (2023-09-22)
 
 
