@@ -100,9 +100,6 @@ type ClientInterface interface {
 
 	CreatePlugin(ctx context.Context, body CreatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// DeletePluginsByTeam request
-	DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// DeletePluginByTeamAndPluginName request
 	DeletePluginByTeamAndPluginName(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -181,14 +178,16 @@ type ClientInterface interface {
 
 	UpdateTeam(ctx context.Context, teamName TeamName, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ListTeamApiKeys request
-	ListTeamApiKeys(ctx context.Context, teamName TeamName, params *ListTeamApiKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// ListTeamAPIKeys request
+	ListTeamAPIKeys(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// CreateTeamApiKey request
-	CreateTeamApiKey(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// CreateTeamAPIKeyWithBody request with any body
+	CreateTeamAPIKeyWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// DeleteTeamApiKey request
-	DeleteTeamApiKey(ctx context.Context, teamName TeamName, apiKeyName ApiKeyName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateTeamAPIKey(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteTeamAPIKey request
+	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeamInvitations request
 	ListTeamInvitations(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -207,6 +206,9 @@ type ClientInterface interface {
 	// GetTeamMemberships request
 	GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeletePluginsByTeam request
+	DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPluginsByTeam request
 	ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -218,6 +220,11 @@ type ClientInterface interface {
 
 	// GetCurrentUser request
 	GetCurrentUser(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateCurrentUserWithBody request with any body
+	UpdateCurrentUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateCurrentUser(ctx context.Context, body UpdateCurrentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListCurrentUserInvitations request
 	ListCurrentUserInvitations(ctx context.Context, params *ListCurrentUserInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -264,18 +271,6 @@ func (c *Client) CreatePluginWithBody(ctx context.Context, contentType string, b
 
 func (c *Client) CreatePlugin(ctx context.Context, body CreatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreatePluginRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeletePluginsByTeamRequest(c.Server, teamName)
 	if err != nil {
 		return nil, err
 	}
@@ -634,8 +629,8 @@ func (c *Client) UpdateTeam(ctx context.Context, teamName TeamName, body UpdateT
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListTeamApiKeys(ctx context.Context, teamName TeamName, params *ListTeamApiKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListTeamApiKeysRequest(c.Server, teamName, params)
+func (c *Client) ListTeamAPIKeys(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTeamAPIKeysRequest(c.Server, teamName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -646,8 +641,8 @@ func (c *Client) ListTeamApiKeys(ctx context.Context, teamName TeamName, params 
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateTeamApiKey(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateTeamApiKeyRequest(c.Server, teamName)
+func (c *Client) CreateTeamAPIKeyWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTeamAPIKeyRequestWithBody(c.Server, teamName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -658,8 +653,20 @@ func (c *Client) CreateTeamApiKey(ctx context.Context, teamName TeamName, reqEdi
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteTeamApiKey(ctx context.Context, teamName TeamName, apiKeyName ApiKeyName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteTeamApiKeyRequest(c.Server, teamName, apiKeyName)
+func (c *Client) CreateTeamAPIKey(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTeamAPIKeyRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyName)
 	if err != nil {
 		return nil, err
 	}
@@ -742,6 +749,18 @@ func (c *Client) GetTeamMemberships(ctx context.Context, teamName TeamName, para
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginsByTeamRequest(c.Server, teamName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPluginsByTeamRequest(c.Server, teamName, params)
 	if err != nil {
@@ -780,6 +799,30 @@ func (c *Client) UploadImage(ctx context.Context, reqEditors ...RequestEditorFn)
 
 func (c *Client) GetCurrentUser(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetCurrentUserRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateCurrentUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCurrentUserRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateCurrentUser(ctx context.Context, body UpdateCurrentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCurrentUserRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -958,40 +1001,6 @@ func NewCreatePluginRequestWithBody(server string, contentType string, body io.R
 	}
 
 	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewDeletePluginsByTeamRequest generates requests for DeletePluginsByTeam
-func NewDeletePluginsByTeamRequest(server string, teamName TeamName) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/plugins/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
 
 	return req, nil
 }
@@ -1203,6 +1212,22 @@ func NewListPluginVersionsRequest(server string, teamName TeamName, pluginName P
 		if params.PerPage != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IncludeDrafts != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "include_drafts", runtime.ParamLocationQuery, *params.IncludeDrafts); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -2164,8 +2189,8 @@ func NewUpdateTeamRequestWithBody(server string, teamName TeamName, contentType 
 	return req, nil
 }
 
-// NewListTeamApiKeysRequest generates requests for ListTeamApiKeys
-func NewListTeamApiKeysRequest(server string, teamName TeamName, params *ListTeamApiKeysParams) (*http.Request, error) {
+// NewListTeamAPIKeysRequest generates requests for ListTeamAPIKeys
+func NewListTeamAPIKeysRequest(server string, teamName TeamName, params *ListTeamAPIKeysParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2236,8 +2261,19 @@ func NewListTeamApiKeysRequest(server string, teamName TeamName, params *ListTea
 	return req, nil
 }
 
-// NewCreateTeamApiKeyRequest generates requests for CreateTeamApiKey
-func NewCreateTeamApiKeyRequest(server string, teamName TeamName) (*http.Request, error) {
+// NewCreateTeamAPIKeyRequest calls the generic CreateTeamAPIKey builder with application/json body
+func NewCreateTeamAPIKeyRequest(server string, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateTeamAPIKeyRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateTeamAPIKeyRequestWithBody generates requests for CreateTeamAPIKey with any type of body
+func NewCreateTeamAPIKeyRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2262,16 +2298,18 @@ func NewCreateTeamApiKeyRequest(server string, teamName TeamName) (*http.Request
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
 
+	req.Header.Add("Content-Type", contentType)
+
 	return req, nil
 }
 
-// NewDeleteTeamApiKeyRequest generates requests for DeleteTeamApiKey
-func NewDeleteTeamApiKeyRequest(server string, teamName TeamName, apiKeyName ApiKeyName) (*http.Request, error) {
+// NewDeleteTeamAPIKeyRequest generates requests for DeleteTeamAPIKey
+func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyName APIKeyName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2283,7 +2321,7 @@ func NewDeleteTeamApiKeyRequest(server string, teamName TeamName, apiKeyName Api
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "apikey_name", runtime.ParamLocationPath, apiKeyName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "apikey_name", runtime.ParamLocationPath, aPIKeyName)
 	if err != nil {
 		return nil, err
 	}
@@ -2577,6 +2615,40 @@ func NewGetTeamMembershipsRequest(server string, teamName TeamName, params *GetT
 	return req, nil
 }
 
+// NewDeletePluginsByTeamRequest generates requests for DeletePluginsByTeam
+func NewDeletePluginsByTeamRequest(server string, teamName TeamName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/plugins", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListPluginsByTeamRequest generates requests for ListPluginsByTeam
 func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListPluginsByTeamParams) (*http.Request, error) {
 	var err error
@@ -2625,6 +2697,22 @@ func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListP
 		if params.PerPage != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.IncludeUnlisted != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "include_unlisted", runtime.ParamLocationQuery, *params.IncludeUnlisted); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -2771,6 +2859,46 @@ func NewGetCurrentUserRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewUpdateCurrentUserRequest calls the generic UpdateCurrentUser builder with application/json body
+func NewUpdateCurrentUserRequest(server string, body UpdateCurrentUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateCurrentUserRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUpdateCurrentUserRequestWithBody generates requests for UpdateCurrentUser with any type of body
+func NewUpdateCurrentUserRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -2959,9 +3087,6 @@ type ClientWithResponsesInterface interface {
 
 	CreatePluginWithResponse(ctx context.Context, body CreatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginResponse, error)
 
-	// DeletePluginsByTeamWithResponse request
-	DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error)
-
 	// DeletePluginByTeamAndPluginNameWithResponse request
 	DeletePluginByTeamAndPluginNameWithResponse(ctx context.Context, teamName TeamName, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginByTeamAndPluginNameResponse, error)
 
@@ -3040,14 +3165,16 @@ type ClientWithResponsesInterface interface {
 
 	UpdateTeamWithResponse(ctx context.Context, teamName TeamName, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
 
-	// ListTeamApiKeysWithResponse request
-	ListTeamApiKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamApiKeysParams, reqEditors ...RequestEditorFn) (*ListTeamApiKeysResponse, error)
+	// ListTeamAPIKeysWithResponse request
+	ListTeamAPIKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*ListTeamAPIKeysResponse, error)
 
-	// CreateTeamApiKeyWithResponse request
-	CreateTeamApiKeyWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*CreateTeamApiKeyResponse, error)
+	// CreateTeamAPIKeyWithBodyWithResponse request with any body
+	CreateTeamAPIKeyWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamAPIKeyResponse, error)
 
-	// DeleteTeamApiKeyWithResponse request
-	DeleteTeamApiKeyWithResponse(ctx context.Context, teamName TeamName, apiKeyName ApiKeyName, reqEditors ...RequestEditorFn) (*DeleteTeamApiKeyResponse, error)
+	CreateTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamAPIKeyResponse, error)
+
+	// DeleteTeamAPIKeyWithResponse request
+	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
 
 	// ListTeamInvitationsWithResponse request
 	ListTeamInvitationsWithResponse(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*ListTeamInvitationsResponse, error)
@@ -3066,6 +3193,9 @@ type ClientWithResponsesInterface interface {
 	// GetTeamMembershipsWithResponse request
 	GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error)
 
+	// DeletePluginsByTeamWithResponse request
+	DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error)
+
 	// ListPluginsByTeamWithResponse request
 	ListPluginsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*ListPluginsByTeamResponse, error)
 
@@ -3077,6 +3207,11 @@ type ClientWithResponsesInterface interface {
 
 	// GetCurrentUserWithResponse request
 	GetCurrentUserWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCurrentUserResponse, error)
+
+	// UpdateCurrentUserWithBodyWithResponse request with any body
+	UpdateCurrentUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCurrentUserResponse, error)
+
+	UpdateCurrentUserWithResponse(ctx context.Context, body UpdateCurrentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCurrentUserResponse, error)
 
 	// ListCurrentUserInvitationsWithResponse request
 	ListCurrentUserInvitationsWithResponse(ctx context.Context, params *ListCurrentUserInvitationsParams, reqEditors ...RequestEditorFn) (*ListCurrentUserInvitationsResponse, error)
@@ -3153,32 +3288,6 @@ func (r CreatePluginResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreatePluginResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type DeletePluginsByTeamResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r DeletePluginsByTeamResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r DeletePluginsByTeamResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -3647,6 +3756,8 @@ type CreateTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *Team
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
@@ -3721,11 +3832,11 @@ func (r UpdateTeamResponse) StatusCode() int {
 	return 0
 }
 
-type ListTeamApiKeysResponse struct {
+type ListTeamAPIKeysResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Items    []ApiKey     `json:"items"`
+		Items    []APIKey     `json:"items"`
 		Metadata ListMetadata `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
@@ -3733,7 +3844,7 @@ type ListTeamApiKeysResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r ListTeamApiKeysResponse) Status() string {
+func (r ListTeamAPIKeysResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -3741,23 +3852,24 @@ func (r ListTeamApiKeysResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r ListTeamApiKeysResponse) StatusCode() int {
+func (r ListTeamAPIKeysResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type CreateTeamApiKeyResponse struct {
+type CreateTeamAPIKeyResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *ApiKey
+	JSON201      *APIKey
 	JSON401      *RequiresAuthentication
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
-func (r CreateTeamApiKeyResponse) Status() string {
+func (r CreateTeamAPIKeyResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -3765,22 +3877,24 @@ func (r CreateTeamApiKeyResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r CreateTeamApiKeyResponse) StatusCode() int {
+func (r CreateTeamAPIKeyResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type DeleteTeamApiKeyResponse struct {
+type DeleteTeamAPIKeyResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
-func (r DeleteTeamApiKeyResponse) Status() string {
+func (r DeleteTeamAPIKeyResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -3788,7 +3902,7 @@ func (r DeleteTeamApiKeyResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r DeleteTeamApiKeyResponse) StatusCode() int {
+func (r DeleteTeamAPIKeyResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -3928,6 +4042,32 @@ func (r GetTeamMembershipsResponse) StatusCode() int {
 	return 0
 }
 
+type DeletePluginsByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePluginsByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePluginsByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListPluginsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -4034,6 +4174,33 @@ func (r GetCurrentUserResponse) StatusCode() int {
 	return 0
 }
 
+type UpdateCurrentUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *User
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON405      *MethodNotAllowed
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateCurrentUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateCurrentUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListCurrentUserInvitationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -4121,15 +4288,6 @@ func (c *ClientWithResponses) CreatePluginWithResponse(ctx context.Context, body
 		return nil, err
 	}
 	return ParseCreatePluginResponse(rsp)
-}
-
-// DeletePluginsByTeamWithResponse request returning *DeletePluginsByTeamResponse
-func (c *ClientWithResponses) DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error) {
-	rsp, err := c.DeletePluginsByTeam(ctx, teamName, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeletePluginsByTeamResponse(rsp)
 }
 
 // DeletePluginByTeamAndPluginNameWithResponse request returning *DeletePluginByTeamAndPluginNameResponse
@@ -4384,31 +4542,39 @@ func (c *ClientWithResponses) UpdateTeamWithResponse(ctx context.Context, teamNa
 	return ParseUpdateTeamResponse(rsp)
 }
 
-// ListTeamApiKeysWithResponse request returning *ListTeamApiKeysResponse
-func (c *ClientWithResponses) ListTeamApiKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamApiKeysParams, reqEditors ...RequestEditorFn) (*ListTeamApiKeysResponse, error) {
-	rsp, err := c.ListTeamApiKeys(ctx, teamName, params, reqEditors...)
+// ListTeamAPIKeysWithResponse request returning *ListTeamAPIKeysResponse
+func (c *ClientWithResponses) ListTeamAPIKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*ListTeamAPIKeysResponse, error) {
+	rsp, err := c.ListTeamAPIKeys(ctx, teamName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseListTeamApiKeysResponse(rsp)
+	return ParseListTeamAPIKeysResponse(rsp)
 }
 
-// CreateTeamApiKeyWithResponse request returning *CreateTeamApiKeyResponse
-func (c *ClientWithResponses) CreateTeamApiKeyWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*CreateTeamApiKeyResponse, error) {
-	rsp, err := c.CreateTeamApiKey(ctx, teamName, reqEditors...)
+// CreateTeamAPIKeyWithBodyWithResponse request with arbitrary body returning *CreateTeamAPIKeyResponse
+func (c *ClientWithResponses) CreateTeamAPIKeyWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamAPIKeyResponse, error) {
+	rsp, err := c.CreateTeamAPIKeyWithBody(ctx, teamName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseCreateTeamApiKeyResponse(rsp)
+	return ParseCreateTeamAPIKeyResponse(rsp)
 }
 
-// DeleteTeamApiKeyWithResponse request returning *DeleteTeamApiKeyResponse
-func (c *ClientWithResponses) DeleteTeamApiKeyWithResponse(ctx context.Context, teamName TeamName, apiKeyName ApiKeyName, reqEditors ...RequestEditorFn) (*DeleteTeamApiKeyResponse, error) {
-	rsp, err := c.DeleteTeamApiKey(ctx, teamName, apiKeyName, reqEditors...)
+func (c *ClientWithResponses) CreateTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamAPIKeyResponse, error) {
+	rsp, err := c.CreateTeamAPIKey(ctx, teamName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseDeleteTeamApiKeyResponse(rsp)
+	return ParseCreateTeamAPIKeyResponse(rsp)
+}
+
+// DeleteTeamAPIKeyWithResponse request returning *DeleteTeamAPIKeyResponse
+func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error) {
+	rsp, err := c.DeleteTeamAPIKey(ctx, teamName, aPIKeyName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTeamAPIKeyResponse(rsp)
 }
 
 // ListTeamInvitationsWithResponse request returning *ListTeamInvitationsResponse
@@ -4464,6 +4630,15 @@ func (c *ClientWithResponses) GetTeamMembershipsWithResponse(ctx context.Context
 	return ParseGetTeamMembershipsResponse(rsp)
 }
 
+// DeletePluginsByTeamWithResponse request returning *DeletePluginsByTeamResponse
+func (c *ClientWithResponses) DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error) {
+	rsp, err := c.DeletePluginsByTeam(ctx, teamName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePluginsByTeamResponse(rsp)
+}
+
 // ListPluginsByTeamWithResponse request returning *ListPluginsByTeamResponse
 func (c *ClientWithResponses) ListPluginsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*ListPluginsByTeamResponse, error) {
 	rsp, err := c.ListPluginsByTeam(ctx, teamName, params, reqEditors...)
@@ -4498,6 +4673,23 @@ func (c *ClientWithResponses) GetCurrentUserWithResponse(ctx context.Context, re
 		return nil, err
 	}
 	return ParseGetCurrentUserResponse(rsp)
+}
+
+// UpdateCurrentUserWithBodyWithResponse request with arbitrary body returning *UpdateCurrentUserResponse
+func (c *ClientWithResponses) UpdateCurrentUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCurrentUserResponse, error) {
+	rsp, err := c.UpdateCurrentUserWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCurrentUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateCurrentUserWithResponse(ctx context.Context, body UpdateCurrentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCurrentUserResponse, error) {
+	rsp, err := c.UpdateCurrentUser(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCurrentUserResponse(rsp)
 }
 
 // ListCurrentUserInvitationsWithResponse request returning *ListCurrentUserInvitationsResponse
@@ -4611,60 +4803,6 @@ func ParseCreatePluginResponse(rsp *http.Response) (*CreatePluginResponse, error
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseDeletePluginsByTeamResponse parses an HTTP response from a DeletePluginsByTeamWithResponse call
-func ParseDeletePluginsByTeamResponse(rsp *http.Response) (*DeletePluginsByTeamResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeletePluginsByTeamResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
@@ -5640,6 +5778,20 @@ func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5781,15 +5933,15 @@ func ParseUpdateTeamResponse(rsp *http.Response) (*UpdateTeamResponse, error) {
 	return response, nil
 }
 
-// ParseListTeamApiKeysResponse parses an HTTP response from a ListTeamApiKeysWithResponse call
-func ParseListTeamApiKeysResponse(rsp *http.Response) (*ListTeamApiKeysResponse, error) {
+// ParseListTeamAPIKeysResponse parses an HTTP response from a ListTeamAPIKeysWithResponse call
+func ParseListTeamAPIKeysResponse(rsp *http.Response) (*ListTeamAPIKeysResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &ListTeamApiKeysResponse{
+	response := &ListTeamAPIKeysResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -5797,7 +5949,7 @@ func ParseListTeamApiKeysResponse(rsp *http.Response) (*ListTeamApiKeysResponse,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Items    []ApiKey     `json:"items"`
+			Items    []APIKey     `json:"items"`
 			Metadata ListMetadata `json:"metadata"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5824,22 +5976,22 @@ func ParseListTeamApiKeysResponse(rsp *http.Response) (*ListTeamApiKeysResponse,
 	return response, nil
 }
 
-// ParseCreateTeamApiKeyResponse parses an HTTP response from a CreateTeamApiKeyWithResponse call
-func ParseCreateTeamApiKeyResponse(rsp *http.Response) (*CreateTeamApiKeyResponse, error) {
+// ParseCreateTeamAPIKeyResponse parses an HTTP response from a CreateTeamAPIKeyWithResponse call
+func ParseCreateTeamAPIKeyResponse(rsp *http.Response) (*CreateTeamAPIKeyResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &CreateTeamApiKeyResponse{
+	response := &CreateTeamAPIKeyResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest ApiKey
+		var dest APIKey
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -5851,6 +6003,13 @@ func ParseCreateTeamApiKeyResponse(rsp *http.Response) (*CreateTeamApiKeyRespons
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5864,15 +6023,15 @@ func ParseCreateTeamApiKeyResponse(rsp *http.Response) (*CreateTeamApiKeyRespons
 	return response, nil
 }
 
-// ParseDeleteTeamApiKeyResponse parses an HTTP response from a DeleteTeamApiKeyWithResponse call
-func ParseDeleteTeamApiKeyResponse(rsp *http.Response) (*DeleteTeamApiKeyResponse, error) {
+// ParseDeleteTeamAPIKeyResponse parses an HTTP response from a DeleteTeamAPIKeyWithResponse call
+func ParseDeleteTeamAPIKeyResponse(rsp *http.Response) (*DeleteTeamAPIKeyResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &DeleteTeamApiKeyResponse{
+	response := &DeleteTeamAPIKeyResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -5884,6 +6043,20 @@ func ParseDeleteTeamApiKeyResponse(rsp *http.Response) (*DeleteTeamApiKeyRespons
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6152,6 +6325,60 @@ func ParseGetTeamMembershipsResponse(rsp *http.Response) (*GetTeamMembershipsRes
 	return response, nil
 }
 
+// ParseDeletePluginsByTeamResponse parses an HTTP response from a DeletePluginsByTeamWithResponse call
+func ParseDeletePluginsByTeamResponse(rsp *http.Response) (*DeletePluginsByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePluginsByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListPluginsByTeamResponse parses an HTTP response from a ListPluginsByTeamWithResponse call
 func ParseListPluginsByTeamResponse(rsp *http.Response) (*ListPluginsByTeamResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -6333,6 +6560,67 @@ func ParseGetCurrentUserResponse(rsp *http.Response) (*GetCurrentUserResponse, e
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateCurrentUserResponse parses an HTTP response from a UpdateCurrentUserWithResponse call
+func ParseUpdateCurrentUserResponse(rsp *http.Response) (*UpdateCurrentUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateCurrentUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
