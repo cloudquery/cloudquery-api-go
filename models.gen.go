@@ -5,6 +5,8 @@ package cloudquery_api
 
 import (
 	"time"
+
+	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 )
 
 const (
@@ -82,6 +84,12 @@ const (
 	CreateTeamAPIKeyJSONBodyScopeReadWrite CreateTeamAPIKeyJSONBodyScope = "read-write"
 )
 
+// Defines values for EmailTeamInvitationJSONBodyRole.
+const (
+	Admin  EmailTeamInvitationJSONBodyRole = "admin"
+	Member EmailTeamInvitationJSONBodyRole = "member"
+)
+
 // APIKey API Key to interact with CloudQuery Cloud under specific team
 type APIKey struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -101,6 +109,14 @@ type APIKey struct {
 // APIKeyScope Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.
 type APIKeyScope string
 
+// BadRequestError defines model for BadRequestError.
+type BadRequestError struct {
+	Errors      *[]string          `json:"errors,omitempty"`
+	FieldErrors *map[string]string `json:"field_errors,omitempty"`
+	Message     string             `json:"message"`
+	Status      int                `json:"status"`
+}
+
 // BasicError Basic Error
 type BasicError struct {
 	Message string `json:"message"`
@@ -108,7 +124,7 @@ type BasicError struct {
 }
 
 // Email defines model for Email.
-type Email = string
+type Email = openapi_types.Email
 
 // ImageURL defines model for ImageURL.
 type ImageURL struct {
@@ -457,14 +473,6 @@ type User struct {
 // UserName The unique name for the user.
 type UserName = string
 
-// ValidationError defines model for ValidationError.
-type ValidationError struct {
-	Errors      *[]string          `json:"errors,omitempty"`
-	FieldErrors *map[string]string `json:"field_errors,omitempty"`
-	Message     string             `json:"message"`
-	Status      int                `json:"status"`
-}
-
 // VersionName The version in semantic version format.
 type VersionName = string
 
@@ -492,6 +500,9 @@ type TargetName = string
 // VersionSortBy defines model for version_sort_by.
 type VersionSortBy string
 
+// BadRequest defines model for BadRequest.
+type BadRequest = BadRequestError
+
 // Forbidden Basic Error
 type Forbidden = BasicError
 
@@ -506,9 +517,6 @@ type NotFound = BasicError
 
 // RequiresAuthentication Basic Error
 type RequiresAuthentication = BasicError
-
-// UnprocessableEntity defines model for UnprocessableEntity.
-type UnprocessableEntity = ValidationError
 
 // ListPluginsParams defines parameters for ListPlugins.
 type ListPluginsParams struct {
@@ -658,9 +666,12 @@ type ListTeamInvitationsParams struct {
 
 // EmailTeamInvitationJSONBody defines parameters for EmailTeamInvitation.
 type EmailTeamInvitationJSONBody struct {
-	Email string `json:"email"`
-	Role  string `json:"role"`
+	Email openapi_types.Email             `json:"email"`
+	Role  EmailTeamInvitationJSONBodyRole `json:"role"`
 }
+
+// EmailTeamInvitationJSONBodyRole defines parameters for EmailTeamInvitation.
+type EmailTeamInvitationJSONBodyRole string
 
 // GetTeamMembershipsParams defines parameters for GetTeamMemberships.
 type GetTeamMembershipsParams struct {

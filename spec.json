@@ -183,11 +183,11 @@
             },
             "description": "Created"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -276,11 +276,11 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -305,6 +305,9 @@
           "204": {
             "description": "Response"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -313,9 +316,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -474,6 +474,8 @@
                 "properties": {
                   "message": {
                     "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30000,
                     "description": "A message describing what's new or changed in this version.\nThis message will be displayed to users in the plugin's changelog.\nSupports limited markdown syntax.\n"
                   },
                   "protocols": {
@@ -536,14 +538,14 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -591,6 +593,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -599,9 +604,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -736,6 +738,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -744,9 +749,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -797,6 +799,9 @@
           "204": {
             "description": "The resource was deleted successfully."
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -805,9 +810,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -941,6 +943,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -949,9 +954,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1002,6 +1004,9 @@
           "204": {
             "description": "The resource was deleted successfully."
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1010,9 +1015,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1222,9 +1224,6 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
-          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -1254,7 +1253,9 @@
                   },
                   "display_name": {
                     "type": "string",
-                    "description": "The team's display name"
+                    "description": "The team's display name",
+                    "minLength": 1,
+                    "maxLength": 255
                   }
                 }
               }
@@ -1272,14 +1273,14 @@
             },
             "description": "Created"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1310,6 +1311,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1318,9 +1322,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1365,6 +1366,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1373,9 +1377,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1455,7 +1456,6 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "security": [],
         "tags": [
           "plugins"
         ]
@@ -1472,6 +1472,9 @@
           "204": {
             "description": "Response"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1480,9 +1483,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1550,6 +1550,9 @@
             },
             "description": "Response"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1558,9 +1561,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1647,10 +1647,15 @@
                 ],
                 "properties": {
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "email"
                   },
                   "role": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "admin",
+                      "member"
+                    ]
                   }
                 }
               }
@@ -1668,11 +1673,11 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1744,6 +1749,9 @@
           "204": {
             "description": "Response"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1752,9 +1760,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1802,6 +1807,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1810,9 +1818,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1867,7 +1872,9 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "The user's name"
+                    "description": "The user's name",
+                    "minLength": 1,
+                    "maxLength": 255
                   }
                 }
               }
@@ -1885,6 +1892,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -1893,9 +1903,6 @@
           },
           "405": {
             "$ref": "#/components/responses/MethodNotAllowed"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -2096,7 +2103,8 @@
                 ],
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                   },
                   "expires_at": {
                     "type": "string",
@@ -2125,11 +2133,11 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -2156,14 +2164,14 @@
           "204": {
             "description": "Deleted"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -2288,6 +2296,8 @@
           "display_name": {
             "description": "The plugin's display name",
             "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
             "example": "AWS Source Plugin"
           },
           "official": {
@@ -2300,6 +2310,8 @@
           },
           "short_description": {
             "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
             "example": "Sync data from AWS to any destination"
           },
           "tier": {
@@ -2365,11 +2377,15 @@
           },
           "display_name": {
             "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
             "description": "The plugin's display name, as shown in the CloudQuery Hub.",
             "example": "AWS Source Plugin"
           },
           "short_description": {
             "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
             "description": "Short description of the plugin. This will be shown in the CloudQuery Hub.",
             "example": "Sync data from AWS to any destination"
           },
@@ -2394,7 +2410,7 @@
           }
         }
       },
-      "ValidationError": {
+      "BadRequestError": {
         "allOf": [
           {
             "$ref": "#/components/schemas/BasicError"
@@ -2436,11 +2452,15 @@
           },
           "display_name": {
             "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
             "description": "The plugin's display name, as shown in the CloudQuery Hub.",
             "example": "AWS Source Plugin"
           },
           "short_description": {
             "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
             "description": "Short description of the plugin. This will be shown in the CloudQuery Hub.",
             "example": "Sync data from AWS to any destination"
           },
@@ -2896,7 +2916,8 @@
       },
       "Email": {
         "type": "string",
-        "example": "user@cloudquery.io"
+        "example": "user@cloudquery.io",
+        "format": "email"
       },
       "UserName": {
         "description": "The unique name for the user.",
@@ -3056,15 +3077,15 @@
         },
         "description": "Forbidden"
       },
-      "UnprocessableEntity": {
+      "BadRequest": {
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ValidationError"
+              "$ref": "#/components/schemas/BadRequestError"
             }
           }
         },
-        "description": "Unprocessable Entity"
+        "description": "Bad request"
       },
       "NotFound": {
         "content": {
@@ -3212,7 +3233,9 @@
         "required": true,
         "schema": {
           "type": "string",
-          "example": "cli-api-key"
+          "example": "cli-api-key",
+          "maxLength": 255,
+          "minLength": 1
         },
         "x-go-name": "APIKeyName"
       }
