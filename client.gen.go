@@ -3385,8 +3385,8 @@ type CreatePluginResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *Plugin
+	JSON400      *BadRequest
 	JSON403      *Forbidden
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3409,10 +3409,10 @@ func (r CreatePluginResponse) StatusCode() int {
 type DeletePluginByTeamAndPluginNameResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3461,8 +3461,8 @@ type UpdatePluginResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Plugin
+	JSON400      *BadRequest
 	JSON403      *Forbidden
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3540,10 +3540,10 @@ type UpdatePluginVersionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *PluginVersion
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3568,9 +3568,9 @@ type CreatePluginVersionResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *PluginVersion
 	JSON201      *PluginVersion
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3643,10 +3643,10 @@ func (r UploadPluginAssetResponse) StatusCode() int {
 type DeletePluginVersionDocsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3701,10 +3701,10 @@ type CreatePluginVersionDocsResponse struct {
 	JSON201      *struct {
 		Names *[]PluginDocsPageName `json:"names,omitempty"`
 	}
+	JSON400 *BadRequest
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -3727,10 +3727,10 @@ func (r CreatePluginVersionDocsResponse) StatusCode() int {
 type DeletePluginVersionTablesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3785,10 +3785,10 @@ type CreatePluginVersionTablesResponse struct {
 	JSON201      *struct {
 		Names *[]PluginTableName `json:"names,omitempty"`
 	}
+	JSON400 *BadRequest
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -3844,7 +3844,6 @@ type ListTeamsResponse struct {
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -3868,9 +3867,9 @@ type CreateTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *Team
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3894,10 +3893,10 @@ type GetTeamByNameResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Team
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3921,10 +3920,10 @@ type UpdateTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Team
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3975,8 +3974,8 @@ type CreateTeamAPIKeyResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON201      *APIKey
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3999,9 +3998,9 @@ func (r CreateTeamAPIKeyResponse) StatusCode() int {
 type DeleteTeamAPIKeyResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -4052,8 +4051,8 @@ type EmailTeamInvitationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Invitation
+	JSON400      *BadRequest
 	JSON403      *Forbidden
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -4101,10 +4100,10 @@ func (r AcceptTeamInvitationResponse) StatusCode() int {
 type CancelTeamInvitationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -4131,10 +4130,10 @@ type GetTeamMembershipsResponse struct {
 		Items    []Membership `json:"items"`
 		Metadata ListMetadata `json:"metadata"`
 	}
+	JSON400 *BadRequest
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -4157,10 +4156,10 @@ func (r GetTeamMembershipsResponse) StatusCode() int {
 type DeletePluginsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -4215,10 +4214,10 @@ type ListUsersByTeamResponse struct {
 		Items    []User       `json:"items"`
 		Metadata ListMetadata `json:"metadata"`
 	}
+	JSON400 *BadRequest
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -4290,10 +4289,10 @@ type UpdateCurrentUserResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *User
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON405      *MethodNotAllowed
-	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -4909,19 +4908,19 @@ func ParseCreatePluginResponse(rsp *http.Response) (*CreatePluginResponse, error
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Forbidden
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -4949,6 +4948,13 @@ func ParseDeletePluginByTeamAndPluginNameResponse(rsp *http.Response) (*DeletePl
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -4969,13 +4975,6 @@ func ParseDeletePluginByTeamAndPluginNameResponse(rsp *http.Response) (*DeletePl
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5057,19 +5056,19 @@ func ParseUpdatePluginResponse(rsp *http.Response) (*UpdatePluginResponse, error
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Forbidden
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5208,6 +5207,13 @@ func ParseUpdatePluginVersionResponse(rsp *http.Response) (*UpdatePluginVersionR
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5228,13 +5234,6 @@ func ParseUpdatePluginVersionResponse(rsp *http.Response) (*UpdatePluginVersionR
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5276,6 +5275,13 @@ func ParseCreatePluginVersionResponse(rsp *http.Response) (*CreatePluginVersionR
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5289,13 +5295,6 @@ func ParseCreatePluginVersionResponse(rsp *http.Response) (*CreatePluginVersionR
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5417,6 +5416,13 @@ func ParseDeletePluginVersionDocsResponse(rsp *http.Response) (*DeletePluginVers
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5437,13 +5443,6 @@ func ParseDeletePluginVersionDocsResponse(rsp *http.Response) (*DeletePluginVers
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5537,6 +5536,13 @@ func ParseCreatePluginVersionDocsResponse(rsp *http.Response) (*CreatePluginVers
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5557,13 +5563,6 @@ func ParseCreatePluginVersionDocsResponse(rsp *http.Response) (*CreatePluginVers
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5591,6 +5590,13 @@ func ParseDeletePluginVersionTablesResponse(rsp *http.Response) (*DeletePluginVe
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5611,13 +5617,6 @@ func ParseDeletePluginVersionTablesResponse(rsp *http.Response) (*DeletePluginVe
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5711,6 +5710,13 @@ func ParseCreatePluginVersionTablesResponse(rsp *http.Response) (*CreatePluginVe
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5731,13 +5737,6 @@ func ParseCreatePluginVersionTablesResponse(rsp *http.Response) (*CreatePluginVe
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5850,13 +5849,6 @@ func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
 		}
 		response.JSON404 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5890,6 +5882,13 @@ func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5903,13 +5902,6 @@ func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5944,6 +5936,13 @@ func ParseGetTeamByNameResponse(rsp *http.Response) (*GetTeamByNameResponse, err
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5964,13 +5963,6 @@ func ParseGetTeamByNameResponse(rsp *http.Response) (*GetTeamByNameResponse, err
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6005,6 +5997,13 @@ func ParseUpdateTeamResponse(rsp *http.Response) (*UpdateTeamResponse, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6025,13 +6024,6 @@ func ParseUpdateTeamResponse(rsp *http.Response) (*UpdateTeamResponse, error) {
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6109,19 +6101,19 @@ func ParseCreateTeamAPIKeyResponse(rsp *http.Response) (*CreateTeamAPIKeyRespons
 		}
 		response.JSON201 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6149,6 +6141,13 @@ func ParseDeleteTeamAPIKeyResponse(rsp *http.Response) (*DeleteTeamAPIKeyRespons
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6162,13 +6161,6 @@ func ParseDeleteTeamAPIKeyResponse(rsp *http.Response) (*DeleteTeamAPIKeyRespons
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6246,19 +6238,19 @@ func ParseEmailTeamInvitationResponse(rsp *http.Response) (*EmailTeamInvitationR
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Forbidden
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6333,6 +6325,13 @@ func ParseCancelTeamInvitationResponse(rsp *http.Response) (*CancelTeamInvitatio
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6353,13 +6352,6 @@ func ParseCancelTeamInvitationResponse(rsp *http.Response) (*CancelTeamInvitatio
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6397,6 +6389,13 @@ func ParseGetTeamMembershipsResponse(rsp *http.Response) (*GetTeamMembershipsRes
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6417,13 +6416,6 @@ func ParseGetTeamMembershipsResponse(rsp *http.Response) (*GetTeamMembershipsRes
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6451,6 +6443,13 @@ func ParseDeletePluginsByTeamResponse(rsp *http.Response) (*DeletePluginsByTeamR
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6471,13 +6470,6 @@ func ParseDeletePluginsByTeamResponse(rsp *http.Response) (*DeletePluginsByTeamR
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6565,6 +6557,13 @@ func ParseListUsersByTeamResponse(rsp *http.Response) (*ListUsersByTeamResponse,
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6585,13 +6584,6 @@ func ParseListUsersByTeamResponse(rsp *http.Response) (*ListUsersByTeamResponse,
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6706,6 +6698,13 @@ func ParseUpdateCurrentUserResponse(rsp *http.Response) (*UpdateCurrentUserRespo
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -6726,13 +6725,6 @@ func ParseUpdateCurrentUserResponse(rsp *http.Response) (*UpdateCurrentUserRespo
 			return nil, err
 		}
 		response.JSON405 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
