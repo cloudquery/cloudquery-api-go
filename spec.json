@@ -146,9 +146,6 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -227,8 +224,8 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -239,7 +236,7 @@
           "plugins"
         ]
       },
-      "put": {
+      "patch": {
         "description": "Update a plugin",
         "operationId": "UpdatePlugin",
         "tags": [
@@ -281,6 +278,9 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -382,8 +382,8 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -397,7 +397,7 @@
     },
     "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}": {
       "get": {
-        "description": "Get details about a given plugin version. Use `latest` as version to get the latest version.",
+        "description": "Get details about a given plugin version.",
         "operationId": "GetPluginVersion",
         "parameters": [
           {
@@ -599,9 +599,6 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
@@ -666,9 +663,6 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -872,9 +866,6 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
@@ -1065,9 +1056,6 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
@@ -1115,9 +1103,6 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -1402,7 +1387,7 @@
             "$ref": "#/components/parameters/per_page"
           },
           {
-            "$ref": "#/components/parameters/include_unlisted"
+            "$ref": "#/components/parameters/include_private"
           }
         ],
         "responses": {
@@ -2111,11 +2096,7 @@
                     "format": "date-time"
                   },
                   "scope": {
-                    "type": "string",
-                    "enum": [
-                      "read-only",
-                      "read-write"
-                    ]
+                    "$ref": "#/components/schemas/APIKeyScope"
                   }
                 }
               }
@@ -2317,8 +2298,8 @@
           "tier": {
             "$ref": "#/components/schemas/PluginTier"
           },
-          "listed": {
-            "description": "True if the plugin is publicly listed, false otherwise",
+          "public": {
+            "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.",
             "type": "boolean"
           }
         },
@@ -2357,7 +2338,8 @@
           "tier",
           "display_name",
           "short_description",
-          "logo"
+          "logo",
+          "public"
         ],
         "properties": {
           "team_name": {
@@ -2397,11 +2379,10 @@
             "type": "string",
             "example": "https://github.com/cloudquery/cloudquery"
           },
-          "source": {
-            "type": "boolean"
-          },
-          "destination": {
-            "type": "boolean"
+          "public": {
+            "type": "boolean",
+            "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the team.",
+            "example": true
           },
           "logo": {
             "type": "string",
@@ -2436,13 +2417,6 @@
       },
       "PluginUpdate": {
         "type": "object",
-        "required": [
-          "category",
-          "tier",
-          "display_name",
-          "short_description",
-          "logo"
-        ],
         "properties": {
           "category": {
             "$ref": "#/components/schemas/PluginCategory"
@@ -2477,9 +2451,9 @@
             "description": "URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...",
             "example": "https://images.cloudquery.io/logos/aws.png"
           },
-          "listed": {
+          "public": {
             "type": "boolean",
-            "description": "If plugin is not listed, it won't be visible or accessible in the registry."
+            "description": "If plugin is not public, it won't be visible to other teams in the CloudQuery Hub."
           }
         }
       },
@@ -2529,7 +2503,7 @@
           },
           "retracted": {
             "type": "boolean",
-            "description": "If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version."
+            "description": "If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use."
           },
           "protocols": {
             "type": "array",
@@ -2587,7 +2561,7 @@
           },
           "retracted": {
             "type": "boolean",
-            "description": "If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version."
+            "description": "If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use."
           },
           "protocols": {
             "type": "array",
@@ -2999,11 +2973,18 @@
           }
         }
       },
+      "APIKeyName": {
+        "description": "Name of the API key",
+        "type": "string",
+        "example": "cli-api-key",
+        "maxLength": 255,
+        "minLength": 1,
+        "pattern": "^[a-zA-Z0-9-]+$"
+      },
       "APIKeyScope": {
-        "description": "Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.",
+        "description": "Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins",
         "type": "string",
         "enum": [
-          "read-only",
           "read-and-write"
         ]
       },
@@ -3017,8 +2998,7 @@
         ],
         "properties": {
           "name": {
-            "type": "string",
-            "example": "cli-api-key"
+            "$ref": "#/components/schemas/APIKeyName"
           },
           "created_by": {
             "$ref": "#/components/schemas/Email",
@@ -3067,16 +3047,6 @@
         },
         "description": "Requires authentication"
       },
-      "Forbidden": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/BasicError"
-            }
-          }
-        },
-        "description": "Forbidden"
-      },
       "BadRequest": {
         "content": {
           "application/json": {
@@ -3086,6 +3056,16 @@
           }
         },
         "description": "Bad request"
+      },
+      "Forbidden": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Forbidden"
       },
       "NotFound": {
         "content": {
@@ -3210,10 +3190,10 @@
           "type": "string"
         }
       },
-      "include_unlisted": {
-        "description": "Whether to include unlisted plugins",
+      "include_private": {
+        "description": "Whether to include private plugins",
         "in": "query",
-        "name": "include_unlisted",
+        "name": "include_private",
         "required": false,
         "schema": {
           "type": "boolean"
@@ -3235,9 +3215,10 @@
           "type": "string",
           "example": "cli-api-key",
           "maxLength": 255,
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]+$"
         },
-        "x-go-name": "APIKeyName"
+        "x-go-name": "APIKeyPathName"
       }
     }
   }

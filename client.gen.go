@@ -187,7 +187,7 @@ type ClientInterface interface {
 	CreateTeamAPIKey(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteTeamAPIKey request
-	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeamInvitations request
 	ListTeamInvitations(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -665,8 +665,8 @@ func (c *Client) CreateTeamAPIKey(ctx context.Context, teamName TeamName, body C
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyName)
+func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyPathName)
 	if err != nil {
 		return nil, err
 	}
@@ -1152,7 +1152,7 @@ func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginKind
 		return nil, err
 	}
 
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -2421,7 +2421,7 @@ func NewCreateTeamAPIKeyRequestWithBody(server string, teamName TeamName, conten
 }
 
 // NewDeleteTeamAPIKeyRequest generates requests for DeleteTeamAPIKey
-func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyName APIKeyName) (*http.Request, error) {
+func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyPathName APIKeyPathName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2433,7 +2433,7 @@ func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyName API
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "apikey_name", runtime.ParamLocationPath, aPIKeyName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "apikey_name", runtime.ParamLocationPath, aPIKeyPathName)
 	if err != nil {
 		return nil, err
 	}
@@ -2822,9 +2822,9 @@ func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListP
 
 		}
 
-		if params.IncludeUnlisted != nil {
+		if params.IncludePrivate != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "include_unlisted", runtime.ParamLocationQuery, *params.IncludeUnlisted); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "include_private", runtime.ParamLocationQuery, *params.IncludePrivate); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -3286,7 +3286,7 @@ type ClientWithResponsesInterface interface {
 	CreateTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamAPIKeyResponse, error)
 
 	// DeleteTeamAPIKeyWithResponse request
-	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
+	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
 
 	// ListTeamInvitationsWithResponse request
 	ListTeamInvitationsWithResponse(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*ListTeamInvitationsResponse, error)
@@ -3361,7 +3361,6 @@ type ListPluginsResponse struct {
 		Metadata ListMetadata `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
 	JSON500 *InternalError
 }
 
@@ -3437,7 +3436,7 @@ type GetPluginResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *Plugin
 	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
+	JSON404      *NotFound
 	JSON500      *InternalError
 }
 
@@ -3463,6 +3462,7 @@ type UpdatePluginResponse struct {
 	JSON200      *Plugin
 	JSON400      *BadRequest
 	JSON403      *Forbidden
+	JSON404      *NotFound
 	JSON500      *InternalError
 }
 
@@ -3490,7 +3490,7 @@ type ListPluginVersionsResponse struct {
 		Metadata ListMetadata    `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
+	JSON404 *NotFound
 	JSON500 *InternalError
 }
 
@@ -3542,7 +3542,6 @@ type UpdatePluginVersionResponse struct {
 	JSON200      *PluginVersion
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON500      *InternalError
 }
@@ -3594,7 +3593,6 @@ type DownloadPluginAssetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON500      *InternalError
 }
@@ -3674,7 +3672,6 @@ type ListPluginVersionDocsResponse struct {
 		Metadata ListMetadata     `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
 	JSON404 *NotFound
 	JSON500 *InternalError
 }
@@ -3758,7 +3755,6 @@ type ListPluginVersionTablesResponse struct {
 		Metadata ListMetadata  `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
 	JSON404 *NotFound
 	JSON500 *InternalError
 }
@@ -3813,7 +3809,6 @@ type GetPluginVersionTableResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *PluginTableDetails
 	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON500      *InternalError
 }
@@ -4680,8 +4675,8 @@ func (c *ClientWithResponses) CreateTeamAPIKeyWithResponse(ctx context.Context, 
 }
 
 // DeleteTeamAPIKeyWithResponse request returning *DeleteTeamAPIKeyResponse
-func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyName APIKeyName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error) {
-	rsp, err := c.DeleteTeamAPIKey(ctx, teamName, aPIKeyName, reqEditors...)
+func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error) {
+	rsp, err := c.DeleteTeamAPIKey(ctx, teamName, aPIKeyPathName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4868,13 +4863,6 @@ func ParseListPluginsResponse(rsp *http.Response) (*ListPluginsResponse, error) 
 		}
 		response.JSON401 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5016,12 +5004,12 @@ func ParseGetPluginResponse(rsp *http.Response) (*GetPluginResponse, error) {
 		}
 		response.JSON401 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON403 = &dest
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5070,6 +5058,13 @@ func ParseUpdatePluginResponse(rsp *http.Response) (*UpdatePluginResponse, error
 		}
 		response.JSON403 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5113,12 +5108,12 @@ func ParseListPluginVersionsResponse(rsp *http.Response) (*ListPluginVersionsRes
 		}
 		response.JSON401 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON403 = &dest
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5221,13 +5216,6 @@ func ParseUpdatePluginVersionResponse(rsp *http.Response) (*UpdatePluginVersionR
 		}
 		response.JSON401 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5328,13 +5316,6 @@ func ParseDownloadPluginAssetResponse(rsp *http.Response) (*DownloadPluginAssetR
 			return nil, err
 		}
 		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
@@ -5486,13 +5467,6 @@ func ParseListPluginVersionDocsResponse(rsp *http.Response) (*ListPluginVersionD
 			return nil, err
 		}
 		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
@@ -5661,13 +5635,6 @@ func ParseListPluginVersionTablesResponse(rsp *http.Response) (*ListPluginVersio
 		}
 		response.JSON401 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5777,13 +5744,6 @@ func ParseGetPluginVersionTableResponse(rsp *http.Response) (*GetPluginVersionTa
 			return nil, err
 		}
 		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
