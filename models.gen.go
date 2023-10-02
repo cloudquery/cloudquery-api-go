@@ -15,8 +15,7 @@ const (
 
 // Defines values for APIKeyScope.
 const (
-	APIKeyScopeReadAndWrite APIKeyScope = "read-and-write"
-	APIKeyScopeReadOnly     APIKeyScope = "read-only"
+	ReadAndWrite APIKeyScope = "read-and-write"
 )
 
 // Defines values for PluginCategory.
@@ -78,12 +77,6 @@ const (
 	CreatePluginVersionJSONBodyPackageTypeNative CreatePluginVersionJSONBodyPackageType = "native"
 )
 
-// Defines values for CreateTeamAPIKeyJSONBodyScope.
-const (
-	CreateTeamAPIKeyJSONBodyScopeReadOnly  CreateTeamAPIKeyJSONBodyScope = "read-only"
-	CreateTeamAPIKeyJSONBodyScopeReadWrite CreateTeamAPIKeyJSONBodyScope = "read-write"
-)
-
 // Defines values for EmailTeamInvitationJSONBodyRole.
 const (
 	Admin  EmailTeamInvitationJSONBodyRole = "admin"
@@ -99,14 +92,19 @@ type APIKey struct {
 	ExpiresAt time.Time `json:"expires_at"`
 
 	// Key API key. Will be shown only in the response when creating the key.
-	Key  *string `json:"key,omitempty"`
-	Name string  `json:"name"`
+	Key *string `json:"key,omitempty"`
 
-	// Scope Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.
+	// Name Name of the API key
+	Name APIKeyName `json:"name"`
+
+	// Scope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
 	Scope APIKeyScope `json:"scope"`
 }
 
-// APIKeyScope Scope of permissions for the API key. `read-only` API keys are used for downloading a plugin while `read-write` API keys are used for uploading a plugin.
+// APIKeyName Name of the API key
+type APIKeyName = string
+
+// APIKeyScope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
 type APIKeyScope string
 
 // BadRequestError defines model for BadRequestError.
@@ -171,16 +169,16 @@ type Plugin struct {
 
 	// Kind The kind of plugin, ie. source or destination.
 	Kind PluginKind `json:"kind"`
-
-	// Listed True if the plugin is publicly listed, false otherwise
-	Listed *bool  `json:"listed,omitempty"`
-	Logo   string `json:"logo"`
+	Logo string     `json:"logo"`
 
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
 
 	// Official True if the plugin is maintained by CloudQuery, false otherwise
-	Official         bool    `json:"official"`
+	Official bool `json:"official"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
+	Public           *bool   `json:"public,omitempty"`
 	Repository       *string `json:"repository,omitempty"`
 	ShortDescription string  `json:"short_description"`
 
@@ -197,8 +195,7 @@ type PluginCategory string
 // PluginCreate defines model for PluginCreate.
 type PluginCreate struct {
 	// Category Supported categories for plugins
-	Category    PluginCategory `json:"category"`
-	Destination *bool          `json:"destination,omitempty"`
+	Category PluginCategory `json:"category"`
 
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
 	DisplayName string  `json:"display_name"`
@@ -211,12 +208,14 @@ type PluginCreate struct {
 	Logo string `json:"logo"`
 
 	// Name The unique name for the plugin.
-	Name       PluginName `json:"name"`
-	Repository *string    `json:"repository,omitempty"`
+	Name PluginName `json:"name"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the team.
+	Public     bool    `json:"public"`
+	Repository *string `json:"repository,omitempty"`
 
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription string `json:"short_description"`
-	Source           *bool  `json:"source,omitempty"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -363,24 +362,24 @@ type PluginTier string
 // PluginUpdate defines model for PluginUpdate.
 type PluginUpdate struct {
 	// Category Supported categories for plugins
-	Category PluginCategory `json:"category"`
+	Category *PluginCategory `json:"category,omitempty"`
 
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
-	DisplayName string  `json:"display_name"`
+	DisplayName *string `json:"display_name,omitempty"`
 	Homepage    *string `json:"homepage,omitempty"`
 
-	// Listed If plugin is not listed, it won't be visible or accessible in the registry.
-	Listed *bool `json:"listed,omitempty"`
-
 	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...
-	Logo       string  `json:"logo"`
+	Logo *string `json:"logo,omitempty"`
+
+	// Public If plugin is not public, it won't be visible to other teams in the CloudQuery Hub.
+	Public     *bool   `json:"public,omitempty"`
 	Repository *string `json:"repository,omitempty"`
 
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
-	ShortDescription string `json:"short_description"`
+	ShortDescription *string `json:"short_description,omitempty"`
 
 	// Tier Supported tiers for plugins
-	Tier PluginTier `json:"tier"`
+	Tier *PluginTier `json:"tier,omitempty"`
 }
 
 // PluginVersion CloudQuery Plugin Version
@@ -409,7 +408,7 @@ type PluginVersion struct {
 	// PublishedAt The date and time the plugin version was set to non-draft (published).
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 
-	// Retracted If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version.
+	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
 	Retracted bool `json:"retracted"`
 
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
@@ -436,7 +435,7 @@ type PluginVersionUpdate struct {
 	// Protocols The supported CloudQuery protocols by this plugin version
 	Protocols *[]int `json:"protocols,omitempty"`
 
-	// Retracted If a plugin version is retracted, assets will still be available for download, but will not be counted as the latest version.
+	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
 	Retracted        *bool     `json:"retracted,omitempty"`
 	SupportedTargets *[]string `json:"supported_targets,omitempty"`
 }
@@ -476,14 +475,14 @@ type UserName = string
 // VersionName The version in semantic version format.
 type VersionName = string
 
-// APIKeyName defines model for apikey_name.
-type APIKeyName = string
+// APIKeyPathName defines model for apikey_name.
+type APIKeyPathName = string
 
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
 
-// IncludeUnlisted defines model for include_unlisted.
-type IncludeUnlisted = bool
+// IncludePrivate defines model for include_private.
+type IncludePrivate = bool
 
 // Page defines model for page.
 type Page = int64
@@ -647,13 +646,12 @@ type ListTeamAPIKeysParams struct {
 
 // CreateTeamAPIKeyJSONBody defines parameters for CreateTeamAPIKey.
 type CreateTeamAPIKeyJSONBody struct {
-	ExpiresAt time.Time                      `json:"expires_at"`
-	Name      string                         `json:"name"`
-	Scope     *CreateTeamAPIKeyJSONBodyScope `json:"scope,omitempty"`
-}
+	ExpiresAt time.Time `json:"expires_at"`
+	Name      string    `json:"name"`
 
-// CreateTeamAPIKeyJSONBodyScope defines parameters for CreateTeamAPIKey.
-type CreateTeamAPIKeyJSONBodyScope string
+	// Scope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
+	Scope *APIKeyScope `json:"scope,omitempty"`
+}
 
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
 type ListTeamInvitationsParams struct {
@@ -690,8 +688,8 @@ type ListPluginsByTeamParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
-	// IncludeUnlisted Whether to include unlisted plugins
-	IncludeUnlisted *IncludeUnlisted `form:"include_unlisted,omitempty" json:"include_unlisted,omitempty"`
+	// IncludePrivate Whether to include private plugins
+	IncludePrivate *IncludePrivate `form:"include_private,omitempty" json:"include_private,omitempty"`
 }
 
 // ListUsersByTeamParams defines parameters for ListUsersByTeam.
