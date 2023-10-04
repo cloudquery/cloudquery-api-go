@@ -43,6 +43,9 @@
     },
     {
       "name": "healthcheck"
+    },
+    {
+      "name": "limits"
     }
   ],
   "paths": {
@@ -1458,6 +1461,9 @@
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -1527,17 +1533,12 @@
                   "properties": {
                     "items": {
                       "items": {
-                        "$ref": "#/components/schemas/Membership"
+                        "$ref": "#/components/schemas/MembershipWithUser"
                       },
                       "type": "array",
                       "example": [
                         {
                           "role": "admin",
-                          "team": {
-                            "created_at": "2017-07-14T16:53:42Z",
-                            "name": "cloudquery",
-                            "display_name": "CloudQuery"
-                          },
                           "user": {
                             "created_at": "2017-07-14T16:53:42Z",
                             "email": "user@clouduery.io",
@@ -1575,6 +1576,264 @@
         "tags": [
           "teams",
           "users"
+        ]
+      }
+    },
+    "/teams/{team_name}/monthly-limits": {
+      "get": {
+        "description": "List all monthly limits for the team.",
+        "operationId": "ListMonthlyLimitsByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of monthly limits for the team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/MonthlyLimit"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "limits"
+        ]
+      },
+      "post": {
+        "description": "Create a monthly limit for a plugin",
+        "operationId": "CreateMonthlyLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonthlyLimitCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New monthly limit created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "limits"
+        ]
+      }
+    },
+    "/teams/{team_name}/monthly-limits/{plugin_team}/{plugin_kind}/{plugin_name}": {
+      "get": {
+        "description": "Get a monthly limit for a plugin",
+        "operationId": "GetMonthlyLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Monthly limit retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "limits"
+        ]
+      },
+      "put": {
+        "description": "Update a monthly limit for a plugin",
+        "operationId": "UpdateMonthlyLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonthlyLimitUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Monthly limit updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyLimit"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "limits"
+        ]
+      },
+      "delete": {
+        "description": "Delete a monthly limit for a plugin",
+        "operationId": "DeleteMonthlyLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Monthly limit deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "limits"
         ]
       }
     },
@@ -1728,7 +1987,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Membership"
+                  "$ref": "#/components/schemas/MembershipWithTeam"
                 }
               }
             }
@@ -1738,7 +1997,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Membership"
+                  "$ref": "#/components/schemas/MembershipWithTeam"
                 }
               }
             }
@@ -2008,7 +2267,7 @@
                   "properties": {
                     "items": {
                       "items": {
-                        "$ref": "#/components/schemas/Membership"
+                        "$ref": "#/components/schemas/MembershipWithTeam"
                       },
                       "type": "array",
                       "example": [
@@ -2018,12 +2277,6 @@
                             "created_at": "2017-07-14T16:53:42Z",
                             "name": "cloudquery",
                             "display_name": "CloudQuery"
-                          },
-                          "user": {
-                            "created_at": "2017-07-14T16:53:42Z",
-                            "email": "user@clouduery.io",
-                            "name": "user",
-                            "updated_at": "2017-07-14T16:53:42Z"
                           }
                         }
                       ]
@@ -2433,31 +2686,7 @@
           }
         }
       },
-      "BadRequestError": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BasicError"
-          },
-          {
-            "properties": {
-              "errors": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              "field_errors": {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              }
-            },
-            "type": "object"
-          }
-        ]
-      },
-      "UnprocessableEntityError": {
+      "FieldError": {
         "allOf": [
           {
             "$ref": "#/components/schemas/BasicError"
@@ -2993,15 +3222,12 @@
         "title": "CloudQuery User",
         "type": "object"
       },
-      "Membership": {
+      "MembershipWithUser": {
         "additionalProperties": false,
         "properties": {
           "role": {
             "type": "string",
             "example": "admin"
-          },
-          "team": {
-            "$ref": "#/components/schemas/Team"
           },
           "user": {
             "$ref": "#/components/schemas/User"
@@ -3010,8 +3236,103 @@
         "required": [
           "role"
         ],
-        "title": "CloudQuery Team Membership",
+        "title": "CloudQuery User Membership",
         "type": "object"
+      },
+      "MonthlyLimit": {
+        "title": "CloudQuery Plugin Monthly Limit",
+        "description": "A configurable monthly limit for plugin usage.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "created_at",
+          "updated_at",
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name",
+          "usd"
+        ],
+        "properties": {
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the plugin limit was created."
+          },
+          "updated_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the plugin limit was last updated."
+          },
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "usd": {
+            "example": 1000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "The maximum USD amount the plugin is allowed to use within a calendar month.",
+            "x-go-name": "USD"
+          }
+        }
+      },
+      "MonthlyLimitCreate": {
+        "title": "CloudQuery Plugin Monthly Limit",
+        "description": "A configurable monthly limit for plugin usage.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name",
+          "usd"
+        ],
+        "properties": {
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "usd": {
+            "example": 1000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "The maximum USD amount the plugin is allowed to use within a calendar month.",
+            "x-go-name": "USD"
+          }
+        }
+      },
+      "MonthlyLimitUpdate": {
+        "title": "CloudQuery Plugin Monthly Limit",
+        "description": "A configurable monthly limit for plugin usage.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "usd"
+        ],
+        "properties": {
+          "usd": {
+            "example": 1000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "The maximum USD amount the plugin is allowed to use within a calendar month.",
+            "x-go-name": "USD"
+          }
+        }
       },
       "Invitation": {
         "additionalProperties": false,
@@ -3038,6 +3359,23 @@
             "type": "string"
           }
         }
+      },
+      "MembershipWithTeam": {
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "team": {
+            "$ref": "#/components/schemas/Team"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "title": "CloudQuery Team Membership",
+        "type": "object"
       },
       "InvitationWithToken": {
         "additionalProperties": false,
@@ -3138,7 +3476,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/BadRequestError"
+              "$ref": "#/components/schemas/FieldError"
             }
           }
         },
@@ -3148,7 +3486,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/BasicError"
+              "$ref": "#/components/schemas/FieldError"
             }
           }
         },
@@ -3158,7 +3496,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/UnprocessableEntityError"
+              "$ref": "#/components/schemas/FieldError"
             }
           }
         },
@@ -3304,6 +3642,14 @@
         "required": false,
         "schema": {
           "type": "boolean"
+        }
+      },
+      "plugin_team": {
+        "in": "path",
+        "name": "plugin_team",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/TeamName"
         }
       },
       "email": {

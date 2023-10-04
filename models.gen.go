@@ -107,14 +107,6 @@ type APIKeyName = string
 // APIKeyScope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
 type APIKeyScope string
 
-// BadRequestError defines model for BadRequestError.
-type BadRequestError struct {
-	Errors      *[]string          `json:"errors,omitempty"`
-	FieldErrors *map[string]string `json:"field_errors,omitempty"`
-	Message     string             `json:"message"`
-	Status      int                `json:"status"`
-}
-
 // BasicError Basic Error
 type BasicError struct {
 	Message string `json:"message"`
@@ -123,6 +115,14 @@ type BasicError struct {
 
 // Email defines model for Email.
 type Email = openapi_types.Email
+
+// FieldError defines model for FieldError.
+type FieldError struct {
+	Errors      *[]string          `json:"errors,omitempty"`
+	FieldErrors *map[string]string `json:"field_errors,omitempty"`
+	Message     string             `json:"message"`
+	Status      int                `json:"status"`
+}
 
 // ImageURL defines model for ImageURL.
 type ImageURL struct {
@@ -159,15 +159,62 @@ type ListMetadata struct {
 	TotalCount *int `json:"total_count,omitempty"`
 }
 
-// Membership defines model for Membership.
-type Membership struct {
+// MembershipWithTeam defines model for MembershipWithTeam.
+type MembershipWithTeam struct {
 	Role string `json:"role"`
 
 	// Team CloudQuery Team
 	Team *Team `json:"team,omitempty"`
+}
+
+// MembershipWithUser defines model for MembershipWithUser.
+type MembershipWithUser struct {
+	Role string `json:"role"`
 
 	// User CloudQuery User
 	User *User `json:"user,omitempty"`
+}
+
+// MonthlyLimit A configurable monthly limit for plugin usage.
+type MonthlyLimit struct {
+	// CreatedAt The date and time the plugin limit was created.
+	CreatedAt time.Time `json:"created_at"`
+
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind PluginKind `json:"plugin_kind"`
+
+	// PluginName The unique name for the plugin.
+	PluginName PluginName `json:"plugin_name"`
+
+	// PluginTeam The unique name for the team.
+	PluginTeam TeamName `json:"plugin_team"`
+
+	// UpdatedAt The date and time the plugin limit was last updated.
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// Usd The maximum USD amount the plugin is allowed to use within a calendar month.
+	USD int `json:"usd"`
+}
+
+// MonthlyLimitCreate A configurable monthly limit for plugin usage.
+type MonthlyLimitCreate struct {
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind PluginKind `json:"plugin_kind"`
+
+	// PluginName The unique name for the plugin.
+	PluginName PluginName `json:"plugin_name"`
+
+	// PluginTeam The unique name for the team.
+	PluginTeam TeamName `json:"plugin_team"`
+
+	// Usd The maximum USD amount the plugin is allowed to use within a calendar month.
+	USD int `json:"usd"`
+}
+
+// MonthlyLimitUpdate A configurable monthly limit for plugin usage.
+type MonthlyLimitUpdate struct {
+	// Usd The maximum USD amount the plugin is allowed to use within a calendar month.
+	USD int `json:"usd"`
 }
 
 // Plugin CloudQuery Plugin
@@ -472,14 +519,6 @@ type Team struct {
 // TeamName The unique name for the team.
 type TeamName = string
 
-// UnprocessableEntityError defines model for UnprocessableEntityError.
-type UnprocessableEntityError struct {
-	Errors      *[]string          `json:"errors,omitempty"`
-	FieldErrors *map[string]string `json:"field_errors,omitempty"`
-	Message     string             `json:"message"`
-	Status      int                `json:"status"`
-}
-
 // User CloudQuery User
 type User struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -514,6 +553,9 @@ type PerPage = int64
 // PluginSortBy defines model for plugin_sort_by.
 type PluginSortBy string
 
+// PluginTeam The unique name for the team.
+type PluginTeam = TeamName
+
 // TargetName defines model for target_name.
 type TargetName = string
 
@@ -521,10 +563,10 @@ type TargetName = string
 type VersionSortBy string
 
 // BadRequest defines model for BadRequest.
-type BadRequest = BadRequestError
+type BadRequest = FieldError
 
-// Forbidden Basic Error
-type Forbidden = BasicError
+// Forbidden defines model for Forbidden.
+type Forbidden = FieldError
 
 // InternalError Basic Error
 type InternalError = BasicError
@@ -542,7 +584,7 @@ type RequiresAuthentication = BasicError
 type TooManyRequests = BasicError
 
 // UnprocessableEntity defines model for UnprocessableEntity.
-type UnprocessableEntity = UnprocessableEntityError
+type UnprocessableEntity = FieldError
 
 // ListPluginsParams defines parameters for ListPlugins.
 type ListPluginsParams struct {
@@ -712,6 +754,15 @@ type GetTeamMembershipsParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
+// ListMonthlyLimitsByTeamParams defines parameters for ListMonthlyLimitsByTeam.
+type ListMonthlyLimitsByTeamParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
 // ListPluginsByTeamParams defines parameters for ListPluginsByTeam.
 type ListPluginsByTeamParams struct {
 	// Page Page number of the results to fetch
@@ -795,6 +846,12 @@ type EmailTeamInvitationJSONRequestBody EmailTeamInvitationJSONBody
 
 // AcceptTeamInvitationJSONRequestBody defines body for AcceptTeamInvitation for application/json ContentType.
 type AcceptTeamInvitationJSONRequestBody AcceptTeamInvitationJSONBody
+
+// CreateMonthlyLimitJSONRequestBody defines body for CreateMonthlyLimit for application/json ContentType.
+type CreateMonthlyLimitJSONRequestBody = MonthlyLimitCreate
+
+// UpdateMonthlyLimitJSONRequestBody defines body for UpdateMonthlyLimit for application/json ContentType.
+type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
 
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody UpdateCurrentUserJSONBody
