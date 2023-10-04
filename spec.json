@@ -186,6 +186,9 @@
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -381,6 +384,9 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -744,6 +750,9 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -804,6 +813,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -946,6 +958,9 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -1006,6 +1021,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1106,6 +1124,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1264,8 +1285,8 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1683,6 +1704,24 @@
             "$ref": "#/components/parameters/team_name"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "The invitation has been accepted and the authenticated user is now a member of the team.",
@@ -1928,7 +1967,7 @@
                     "items": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Invitation"
+                        "$ref": "#/components/schemas/InvitationWithToken"
                       }
                     },
                     "metadata": {
@@ -2119,6 +2158,9 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -2392,6 +2434,30 @@
         }
       },
       "BadRequestError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicError"
+          },
+          {
+            "properties": {
+              "errors": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "field_errors": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "UnprocessableEntityError": {
         "allOf": [
           {
             "$ref": "#/components/schemas/BasicError"
@@ -2973,6 +3039,27 @@
           }
         }
       },
+      "InvitationWithToken": {
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Invitation"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The token used to accept the invitation"
+              }
+            },
+            "required": [
+              "token"
+            ]
+          }
+        ]
+      },
       "APIKeyName": {
         "description": "Name of the API key",
         "type": "string",
@@ -3067,6 +3154,16 @@
         },
         "description": "Forbidden"
       },
+      "UnprocessableEntity": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UnprocessableEntityError"
+            }
+          }
+        },
+        "description": "UnprocessableEntity"
+      },
       "NotFound": {
         "content": {
           "application/json": {
@@ -3076,6 +3173,16 @@
           }
         },
         "description": "Resource not found"
+      },
+      "TooManyRequests": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Too Many Requests"
       },
       "MethodNotAllowed": {
         "content": {

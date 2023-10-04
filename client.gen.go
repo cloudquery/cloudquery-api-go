@@ -197,8 +197,10 @@ type ClientInterface interface {
 
 	EmailTeamInvitation(ctx context.Context, teamName TeamName, body EmailTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// AcceptTeamInvitation request
-	AcceptTeamInvitation(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// AcceptTeamInvitationWithBody request with any body
+	AcceptTeamInvitationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AcceptTeamInvitation(ctx context.Context, teamName TeamName, body AcceptTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CancelTeamInvitation request
 	CancelTeamInvitation(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -713,8 +715,20 @@ func (c *Client) EmailTeamInvitation(ctx context.Context, teamName TeamName, bod
 	return c.Client.Do(req)
 }
 
-func (c *Client) AcceptTeamInvitation(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAcceptTeamInvitationRequest(c.Server, teamName)
+func (c *Client) AcceptTeamInvitationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAcceptTeamInvitationRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AcceptTeamInvitation(ctx context.Context, teamName TeamName, body AcceptTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAcceptTeamInvitationRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2580,8 +2594,19 @@ func NewEmailTeamInvitationRequestWithBody(server string, teamName TeamName, con
 	return req, nil
 }
 
-// NewAcceptTeamInvitationRequest generates requests for AcceptTeamInvitation
-func NewAcceptTeamInvitationRequest(server string, teamName TeamName) (*http.Request, error) {
+// NewAcceptTeamInvitationRequest calls the generic AcceptTeamInvitation builder with application/json body
+func NewAcceptTeamInvitationRequest(server string, teamName TeamName, body AcceptTeamInvitationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAcceptTeamInvitationRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewAcceptTeamInvitationRequestWithBody generates requests for AcceptTeamInvitation with any type of body
+func NewAcceptTeamInvitationRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2606,10 +2631,12 @@ func NewAcceptTeamInvitationRequest(server string, teamName TeamName) (*http.Req
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -3296,8 +3323,10 @@ type ClientWithResponsesInterface interface {
 
 	EmailTeamInvitationWithResponse(ctx context.Context, teamName TeamName, body EmailTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*EmailTeamInvitationResponse, error)
 
-	// AcceptTeamInvitationWithResponse request
-	AcceptTeamInvitationWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error)
+	// AcceptTeamInvitationWithBodyWithResponse request with any body
+	AcceptTeamInvitationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error)
+
+	AcceptTeamInvitationWithResponse(ctx context.Context, teamName TeamName, body AcceptTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error)
 
 	// CancelTeamInvitationWithResponse request
 	CancelTeamInvitationWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*CancelTeamInvitationResponse, error)
@@ -3386,6 +3415,7 @@ type CreatePluginResponse struct {
 	JSON201      *Plugin
 	JSON400      *BadRequest
 	JSON403      *Forbidden
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3490,6 +3520,7 @@ type ListPluginVersionsResponse struct {
 		Metadata ListMetadata    `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
 	JSON404 *NotFound
 	JSON500 *InternalError
 }
@@ -3594,6 +3625,7 @@ type DownloadPluginAssetResponse struct {
 	HTTPResponse *http.Response
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
+	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
 
@@ -3645,6 +3677,7 @@ type DeletePluginVersionDocsResponse struct {
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3702,6 +3735,7 @@ type CreatePluginVersionDocsResponse struct {
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
+	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -3728,6 +3762,7 @@ type DeletePluginVersionTablesResponse struct {
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3785,6 +3820,7 @@ type CreatePluginVersionTablesResponse struct {
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
 	JSON404 *NotFound
+	JSON422 *UnprocessableEntity
 	JSON500 *InternalError
 }
 
@@ -3864,7 +3900,7 @@ type CreateTeamResponse struct {
 	JSON201      *Team
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -3971,6 +4007,7 @@ type CreateTeamAPIKeyResponse struct {
 	JSON201      *APIKey
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -4311,8 +4348,8 @@ type ListCurrentUserInvitationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Items    []Invitation `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
+		Items    []InvitationWithToken `json:"items"`
+		Metadata ListMetadata          `json:"metadata"`
 	}
 	JSON500 *InternalError
 }
@@ -4709,9 +4746,17 @@ func (c *ClientWithResponses) EmailTeamInvitationWithResponse(ctx context.Contex
 	return ParseEmailTeamInvitationResponse(rsp)
 }
 
-// AcceptTeamInvitationWithResponse request returning *AcceptTeamInvitationResponse
-func (c *ClientWithResponses) AcceptTeamInvitationWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error) {
-	rsp, err := c.AcceptTeamInvitation(ctx, teamName, reqEditors...)
+// AcceptTeamInvitationWithBodyWithResponse request with arbitrary body returning *AcceptTeamInvitationResponse
+func (c *ClientWithResponses) AcceptTeamInvitationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error) {
+	rsp, err := c.AcceptTeamInvitationWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAcceptTeamInvitationResponse(rsp)
+}
+
+func (c *ClientWithResponses) AcceptTeamInvitationWithResponse(ctx context.Context, teamName TeamName, body AcceptTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error) {
+	rsp, err := c.AcceptTeamInvitation(ctx, teamName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -4910,6 +4955,13 @@ func ParseCreatePluginResponse(rsp *http.Response) (*CreatePluginResponse, error
 		}
 		response.JSON403 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5107,6 +5159,13 @@ func ParseListPluginVersionsResponse(rsp *http.Response) (*ListPluginVersionsRes
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
@@ -5324,6 +5383,13 @@ func ParseDownloadPluginAssetResponse(rsp *http.Response) (*DownloadPluginAssetR
 		}
 		response.JSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5424,6 +5490,13 @@ func ParseDeletePluginVersionDocsResponse(rsp *http.Response) (*DeletePluginVers
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5538,6 +5611,13 @@ func ParseCreatePluginVersionDocsResponse(rsp *http.Response) (*CreatePluginVers
 		}
 		response.JSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -5591,6 +5671,13 @@ func ParseDeletePluginVersionTablesResponse(rsp *http.Response) (*DeletePluginVe
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5704,6 +5791,13 @@ func ParseCreatePluginVersionTablesResponse(rsp *http.Response) (*CreatePluginVe
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -5856,12 +5950,12 @@ func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
 		}
 		response.JSON401 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON403 = &dest
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6074,6 +6168,13 @@ func ParseCreateTeamAPIKeyResponse(rsp *http.Response) (*CreateTeamAPIKeyRespons
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -6714,8 +6815,8 @@ func ParseListCurrentUserInvitationsResponse(rsp *http.Response) (*ListCurrentUs
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Items    []Invitation `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
+			Items    []InvitationWithToken `json:"items"`
+			Metadata ListMetadata          `json:"metadata"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
