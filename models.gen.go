@@ -140,6 +140,19 @@ type Invitation struct {
 	TeamName TeamName `json:"team_name"`
 }
 
+// InvitationWithToken defines model for InvitationWithToken.
+type InvitationWithToken struct {
+	CreatedAt time.Time `json:"created_at"`
+	Email     Email     `json:"email"`
+	Role      string    `json:"role"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName `json:"team_name"`
+
+	// Token The token used to accept the invitation
+	Token openapi_types.UUID `json:"token"`
+}
+
 // ListMetadata defines model for ListMetadata.
 type ListMetadata struct {
 	LastPage   *int `json:"last_page,omitempty"`
@@ -459,6 +472,14 @@ type Team struct {
 // TeamName The unique name for the team.
 type TeamName = string
 
+// UnprocessableEntityError defines model for UnprocessableEntityError.
+type UnprocessableEntityError struct {
+	Errors      *[]string          `json:"errors,omitempty"`
+	FieldErrors *map[string]string `json:"field_errors,omitempty"`
+	Message     string             `json:"message"`
+	Status      int                `json:"status"`
+}
+
 // User CloudQuery User
 type User struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -516,6 +537,12 @@ type NotFound = BasicError
 
 // RequiresAuthentication Basic Error
 type RequiresAuthentication = BasicError
+
+// TooManyRequests Basic Error
+type TooManyRequests = BasicError
+
+// UnprocessableEntity defines model for UnprocessableEntity.
+type UnprocessableEntity = UnprocessableEntityError
 
 // ListPluginsParams defines parameters for ListPlugins.
 type ListPluginsParams struct {
@@ -671,6 +698,11 @@ type EmailTeamInvitationJSONBody struct {
 // EmailTeamInvitationJSONBodyRole defines parameters for EmailTeamInvitation.
 type EmailTeamInvitationJSONBodyRole string
 
+// AcceptTeamInvitationJSONBody defines parameters for AcceptTeamInvitation.
+type AcceptTeamInvitationJSONBody struct {
+	Token openapi_types.UUID `json:"token"`
+}
+
 // GetTeamMembershipsParams defines parameters for GetTeamMemberships.
 type GetTeamMembershipsParams struct {
 	// Page Page number of the results to fetch
@@ -760,6 +792,9 @@ type CreateTeamAPIKeyJSONRequestBody CreateTeamAPIKeyJSONBody
 
 // EmailTeamInvitationJSONRequestBody defines body for EmailTeamInvitation for application/json ContentType.
 type EmailTeamInvitationJSONRequestBody EmailTeamInvitationJSONBody
+
+// AcceptTeamInvitationJSONRequestBody defines body for AcceptTeamInvitation for application/json ContentType.
+type AcceptTeamInvitationJSONRequestBody AcceptTeamInvitationJSONBody
 
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody UpdateCurrentUserJSONBody
