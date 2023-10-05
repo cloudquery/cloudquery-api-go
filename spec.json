@@ -3011,6 +3011,51 @@
         "title": "CloudQuery Plugin Table",
         "type": "object"
       },
+      "PluginTableColumn": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Column",
+        "required": [
+          "description",
+          "incremental_key",
+          "name",
+          "not_null",
+          "primary_key",
+          "type",
+          "unique"
+        ],
+        "properties": {
+          "description": {
+            "description": "Description of the column",
+            "type": "string"
+          },
+          "incremental_key": {
+            "description": "Whether the column is used as an incremental key",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Name of the column",
+            "type": "string"
+          },
+          "not_null": {
+            "description": "Whether the column is nullable",
+            "type": "boolean"
+          },
+          "primary_key": {
+            "description": "Whether the column is part of the primary key",
+            "type": "boolean"
+          },
+          "type": {
+            "description": "Arrow Type of the column",
+            "type": "string"
+          },
+          "unique": {
+            "description": "Whether the column has a unique constraint",
+            "type": "boolean"
+          }
+        },
+        "title": "CloudQuery Plugin Table Column",
+        "type": "object"
+      },
       "PluginTableCreate": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Table",
@@ -3049,54 +3094,15 @@
             "description": "Title of the table",
             "type": "string",
             "example": "AWS S3 Buckets"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PluginTableColumn"
+            }
           }
         },
         "title": "CloudQuery Plugin Table",
-        "type": "object"
-      },
-      "PluginTableColumn": {
-        "additionalProperties": false,
-        "description": "CloudQuery Plugin Column",
-        "required": [
-          "description",
-          "incremental_key",
-          "name",
-          "not_null",
-          "primary_key",
-          "type",
-          "is_unique"
-        ],
-        "properties": {
-          "description": {
-            "description": "Description of the column",
-            "type": "string"
-          },
-          "incremental_key": {
-            "description": "Whether the column is used as an incremental key",
-            "type": "boolean"
-          },
-          "name": {
-            "description": "Name of the column",
-            "type": "string"
-          },
-          "not_null": {
-            "description": "Whether the column is nullable",
-            "type": "boolean"
-          },
-          "primary_key": {
-            "description": "Whether the column is part of the primary key",
-            "type": "boolean"
-          },
-          "type": {
-            "description": "Arrow Type of the column",
-            "type": "string"
-          },
-          "is_unique": {
-            "description": "Whether the column has a unique constraint",
-            "type": "boolean"
-          }
-        },
-        "title": "CloudQuery Plugin Table Column",
         "type": "object"
       },
       "PluginTableDetails": {
