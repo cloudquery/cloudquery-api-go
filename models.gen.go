@@ -352,9 +352,6 @@ type PluginTableColumn struct {
 	// IncrementalKey Whether the column is used as an incremental key
 	IncrementalKey bool `json:"incremental_key"`
 
-	// IsUnique Whether the column has a unique constraint
-	IsUnique bool `json:"is_unique"`
-
 	// Name Name of the column
 	Name string `json:"name"`
 
@@ -366,10 +363,15 @@ type PluginTableColumn struct {
 
 	// Type Arrow Type of the column
 	Type string `json:"type"`
+
+	// Unique Whether the column has a unique constraint
+	Unique bool `json:"unique"`
 }
 
 // PluginTableCreate CloudQuery Plugin Table
 type PluginTableCreate struct {
+	Columns *[]PluginTableColumn `json:"columns,omitempty"`
+
 	// Description Description of the table
 	Description *string `json:"description,omitempty"`
 
