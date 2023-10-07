@@ -224,8 +224,11 @@ type Plugin struct {
 	CreatedAt time.Time      `json:"created_at"`
 
 	// DisplayName The plugin's display name
-	DisplayName string  `json:"display_name"`
-	Homepage    *string `json:"homepage,omitempty"`
+	DisplayName string `json:"display_name"`
+
+	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	FreeRowsPerMonth int64   `json:"free_rows_per_month"`
+	Homepage         *string `json:"homepage,omitempty"`
 
 	// Kind The kind of plugin, ie. source or destination.
 	Kind PluginKind `json:"kind"`
@@ -247,6 +250,9 @@ type Plugin struct {
 
 	// Tier Supported tiers for plugins
 	Tier PluginTier `json:"tier"`
+
+	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	USDPerRow string `json:"usd_per_row"`
 }
 
 // PluginCategory Supported categories for plugins
@@ -258,8 +264,11 @@ type PluginCreate struct {
 	Category PluginCategory `json:"category"`
 
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
-	DisplayName string  `json:"display_name"`
-	Homepage    *string `json:"homepage,omitempty"`
+	DisplayName string `json:"display_name"`
+
+	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	FreeRowsPerMonth *int64  `json:"free_rows_per_month,omitempty"`
+	Homepage         *string `json:"homepage,omitempty"`
 
 	// Kind The kind of plugin, ie. source or destination.
 	Kind PluginKind `json:"kind"`
@@ -282,6 +291,9 @@ type PluginCreate struct {
 
 	// Tier Supported tiers for plugins
 	Tier PluginTier `json:"tier"`
+
+	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	USDPerRow *string `json:"usd_per_row,omitempty"`
 }
 
 // PluginDocsPage CloudQuery Plugin Documentation Page
@@ -428,7 +440,10 @@ type PluginUpdate struct {
 
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
 	DisplayName *string `json:"display_name,omitempty"`
-	Homepage    *string `json:"homepage,omitempty"`
+
+	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	FreeRowsPerMonth *int64  `json:"free_rows_per_month,omitempty"`
+	Homepage         *string `json:"homepage,omitempty"`
 
 	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...
 	Logo *string `json:"logo,omitempty"`
@@ -442,6 +457,9 @@ type PluginUpdate struct {
 
 	// Tier Supported tiers for plugins
 	Tier *PluginTier `json:"tier,omitempty"`
+
+	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	USDPerRow *string `json:"usd_per_row,omitempty"`
 }
 
 // PluginVersion CloudQuery Plugin Version
