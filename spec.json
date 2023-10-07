@@ -133,7 +133,9 @@
                           "official": true,
                           "short_description": "Sync data from AWS to any destination",
                           "repository": "https://github.com/cloudquery/cloudquery",
-                          "tier": "free"
+                          "tier": "paid",
+                          "usd_per_row": "0.00123",
+                          "free_rows_per_month": 10000
                         }
                       ]
                     },
@@ -287,6 +289,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -1443,7 +1448,9 @@
                           "official": true,
                           "short_description": "Sync data from AWS to any destination",
                           "repository": "https://github.com/cloudquery/cloudquery",
-                          "tier": "free"
+                          "tier": "paid",
+                          "usd_per_row": "0.00123",
+                          "free_rows_per_month": 10000
                         }
                       ]
                     },
@@ -2596,6 +2603,19 @@
           "public": {
             "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.",
             "type": "boolean"
+          },
+          "usd_per_row": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "example": "0.0001",
+            "x-go-name": "USDPerRow"
+          },
+          "free_rows_per_month": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The number of rows that can be synced for free each month.",
+            "example": 1000
           }
         },
         "required": [
@@ -2608,7 +2628,9 @@
           "display_name",
           "official",
           "short_description",
-          "tier"
+          "tier",
+          "usd_per_row",
+          "free_rows_per_month"
         ],
         "title": "CloudQuery Plugin",
         "type": "object"
@@ -2683,6 +2705,19 @@
             "type": "string",
             "description": "URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...",
             "example": "https://images.cloudquery.io/logos/aws.png"
+          },
+          "usd_per_row": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "example": "0.0001",
+            "x-go-name": "USDPerRow"
+          },
+          "free_rows_per_month": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The number of rows that can be synced for free each month.",
+            "example": 1000
           }
         }
       },
@@ -2749,6 +2784,19 @@
           "public": {
             "type": "boolean",
             "description": "If plugin is not public, it won't be visible to other teams in the CloudQuery Hub."
+          },
+          "usd_per_row": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "example": "0.0001",
+            "x-go-name": "USDPerRow"
+          },
+          "free_rows_per_month": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The number of rows that can be synced for free each month.",
+            "example": 1000
           }
         }
       },

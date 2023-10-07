@@ -3912,6 +3912,7 @@ type UpdatePluginResponse struct {
 	JSON400      *BadRequest
 	JSON403      *Forbidden
 	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -5731,6 +5732,13 @@ func ParseUpdatePluginResponse(rsp *http.Response) (*UpdatePluginResponse, error
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
