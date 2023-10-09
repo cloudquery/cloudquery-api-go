@@ -233,6 +233,17 @@ type ClientInterface interface {
 	// ListPluginsByTeam request
 	ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListTeamPluginUsage request
+	ListTeamPluginUsage(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IncreaseTeamPluginUsageWithBody request with any body
+	IncreaseTeamPluginUsageWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	IncreaseTeamPluginUsage(ctx context.Context, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTeamPluginUsage request
+	GetTeamPluginUsage(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListUsersByTeam request
 	ListUsersByTeam(ctx context.Context, teamName TeamName, params *ListUsersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -880,6 +891,54 @@ func (c *Client) DeletePluginsByTeam(ctx context.Context, teamName TeamName, req
 
 func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPluginsByTeamRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListTeamPluginUsage(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTeamPluginUsageRequest(c.Server, teamName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IncreaseTeamPluginUsageWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIncreaseTeamPluginUsageRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IncreaseTeamPluginUsage(ctx context.Context, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIncreaseTeamPluginUsageRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTeamPluginUsage(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTeamPluginUsageRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -3276,6 +3335,142 @@ func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListP
 	return req, nil
 }
 
+// NewListTeamPluginUsageRequest generates requests for ListTeamPluginUsage
+func NewListTeamPluginUsageRequest(server string, teamName TeamName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/usage", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewIncreaseTeamPluginUsageRequest calls the generic IncreaseTeamPluginUsage builder with application/json body
+func NewIncreaseTeamPluginUsageRequest(server string, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIncreaseTeamPluginUsageRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewIncreaseTeamPluginUsageRequestWithBody generates requests for IncreaseTeamPluginUsage with any type of body
+func NewIncreaseTeamPluginUsageRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/usage", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTeamPluginUsageRequest generates requests for GetTeamPluginUsage
+func NewGetTeamPluginUsageRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/usage/%s/%s/%s", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListUsersByTeamRequest generates requests for ListUsersByTeam
 func NewListUsersByTeamRequest(server string, teamName TeamName, params *ListUsersByTeamParams) (*http.Request, error) {
 	var err error
@@ -3758,6 +3953,17 @@ type ClientWithResponsesInterface interface {
 
 	// ListPluginsByTeamWithResponse request
 	ListPluginsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*ListPluginsByTeamResponse, error)
+
+	// ListTeamPluginUsageWithResponse request
+	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
+
+	// IncreaseTeamPluginUsageWithBodyWithResponse request with any body
+	IncreaseTeamPluginUsageWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IncreaseTeamPluginUsageResponse, error)
+
+	IncreaseTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody, reqEditors ...RequestEditorFn) (*IncreaseTeamPluginUsageResponse, error)
+
+	// GetTeamPluginUsageWithResponse request
+	GetTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetTeamPluginUsageResponse, error)
 
 	// ListUsersByTeamWithResponse request
 	ListUsersByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListUsersByTeamParams, reqEditors ...RequestEditorFn) (*ListUsersByTeamResponse, error)
@@ -4794,6 +5000,88 @@ func (r ListPluginsByTeamResponse) StatusCode() int {
 	return 0
 }
 
+type ListTeamPluginUsageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Items    []UsageCurrent `json:"items"`
+		Metadata ListMetadata   `json:"metadata"`
+	}
+	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
+	JSON404 *NotFound
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTeamPluginUsageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTeamPluginUsageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IncreaseTeamPluginUsageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageCurrent
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r IncreaseTeamPluginUsageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IncreaseTeamPluginUsageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTeamPluginUsageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageCurrent
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTeamPluginUsageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTeamPluginUsageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListUsersByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -5413,6 +5701,41 @@ func (c *ClientWithResponses) ListPluginsByTeamWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseListPluginsByTeamResponse(rsp)
+}
+
+// ListTeamPluginUsageWithResponse request returning *ListTeamPluginUsageResponse
+func (c *ClientWithResponses) ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error) {
+	rsp, err := c.ListTeamPluginUsage(ctx, teamName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTeamPluginUsageResponse(rsp)
+}
+
+// IncreaseTeamPluginUsageWithBodyWithResponse request with arbitrary body returning *IncreaseTeamPluginUsageResponse
+func (c *ClientWithResponses) IncreaseTeamPluginUsageWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IncreaseTeamPluginUsageResponse, error) {
+	rsp, err := c.IncreaseTeamPluginUsageWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIncreaseTeamPluginUsageResponse(rsp)
+}
+
+func (c *ClientWithResponses) IncreaseTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody, reqEditors ...RequestEditorFn) (*IncreaseTeamPluginUsageResponse, error) {
+	rsp, err := c.IncreaseTeamPluginUsage(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIncreaseTeamPluginUsageResponse(rsp)
+}
+
+// GetTeamPluginUsageWithResponse request returning *GetTeamPluginUsageResponse
+func (c *ClientWithResponses) GetTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetTeamPluginUsageResponse, error) {
+	rsp, err := c.GetTeamPluginUsage(ctx, teamName, pluginTeam, pluginKind, pluginName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTeamPluginUsageResponse(rsp)
 }
 
 // ListUsersByTeamWithResponse request returning *ListUsersByTeamResponse
@@ -7466,6 +7789,178 @@ func ParseListPluginsByTeamResponse(rsp *http.Response) (*ListPluginsByTeamRespo
 			Items    []Plugin     `json:"items"`
 			Metadata ListMetadata `json:"metadata"`
 		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTeamPluginUsageResponse parses an HTTP response from a ListTeamPluginUsageWithResponse call
+func ParseListTeamPluginUsageResponse(rsp *http.Response) (*ListTeamPluginUsageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTeamPluginUsageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Items    []UsageCurrent `json:"items"`
+			Metadata ListMetadata   `json:"metadata"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIncreaseTeamPluginUsageResponse parses an HTTP response from a IncreaseTeamPluginUsageWithResponse call
+func ParseIncreaseTeamPluginUsageResponse(rsp *http.Response) (*IncreaseTeamPluginUsageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IncreaseTeamPluginUsageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageCurrent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTeamPluginUsageResponse parses an HTTP response from a GetTeamPluginUsageWithResponse call
+func ParseGetTeamPluginUsageResponse(rsp *http.Response) (*GetTeamPluginUsageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTeamPluginUsageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageCurrent
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
