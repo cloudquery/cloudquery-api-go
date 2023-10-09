@@ -539,6 +539,48 @@ type Team struct {
 // TeamName The unique name for the team.
 type TeamName = string
 
+// UsageCurrent The usage of a plugin within the current calendar month.
+type UsageCurrent struct {
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind PluginKind `json:"plugin_kind"`
+
+	// PluginName The unique name for the plugin.
+	PluginName PluginName `json:"plugin_name"`
+
+	// PluginTeam The unique name for the team.
+	PluginTeam TeamName `json:"plugin_team"`
+
+	// RemainingRows The estimated number of rows remaining in the plugin's quota for the calendar month at the current price per row. This includes both free and paid rows up to the monthly limit defined for the plugin.
+	RemainingRows *int64 `json:"remaining_rows,omitempty"`
+
+	// RemainingUsd The remaining USD amount in the plugin's quota for the calendar month.
+	RemainingUSD *string `json:"remaining_usd,omitempty"`
+
+	// Rows The number of rows used by the plugin in the calendar month.
+	Rows int64 `json:"rows"`
+
+	// Usd The USD amount used by the plugin in the calendar month, rounded to two decimal places.
+	USD string `json:"usd"`
+}
+
+// UsageIncrease Increase the usage of a plugin. This can incur billing costs and should be used only by plugins.
+type UsageIncrease struct {
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind PluginKind `json:"plugin_kind"`
+
+	// PluginName The unique name for the plugin.
+	PluginName PluginName `json:"plugin_name"`
+
+	// PluginTeam The unique name for the team.
+	PluginTeam TeamName `json:"plugin_team"`
+
+	// RequestId A unique ID associated with the usage increase.
+	RequestId openapi_types.UUID `json:"request_id"`
+
+	// Rows The additional rows used by the plugin.
+	Rows int `json:"rows"`
+}
+
 // User CloudQuery User
 type User struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -872,6 +914,9 @@ type CreateMonthlyLimitJSONRequestBody = MonthlyLimitCreate
 
 // UpdateMonthlyLimitJSONRequestBody defines body for UpdateMonthlyLimit for application/json ContentType.
 type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
+
+// IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
+type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
 
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody UpdateCurrentUserJSONBody

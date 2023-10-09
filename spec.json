@@ -46,6 +46,9 @@
     },
     {
       "name": "limits"
+    },
+    {
+      "name": "usage"
     }
   ],
   "paths": {
@@ -1844,6 +1847,159 @@
         ]
       }
     },
+    "/teams/{team_name}/usage": {
+      "get": {
+        "description": "List plugin usage for the current calendar month.",
+        "operationId": "ListTeamPluginUsage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List plugin usage for the current calendar month.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/UsageCurrent"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "usage"
+        ]
+      },
+      "post": {
+        "description": "Increase the usage of a plugin. This can incur billing costs and should be used only by plugin SDKs.",
+        "operationId": "IncreaseTeamPluginUsage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsageIncrease"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plugin usage for the current calendar month.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageCurrent"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "usage"
+        ]
+      }
+    },
+    "/teams/{team_name}/usage/{plugin_team}/{plugin_kind}/{plugin_name}": {
+      "get": {
+        "description": "Get plugin usage for the current calendar month.",
+        "operationId": "GetTeamPluginUsage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plugin usage for the current calendar month.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageCurrent"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "usage"
+        ]
+      }
+    },
     "/teams/{team_name}/invitations": {
       "get": {
         "operationId": "ListTeamInvitations",
@@ -3385,6 +3541,92 @@
             "maximum": 1000000000,
             "description": "The maximum USD amount the plugin is allowed to use within a calendar month.",
             "x-go-name": "USD"
+          }
+        }
+      },
+      "UsageCurrent": {
+        "title": "CloudQuery Plugin Usage",
+        "description": "The usage of a plugin within the current calendar month.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name",
+          "usd",
+          "rows"
+        ],
+        "properties": {
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "rows": {
+            "example": 1000000,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "The number of rows used by the plugin in the calendar month."
+          },
+          "usd": {
+            "type": "string",
+            "example": "43.95",
+            "description": "The USD amount used by the plugin in the calendar month, rounded to two decimal places.",
+            "x-go-name": "USD"
+          },
+          "remaining_usd": {
+            "type": "string",
+            "example": "56.05",
+            "description": "The remaining USD amount in the plugin's quota for the calendar month.",
+            "x-go-name": "RemainingUSD"
+          },
+          "remaining_rows": {
+            "example": 1000000,
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "description": "The estimated number of rows remaining in the plugin's quota for the calendar month at the current price per row. This includes both free and paid rows up to the monthly limit defined for the plugin."
+          }
+        }
+      },
+      "UsageIncrease": {
+        "title": "CloudQuery Plugin Usage Increase",
+        "description": "Increase the usage of a plugin. This can incur billing costs and should be used only by plugins.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name",
+          "rows",
+          "request_id"
+        ],
+        "properties": {
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "rows": {
+            "example": 1000000,
+            "type": "integer",
+            "minimum": 0,
+            "description": "The additional rows used by the plugin."
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A unique ID associated with the usage increase.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
           }
         }
       },
