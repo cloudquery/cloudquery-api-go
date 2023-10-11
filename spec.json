@@ -3095,7 +3095,7 @@
       "PluginDocsPageName": {
         "description": "The unique name for the plugin documentation page.",
         "maxLength": 255,
-        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "pattern": "^[\\w,\\s-]+$",
         "type": "string",
         "example": "overview"
       },
@@ -3104,22 +3104,11 @@
         "description": "CloudQuery Plugin Documentation Page",
         "required": [
           "name",
-          "title",
           "content"
         ],
         "properties": {
           "name": {
             "$ref": "#/components/schemas/PluginDocsPageName"
-          },
-          "title": {
-            "type": "string",
-            "description": "The title of the documentation page",
-            "example": "Getting Started"
-          },
-          "ordinal_position": {
-            "type": "integer",
-            "description": "The position of the page in the documentation",
-            "example": 1
           },
           "content": {
             "type": "string",
@@ -3135,22 +3124,11 @@
         "description": "CloudQuery Plugin Documentation Page",
         "required": [
           "name",
-          "title",
           "content"
         ],
         "properties": {
           "name": {
             "$ref": "#/components/schemas/PluginDocsPageName"
-          },
-          "title": {
-            "type": "string",
-            "description": "The title of the documentation page",
-            "example": "Getting Started"
-          },
-          "ordinal_position": {
-            "type": "integer",
-            "description": "The position of the page in the documentation",
-            "example": 1
           },
           "content": {
             "type": "string",
