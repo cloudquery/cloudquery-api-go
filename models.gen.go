@@ -344,12 +344,6 @@ type PluginDocsPage struct {
 
 	// Name The unique name for the plugin documentation page.
 	Name PluginDocsPageName `json:"name"`
-
-	// OrdinalPosition The position of the page in the documentation
-	OrdinalPosition *int `json:"ordinal_position,omitempty"`
-
-	// Title The title of the documentation page
-	Title string `json:"title"`
 }
 
 // PluginDocsPageCreate CloudQuery Plugin Documentation Page
@@ -359,12 +353,6 @@ type PluginDocsPageCreate struct {
 
 	// Name The unique name for the plugin documentation page.
 	Name PluginDocsPageName `json:"name"`
-
-	// OrdinalPosition The position of the page in the documentation
-	OrdinalPosition *int `json:"ordinal_position,omitempty"`
-
-	// Title The title of the documentation page
-	Title string `json:"title"`
 }
 
 // PluginDocsPageName The unique name for the plugin documentation page.
