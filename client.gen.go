@@ -234,7 +234,7 @@ type ClientInterface interface {
 	ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeamPluginUsage request
-	ListTeamPluginUsage(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListTeamPluginUsage(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// IncreaseTeamPluginUsageWithBody request with any body
 	IncreaseTeamPluginUsageWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -901,8 +901,8 @@ func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, param
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListTeamPluginUsage(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListTeamPluginUsageRequest(c.Server, teamName)
+func (c *Client) ListTeamPluginUsage(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTeamPluginUsageRequest(c.Server, teamName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3336,7 +3336,7 @@ func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListP
 }
 
 // NewListTeamPluginUsageRequest generates requests for ListTeamPluginUsage
-func NewListTeamPluginUsageRequest(server string, teamName TeamName) (*http.Request, error) {
+func NewListTeamPluginUsageRequest(server string, teamName TeamName, params *ListTeamPluginUsageParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3359,6 +3359,44 @@ func NewListTeamPluginUsageRequest(server string, teamName TeamName) (*http.Requ
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -3955,7 +3993,7 @@ type ClientWithResponsesInterface interface {
 	ListPluginsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*ListPluginsByTeamResponse, error)
 
 	// ListTeamPluginUsageWithResponse request
-	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
+	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
 
 	// IncreaseTeamPluginUsageWithBodyWithResponse request with any body
 	IncreaseTeamPluginUsageWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IncreaseTeamPluginUsageResponse, error)
@@ -4011,7 +4049,7 @@ type ListPluginsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Items    []Plugin     `json:"items"`
+		Items    []ListPlugin `json:"items"`
 		Metadata ListMetadata `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
@@ -5704,8 +5742,8 @@ func (c *ClientWithResponses) ListPluginsByTeamWithResponse(ctx context.Context,
 }
 
 // ListTeamPluginUsageWithResponse request returning *ListTeamPluginUsageResponse
-func (c *ClientWithResponses) ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error) {
-	rsp, err := c.ListTeamPluginUsage(ctx, teamName, reqEditors...)
+func (c *ClientWithResponses) ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error) {
+	rsp, err := c.ListTeamPluginUsage(ctx, teamName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -5832,7 +5870,7 @@ func ParseListPluginsResponse(rsp *http.Response) (*ListPluginsResponse, error) 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Items    []Plugin     `json:"items"`
+			Items    []ListPlugin `json:"items"`
 			Metadata ListMetadata `json:"metadata"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
