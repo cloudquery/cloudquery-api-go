@@ -120,7 +120,7 @@
                   "properties": {
                     "items": {
                       "items": {
-                        "$ref": "#/components/schemas/Plugin"
+                        "$ref": "#/components/schemas/ListPlugin"
                       },
                       "type": "array",
                       "example": [
@@ -1854,6 +1854,12 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
           }
         ],
         "responses": {
@@ -2791,6 +2797,26 @@
         "title": "CloudQuery Plugin",
         "type": "object"
       },
+      "VersionName": {
+        "type": "string",
+        "description": "The version in semantic version format.",
+        "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
+      },
+      "ListPlugin": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Plugin"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "latest_version": {
+                "$ref": "#/components/schemas/VersionName"
+              }
+            }
+          }
+        ]
+      },
       "ListMetadata": {
         "properties": {
           "total_count": {
@@ -2955,11 +2981,6 @@
             "example": 1000
           }
         }
-      },
-      "VersionName": {
-        "type": "string",
-        "description": "The version in semantic version format.",
-        "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$"
       },
       "PluginVersion": {
         "additionalProperties": false,

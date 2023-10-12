@@ -159,6 +159,47 @@ type ListMetadata struct {
 	TotalCount *int `json:"total_count,omitempty"`
 }
 
+// ListPlugin defines model for ListPlugin.
+type ListPlugin struct {
+	// Category Supported categories for plugins
+	Category  PluginCategory `json:"category"`
+	CreatedAt time.Time      `json:"created_at"`
+
+	// DisplayName The plugin's display name
+	DisplayName string `json:"display_name"`
+
+	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	FreeRowsPerMonth int64   `json:"free_rows_per_month"`
+	Homepage         *string `json:"homepage,omitempty"`
+
+	// Kind The kind of plugin, ie. source or destination.
+	Kind PluginKind `json:"kind"`
+
+	// LatestVersion The version in semantic version format.
+	LatestVersion *VersionName `json:"latest_version,omitempty"`
+	Logo          string       `json:"logo"`
+
+	// Name The unique name for the plugin.
+	Name PluginName `json:"name"`
+
+	// Official True if the plugin is maintained by CloudQuery, false otherwise
+	Official bool `json:"official"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
+	Public           *bool   `json:"public,omitempty"`
+	Repository       *string `json:"repository,omitempty"`
+	ShortDescription string  `json:"short_description"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName `json:"team_name"`
+
+	// Tier Supported tiers for plugins
+	Tier PluginTier `json:"tier"`
+
+	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	USDPerRow string `json:"usd_per_row"`
+}
+
 // MembershipWithTeam defines model for MembershipWithTeam.
 type MembershipWithTeam struct {
 	Role string `json:"role"`
@@ -835,6 +876,15 @@ type ListPluginsByTeamParams struct {
 
 	// IncludePrivate Whether to include private plugins
 	IncludePrivate *IncludePrivate `form:"include_private,omitempty" json:"include_private,omitempty"`
+}
+
+// ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
+type ListTeamPluginUsageParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
 // ListUsersByTeamParams defines parameters for ListUsersByTeam.
