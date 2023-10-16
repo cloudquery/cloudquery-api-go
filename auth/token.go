@@ -32,7 +32,7 @@ type tokenResponse struct {
 func GetToken() (string, error) {
 	token := os.Getenv(EnvVarCloudQueryAPIKey)
 	if token == "" {
-		refreshToken, err := readRefreshToken()
+		refreshToken, err := ReadRefreshToken()
 		if err != nil {
 			return "", fmt.Errorf("%w. Hint: You may need to run `cloudquery login` or set %s", err, EnvVarCloudQueryAPIKey)
 		}
@@ -45,38 +45,6 @@ func GetToken() (string, error) {
 		}
 	}
 	return token, nil
-}
-
-func removeRefreshToken() error {
-	tokenFilePath, err := xdg.DataFile("cloudquery/token")
-	if err != nil {
-		return fmt.Errorf("can't determine a proper location for token file: %w", err)
-	}
-	if err := os.RemoveAll(tokenFilePath); err != nil {
-		return fmt.Errorf("failed to remove token file %q: %w", tokenFilePath, err)
-	}
-	return nil
-}
-
-func SaveRefreshToken(refreshToken string) error {
-	tokenFilePath, err := xdg.DataFile("cloudquery/token")
-	if err != nil {
-		return fmt.Errorf("can't determine a proper location for token file: %w", err)
-	}
-	tokenFile, err := os.OpenFile(tokenFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
-	if err != nil {
-		return fmt.Errorf("can't open token file %q for writing: %w", tokenFilePath, err)
-	}
-	defer func() {
-		e := tokenFile.Close()
-		if err == nil && e != nil {
-			err = fmt.Errorf("can't close token file %q after writing: %w", tokenFilePath, e)
-		}
-	}()
-	if _, err = tokenFile.WriteString(refreshToken); err != nil {
-		return fmt.Errorf("failed to write token to %q: %w", tokenFilePath, err)
-	}
-	return nil
 }
 
 func getIDToken(refreshToken string) (string, error) {
@@ -121,7 +89,30 @@ func parseToken(response []byte) (tokenResponse, error) {
 	return tr, nil
 }
 
-func readRefreshToken() (string, error) {
+// SaveRefreshToken saves the refresh token to the token file
+func SaveRefreshToken(refreshToken string) error {
+	tokenFilePath, err := xdg.DataFile("cloudquery/token")
+	if err != nil {
+		return fmt.Errorf("can't determine a proper location for token file: %w", err)
+	}
+	tokenFile, err := os.OpenFile(tokenFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	if err != nil {
+		return fmt.Errorf("can't open token file %q for writing: %w", tokenFilePath, err)
+	}
+	defer func() {
+		e := tokenFile.Close()
+		if err == nil && e != nil {
+			err = fmt.Errorf("can't close token file %q after writing: %w", tokenFilePath, e)
+		}
+	}()
+	if _, err = tokenFile.WriteString(refreshToken); err != nil {
+		return fmt.Errorf("failed to write token to %q: %w", tokenFilePath, err)
+	}
+	return nil
+}
+
+// ReadRefreshToken reads the refresh token from the token file
+func ReadRefreshToken() (string, error) {
 	tokenFilePath, err := xdg.DataFile("cloudquery/token")
 	if err != nil {
 		return "", fmt.Errorf("failed to get token file path: %w", err)
@@ -131,4 +122,16 @@ func readRefreshToken() (string, error) {
 		return "", fmt.Errorf("failed to read token file: %w", err)
 	}
 	return strings.TrimSpace(string(b)), nil
+}
+
+// RemoveRefreshToken removes the token file
+func RemoveRefreshToken() error {
+	tokenFilePath, err := xdg.DataFile("cloudquery/token")
+	if err != nil {
+		return fmt.Errorf("can't determine a proper location for token file: %w", err)
+	}
+	if err := os.RemoveAll(tokenFilePath); err != nil {
+		return fmt.Errorf("failed to remove token file %q: %w", tokenFilePath, err)
+	}
+	return nil
 }
