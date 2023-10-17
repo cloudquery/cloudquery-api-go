@@ -63,3 +63,27 @@ func TestSetConfigHome(t *testing.T) {
 	// check that we are no longer set to the temporary directory
 	r.NotEqual(configDir, xdg.ConfigHome)
 }
+
+func TestSetDataHome(t *testing.T) {
+	r := require.New(t)
+	configDir := t.TempDir()
+
+	err := SetDataHome(configDir)
+	r.NoError(err)
+
+	r.Equal(configDir, xdg.DataHome)
+
+	err = SaveDataString("cloudquery/token", "my-token")
+	r.NoError(err)
+
+	// check that the config file was created in the temporary directory,
+	// not somewhere else
+	_, err = os.Stat(path.Join(configDir, "cloudquery", "token"))
+	r.NoError(err)
+
+	err = UnsetDataHome()
+	r.NoError(err)
+
+	// check that we are no longer set to the temporary directory
+	r.NotEqual(configDir, xdg.DataHome)
+}
