@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.2.9...v1.3.0) (2023-10-17)
+
+
+### Features
+
+* Moving configuration and auth logic ([#37](https://github.com/cloudquery/cloudquery-api-go/issues/37)) ([0bffdb2](https://github.com/cloudquery/cloudquery-api-go/commit/0bffdb20ef7533cac3d3953f593d56fc7dc09e24))
+
 ## [1.2.9](https://github.com/cloudquery/cloudquery-api-go/compare/v1.2.8...v1.2.9) (2023-10-17)
 
 
