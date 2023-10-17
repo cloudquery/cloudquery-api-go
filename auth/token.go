@@ -3,14 +3,12 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cloudquery/cloudquery-api-go/config"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 	"time"
-
-	"github.com/adrg/xdg"
 )
 
 const (
@@ -18,6 +16,7 @@ const (
 	TokenBaseURL           = "https://securetoken.googleapis.com"
 	EnvVarCloudQueryAPIKey = "CLOUDQUERY_API_KEY"
 	ExpiryBuffer           = 60 * time.Second
+	tokenFilePath          = "cloudquery/token"
 )
 
 type tokenResponse struct {
@@ -131,46 +130,15 @@ func parseToken(response []byte, tr *tokenResponse) error {
 
 // SaveRefreshToken saves the refresh token to the token file
 func SaveRefreshToken(refreshToken string) error {
-	tokenFilePath, err := xdg.DataFile("cloudquery/token")
-	if err != nil {
-		return fmt.Errorf("failed to get token file path: %w", err)
-	}
-	tokenFile, err := os.OpenFile(tokenFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to open token file %q for writing: %w", tokenFilePath, err)
-	}
-	defer func() {
-		if closeErr := tokenFile.Close(); closeErr != nil {
-			fmt.Printf("error closing token file: %v", closeErr)
-		}
-	}()
-	if _, err = tokenFile.WriteString(refreshToken); err != nil {
-		return fmt.Errorf("failed to write token to %q: %w", tokenFilePath, err)
-	}
-	return nil
+	return config.SaveDataString(tokenFilePath, refreshToken)
 }
 
 // ReadRefreshToken reads the refresh token from the token file
 func ReadRefreshToken() (string, error) {
-	tokenFilePath, err := xdg.DataFile("cloudquery/token")
-	if err != nil {
-		return "", fmt.Errorf("failed to get token file path: %w", err)
-	}
-	b, err := os.ReadFile(tokenFilePath)
-	if err != nil {
-		return "", fmt.Errorf("failed to read token file: %w", err)
-	}
-	return strings.TrimSpace(string(b)), nil
+	return config.ReadDataString(tokenFilePath)
 }
 
 // RemoveRefreshToken removes the token file
 func RemoveRefreshToken() error {
-	tokenFilePath, err := xdg.DataFile("cloudquery/token")
-	if err != nil {
-		return fmt.Errorf("failed to get token file path: %w", err)
-	}
-	if err := os.RemoveAll(tokenFilePath); err != nil {
-		return fmt.Errorf("failed to remove token file %q: %w", tokenFilePath, err)
-	}
-	return nil
+	return config.DeleteDataString(tokenFilePath)
 }
