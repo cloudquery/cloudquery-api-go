@@ -57,7 +57,7 @@ func TestSetConfigHome(t *testing.T) {
 	_, err = os.Stat(path.Join(configDir, "cloudquery", "config.json"))
 	r.NoError(err)
 
-	err = UnSetConfigHome()
+	err = UnsetConfigHome()
 	r.NoError(err)
 
 	// check that we are no longer set to the temporary directory

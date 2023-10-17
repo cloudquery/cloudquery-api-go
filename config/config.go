@@ -25,8 +25,8 @@ func SetConfigHome(configDir string) error {
 	return nil
 }
 
-// UnSetConfigHome unsets the configuration home directory returning to the default value
-func UnSetConfigHome() error {
+// UnsetConfigHome unsets the configuration home directory returning to the default value
+func UnsetConfigHome() error {
 	if err := os.Unsetenv("XDG_CONFIG_HOME"); err != nil {
 		return fmt.Errorf("failed to unset XDG_CONFIG_HOME: %w", err)
 	}
