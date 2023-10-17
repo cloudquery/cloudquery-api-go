@@ -16,6 +16,24 @@ var configKeys = []string{
 	"team",
 }
 
+// SetConfigHome sets the configuration home directory - useful for testing
+func SetConfigHome(configDir string) error {
+	if err := os.Setenv("XDG_CONFIG_HOME", configDir); err != nil {
+		return fmt.Errorf("failed to set XDG_CONFIG_HOME: %w", err)
+	}
+	xdg.Reload()
+	return nil
+}
+
+// UnSetConfigHome unsets the configuration home directory returning to the default value
+func UnSetConfigHome() error {
+	if err := os.Unsetenv("XDG_CONFIG_HOME"); err != nil {
+		return fmt.Errorf("failed to unset XDG_CONFIG_HOME: %w", err)
+	}
+	xdg.Reload()
+	return nil
+}
+
 // GetValue reads the value of a config key from the config file
 func GetValue(key string) (string, error) {
 	if !slices.Contains(configKeys, key) {
