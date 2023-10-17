@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.3.0...v1.4.0) (2023-10-17)
+
+
+### Features
+
+* Allow configurable config home directory ([#42](https://github.com/cloudquery/cloudquery-api-go/issues/42)) ([3235143](https://github.com/cloudquery/cloudquery-api-go/commit/32351436b1bbf3bfd3247a692d2d990f058f2250))
+
 ## [1.3.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.2.9...v1.3.0) (2023-10-17)
 
 
