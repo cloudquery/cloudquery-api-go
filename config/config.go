@@ -113,7 +113,7 @@ func UnsetDataHome() error {
 func SaveDataString(relPath string, data string) error {
 	filePath, err := xdg.DataFile(relPath)
 	if err != nil {
-		return fmt.Errorf("failed to get token file path: %w", err)
+		return fmt.Errorf("failed to get file path: %w", err)
 	}
 	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
@@ -121,7 +121,7 @@ func SaveDataString(relPath string, data string) error {
 	}
 	defer func() {
 		if closeErr := file.Close(); closeErr != nil {
-			fmt.Printf("error closing token file: %v", closeErr)
+			fmt.Printf("error closing file: %v", closeErr)
 		}
 	}()
 	if _, err = file.WriteString(data); err != nil {
