@@ -49,6 +49,9 @@
     },
     {
       "name": "usage"
+    },
+    {
+      "name": "addons"
     }
   ],
   "paths": {
@@ -568,7 +571,6 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "security": [],
         "tags": [
           "plugins"
         ]
@@ -623,7 +625,6 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "security": [],
         "tags": [
           "plugins"
         ]
@@ -1189,9 +1190,596 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/addons": {
+      "get": {
+        "description": "List all addons",
+        "operationId": "ListAddons",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/addon_sort_by"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Addon"
+                      },
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "aws-policies",
+                          "team_name": "cloudquery",
+                          "display_name": "AWS Policies",
+                          "category": "cloud-infrastructure",
+                          "created_at": "2017-07-14T16:53:42Z",
+                          "homepage": "https://cloudquery.io",
+                          "logo": "https://images.cloudquery.io/logos/aws.png",
+                          "official": true,
+                          "short_description": "Sync data from AWS to any destination",
+                          "repository": "https://github.com/cloudquery/cloudquery",
+                          "tier": "free",
+                          "price_usd": "50",
+                          "addon_type": "visualization",
+                          "addon_format": "zip"
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "addons"
+        ]
+      },
+      "post": {
+        "description": "Create an addon owned by the specified team. User must be part of that team.",
+        "operationId": "CreateAddon",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddonCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Addon"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      }
+    },
+    "/addons/{team_name}/{addon_name}": {
+      "get": {
+        "description": "Get details about a given addon.",
+        "operationId": "GetAddon",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Addon"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "addons"
+        ]
+      },
+      "patch": {
+        "description": "Update an Addon",
+        "operationId": "UpdateAddon",
+        "tags": [
+          "addons"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddonUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Addon"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete addon by team and addon name",
+        "operationId": "DeleteAddonByTeamAndName",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      }
+    },
+    "/addons/{team_name}/{addon_name}/versions": {
+      "get": {
+        "description": "List all versions for a given addon",
+        "operationId": "ListAddonVersions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_sort_by"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/include_drafts"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/AddonVersion"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "addons"
+        ]
+      }
+    },
+    "/addons/{team_name}/{addon_name}/versions/{version_name}": {
+      "get": {
+        "description": "Get details about a given addon version.",
+        "operationId": "GetAddonVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonVersion"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
         "security": [],
         "tags": [
           "plugins"
+        ]
+      },
+      "put": {
+        "description": "Create a new addon version, or update a draft version",
+        "operationId": "CreateAddonVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message",
+                  "doc",
+                  "checksum"
+                ],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30000,
+                    "description": "A message describing what's new or changed in this version.\nThis message will be displayed to users in the addon's changelog.\nSupports limited markdown syntax.\n"
+                  },
+                  "doc": {
+                    "type": "string",
+                    "description": "Main README in MD format"
+                  },
+                  "plugin_deps": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "plugin dependencies in the format of ['team_name/kind/plugin_name@version']"
+                  },
+                  "addon_deps": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "addon dependencies in the format of ['team_name/addon_name@version']"
+                  },
+                  "checksum": {
+                    "type": "string",
+                    "description": "SHA-256 checksums for this addon version."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonVersion"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Success (the addon version was created)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      },
+      "patch": {
+        "description": "Update a given addon version",
+        "operationId": "UpdateAddonVersion",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddonVersionUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      }
+    },
+    "/addons/{team_name}/{addon_name}/versions/{version_name}/assets": {
+      "get": {
+        "description": "Download a asset for a given version",
+        "operationId": "DownloadAddonAsset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Response",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "addons"
+        ]
+      },
+      "post": {
+        "description": "Get a URL to upload an asset for a given addon version",
+        "operationId": "UploadAddonAsset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseURL"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
         ]
       }
     },
@@ -1513,6 +2101,118 @@
         "tags": [
           "teams",
           "plugins"
+        ]
+      }
+    },
+    "/teams/{team_name}/addons": {
+      "get": {
+        "description": "List all addons for the team.",
+        "operationId": "ListAddonsByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/include_private"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Addon"
+                      },
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "aws-policies",
+                          "team_name": "cloudquery",
+                          "display_name": "AWS Policies",
+                          "category": "cloud-infrastructure",
+                          "created_at": "2017-07-14T16:53:42Z",
+                          "homepage": "https://cloudquery.io",
+                          "logo": "https://images.cloudquery.io/logos/aws.png",
+                          "official": true,
+                          "short_description": "AWS policies",
+                          "repository": "https://github.com/cloudquery/cloudquery",
+                          "tier": "paid",
+                          "price_usd": "50",
+                          "addon_type": "visualization",
+                          "addon_format": "zip"
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      },
+      "delete": {
+        "description": "Delete addons by team",
+        "operationId": "DeleteAddonsByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "addons"
         ]
       }
     },
@@ -3366,6 +4066,377 @@
           }
         }
       },
+      "AddonName": {
+        "description": "The unique name for the addon.",
+        "maxLength": 255,
+        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "aws-policy"
+      },
+      "AddonCategory": {
+        "description": "Supported categories for addons",
+        "type": "string",
+        "enum": [
+          "cloud-infrastructure",
+          "databases",
+          "sales-marketing",
+          "engineering-analytics",
+          "other"
+        ]
+      },
+      "AddonType": {
+        "description": "Supported types for addons",
+        "type": "string",
+        "enum": [
+          "transformation",
+          "visualization"
+        ]
+      },
+      "AddonFormat": {
+        "description": "Supported formats for addons",
+        "type": "string",
+        "enum": [
+          "zip"
+        ]
+      },
+      "AddonTier": {
+        "description": "Supported tiers for addons",
+        "type": "string",
+        "enum": [
+          "free",
+          "paid"
+        ]
+      },
+      "Addon": {
+        "additionalProperties": false,
+        "description": "CloudQuery Addon",
+        "properties": {
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "name": {
+            "$ref": "#/components/schemas/AddonName"
+          },
+          "official": {
+            "description": "True if the addon is maintained by CloudQuery, false otherwise",
+            "type": "boolean"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AddonCategory"
+          },
+          "addon_type": {
+            "$ref": "#/components/schemas/AddonType"
+          },
+          "addon_format": {
+            "$ref": "#/components/schemas/AddonFormat"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/AddonTier"
+          },
+          "price_usd": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price for 6 months",
+            "example": "50",
+            "x-go-name": "PriceUSD"
+          },
+          "short_description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "example": "AWS Asset inventory dashboard for grafana"
+          },
+          "display_name": {
+            "description": "The addon's display name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "example": "AWS Asset inventory"
+          },
+          "homepage": {
+            "type": "string",
+            "example": "https://cloudquery.io"
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "logo": {
+            "type": "string",
+            "example": "https://images.cloudquery.io/logos/aws.png"
+          },
+          "public": {
+            "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.",
+            "type": "boolean"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "team_name",
+          "name",
+          "display_name",
+          "official",
+          "category",
+          "addon_type",
+          "addon_format",
+          "tier",
+          "price_usd",
+          "short_description",
+          "logo",
+          "created_at"
+        ],
+        "title": "CloudQuery Addon",
+        "type": "object"
+      },
+      "AddonCreate": {
+        "additionalProperties": false,
+        "description": "CloudQuery AddonCreate",
+        "properties": {
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "name": {
+            "$ref": "#/components/schemas/AddonName"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AddonCategory"
+          },
+          "addon_type": {
+            "$ref": "#/components/schemas/AddonType"
+          },
+          "addon_format": {
+            "$ref": "#/components/schemas/AddonFormat"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/AddonTier"
+          },
+          "price_usd": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price for 6 months",
+            "example": "50",
+            "x-go-name": "PriceUSD"
+          },
+          "short_description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "example": "AWS Asset inventory dashboard for grafana"
+          },
+          "display_name": {
+            "description": "The addon's display name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "example": "AWS Asset inventory"
+          },
+          "homepage": {
+            "type": "string",
+            "example": "https://cloudquery.io"
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "logo": {
+            "type": "string",
+            "example": "https://images.cloudquery.io/logos/aws.png"
+          },
+          "public": {
+            "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "team_name",
+          "name",
+          "category",
+          "addon_type",
+          "addon_format",
+          "tier",
+          "display_name",
+          "short_description",
+          "logo",
+          "public"
+        ],
+        "title": "CloudQuery Addon",
+        "type": "object"
+      },
+      "AddonUpdate": {
+        "additionalProperties": false,
+        "description": "CloudQuery AddonUpdate",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/AddonCategory"
+          },
+          "addon_type": {
+            "$ref": "#/components/schemas/AddonType"
+          },
+          "addon_format": {
+            "$ref": "#/components/schemas/AddonFormat"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/AddonTier"
+          },
+          "price_usd": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price for 6 months in USD",
+            "example": "50",
+            "x-go-name": "PriceUSD"
+          },
+          "short_description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "example": "AWS Asset inventory dashboard for grafana"
+          },
+          "display_name": {
+            "description": "The addon's display name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "example": "AWS Asset inventory"
+          },
+          "homepage": {
+            "type": "string",
+            "example": "https://cloudquery.io"
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "logo": {
+            "type": "string",
+            "example": "https://images.cloudquery.io/logos/aws.png"
+          },
+          "public": {
+            "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.",
+            "type": "boolean"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "title": "CloudQuery Addon",
+        "type": "object"
+      },
+      "AddonVersion": {
+        "additionalProperties": false,
+        "description": "CloudQuery Addon Version",
+        "required": [
+          "created_at",
+          "name",
+          "message",
+          "doc",
+          "plugin_deps",
+          "draft",
+          "retracted",
+          "checksum",
+          "plugin_deps"
+        ],
+        "properties": {
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the plugin version was created."
+          },
+          "published_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the plugin version was set to non-draft (published)."
+          },
+          "name": {
+            "$ref": "#/components/schemas/VersionName"
+          },
+          "message": {
+            "type": "string",
+            "description": "Description of what's new or changed in this version (supports markdown)",
+            "example": "- Added support for *AWS S3* - Added support for *AWS EC2*"
+          },
+          "doc": {
+            "type": "string",
+            "description": "Main README in MD format"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version."
+          },
+          "plugin_deps": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minItems": 1
+            },
+            "description": "list of plugins the addon depends on in the format of team_name/kind/name@version"
+          },
+          "addon_deps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "list of other addons this addon depends on in the format of team_name/name@version"
+          },
+          "retracted": {
+            "type": "boolean",
+            "description": "If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use."
+          },
+          "checksum": {
+            "type": "string",
+            "description": "The checksum of the addon asset"
+          }
+        },
+        "title": "CloudQuery Addon Version",
+        "type": "object"
+      },
+      "AddonVersionUpdate": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Description of what's new or changed in this version (supports markdown)",
+            "example": "- Added support for *AWS S3* - Added support for *AWS EC2*"
+          },
+          "doc": {
+            "type": "string",
+            "description": "Main README in MD format"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version."
+          },
+          "plugin_deps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "list of plugins the addon depends on in the format of team_name/kind/name@version"
+          },
+          "addon_deps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "list of other addons this addon depends on in the format of team_name/name@version"
+          },
+          "retracted": {
+            "type": "boolean",
+            "description": "If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use."
+          },
+          "checksum": {
+            "type": "string",
+            "description": "The checksum of the addon asset"
+          }
+        }
+      },
       "Team": {
         "additionalProperties": false,
         "description": "CloudQuery Team",
@@ -3928,6 +4999,29 @@
         "required": true,
         "schema": {
           "type": "string"
+        }
+      },
+      "addon_sort_by": {
+        "description": "The field to sort by",
+        "in": "query",
+        "name": "sort_by",
+        "required": false,
+        "schema": {
+          "enum": [
+            "created_at",
+            "updated_at",
+            "name",
+            "downloads"
+          ],
+          "type": "string"
+        }
+      },
+      "addon_name": {
+        "in": "path",
+        "name": "addon_name",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/AddonName"
         }
       },
       "include_private": {

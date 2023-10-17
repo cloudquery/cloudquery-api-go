@@ -18,13 +18,39 @@ const (
 	ReadAndWrite APIKeyScope = "read-and-write"
 )
 
+// Defines values for AddonCategory.
+const (
+	AddonCategoryCloudInfrastructure  AddonCategory = "cloud-infrastructure"
+	AddonCategoryDatabases            AddonCategory = "databases"
+	AddonCategoryEngineeringAnalytics AddonCategory = "engineering-analytics"
+	AddonCategoryOther                AddonCategory = "other"
+	AddonCategorySalesMarketing       AddonCategory = "sales-marketing"
+)
+
+// Defines values for AddonFormat.
+const (
+	Zip AddonFormat = "zip"
+)
+
+// Defines values for AddonTier.
+const (
+	AddonTierFree AddonTier = "free"
+	AddonTierPaid AddonTier = "paid"
+)
+
+// Defines values for AddonType.
+const (
+	Transformation AddonType = "transformation"
+	Visualization  AddonType = "visualization"
+)
+
 // Defines values for PluginCategory.
 const (
-	CloudInfrastructure  PluginCategory = "cloud-infrastructure"
-	Databases            PluginCategory = "databases"
-	EngineeringAnalytics PluginCategory = "engineering-analytics"
-	Other                PluginCategory = "other"
-	SalesMarketing       PluginCategory = "sales-marketing"
+	PluginCategoryCloudInfrastructure  PluginCategory = "cloud-infrastructure"
+	PluginCategoryDatabases            PluginCategory = "databases"
+	PluginCategoryEngineeringAnalytics PluginCategory = "engineering-analytics"
+	PluginCategoryOther                PluginCategory = "other"
+	PluginCategorySalesMarketing       PluginCategory = "sales-marketing"
 )
 
 // Defines values for PluginKind.
@@ -35,14 +61,22 @@ const (
 
 // Defines values for PluginTier.
 const (
-	Free PluginTier = "free"
-	Paid PluginTier = "paid"
+	PluginTierFree PluginTier = "free"
+	PluginTierPaid PluginTier = "paid"
 )
 
 // Defines values for PluginVersionPackageType.
 const (
 	PluginVersionPackageTypeDocker PluginVersionPackageType = "docker"
 	PluginVersionPackageTypeNative PluginVersionPackageType = "native"
+)
+
+// Defines values for AddonSortBy.
+const (
+	AddonSortByCreatedAt AddonSortBy = "created_at"
+	AddonSortByDownloads AddonSortBy = "downloads"
+	AddonSortByName      AddonSortBy = "name"
+	AddonSortByUpdatedAt AddonSortBy = "updated_at"
 )
 
 // Defines values for PluginSortBy.
@@ -58,6 +92,19 @@ const (
 	VersionSortByCreatedAt VersionSortBy = "created_at"
 )
 
+// Defines values for ListAddonsParamsSortBy.
+const (
+	ListAddonsParamsSortByCreatedAt ListAddonsParamsSortBy = "created_at"
+	ListAddonsParamsSortByDownloads ListAddonsParamsSortBy = "downloads"
+	ListAddonsParamsSortByName      ListAddonsParamsSortBy = "name"
+	ListAddonsParamsSortByUpdatedAt ListAddonsParamsSortBy = "updated_at"
+)
+
+// Defines values for ListAddonVersionsParamsSortBy.
+const (
+	ListAddonVersionsParamsSortByCreatedAt ListAddonVersionsParamsSortBy = "created_at"
+)
+
 // Defines values for ListPluginsParamsSortBy.
 const (
 	ListPluginsParamsSortByCreatedAt ListPluginsParamsSortBy = "created_at"
@@ -68,7 +115,7 @@ const (
 
 // Defines values for ListPluginVersionsParamsSortBy.
 const (
-	ListPluginVersionsParamsSortByCreatedAt ListPluginVersionsParamsSortBy = "created_at"
+	CreatedAt ListPluginVersionsParamsSortBy = "created_at"
 )
 
 // Defines values for CreatePluginVersionJSONBodyPackageType.
@@ -106,6 +153,179 @@ type APIKeyName = string
 
 // APIKeyScope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
 type APIKeyScope string
+
+// Addon CloudQuery Addon
+type Addon struct {
+	// AddonFormat Supported formats for addons
+	AddonFormat AddonFormat `json:"addon_format"`
+
+	// AddonType Supported types for addons
+	AddonType AddonType `json:"addon_type"`
+
+	// Category Supported categories for addons
+	Category  AddonCategory `json:"category"`
+	CreatedAt time.Time     `json:"created_at"`
+
+	// DisplayName The addon's display name
+	DisplayName string  `json:"display_name"`
+	Homepage    *string `json:"homepage,omitempty"`
+	Logo        string  `json:"logo"`
+
+	// Name The unique name for the addon.
+	Name AddonName `json:"name"`
+
+	// Official True if the addon is maintained by CloudQuery, false otherwise
+	Official bool `json:"official"`
+
+	// PriceUsd The price for 6 months
+	PriceUSD string `json:"price_usd"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
+	Public           *bool   `json:"public,omitempty"`
+	Repository       *string `json:"repository,omitempty"`
+	ShortDescription string  `json:"short_description"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName `json:"team_name"`
+
+	// Tier Supported tiers for addons
+	Tier AddonTier `json:"tier"`
+}
+
+// AddonCategory Supported categories for addons
+type AddonCategory string
+
+// AddonCreate CloudQuery AddonCreate
+type AddonCreate struct {
+	// AddonFormat Supported formats for addons
+	AddonFormat AddonFormat `json:"addon_format"`
+
+	// AddonType Supported types for addons
+	AddonType AddonType `json:"addon_type"`
+
+	// Category Supported categories for addons
+	Category AddonCategory `json:"category"`
+
+	// DisplayName The addon's display name
+	DisplayName string  `json:"display_name"`
+	Homepage    *string `json:"homepage,omitempty"`
+	Logo        string  `json:"logo"`
+
+	// Name The unique name for the addon.
+	Name AddonName `json:"name"`
+
+	// PriceUsd The price for 6 months
+	PriceUSD *string `json:"price_usd,omitempty"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
+	Public           bool    `json:"public"`
+	Repository       *string `json:"repository,omitempty"`
+	ShortDescription string  `json:"short_description"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName `json:"team_name"`
+
+	// Tier Supported tiers for addons
+	Tier AddonTier `json:"tier"`
+}
+
+// AddonFormat Supported formats for addons
+type AddonFormat string
+
+// AddonName The unique name for the addon.
+type AddonName = string
+
+// AddonTier Supported tiers for addons
+type AddonTier string
+
+// AddonType Supported types for addons
+type AddonType string
+
+// AddonUpdate CloudQuery AddonUpdate
+type AddonUpdate struct {
+	// AddonFormat Supported formats for addons
+	AddonFormat *AddonFormat `json:"addon_format,omitempty"`
+
+	// AddonType Supported types for addons
+	AddonType *AddonType `json:"addon_type,omitempty"`
+
+	// Category Supported categories for addons
+	Category  *AddonCategory `json:"category,omitempty"`
+	CreatedAt *time.Time     `json:"created_at,omitempty"`
+
+	// DisplayName The addon's display name
+	DisplayName *string `json:"display_name,omitempty"`
+	Homepage    *string `json:"homepage,omitempty"`
+	Logo        *string `json:"logo,omitempty"`
+
+	// PriceUsd The price for 6 months in USD
+	PriceUSD *string `json:"price_usd,omitempty"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
+	Public           *bool   `json:"public,omitempty"`
+	Repository       *string `json:"repository,omitempty"`
+	ShortDescription *string `json:"short_description,omitempty"`
+
+	// Tier Supported tiers for addons
+	Tier *AddonTier `json:"tier,omitempty"`
+}
+
+// AddonVersion CloudQuery Addon Version
+type AddonVersion struct {
+	// AddonDeps list of other addons this addon depends on in the format of team_name/name@version
+	AddonDeps *[]string `json:"addon_deps,omitempty"`
+
+	// Checksum The checksum of the addon asset
+	Checksum string `json:"checksum"`
+
+	// CreatedAt The date and time the plugin version was created.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Doc Main README in MD format
+	Doc string `json:"doc"`
+
+	// Draft If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version.
+	Draft bool `json:"draft"`
+
+	// Message Description of what's new or changed in this version (supports markdown)
+	Message string `json:"message"`
+
+	// Name The version in semantic version format.
+	Name VersionName `json:"name"`
+
+	// PluginDeps list of plugins the addon depends on in the format of team_name/kind/name@version
+	PluginDeps []string `json:"plugin_deps"`
+
+	// PublishedAt The date and time the plugin version was set to non-draft (published).
+	PublishedAt *time.Time `json:"published_at,omitempty"`
+
+	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
+	Retracted bool `json:"retracted"`
+}
+
+// AddonVersionUpdate defines model for AddonVersionUpdate.
+type AddonVersionUpdate struct {
+	// AddonDeps list of other addons this addon depends on in the format of team_name/name@version
+	AddonDeps *[]string `json:"addon_deps,omitempty"`
+
+	// Checksum The checksum of the addon asset
+	Checksum *string `json:"checksum,omitempty"`
+
+	// Doc Main README in MD format
+	Doc *string `json:"doc,omitempty"`
+
+	// Draft If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version.
+	Draft *bool `json:"draft,omitempty"`
+
+	// Message Description of what's new or changed in this version (supports markdown)
+	Message *string `json:"message,omitempty"`
+
+	// PluginDeps list of plugins the addon depends on in the format of team_name/kind/name@version
+	PluginDeps *[]string `json:"plugin_deps,omitempty"`
+
+	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
+	Retracted *bool `json:"retracted,omitempty"`
+}
 
 // BasicError Basic Error
 type BasicError struct {
@@ -626,6 +846,9 @@ type UserName = string
 // VersionName The version in semantic version format.
 type VersionName = string
 
+// AddonSortBy defines model for addon_sort_by.
+type AddonSortBy string
+
 // APIKeyPathName defines model for apikey_name.
 type APIKeyPathName = string
 
@@ -676,6 +899,59 @@ type TooManyRequests = BasicError
 
 // UnprocessableEntity defines model for UnprocessableEntity.
 type UnprocessableEntity = FieldError
+
+// ListAddonsParams defines parameters for ListAddons.
+type ListAddonsParams struct {
+	// SortBy The field to sort by
+	SortBy *ListAddonsParamsSortBy `form:"sort_by,omitempty" json:"sort_by,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
+// ListAddonsParamsSortBy defines parameters for ListAddons.
+type ListAddonsParamsSortBy string
+
+// ListAddonVersionsParams defines parameters for ListAddonVersions.
+type ListAddonVersionsParams struct {
+	// SortBy The field to sort by
+	SortBy *ListAddonVersionsParamsSortBy `form:"sort_by,omitempty" json:"sort_by,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// IncludeDrafts Whether to include draft plugins
+	IncludeDrafts *IncludeDrafts `form:"include_drafts,omitempty" json:"include_drafts,omitempty"`
+}
+
+// ListAddonVersionsParamsSortBy defines parameters for ListAddonVersions.
+type ListAddonVersionsParamsSortBy string
+
+// CreateAddonVersionJSONBody defines parameters for CreateAddonVersion.
+type CreateAddonVersionJSONBody struct {
+	// AddonDeps addon dependencies in the format of ['team_name/addon_name@version']
+	AddonDeps *[]string `json:"addon_deps,omitempty"`
+
+	// Checksum SHA-256 checksums for this addon version.
+	Checksum string `json:"checksum"`
+
+	// Doc Main README in MD format
+	Doc string `json:"doc"`
+
+	// Message A message describing what's new or changed in this version.
+	// This message will be displayed to users in the addon's changelog.
+	// Supports limited markdown syntax.
+	Message string `json:"message"`
+
+	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
+	PluginDeps *[]string `json:"plugin_deps,omitempty"`
+}
 
 // ListPluginsParams defines parameters for ListPlugins.
 type ListPluginsParams struct {
@@ -795,6 +1071,18 @@ type UpdateTeamJSONBody struct {
 	DisplayName *string `json:"display_name,omitempty"`
 }
 
+// ListAddonsByTeamParams defines parameters for ListAddonsByTeam.
+type ListAddonsByTeamParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// IncludePrivate Whether to include private plugins
+	IncludePrivate *IncludePrivate `form:"include_private,omitempty" json:"include_private,omitempty"`
+}
+
 // ListTeamAPIKeysParams defines parameters for ListTeamAPIKeys.
 type ListTeamAPIKeysParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -907,6 +1195,18 @@ type GetCurrentUserMembershipsParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
+
+// CreateAddonJSONRequestBody defines body for CreateAddon for application/json ContentType.
+type CreateAddonJSONRequestBody = AddonCreate
+
+// UpdateAddonJSONRequestBody defines body for UpdateAddon for application/json ContentType.
+type UpdateAddonJSONRequestBody = AddonUpdate
+
+// UpdateAddonVersionJSONRequestBody defines body for UpdateAddonVersion for application/json ContentType.
+type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
+
+// CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
+type CreateAddonVersionJSONRequestBody CreateAddonVersionJSONBody
 
 // CreatePluginJSONRequestBody defines body for CreatePlugin for application/json ContentType.
 type CreatePluginJSONRequestBody = PluginCreate
