@@ -938,7 +938,7 @@ type CreateAddonVersionJSONBody struct {
 	// AddonDeps addon dependencies in the format of ['team_name/addon_name@version']
 	AddonDeps *[]string `json:"addon_deps,omitempty"`
 
-	// Checksum SHA-256 checksums for this addon version.
+	// Checksum SHA-256 checksum for the addon asset
 	Checksum string `json:"checksum"`
 
 	// Doc Main README in MD format
@@ -950,7 +950,7 @@ type CreateAddonVersionJSONBody struct {
 	Message string `json:"message"`
 
 	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
-	PluginDeps *[]string `json:"plugin_deps,omitempty"`
+	PluginDeps []string `json:"plugin_deps"`
 }
 
 // ListPluginsParams defines parameters for ListPlugins.
