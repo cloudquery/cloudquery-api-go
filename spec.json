@@ -3223,6 +3223,9 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
           "500": {
             "$ref": "#/components/responses/InternalError"
           }
@@ -4786,7 +4789,8 @@
         "required": [
           "name",
           "scope",
-          "expires_at"
+          "expires_at",
+          "expired"
         ],
         "properties": {
           "name": {
@@ -4811,6 +4815,11 @@
             "description": "Timestamp at which API key will stop working",
             "format": "date-time",
             "example": "2017-07-14T16:53:42Z"
+          },
+          "expired": {
+            "type": "boolean",
+            "description": "Whether the API key has expired or not",
+            "example": false
           },
           "scope": {
             "$ref": "#/components/schemas/APIKeyScope"

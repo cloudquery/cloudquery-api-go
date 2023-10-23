@@ -6046,6 +6046,7 @@ type ListTeamAPIKeysResponse struct {
 		Metadata ListMetadata `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
+	JSON404 *NotFound
 	JSON500 *InternalError
 }
 
@@ -9358,6 +9359,13 @@ func ParseListTeamAPIKeysResponse(rsp *http.Response) (*ListTeamAPIKeysResponse,
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

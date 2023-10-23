@@ -135,6 +135,9 @@ type APIKey struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	CreatedBy *Email     `json:"created_by,omitempty"`
 
+	// Expired Whether the API key has expired or not
+	Expired bool `json:"expired"`
+
 	// ExpiresAt Timestamp at which API key will stop working
 	ExpiresAt time.Time `json:"expires_at"`
 
