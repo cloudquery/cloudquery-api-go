@@ -3232,7 +3232,7 @@
         }
       },
       "post": {
-        "description": "Create new team API Key. This is useful in CI",
+        "description": "Create new team API Key.",
         "operationId": "CreateTeamAPIKey",
         "tags": [
           "teams"
@@ -3249,20 +3249,17 @@
                 "type": "object",
                 "required": [
                   "expires_at",
-                  "role",
                   "name"
                 ],
                 "properties": {
                   "name": {
                     "type": "string",
+                    "minLength": 1,
                     "maxLength": 255
                   },
                   "expires_at": {
                     "type": "string",
                     "format": "date-time"
-                  },
-                  "scope": {
-                    "$ref": "#/components/schemas/APIKeyScope"
                   }
                 }
               }
