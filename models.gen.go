@@ -1099,9 +1099,6 @@ type ListTeamAPIKeysParams struct {
 type CreateTeamAPIKeyJSONBody struct {
 	ExpiresAt time.Time `json:"expires_at"`
 	Name      string    `json:"name"`
-
-	// Scope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
-	Scope *APIKeyScope `json:"scope,omitempty"`
 }
 
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
