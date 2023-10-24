@@ -3290,7 +3290,7 @@
         }
       }
     },
-    "/teams/{team_name}/apikeys/{apikey_name}": {
+    "/teams/{team_name}/apikeys/{apikey_id}": {
       "delete": {
         "description": "Delete API Key. This will remove any future access by this API Key.",
         "operationId": "DeleteTeamAPIKey",
@@ -3302,7 +3302,7 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
-            "$ref": "#/components/parameters/apikey_name"
+            "$ref": "#/components/parameters/apikey_id"
           }
         ],
         "responses": {
@@ -4771,6 +4771,13 @@
         "minLength": 1,
         "pattern": "^(?:[a-zA-Z0-9][a-zA-Z0-9- ]*)?[a-zA-Z0-9]$"
       },
+      "APIKeyID": {
+        "description": "ID of the API key",
+        "type": "string",
+        "format": "uuid",
+        "example": "12345678-1234-1234-1234-1234567890ab",
+        "x-go-name": "ID"
+      },
       "APIKeyScope": {
         "description": "Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins",
         "type": "string",
@@ -4782,6 +4789,7 @@
         "description": "API Key to interact with CloudQuery Cloud under specific team",
         "type": "object",
         "required": [
+          "id",
           "name",
           "scope",
           "expires_at",
@@ -4794,6 +4802,9 @@
           "created_by": {
             "$ref": "#/components/schemas/Email",
             "description": "email of the user that created the API key"
+          },
+          "id": {
+            "$ref": "#/components/schemas/APIKeyID"
           },
           "key": {
             "type": "string",
@@ -5054,14 +5065,14 @@
           "$ref": "#/components/schemas/Email"
         }
       },
-      "apikey_name": {
-        "name": "apikey_name",
+      "apikey_id": {
+        "name": "apikey_id",
         "in": "path",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/APIKeyName"
+          "$ref": "#/components/schemas/APIKeyID"
         },
-        "x-go-name": "APIKeyPathName"
+        "x-go-name": "APIKeyID"
       }
     }
   }

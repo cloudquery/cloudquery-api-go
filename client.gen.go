@@ -234,7 +234,7 @@ type ClientInterface interface {
 	CreateTeamAPIKey(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteTeamAPIKey request
-	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeamInvitations request
 	ListTeamInvitations(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -948,8 +948,8 @@ func (c *Client) CreateTeamAPIKey(ctx context.Context, teamName TeamName, body C
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyPathName)
+func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyID)
 	if err != nil {
 		return nil, err
 	}
@@ -3604,7 +3604,7 @@ func NewCreateTeamAPIKeyRequestWithBody(server string, teamName TeamName, conten
 }
 
 // NewDeleteTeamAPIKeyRequest generates requests for DeleteTeamAPIKey
-func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyPathName APIKeyPathName) (*http.Request, error) {
+func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyID APIKeyID) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3616,7 +3616,7 @@ func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyPathName
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "apikey_name", runtime.ParamLocationPath, aPIKeyPathName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "apikey_id", runtime.ParamLocationPath, aPIKeyID)
 	if err != nil {
 		return nil, err
 	}
@@ -5000,7 +5000,7 @@ type ClientWithResponsesInterface interface {
 	CreateTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, body CreateTeamAPIKeyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamAPIKeyResponse, error)
 
 	// DeleteTeamAPIKeyWithResponse request
-	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
+	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
 
 	// ListTeamInvitationsWithResponse request
 	ListTeamInvitationsWithResponse(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*ListTeamInvitationsResponse, error)
@@ -7143,8 +7143,8 @@ func (c *ClientWithResponses) CreateTeamAPIKeyWithResponse(ctx context.Context, 
 }
 
 // DeleteTeamAPIKeyWithResponse request returning *DeleteTeamAPIKeyResponse
-func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyPathName APIKeyPathName, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error) {
-	rsp, err := c.DeleteTeamAPIKey(ctx, teamName, aPIKeyPathName, reqEditors...)
+func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error) {
+	rsp, err := c.DeleteTeamAPIKey(ctx, teamName, aPIKeyID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
