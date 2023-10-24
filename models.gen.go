@@ -141,6 +141,9 @@ type APIKey struct {
 	// ExpiresAt Timestamp at which API key will stop working
 	ExpiresAt time.Time `json:"expires_at"`
 
+	// Id ID of the API key
+	ID ID `json:"id"`
+
 	// Key API key. Will be shown only in the response when creating the key.
 	Key *string `json:"key,omitempty"`
 
@@ -150,6 +153,9 @@ type APIKey struct {
 	// Scope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
 	Scope APIKeyScope `json:"scope"`
 }
+
+// ID ID of the API key
+type ID = openapi_types.UUID
 
 // APIKeyName Name of the API key
 type APIKeyName = string
@@ -852,8 +858,8 @@ type VersionName = string
 // AddonSortBy defines model for addon_sort_by.
 type AddonSortBy string
 
-// APIKeyPathName Name of the API key
-type APIKeyPathName = APIKeyName
+// APIKeyID ID of the API key
+type APIKeyID = ID
 
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
