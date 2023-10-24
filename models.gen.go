@@ -852,8 +852,8 @@ type VersionName = string
 // AddonSortBy defines model for addon_sort_by.
 type AddonSortBy string
 
-// APIKeyPathName defines model for apikey_name.
-type APIKeyPathName = string
+// APIKeyPathName Name of the API key
+type APIKeyPathName = APIKeyName
 
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
@@ -1098,7 +1098,9 @@ type ListTeamAPIKeysParams struct {
 // CreateTeamAPIKeyJSONBody defines parameters for CreateTeamAPIKey.
 type CreateTeamAPIKeyJSONBody struct {
 	ExpiresAt time.Time `json:"expires_at"`
-	Name      string    `json:"name"`
+
+	// Name Name of the API key
+	Name APIKeyName `json:"name"`
 }
 
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
