@@ -3253,9 +3253,7 @@
                 ],
                 "properties": {
                   "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255
+                    "$ref": "#/components/schemas/APIKeyName"
                   },
                   "expires_at": {
                     "type": "string",
@@ -4771,7 +4769,7 @@
         "example": "cli-api-key",
         "maxLength": 255,
         "minLength": 1,
-        "pattern": "^[a-zA-Z0-9-]+$"
+        "pattern": "^(?:[a-zA-Z0-9][a-zA-Z0-9- ]*)?[a-zA-Z0-9]$"
       },
       "APIKeyScope": {
         "description": "Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins",
@@ -5061,11 +5059,7 @@
         "in": "path",
         "required": true,
         "schema": {
-          "type": "string",
-          "example": "cli-api-key",
-          "maxLength": 255,
-          "minLength": 1,
-          "pattern": "^[a-zA-Z0-9-]+$"
+          "$ref": "#/components/schemas/APIKeyName"
         },
         "x-go-name": "APIKeyPathName"
       }
