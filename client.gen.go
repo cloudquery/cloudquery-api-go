@@ -6477,6 +6477,7 @@ type IncreaseTeamPluginUsageResponse struct {
 	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
+	JSON503      *ServiceUnavailable
 }
 
 // Status returns HTTPResponse.Status
@@ -10238,6 +10239,13 @@ func ParseIncreaseTeamPluginUsageResponse(rsp *http.Response) (*IncreaseTeamPlug
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest ServiceUnavailable
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
 
 	}
 

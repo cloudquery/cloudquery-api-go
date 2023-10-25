@@ -903,6 +903,9 @@ type NotFound = BasicError
 // RequiresAuthentication Basic Error
 type RequiresAuthentication = BasicError
 
+// ServiceUnavailable Basic Error
+type ServiceUnavailable = BasicError
+
 // TooManyRequests Basic Error
 type TooManyRequests = BasicError
 

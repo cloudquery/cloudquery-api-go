@@ -2650,6 +2650,9 @@
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
           }
         },
         "tags": [
@@ -4903,6 +4906,16 @@
           }
         },
         "description": "Too Many Requests"
+      },
+      "ServiceUnavailable": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Service unavailable"
       },
       "MethodNotAllowed": {
         "content": {
