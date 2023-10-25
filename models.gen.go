@@ -593,6 +593,9 @@ type PluginKind string
 // PluginName The unique name for the plugin.
 type PluginName = string
 
+// PluginProtocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+type PluginProtocols = []int
+
 // PluginTable CloudQuery Plugin Table
 type PluginTable struct {
 	// Description Description of the table
@@ -740,8 +743,8 @@ type PluginVersion struct {
 	// PackageType The package type of the plugin assets
 	PackageType PluginVersionPackageType `json:"package_type"`
 
-	// Protocols The CloudQuery protocols supported by this plugin version
-	Protocols []int `json:"protocols"`
+	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+	Protocols PluginProtocols `json:"protocols"`
 
 	// PublishedAt The date and time the plugin version was set to non-draft (published).
 	PublishedAt *time.Time `json:"published_at,omitempty"`
@@ -770,8 +773,8 @@ type PluginVersionUpdate struct {
 	// PackageType The package type of the plugin binaries
 	PackageType *string `json:"package_type,omitempty"`
 
-	// Protocols The supported CloudQuery protocols by this plugin version
-	Protocols *[]int `json:"protocols,omitempty"`
+	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+	Protocols *PluginProtocols `json:"protocols,omitempty"`
 
 	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
 	Retracted        *bool     `json:"retracted,omitempty"`
@@ -1011,8 +1014,8 @@ type CreatePluginVersionJSONBody struct {
 	// PackageType The package type of the plugin assets
 	PackageType CreatePluginVersionJSONBodyPackageType `json:"package_type"`
 
-	// Protocols List of protocols supported by this plugin version
-	Protocols []int `json:"protocols"`
+	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+	Protocols PluginProtocols `json:"protocols"`
 
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
 	SupportedTargets []string `json:"supported_targets"`

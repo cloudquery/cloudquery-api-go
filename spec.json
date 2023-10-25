@@ -499,11 +499,7 @@
                     "description": "A message describing what's new or changed in this version.\nThis message will be displayed to users in the plugin's changelog.\nSupports limited markdown syntax.\n"
                   },
                   "protocols": {
-                    "type": "array",
-                    "description": "List of protocols supported by this plugin version",
-                    "items": {
-                      "type": "integer"
-                    }
+                    "$ref": "#/components/schemas/PluginProtocols"
                   },
                   "supported_targets": {
                     "type": "array",
@@ -3685,6 +3681,16 @@
           }
         }
       },
+      "PluginProtocols": {
+        "description": "The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).",
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "enum": [
+            3
+          ]
+        }
+      },
       "PluginVersion": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Version",
@@ -3729,15 +3735,7 @@
             "description": "If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use."
           },
           "protocols": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            },
-            "description": "The CloudQuery protocols supported by this plugin version",
-            "example": [
-              1,
-              2
-            ]
+            "$ref": "#/components/schemas/PluginProtocols"
           },
           "supported_targets": {
             "type": "array",
@@ -3787,15 +3785,7 @@
             "description": "If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use."
           },
           "protocols": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            },
-            "description": "The supported CloudQuery protocols by this plugin version",
-            "example": [
-              1,
-              2
-            ]
+            "$ref": "#/components/schemas/PluginProtocols"
           },
           "supported_targets": {
             "type": "array",
@@ -3856,6 +3846,7 @@
           },
           "content": {
             "type": "string",
+            "minLength": 1,
             "description": "The content of the documentation page. Supports markdown.",
             "example": "# Getting Started\n\nThis is the getting started page."
           }
