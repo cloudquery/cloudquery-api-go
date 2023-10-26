@@ -6471,7 +6471,6 @@ func (r ListTeamPluginUsageResponse) StatusCode() int {
 type IncreaseTeamPluginUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *UsageCurrent
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
@@ -10198,13 +10197,6 @@ func ParseIncreaseTeamPluginUsageResponse(rsp *http.Response) (*IncreaseTeamPlug
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest UsageCurrent
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

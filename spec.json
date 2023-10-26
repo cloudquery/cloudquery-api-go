@@ -2622,15 +2622,8 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Plugin usage for the current calendar month.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UsageCurrent"
-                }
-              }
-            }
+          "204": {
+            "description": "Success (the plugin usage was increased). It may take some time to reflect in the usage list."
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
