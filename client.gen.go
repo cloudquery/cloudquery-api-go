@@ -101,37 +101,37 @@ type ClientInterface interface {
 	CreateAddon(ctx context.Context, body CreateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteAddonByTeamAndName request
-	DeleteAddonByTeamAndName(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteAddonByTeamAndName(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAddon request
-	GetAddon(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetAddon(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateAddonWithBody request with any body
-	UpdateAddonWithBody(ctx context.Context, teamName TeamName, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateAddonWithBody(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateAddon(ctx context.Context, teamName TeamName, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateAddon(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListAddonVersions request
-	ListAddonVersions(ctx context.Context, teamName TeamName, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListAddonVersions(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAddonVersion request
-	GetAddonVersion(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateAddonVersionWithBody request with any body
-	UpdateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateAddonVersion(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateAddonVersionWithBody request with any body
-	CreateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateAddonVersion(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadAddonAsset request
-	DownloadAddonAsset(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DownloadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UploadAddonAsset request
-	UploadAddonAsset(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPlugins request
 	ListPlugins(ctx context.Context, params *ListPluginsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -360,8 +360,8 @@ func (c *Client) CreateAddon(ctx context.Context, body CreateAddonJSONRequestBod
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteAddonByTeamAndName(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteAddonByTeamAndNameRequest(c.Server, teamName, addonName)
+func (c *Client) DeleteAddonByTeamAndName(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAddonByTeamAndNameRequest(c.Server, teamName, addonType, addonName)
 	if err != nil {
 		return nil, err
 	}
@@ -372,8 +372,8 @@ func (c *Client) DeleteAddonByTeamAndName(ctx context.Context, teamName TeamName
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetAddon(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAddonRequest(c.Server, teamName, addonName)
+func (c *Client) GetAddon(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAddonRequest(c.Server, teamName, addonType, addonName)
 	if err != nil {
 		return nil, err
 	}
@@ -384,8 +384,8 @@ func (c *Client) GetAddon(ctx context.Context, teamName TeamName, addonName Addo
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateAddonWithBody(ctx context.Context, teamName TeamName, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateAddonRequestWithBody(c.Server, teamName, addonName, contentType, body)
+func (c *Client) UpdateAddonWithBody(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAddonRequestWithBody(c.Server, teamName, addonType, addonName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -396,8 +396,8 @@ func (c *Client) UpdateAddonWithBody(ctx context.Context, teamName TeamName, add
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateAddon(ctx context.Context, teamName TeamName, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateAddonRequest(c.Server, teamName, addonName, body)
+func (c *Client) UpdateAddon(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAddonRequest(c.Server, teamName, addonType, addonName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -408,8 +408,8 @@ func (c *Client) UpdateAddon(ctx context.Context, teamName TeamName, addonName A
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListAddonVersions(ctx context.Context, teamName TeamName, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListAddonVersionsRequest(c.Server, teamName, addonName, params)
+func (c *Client) ListAddonVersions(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAddonVersionsRequest(c.Server, teamName, addonType, addonName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -420,8 +420,8 @@ func (c *Client) ListAddonVersions(ctx context.Context, teamName TeamName, addon
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetAddonVersion(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAddonVersionRequest(c.Server, teamName, addonName, versionName)
+func (c *Client) GetAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAddonVersionRequest(c.Server, teamName, addonType, addonName, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -432,8 +432,8 @@ func (c *Client) GetAddonVersion(ctx context.Context, teamName TeamName, addonNa
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateAddonVersionRequestWithBody(c.Server, teamName, addonName, versionName, contentType, body)
+func (c *Client) UpdateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAddonVersionRequestWithBody(c.Server, teamName, addonType, addonName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -444,8 +444,8 @@ func (c *Client) UpdateAddonVersionWithBody(ctx context.Context, teamName TeamNa
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateAddonVersion(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateAddonVersionRequest(c.Server, teamName, addonName, versionName, body)
+func (c *Client) UpdateAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAddonVersionRequest(c.Server, teamName, addonType, addonName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -456,8 +456,8 @@ func (c *Client) UpdateAddonVersion(ctx context.Context, teamName TeamName, addo
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateAddonVersionRequestWithBody(c.Server, teamName, addonName, versionName, contentType, body)
+func (c *Client) CreateAddonVersionWithBody(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAddonVersionRequestWithBody(c.Server, teamName, addonType, addonName, versionName, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -468,8 +468,8 @@ func (c *Client) CreateAddonVersionWithBody(ctx context.Context, teamName TeamNa
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateAddonVersion(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateAddonVersionRequest(c.Server, teamName, addonName, versionName, body)
+func (c *Client) CreateAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAddonVersionRequest(c.Server, teamName, addonType, addonName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -480,8 +480,8 @@ func (c *Client) CreateAddonVersion(ctx context.Context, teamName TeamName, addo
 	return c.Client.Do(req)
 }
 
-func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDownloadAddonAssetRequest(c.Server, teamName, addonName, versionName)
+func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -492,8 +492,8 @@ func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addo
 	return c.Client.Do(req)
 }
 
-func (c *Client) UploadAddonAsset(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUploadAddonAssetRequest(c.Server, teamName, addonName, versionName)
+func (c *Client) UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1433,7 +1433,7 @@ func NewCreateAddonRequestWithBody(server string, contentType string, body io.Re
 }
 
 // NewDeleteAddonByTeamAndNameRequest generates requests for DeleteAddonByTeamAndName
-func NewDeleteAddonByTeamAndNameRequest(server string, teamName TeamName, addonName AddonName) (*http.Request, error) {
+func NewDeleteAddonByTeamAndNameRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1445,7 +1445,14 @@ func NewDeleteAddonByTeamAndNameRequest(server string, teamName TeamName, addonN
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
 	if err != nil {
 		return nil, err
 	}
@@ -1455,7 +1462,7 @@ func NewDeleteAddonByTeamAndNameRequest(server string, teamName TeamName, addonN
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1474,7 +1481,7 @@ func NewDeleteAddonByTeamAndNameRequest(server string, teamName TeamName, addonN
 }
 
 // NewGetAddonRequest generates requests for GetAddon
-func NewGetAddonRequest(server string, teamName TeamName, addonName AddonName) (*http.Request, error) {
+func NewGetAddonRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1486,7 +1493,14 @@ func NewGetAddonRequest(server string, teamName TeamName, addonName AddonName) (
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
 	if err != nil {
 		return nil, err
 	}
@@ -1496,7 +1510,7 @@ func NewGetAddonRequest(server string, teamName TeamName, addonName AddonName) (
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1515,18 +1529,18 @@ func NewGetAddonRequest(server string, teamName TeamName, addonName AddonName) (
 }
 
 // NewUpdateAddonRequest calls the generic UpdateAddon builder with application/json body
-func NewUpdateAddonRequest(server string, teamName TeamName, addonName AddonName, body UpdateAddonJSONRequestBody) (*http.Request, error) {
+func NewUpdateAddonRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, body UpdateAddonJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateAddonRequestWithBody(server, teamName, addonName, "application/json", bodyReader)
+	return NewUpdateAddonRequestWithBody(server, teamName, addonType, addonName, "application/json", bodyReader)
 }
 
 // NewUpdateAddonRequestWithBody generates requests for UpdateAddon with any type of body
-func NewUpdateAddonRequestWithBody(server string, teamName TeamName, addonName AddonName, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateAddonRequestWithBody(server string, teamName TeamName, addonType AddonType, addonName AddonName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1538,7 +1552,14 @@ func NewUpdateAddonRequestWithBody(server string, teamName TeamName, addonName A
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
 	if err != nil {
 		return nil, err
 	}
@@ -1548,7 +1569,7 @@ func NewUpdateAddonRequestWithBody(server string, teamName TeamName, addonName A
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1569,7 +1590,7 @@ func NewUpdateAddonRequestWithBody(server string, teamName TeamName, addonName A
 }
 
 // NewListAddonVersionsRequest generates requests for ListAddonVersions
-func NewListAddonVersionsRequest(server string, teamName TeamName, addonName AddonName, params *ListAddonVersionsParams) (*http.Request, error) {
+func NewListAddonVersionsRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, params *ListAddonVersionsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1581,7 +1602,14 @@ func NewListAddonVersionsRequest(server string, teamName TeamName, addonName Add
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
 	if err != nil {
 		return nil, err
 	}
@@ -1591,7 +1619,7 @@ func NewListAddonVersionsRequest(server string, teamName TeamName, addonName Add
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s/versions", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s/versions", pathParam0, pathParam1, pathParam2)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1680,7 +1708,7 @@ func NewListAddonVersionsRequest(server string, teamName TeamName, addonName Add
 }
 
 // NewGetAddonVersionRequest generates requests for GetAddonVersion
-func NewGetAddonVersionRequest(server string, teamName TeamName, addonName AddonName, versionName VersionName) (*http.Request, error) {
+func NewGetAddonVersionRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1692,14 +1720,21 @@ func NewGetAddonVersionRequest(server string, teamName TeamName, addonName Addon
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1709,7 +1744,7 @@ func NewGetAddonVersionRequest(server string, teamName TeamName, addonName Addon
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1728,18 +1763,18 @@ func NewGetAddonVersionRequest(server string, teamName TeamName, addonName Addon
 }
 
 // NewUpdateAddonVersionRequest calls the generic UpdateAddonVersion builder with application/json body
-func NewUpdateAddonVersionRequest(server string, teamName TeamName, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody) (*http.Request, error) {
+func NewUpdateAddonVersionRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateAddonVersionRequestWithBody(server, teamName, addonName, versionName, "application/json", bodyReader)
+	return NewUpdateAddonVersionRequestWithBody(server, teamName, addonType, addonName, versionName, "application/json", bodyReader)
 }
 
 // NewUpdateAddonVersionRequestWithBody generates requests for UpdateAddonVersion with any type of body
-func NewUpdateAddonVersionRequestWithBody(server string, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateAddonVersionRequestWithBody(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1751,14 +1786,21 @@ func NewUpdateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1768,7 +1810,7 @@ func NewUpdateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1789,18 +1831,18 @@ func NewUpdateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 }
 
 // NewCreateAddonVersionRequest calls the generic CreateAddonVersion builder with application/json body
-func NewCreateAddonVersionRequest(server string, teamName TeamName, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody) (*http.Request, error) {
+func NewCreateAddonVersionRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewCreateAddonVersionRequestWithBody(server, teamName, addonName, versionName, "application/json", bodyReader)
+	return NewCreateAddonVersionRequestWithBody(server, teamName, addonType, addonName, versionName, "application/json", bodyReader)
 }
 
 // NewCreateAddonVersionRequestWithBody generates requests for CreateAddonVersion with any type of body
-func NewCreateAddonVersionRequestWithBody(server string, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreateAddonVersionRequestWithBody(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1812,14 +1854,21 @@ func NewCreateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1829,7 +1878,7 @@ func NewCreateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s/versions/%s", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1850,7 +1899,7 @@ func NewCreateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 }
 
 // NewDownloadAddonAssetRequest generates requests for DownloadAddonAsset
-func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonName AddonName, versionName VersionName) (*http.Request, error) {
+func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1862,14 +1911,21 @@ func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonName Ad
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1879,7 +1935,7 @@ func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonName Ad
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s/versions/%s/assets", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s/versions/%s/assets", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1898,7 +1954,7 @@ func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonName Ad
 }
 
 // NewUploadAddonAssetRequest generates requests for UploadAddonAsset
-func NewUploadAddonAssetRequest(server string, teamName TeamName, addonName AddonName, versionName VersionName) (*http.Request, error) {
+func NewUploadAddonAssetRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1910,14 +1966,21 @@ func NewUploadAddonAssetRequest(server string, teamName TeamName, addonName Addo
 
 	var pathParam1 string
 
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
 	if err != nil {
 		return nil, err
 	}
 
 	var pathParam2 string
 
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -1927,7 +1990,7 @@ func NewUploadAddonAssetRequest(server string, teamName TeamName, addonName Addo
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/addons/%s/%s/versions/%s/assets", pathParam0, pathParam1, pathParam2)
+	operationPath := fmt.Sprintf("/addons/%s/%s/%s/versions/%s/assets", pathParam0, pathParam1, pathParam2, pathParam3)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -4867,37 +4930,37 @@ type ClientWithResponsesInterface interface {
 	CreateAddonWithResponse(ctx context.Context, body CreateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonResponse, error)
 
 	// DeleteAddonByTeamAndNameWithResponse request
-	DeleteAddonByTeamAndNameWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*DeleteAddonByTeamAndNameResponse, error)
+	DeleteAddonByTeamAndNameWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*DeleteAddonByTeamAndNameResponse, error)
 
 	// GetAddonWithResponse request
-	GetAddonWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*GetAddonResponse, error)
+	GetAddonWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*GetAddonResponse, error)
 
 	// UpdateAddonWithBodyWithResponse request with any body
-	UpdateAddonWithBodyWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error)
+	UpdateAddonWithBodyWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error)
 
-	UpdateAddonWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error)
+	UpdateAddonWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error)
 
 	// ListAddonVersionsWithResponse request
-	ListAddonVersionsWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*ListAddonVersionsResponse, error)
+	ListAddonVersionsWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*ListAddonVersionsResponse, error)
 
 	// GetAddonVersionWithResponse request
-	GetAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetAddonVersionResponse, error)
+	GetAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetAddonVersionResponse, error)
 
 	// UpdateAddonVersionWithBodyWithResponse request with any body
-	UpdateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error)
+	UpdateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error)
 
-	UpdateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error)
+	UpdateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error)
 
 	// CreateAddonVersionWithBodyWithResponse request with any body
-	CreateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error)
+	CreateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error)
 
-	CreateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error)
+	CreateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error)
 
 	// DownloadAddonAssetWithResponse request
-	DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error)
+	DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error)
 
 	// UploadAddonAssetWithResponse request
-	UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error)
+	UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error)
 
 	// ListPluginsWithResponse request
 	ListPluginsWithResponse(ctx context.Context, params *ListPluginsParams, reqEditors ...RequestEditorFn) (*ListPluginsResponse, error)
@@ -6716,8 +6779,8 @@ func (c *ClientWithResponses) CreateAddonWithResponse(ctx context.Context, body 
 }
 
 // DeleteAddonByTeamAndNameWithResponse request returning *DeleteAddonByTeamAndNameResponse
-func (c *ClientWithResponses) DeleteAddonByTeamAndNameWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*DeleteAddonByTeamAndNameResponse, error) {
-	rsp, err := c.DeleteAddonByTeamAndName(ctx, teamName, addonName, reqEditors...)
+func (c *ClientWithResponses) DeleteAddonByTeamAndNameWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*DeleteAddonByTeamAndNameResponse, error) {
+	rsp, err := c.DeleteAddonByTeamAndName(ctx, teamName, addonType, addonName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6725,8 +6788,8 @@ func (c *ClientWithResponses) DeleteAddonByTeamAndNameWithResponse(ctx context.C
 }
 
 // GetAddonWithResponse request returning *GetAddonResponse
-func (c *ClientWithResponses) GetAddonWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, reqEditors ...RequestEditorFn) (*GetAddonResponse, error) {
-	rsp, err := c.GetAddon(ctx, teamName, addonName, reqEditors...)
+func (c *ClientWithResponses) GetAddonWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, reqEditors ...RequestEditorFn) (*GetAddonResponse, error) {
+	rsp, err := c.GetAddon(ctx, teamName, addonType, addonName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6734,16 +6797,16 @@ func (c *ClientWithResponses) GetAddonWithResponse(ctx context.Context, teamName
 }
 
 // UpdateAddonWithBodyWithResponse request with arbitrary body returning *UpdateAddonResponse
-func (c *ClientWithResponses) UpdateAddonWithBodyWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error) {
-	rsp, err := c.UpdateAddonWithBody(ctx, teamName, addonName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateAddonWithBodyWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error) {
+	rsp, err := c.UpdateAddonWithBody(ctx, teamName, addonType, addonName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateAddonResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateAddonWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error) {
-	rsp, err := c.UpdateAddon(ctx, teamName, addonName, body, reqEditors...)
+func (c *ClientWithResponses) UpdateAddonWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error) {
+	rsp, err := c.UpdateAddon(ctx, teamName, addonType, addonName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6751,8 +6814,8 @@ func (c *ClientWithResponses) UpdateAddonWithResponse(ctx context.Context, teamN
 }
 
 // ListAddonVersionsWithResponse request returning *ListAddonVersionsResponse
-func (c *ClientWithResponses) ListAddonVersionsWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*ListAddonVersionsResponse, error) {
-	rsp, err := c.ListAddonVersions(ctx, teamName, addonName, params, reqEditors...)
+func (c *ClientWithResponses) ListAddonVersionsWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, params *ListAddonVersionsParams, reqEditors ...RequestEditorFn) (*ListAddonVersionsResponse, error) {
+	rsp, err := c.ListAddonVersions(ctx, teamName, addonType, addonName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6760,8 +6823,8 @@ func (c *ClientWithResponses) ListAddonVersionsWithResponse(ctx context.Context,
 }
 
 // GetAddonVersionWithResponse request returning *GetAddonVersionResponse
-func (c *ClientWithResponses) GetAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetAddonVersionResponse, error) {
-	rsp, err := c.GetAddonVersion(ctx, teamName, addonName, versionName, reqEditors...)
+func (c *ClientWithResponses) GetAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*GetAddonVersionResponse, error) {
+	rsp, err := c.GetAddonVersion(ctx, teamName, addonType, addonName, versionName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6769,16 +6832,16 @@ func (c *ClientWithResponses) GetAddonVersionWithResponse(ctx context.Context, t
 }
 
 // UpdateAddonVersionWithBodyWithResponse request with arbitrary body returning *UpdateAddonVersionResponse
-func (c *ClientWithResponses) UpdateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error) {
-	rsp, err := c.UpdateAddonVersionWithBody(ctx, teamName, addonName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error) {
+	rsp, err := c.UpdateAddonVersionWithBody(ctx, teamName, addonType, addonName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateAddonVersionResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error) {
-	rsp, err := c.UpdateAddonVersion(ctx, teamName, addonName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) UpdateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body UpdateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonVersionResponse, error) {
+	rsp, err := c.UpdateAddonVersion(ctx, teamName, addonType, addonName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6786,16 +6849,16 @@ func (c *ClientWithResponses) UpdateAddonVersionWithResponse(ctx context.Context
 }
 
 // CreateAddonVersionWithBodyWithResponse request with arbitrary body returning *CreateAddonVersionResponse
-func (c *ClientWithResponses) CreateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error) {
-	rsp, err := c.CreateAddonVersionWithBody(ctx, teamName, addonName, versionName, contentType, body, reqEditors...)
+func (c *ClientWithResponses) CreateAddonVersionWithBodyWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error) {
+	rsp, err := c.CreateAddonVersionWithBody(ctx, teamName, addonType, addonName, versionName, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseCreateAddonVersionResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error) {
-	rsp, err := c.CreateAddonVersion(ctx, teamName, addonName, versionName, body, reqEditors...)
+func (c *ClientWithResponses) CreateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error) {
+	rsp, err := c.CreateAddonVersion(ctx, teamName, addonType, addonName, versionName, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6803,8 +6866,8 @@ func (c *ClientWithResponses) CreateAddonVersionWithResponse(ctx context.Context
 }
 
 // DownloadAddonAssetWithResponse request returning *DownloadAddonAssetResponse
-func (c *ClientWithResponses) DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error) {
-	rsp, err := c.DownloadAddonAsset(ctx, teamName, addonName, versionName, reqEditors...)
+func (c *ClientWithResponses) DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error) {
+	rsp, err := c.DownloadAddonAsset(ctx, teamName, addonType, addonName, versionName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -6812,8 +6875,8 @@ func (c *ClientWithResponses) DownloadAddonAssetWithResponse(ctx context.Context
 }
 
 // UploadAddonAssetWithResponse request returning *UploadAddonAssetResponse
-func (c *ClientWithResponses) UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error) {
-	rsp, err := c.UploadAddonAsset(ctx, teamName, addonName, versionName, reqEditors...)
+func (c *ClientWithResponses) UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error) {
+	rsp, err := c.UploadAddonAsset(ctx, teamName, addonType, addonName, versionName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
