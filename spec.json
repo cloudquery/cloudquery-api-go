@@ -1304,13 +1304,16 @@
         ]
       }
     },
-    "/addons/{team_name}/{addon_name}": {
+    "/addons/{team_name}/{addon_type}/{addon_name}": {
       "get": {
         "description": "Get details about a given addon.",
         "operationId": "GetAddon",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -1351,6 +1354,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -1401,6 +1407,9 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
+            "$ref": "#/components/parameters/addon_type"
+          },
+          {
             "$ref": "#/components/parameters/addon_name"
           }
         ],
@@ -1429,13 +1438,16 @@
         ]
       }
     },
-    "/addons/{team_name}/{addon_name}/versions": {
+    "/addons/{team_name}/{addon_type}/{addon_name}/versions": {
       "get": {
         "description": "List all versions for a given addon",
         "operationId": "ListAddonVersions",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -1497,13 +1509,16 @@
         ]
       }
     },
-    "/addons/{team_name}/{addon_name}/versions/{version_name}": {
+    "/addons/{team_name}/{addon_type}/{addon_name}/versions/{version_name}": {
       "get": {
         "description": "Get details about a given addon version.",
         "operationId": "GetAddonVersion",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -1547,6 +1562,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -1650,6 +1668,9 @@
             "$ref": "#/components/parameters/team_name"
           },
           {
+            "$ref": "#/components/parameters/addon_type"
+          },
+          {
             "$ref": "#/components/parameters/addon_name"
           },
           {
@@ -1697,13 +1718,16 @@
         ]
       }
     },
-    "/addons/{team_name}/{addon_name}/versions/{version_name}/assets": {
+    "/addons/{team_name}/{addon_type}/{addon_name}/versions/{version_name}/assets": {
       "get": {
         "description": "Download a asset for a given version",
         "operationId": "DownloadAddonAsset",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -1747,6 +1771,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
           },
           {
             "$ref": "#/components/parameters/addon_name"
@@ -4275,9 +4302,6 @@
           "category": {
             "$ref": "#/components/schemas/AddonCategory"
           },
-          "addon_type": {
-            "$ref": "#/components/schemas/AddonType"
-          },
           "addon_format": {
             "$ref": "#/components/schemas/AddonFormat"
           },
@@ -5042,6 +5066,14 @@
             "downloads"
           ],
           "type": "string"
+        }
+      },
+      "addon_type": {
+        "in": "path",
+        "name": "addon_type",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/AddonType"
         }
       },
       "addon_name": {

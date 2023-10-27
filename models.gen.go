@@ -255,9 +255,6 @@ type AddonUpdate struct {
 	// AddonFormat Supported formats for addons
 	AddonFormat *AddonFormat `json:"addon_format,omitempty"`
 
-	// AddonType Supported types for addons
-	AddonType *AddonType `json:"addon_type,omitempty"`
-
 	// Category Supported categories for addons
 	Category  *AddonCategory `json:"category,omitempty"`
 	CreatedAt *time.Time     `json:"created_at,omitempty"`
