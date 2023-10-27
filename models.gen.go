@@ -382,6 +382,47 @@ type InvitationWithToken struct {
 	Token openapi_types.UUID `json:"token"`
 }
 
+// ListAddon defines model for ListAddon.
+type ListAddon struct {
+	// AddonFormat Supported formats for addons
+	AddonFormat AddonFormat `json:"addon_format"`
+
+	// AddonType Supported types for addons
+	AddonType AddonType `json:"addon_type"`
+
+	// Category Supported categories for addons
+	Category  AddonCategory `json:"category"`
+	CreatedAt time.Time     `json:"created_at"`
+
+	// DisplayName The addon's display name
+	DisplayName string  `json:"display_name"`
+	Homepage    *string `json:"homepage,omitempty"`
+
+	// LatestVersion The version in semantic version format.
+	LatestVersion *VersionName `json:"latest_version,omitempty"`
+	Logo          string       `json:"logo"`
+
+	// Name The unique name for the addon.
+	Name AddonName `json:"name"`
+
+	// Official True if the addon is maintained by CloudQuery, false otherwise
+	Official bool `json:"official"`
+
+	// PriceUsd The price for 6 months
+	PriceUSD string `json:"price_usd"`
+
+	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
+	Public           *bool   `json:"public,omitempty"`
+	Repository       *string `json:"repository,omitempty"`
+	ShortDescription string  `json:"short_description"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName `json:"team_name"`
+
+	// Tier Supported tiers for addons
+	Tier AddonTier `json:"tier"`
+}
+
 // ListMetadata defines model for ListMetadata.
 type ListMetadata struct {
 	LastPage   *int `json:"last_page,omitempty"`
