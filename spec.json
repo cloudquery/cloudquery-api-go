@@ -1218,7 +1218,7 @@
                   "properties": {
                     "items": {
                       "items": {
-                        "$ref": "#/components/schemas/Addon"
+                        "$ref": "#/components/schemas/ListAddon"
                       },
                       "type": "array",
                       "example": [
@@ -4178,6 +4178,21 @@
         ],
         "title": "CloudQuery Addon",
         "type": "object"
+      },
+      "ListAddon": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Addon"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "latest_version": {
+                "$ref": "#/components/schemas/VersionName"
+              }
+            }
+          }
+        ]
       },
       "AddonCreate": {
         "additionalProperties": false,

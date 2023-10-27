@@ -5103,7 +5103,7 @@ type ListAddonsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Items    []Addon      `json:"items"`
+		Items    []ListAddon  `json:"items"`
 		Metadata ListMetadata `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
@@ -7420,7 +7420,7 @@ func ParseListAddonsResponse(rsp *http.Response) (*ListAddonsResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Items    []Addon      `json:"items"`
+			Items    []ListAddon  `json:"items"`
 			Metadata ListMetadata `json:"metadata"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
