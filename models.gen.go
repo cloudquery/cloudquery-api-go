@@ -464,9 +464,9 @@ type ListPlugin struct {
 	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
 	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
-	ReleaseStage     *PluginReleaseStage `json:"release_stage,omitempty"`
-	Repository       *string             `json:"repository,omitempty"`
-	ShortDescription string              `json:"short_description"`
+	ReleaseStage     PluginReleaseStage `json:"release_stage"`
+	Repository       *string            `json:"repository,omitempty"`
+	ShortDescription string             `json:"short_description"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -565,9 +565,9 @@ type Plugin struct {
 	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
 	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
-	ReleaseStage     *PluginReleaseStage `json:"release_stage,omitempty"`
-	Repository       *string             `json:"repository,omitempty"`
-	ShortDescription string              `json:"short_description"`
+	ReleaseStage     PluginReleaseStage `json:"release_stage"`
+	Repository       *string            `json:"repository,omitempty"`
+	ShortDescription string             `json:"short_description"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`

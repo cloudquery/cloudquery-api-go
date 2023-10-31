@@ -141,7 +141,8 @@
                           "repository": "https://github.com/cloudquery/cloudquery",
                           "tier": "paid",
                           "usd_per_row": "0.00123",
-                          "free_rows_per_month": 10000
+                          "free_rows_per_month": 10000,
+                          "release_stage": "preview"
                         }
                       ]
                     },
@@ -2068,7 +2069,8 @@
                           "repository": "https://github.com/cloudquery/cloudquery",
                           "tier": "paid",
                           "usd_per_row": "0.00123",
-                          "free_rows_per_month": 10000
+                          "free_rows_per_month": 10000,
+                          "release_stage": "preview"
                         }
                       ]
                     },
@@ -3520,6 +3522,7 @@
           "name",
           "kind",
           "category",
+          "release_stage",
           "created_at",
           "logo",
           "display_name",
