@@ -59,6 +59,12 @@ const (
 	Source      PluginKind = "source"
 )
 
+// Defines values for PluginReleaseStage.
+const (
+	Ga      PluginReleaseStage = "ga"
+	Preview PluginReleaseStage = "preview"
+)
+
 // Defines values for PluginTier.
 const (
 	PluginTierFree PluginTier = "free"
@@ -453,9 +459,14 @@ type ListPlugin struct {
 	Official bool `json:"official"`
 
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
-	Public           *bool   `json:"public,omitempty"`
-	Repository       *string `json:"repository,omitempty"`
-	ShortDescription string  `json:"short_description"`
+	Public *bool `json:"public,omitempty"`
+
+	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
+	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
+	ReleaseStage     *PluginReleaseStage `json:"release_stage,omitempty"`
+	Repository       *string             `json:"repository,omitempty"`
+	ShortDescription string              `json:"short_description"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -549,9 +560,14 @@ type Plugin struct {
 	Official bool `json:"official"`
 
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
-	Public           *bool   `json:"public,omitempty"`
-	Repository       *string `json:"repository,omitempty"`
-	ShortDescription string  `json:"short_description"`
+	Public *bool `json:"public,omitempty"`
+
+	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
+	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
+	ReleaseStage     *PluginReleaseStage `json:"release_stage,omitempty"`
+	Repository       *string             `json:"repository,omitempty"`
+	ShortDescription string              `json:"short_description"`
 
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
@@ -588,8 +604,13 @@ type PluginCreate struct {
 	Name PluginName `json:"name"`
 
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the team.
-	Public     bool    `json:"public"`
-	Repository *string `json:"repository,omitempty"`
+	Public bool `json:"public"`
+
+	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
+	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
+	ReleaseStage *PluginReleaseStage `json:"release_stage,omitempty"`
+	Repository   *string             `json:"repository,omitempty"`
 
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription string `json:"short_description"`
@@ -633,6 +654,11 @@ type PluginName = string
 
 // PluginProtocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 type PluginProtocols = []int
+
+// PluginReleaseStage Official plugins go through two release stages: Preview, and GA.
+// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
+// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
+type PluginReleaseStage string
 
 // PluginTable CloudQuery Plugin Table
 type PluginTable struct {
@@ -748,8 +774,13 @@ type PluginUpdate struct {
 	Logo *string `json:"logo,omitempty"`
 
 	// Public If plugin is not public, it won't be visible to other teams in the CloudQuery Hub.
-	Public     *bool   `json:"public,omitempty"`
-	Repository *string `json:"repository,omitempty"`
+	Public *bool `json:"public,omitempty"`
+
+	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
+	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
+	ReleaseStage *PluginReleaseStage `json:"release_stage,omitempty"`
+	Repository   *string             `json:"repository,omitempty"`
 
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription *string `json:"short_description,omitempty"`

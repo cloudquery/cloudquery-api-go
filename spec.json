@@ -307,6 +307,7 @@
       "delete": {
         "description": "Delete plugin by team and plugin name",
         "operationId": "DeletePluginByTeamAndPluginName",
+        "x-internal": true,
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
@@ -1402,6 +1403,7 @@
       "delete": {
         "description": "Delete addon by team and addon name",
         "operationId": "DeleteAddonByTeamAndName",
+        "x-internal": true,
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
@@ -2098,6 +2100,7 @@
       "delete": {
         "description": "Delete plugins by team",
         "operationId": "DeletePluginsByTeam",
+        "x-internal": true,
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
@@ -2210,6 +2213,7 @@
       "delete": {
         "description": "Delete addons by team",
         "operationId": "DeleteAddonsByTeam",
+        "x-internal": true,
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
@@ -3420,6 +3424,15 @@
           "other"
         ]
       },
+      "PluginReleaseStage": {
+        "description": "Official plugins go through two release stages: Preview, and GA.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
+        "type": "string",
+        "enum": [
+          "preview",
+          "ga"
+        ],
+        "default": "preview"
+      },
       "PluginTier": {
         "description": "Supported tiers for plugins",
         "type": "string",
@@ -3467,6 +3480,9 @@
           "official": {
             "description": "True if the plugin is maintained by CloudQuery, false otherwise",
             "type": "boolean"
+          },
+          "release_stage": {
+            "$ref": "#/components/schemas/PluginReleaseStage"
           },
           "repository": {
             "type": "string",
@@ -3593,14 +3609,17 @@
             "type": "string",
             "example": "https://cloudquery.io"
           },
-          "repository": {
-            "type": "string",
-            "example": "https://github.com/cloudquery/cloudquery"
-          },
           "public": {
             "type": "boolean",
             "description": "Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the team.",
             "example": true
+          },
+          "repository": {
+            "type": "string",
+            "example": "https://github.com/cloudquery/cloudquery"
+          },
+          "release_stage": {
+            "$ref": "#/components/schemas/PluginReleaseStage"
           },
           "logo": {
             "type": "string",
@@ -3611,14 +3630,14 @@
             "type": "string",
             "pattern": "^\\d+(?:\\.\\d{1,10})?$",
             "description": "The price per row in USD. This is used to calculate the price of a sync.",
-            "example": "0.0001",
+            "example": "0.00001",
             "x-go-name": "USDPerRow"
           },
           "free_rows_per_month": {
             "type": "integer",
             "format": "int64",
             "description": "The number of rows that can be synced for free each month.",
-            "example": 1000
+            "example": 10000
           }
         }
       },
@@ -3685,6 +3704,9 @@
           "public": {
             "type": "boolean",
             "description": "If plugin is not public, it won't be visible to other teams in the CloudQuery Hub."
+          },
+          "release_stage": {
+            "$ref": "#/components/schemas/PluginReleaseStage"
           },
           "usd_per_row": {
             "type": "string",
