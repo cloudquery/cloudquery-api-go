@@ -284,7 +284,7 @@ type AddonUpdate struct {
 
 // AddonVersion CloudQuery Addon Version
 type AddonVersion struct {
-	// AddonDeps list of other addons this addon depends on in the format of team_name/name@version
+	// AddonDeps list of other addons this addon depends on in the format of team_name/type/name@version
 	AddonDeps *[]string `json:"addon_deps,omitempty"`
 
 	// Checksum The checksum of the addon asset
@@ -306,7 +306,7 @@ type AddonVersion struct {
 	Name VersionName `json:"name"`
 
 	// PluginDeps list of plugins the addon depends on in the format of team_name/kind/name@version
-	PluginDeps []string `json:"plugin_deps"`
+	PluginDeps *[]string `json:"plugin_deps,omitempty"`
 
 	// PublishedAt The date and time the plugin version was set to non-draft (published).
 	PublishedAt *time.Time `json:"published_at,omitempty"`
@@ -317,7 +317,7 @@ type AddonVersion struct {
 
 // AddonVersionUpdate defines model for AddonVersionUpdate.
 type AddonVersionUpdate struct {
-	// AddonDeps list of other addons this addon depends on in the format of team_name/name@version
+	// AddonDeps list of other addons this addon depends on in the format of team_name/type/name@version
 	AddonDeps *[]string `json:"addon_deps,omitempty"`
 
 	// Checksum The checksum of the addon asset
@@ -1019,7 +1019,7 @@ type ListAddonVersionsParamsSortBy string
 
 // CreateAddonVersionJSONBody defines parameters for CreateAddonVersion.
 type CreateAddonVersionJSONBody struct {
-	// AddonDeps addon dependencies in the format of ['team_name/addon_name@version']
+	// AddonDeps addon dependencies in the format of ['team_name/type/addon_name@version']
 	AddonDeps *[]string `json:"addon_deps,omitempty"`
 
 	// Checksum SHA-256 checksum for the addon asset
@@ -1034,7 +1034,7 @@ type CreateAddonVersionJSONBody struct {
 	Message string `json:"message"`
 
 	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
-	PluginDeps []string `json:"plugin_deps"`
+	PluginDeps *[]string `json:"plugin_deps,omitempty"`
 }
 
 // ListPluginsParams defines parameters for ListPlugins.

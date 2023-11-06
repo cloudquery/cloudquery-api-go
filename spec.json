@@ -1584,8 +1584,7 @@
                 "required": [
                   "message",
                   "doc",
-                  "checksum",
-                  "plugin_deps"
+                  "checksum"
                 ],
                 "properties": {
                   "message": {
@@ -1603,15 +1602,14 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "plugin dependencies in the format of ['team_name/kind/plugin_name@version']",
-                    "minItems": 1
+                    "description": "plugin dependencies in the format of ['team_name/kind/plugin_name@version']"
                   },
                   "addon_deps": {
                     "type": "array",
                     "items": {
                       "type": "string"
                     },
-                    "description": "addon dependencies in the format of ['team_name/addon_name@version']"
+                    "description": "addon dependencies in the format of ['team_name/type/addon_name@version']"
                   },
                   "checksum": {
                     "type": "string",
@@ -4386,7 +4384,6 @@
           "name",
           "message",
           "doc",
-          "plugin_deps",
           "draft",
           "retracted",
           "checksum"
@@ -4423,8 +4420,7 @@
           "plugin_deps": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minItems": 1
+              "type": "string"
             },
             "description": "list of plugins the addon depends on in the format of team_name/kind/name@version"
           },
@@ -4433,7 +4429,7 @@
             "items": {
               "type": "string"
             },
-            "description": "list of other addons this addon depends on in the format of team_name/name@version"
+            "description": "list of other addons this addon depends on in the format of team_name/type/name@version"
           },
           "retracted": {
             "type": "boolean",
@@ -4475,7 +4471,7 @@
             "items": {
               "type": "string"
             },
-            "description": "list of other addons this addon depends on in the format of team_name/name@version"
+            "description": "list of other addons this addon depends on in the format of team_name/type/name@version"
           },
           "retracted": {
             "type": "boolean",
