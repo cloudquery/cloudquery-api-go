@@ -128,7 +128,7 @@ type ClientInterface interface {
 	CreateAddonVersion(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadAddonAsset request
-	DownloadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DownloadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UploadAddonAsset request
 	UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -480,8 +480,8 @@ func (c *Client) CreateAddonVersion(ctx context.Context, teamName TeamName, addo
 	return c.Client.Do(req)
 }
 
-func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDownloadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName)
+func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1899,7 +1899,7 @@ func NewCreateAddonVersionRequestWithBody(server string, teamName TeamName, addo
 }
 
 // NewDownloadAddonAssetRequest generates requests for DownloadAddonAsset
-func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName) (*http.Request, error) {
+func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1948,6 +1948,21 @@ func NewDownloadAddonAssetRequest(server string, teamName TeamName, addonType Ad
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept", runtime.ParamLocationHeader, *params.Accept)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
 	}
 
 	return req, nil
@@ -4957,7 +4972,7 @@ type ClientWithResponsesInterface interface {
 	CreateAddonVersionWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, body CreateAddonVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonVersionResponse, error)
 
 	// DownloadAddonAssetWithResponse request
-	DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error)
+	DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetParams, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error)
 
 	// UploadAddonAssetWithResponse request
 	UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error)
@@ -5406,6 +5421,7 @@ func (r CreateAddonVersionResponse) StatusCode() int {
 type DownloadAddonAssetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *AddonAsset
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON429      *TooManyRequests
@@ -6866,8 +6882,8 @@ func (c *ClientWithResponses) CreateAddonVersionWithResponse(ctx context.Context
 }
 
 // DownloadAddonAssetWithResponse request returning *DownloadAddonAssetResponse
-func (c *ClientWithResponses) DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error) {
-	rsp, err := c.DownloadAddonAsset(ctx, teamName, addonType, addonName, versionName, reqEditors...)
+func (c *ClientWithResponses) DownloadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetParams, reqEditors ...RequestEditorFn) (*DownloadAddonAssetResponse, error) {
+	rsp, err := c.DownloadAddonAsset(ctx, teamName, addonType, addonName, versionName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -7980,6 +7996,13 @@ func ParseDownloadAddonAssetResponse(rsp *http.Response) (*DownloadAddonAssetRes
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AddonAsset
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
