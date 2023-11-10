@@ -207,6 +207,15 @@ type Addon struct {
 	Tier AddonTier `json:"tier"`
 }
 
+// AddonAsset CloudQuery Addon Asset
+type AddonAsset struct {
+	// Checksum The checksum of the addon asset
+	Checksum string `json:"checksum"`
+
+	// Location The location to download the addon asset from
+	Location string `json:"location"`
+}
+
 // AddonCategory Supported categories for addons
 type AddonCategory string
 
@@ -1035,6 +1044,11 @@ type CreateAddonVersionJSONBody struct {
 
 	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
 	PluginDeps *[]string `json:"plugin_deps,omitempty"`
+}
+
+// DownloadAddonAssetParams defines parameters for DownloadAddonAsset.
+type DownloadAddonAssetParams struct {
+	Accept *string `json:"Accept,omitempty"`
 }
 
 // ListPluginsParams defines parameters for ListPlugins.

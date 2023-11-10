@@ -1721,9 +1721,17 @@
     },
     "/addons/{team_name}/{addon_type}/{addon_name}/versions/{version_name}/assets": {
       "get": {
-        "description": "Download a asset for a given version",
+        "description": "Download an asset for a given version",
         "operationId": "DownloadAddonAsset",
         "parameters": [
+          {
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "$ref": "#/components/parameters/team_name"
           },
@@ -1738,6 +1746,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonAsset"
+                }
+              }
+            }
+          },
           "302": {
             "description": "Response",
             "headers": {
@@ -4482,6 +4500,27 @@
             "description": "The checksum of the addon asset"
           }
         }
+      },
+      "AddonAsset": {
+        "additionalProperties": false,
+        "description": "CloudQuery Addon Asset",
+        "required": [
+          "checksum",
+          "location"
+        ],
+        "properties": {
+          "checksum": {
+            "type": "string",
+            "description": "The checksum of the addon asset"
+          },
+          "location": {
+            "type": "string",
+            "format": "uri",
+            "description": "The location to download the addon asset from"
+          }
+        },
+        "title": "CloudQuery Addon Asset",
+        "type": "object"
       },
       "Team": {
         "additionalProperties": false,
