@@ -281,7 +281,7 @@ type ClientInterface interface {
 	ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadPluginAssetByTeam request
-	DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeamPluginUsage request
 	ListTeamPluginUsage(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1155,8 +1155,8 @@ func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, param
 	return c.Client.Do(req)
 }
 
-func (c *Client) DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDownloadPluginAssetByTeamRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName)
+func (c *Client) DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadPluginAssetByTeamRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -4451,7 +4451,7 @@ func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListP
 }
 
 // NewDownloadPluginAssetByTeamRequest generates requests for DownloadPluginAssetByTeam
-func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
+func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -4514,6 +4514,21 @@ func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, plugi
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept", runtime.ParamLocationHeader, *params.Accept)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
 	}
 
 	return req, nil
@@ -5224,7 +5239,7 @@ type ClientWithResponsesInterface interface {
 	ListPluginsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*ListPluginsByTeamResponse, error)
 
 	// DownloadPluginAssetByTeamWithResponse request
-	DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error)
+	DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error)
 
 	// ListTeamPluginUsageWithResponse request
 	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
@@ -6624,6 +6639,7 @@ func (r ListPluginsByTeamResponse) StatusCode() int {
 type DownloadPluginAssetByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *PluginAsset
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON429      *TooManyRequests
@@ -7499,8 +7515,8 @@ func (c *ClientWithResponses) ListPluginsByTeamWithResponse(ctx context.Context,
 }
 
 // DownloadPluginAssetByTeamWithResponse request returning *DownloadPluginAssetByTeamResponse
-func (c *ClientWithResponses) DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error) {
-	rsp, err := c.DownloadPluginAssetByTeam(ctx, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, reqEditors...)
+func (c *ClientWithResponses) DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error) {
+	rsp, err := c.DownloadPluginAssetByTeam(ctx, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -10370,6 +10386,13 @@ func ParseDownloadPluginAssetByTeamResponse(rsp *http.Response) (*DownloadPlugin
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PluginAsset
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

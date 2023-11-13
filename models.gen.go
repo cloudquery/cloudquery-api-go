@@ -1265,6 +1265,11 @@ type ListPluginsByTeamParams struct {
 	IncludePrivate *IncludePrivate `form:"include_private,omitempty" json:"include_private,omitempty"`
 }
 
+// DownloadPluginAssetByTeamParams defines parameters for DownloadPluginAssetByTeam.
+type DownloadPluginAssetByTeamParams struct {
+	Accept *string `json:"Accept,omitempty"`
+}
+
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
 type ListTeamPluginUsageParams struct {
 	// Page Page number of the results to fetch
