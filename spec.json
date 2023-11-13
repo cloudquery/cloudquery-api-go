@@ -1103,6 +1103,14 @@
         "operationId": "DownloadPluginAsset",
         "parameters": [
           {
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "$ref": "#/components/parameters/team_name"
           },
           {
@@ -1119,6 +1127,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginAsset"
+                }
+              }
+            }
+          },
           "302": {
             "description": "Response",
             "headers": {
@@ -1779,7 +1797,6 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "security": [],
         "tags": [
           "addons"
         ]
@@ -2737,6 +2754,61 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "plugins",
+          "usage"
+        ]
+      }
+    },
+    "/teams/{team_name}/plugins/{plugin_team}/{plugin_kind}/{plugin_name}/versions/{version_name}/assets/{target_name}": {
+      "get": {
+        "description": "Download an asset for a given plugin version as the current team.",
+        "operationId": "DownloadPluginAssetByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          },
+          {
+            "$ref": "#/components/parameters/target_name"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Response",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -4109,6 +4181,27 @@
             "type": "string"
           }
         },
+        "type": "object"
+      },
+      "PluginAsset": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Asset",
+        "required": [
+          "checksum",
+          "location"
+        ],
+        "properties": {
+          "checksum": {
+            "type": "string",
+            "description": "The checksum of the plugin asset"
+          },
+          "location": {
+            "type": "string",
+            "format": "uri",
+            "description": "The location to download the plugin asset from"
+          }
+        },
+        "title": "CloudQuery Plugin Asset",
         "type": "object"
       },
       "ReleaseURL": {

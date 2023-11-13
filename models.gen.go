@@ -588,6 +588,15 @@ type Plugin struct {
 	USDPerRow string `json:"usd_per_row"`
 }
 
+// PluginAsset CloudQuery Plugin Asset
+type PluginAsset struct {
+	// Checksum The checksum of the plugin asset
+	Checksum string `json:"checksum"`
+
+	// Location The location to download the plugin asset from
+	Location string `json:"location"`
+}
+
 // PluginCategory Supported categories for plugins
 type PluginCategory string
 
@@ -1106,6 +1115,11 @@ type CreatePluginVersionJSONBody struct {
 
 // CreatePluginVersionJSONBodyPackageType defines parameters for CreatePluginVersion.
 type CreatePluginVersionJSONBodyPackageType string
+
+// DownloadPluginAssetParams defines parameters for DownloadPluginAsset.
+type DownloadPluginAssetParams struct {
+	Accept *string `json:"Accept,omitempty"`
+}
 
 // DeletePluginVersionDocsJSONBody defines parameters for DeletePluginVersionDocs.
 type DeletePluginVersionDocsJSONBody struct {
