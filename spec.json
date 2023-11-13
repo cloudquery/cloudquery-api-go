@@ -2772,6 +2772,14 @@
         "operationId": "DownloadPluginAssetByTeam",
         "parameters": [
           {
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "$ref": "#/components/parameters/team_name"
           },
           {
@@ -2791,6 +2799,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginAsset"
+                }
+              }
+            }
+          },
           "302": {
             "description": "Response",
             "headers": {
