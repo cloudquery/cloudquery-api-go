@@ -169,7 +169,7 @@ type ClientInterface interface {
 	CreatePluginVersion(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DownloadPluginAsset request
-	DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UploadPluginAsset request
 	UploadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -279,6 +279,9 @@ type ClientInterface interface {
 
 	// ListPluginsByTeam request
 	ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DownloadPluginAssetByTeam request
+	DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTeamPluginUsage request
 	ListTeamPluginUsage(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -660,8 +663,8 @@ func (c *Client) CreatePluginVersion(ctx context.Context, teamName TeamName, plu
 	return c.Client.Do(req)
 }
 
-func (c *Client) DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDownloadPluginAssetRequest(c.Server, teamName, pluginKind, pluginName, versionName, targetName)
+func (c *Client) DownloadPluginAsset(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadPluginAssetRequest(c.Server, teamName, pluginKind, pluginName, versionName, targetName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1142,6 +1145,18 @@ func (c *Client) DeletePluginsByTeam(ctx context.Context, teamName TeamName, req
 
 func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPluginsByTeamRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadPluginAssetByTeamRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName)
 	if err != nil {
 		return nil, err
 	}
@@ -2611,7 +2626,7 @@ func NewCreatePluginVersionRequestWithBody(server string, teamName TeamName, plu
 }
 
 // NewDownloadPluginAssetRequest generates requests for DownloadPluginAsset
-func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
+func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2667,6 +2682,21 @@ func NewDownloadPluginAssetRequest(server string, teamName TeamName, pluginKind 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept", runtime.ParamLocationHeader, *params.Accept)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
 	}
 
 	return req, nil
@@ -4420,6 +4450,75 @@ func NewListPluginsByTeamRequest(server string, teamName TeamName, params *ListP
 	return req, nil
 }
 
+// NewDownloadPluginAssetByTeamRequest generates requests for DownloadPluginAssetByTeam
+func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam4 string
+
+	pathParam4, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam5 string
+
+	pathParam5, err = runtime.StyleParamWithLocation("simple", false, "target_name", runtime.ParamLocationPath, targetName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/plugins/%s/%s/%s/versions/%s/assets/%s", pathParam0, pathParam1, pathParam2, pathParam3, pathParam4, pathParam5)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListTeamPluginUsageRequest generates requests for ListTeamPluginUsage
 func NewListTeamPluginUsageRequest(server string, teamName TeamName, params *ListTeamPluginUsageParams) (*http.Request, error) {
 	var err error
@@ -5013,7 +5112,7 @@ type ClientWithResponsesInterface interface {
 	CreatePluginVersionWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body CreatePluginVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginVersionResponse, error)
 
 	// DownloadPluginAssetWithResponse request
-	DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error)
+	DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error)
 
 	// UploadPluginAssetWithResponse request
 	UploadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*UploadPluginAssetResponse, error)
@@ -5123,6 +5222,9 @@ type ClientWithResponsesInterface interface {
 
 	// ListPluginsByTeamWithResponse request
 	ListPluginsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListPluginsByTeamParams, reqEditors ...RequestEditorFn) (*ListPluginsByTeamResponse, error)
+
+	// DownloadPluginAssetByTeamWithResponse request
+	DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error)
 
 	// ListTeamPluginUsageWithResponse request
 	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
@@ -5711,6 +5813,7 @@ func (r CreatePluginVersionResponse) StatusCode() int {
 type DownloadPluginAssetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *PluginAsset
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON429      *TooManyRequests
@@ -6518,6 +6621,31 @@ func (r ListPluginsByTeamResponse) StatusCode() int {
 	return 0
 }
 
+type DownloadPluginAssetByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DownloadPluginAssetByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DownloadPluginAssetByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListTeamPluginUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7013,8 +7141,8 @@ func (c *ClientWithResponses) CreatePluginVersionWithResponse(ctx context.Contex
 }
 
 // DownloadPluginAssetWithResponse request returning *DownloadPluginAssetResponse
-func (c *ClientWithResponses) DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error) {
-	rsp, err := c.DownloadPluginAsset(ctx, teamName, pluginKind, pluginName, versionName, targetName, reqEditors...)
+func (c *ClientWithResponses) DownloadPluginAssetWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetResponse, error) {
+	rsp, err := c.DownloadPluginAsset(ctx, teamName, pluginKind, pluginName, versionName, targetName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -7368,6 +7496,15 @@ func (c *ClientWithResponses) ListPluginsByTeamWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseListPluginsByTeamResponse(rsp)
+}
+
+// DownloadPluginAssetByTeamWithResponse request returning *DownloadPluginAssetByTeamResponse
+func (c *ClientWithResponses) DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error) {
+	rsp, err := c.DownloadPluginAssetByTeam(ctx, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDownloadPluginAssetByTeamResponse(rsp)
 }
 
 // ListTeamPluginUsageWithResponse request returning *ListTeamPluginUsageResponse
@@ -8582,6 +8719,13 @@ func ParseDownloadPluginAssetResponse(rsp *http.Response) (*DownloadPluginAssetR
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PluginAsset
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -10199,6 +10343,53 @@ func ParseListPluginsByTeamResponse(rsp *http.Response) (*ListPluginsByTeamRespo
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDownloadPluginAssetByTeamResponse parses an HTTP response from a DownloadPluginAssetByTeamWithResponse call
+func ParseDownloadPluginAssetByTeamResponse(rsp *http.Response) (*DownloadPluginAssetByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DownloadPluginAssetByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
