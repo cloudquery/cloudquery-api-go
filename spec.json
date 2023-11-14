@@ -1922,6 +1922,9 @@
                     "description": "The team's display name",
                     "minLength": 1,
                     "maxLength": 255
+                  },
+                  "plan": {
+                    "$ref": "#/components/schemas/TeamPlan"
                   }
                 }
               }
@@ -4633,6 +4636,14 @@
         "title": "CloudQuery Addon Asset",
         "type": "object"
       },
+      "TeamPlan": {
+        "description": "The plan the team is on",
+        "type": "string",
+        "enum": [
+          "free",
+          "paid"
+        ]
+      },
       "Team": {
         "additionalProperties": false,
         "description": "CloudQuery Team",
@@ -4644,6 +4655,9 @@
           },
           "name": {
             "$ref": "#/components/schemas/TeamName"
+          },
+          "plan": {
+            "$ref": "#/components/schemas/TeamPlan"
           },
           "display_name": {
             "description": "The team's display name",

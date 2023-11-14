@@ -77,6 +77,12 @@ const (
 	PluginVersionPackageTypeNative PluginVersionPackageType = "native"
 )
 
+// Defines values for TeamPlan.
+const (
+	Free TeamPlan = "free"
+	Paid TeamPlan = "paid"
+)
+
 // Defines values for AddonSortBy.
 const (
 	AddonSortByCreatedAt AddonSortBy = "created_at"
@@ -882,10 +888,16 @@ type Team struct {
 
 	// Name The unique name for the team.
 	Name TeamName `json:"name"`
+
+	// Plan The plan the team is on
+	Plan *TeamPlan `json:"plan,omitempty"`
 }
 
 // TeamName The unique name for the team.
 type TeamName = string
+
+// TeamPlan The plan the team is on
+type TeamPlan string
 
 // UsageCurrent The usage of a plugin within the current calendar month.
 type UsageCurrent struct {
@@ -1175,6 +1187,9 @@ type CreateTeamJSONBody struct {
 
 	// Name The unique name for the team.
 	Name TeamName `json:"name"`
+
+	// Plan The plan the team is on
+	Plan *TeamPlan `json:"plan,omitempty"`
 }
 
 // UpdateTeamJSONBody defines parameters for UpdateTeam.
