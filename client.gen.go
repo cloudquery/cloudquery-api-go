@@ -225,6 +225,9 @@ type ClientInterface interface {
 	// ListAddonsByTeam request
 	ListAddonsByTeam(ctx context.Context, teamName TeamName, params *ListAddonsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DownloadAddonAssetByTeam request
+	DownloadAddonAssetByTeam(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamAPIKeys request
 	ListTeamAPIKeys(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -905,6 +908,18 @@ func (c *Client) DeleteAddonsByTeam(ctx context.Context, teamName TeamName, reqE
 
 func (c *Client) ListAddonsByTeam(ctx context.Context, teamName TeamName, params *ListAddonsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListAddonsByTeamRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DownloadAddonAssetByTeam(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDownloadAddonAssetByTeamRequest(c.Server, teamName, addonTeam, addonType, addonName, versionName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3592,6 +3607,83 @@ func NewListAddonsByTeamRequest(server string, teamName TeamName, params *ListAd
 	return req, nil
 }
 
+// NewDownloadAddonAssetByTeamRequest generates requests for DownloadAddonAssetByTeam
+func NewDownloadAddonAssetByTeamRequest(server string, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_team", runtime.ParamLocationPath, addonTeam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "addon_type", runtime.ParamLocationPath, addonType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "addon_name", runtime.ParamLocationPath, addonName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam4 string
+
+	pathParam4, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/addons/%s/%s/%s/versions/%s/assets", pathParam0, pathParam1, pathParam2, pathParam3, pathParam4)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept", runtime.ParamLocationHeader, *params.Accept)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListTeamAPIKeysRequest generates requests for ListTeamAPIKeys
 func NewListTeamAPIKeysRequest(server string, teamName TeamName, params *ListTeamAPIKeysParams) (*http.Request, error) {
 	var err error
@@ -5183,6 +5275,9 @@ type ClientWithResponsesInterface interface {
 	// ListAddonsByTeamWithResponse request
 	ListAddonsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListAddonsByTeamParams, reqEditors ...RequestEditorFn) (*ListAddonsByTeamResponse, error)
 
+	// DownloadAddonAssetByTeamWithResponse request
+	DownloadAddonAssetByTeamWithResponse(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadAddonAssetByTeamResponse, error)
+
 	// ListTeamAPIKeysWithResponse request
 	ListTeamAPIKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*ListTeamAPIKeysResponse, error)
 
@@ -6229,6 +6324,32 @@ func (r ListAddonsByTeamResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListAddonsByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DownloadAddonAssetByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AddonAsset
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DownloadAddonAssetByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DownloadAddonAssetByTeamResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7337,6 +7458,15 @@ func (c *ClientWithResponses) ListAddonsByTeamWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseListAddonsByTeamResponse(rsp)
+}
+
+// DownloadAddonAssetByTeamWithResponse request returning *DownloadAddonAssetByTeamResponse
+func (c *ClientWithResponses) DownloadAddonAssetByTeamWithResponse(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadAddonAssetByTeamResponse, error) {
+	rsp, err := c.DownloadAddonAssetByTeam(ctx, teamName, addonTeam, addonType, addonName, versionName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDownloadAddonAssetByTeamResponse(rsp)
 }
 
 // ListTeamAPIKeysWithResponse request returning *ListTeamAPIKeysResponse
@@ -9562,6 +9692,60 @@ func ParseListAddonsByTeamResponse(rsp *http.Response) (*ListAddonsByTeamRespons
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDownloadAddonAssetByTeamResponse parses an HTTP response from a DownloadAddonAssetByTeamWithResponse call
+func ParseDownloadAddonAssetByTeamResponse(rsp *http.Response) (*DownloadAddonAssetByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DownloadAddonAssetByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AddonAsset
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

@@ -2842,6 +2842,76 @@
         ]
       }
     },
+    "/teams/{team_name}/addons/{addon_team}/{addon_type}/{addon_name}/versions/{version_name}/assets": {
+      "get": {
+        "description": "Download an asset for a given addon version as the current team.",
+        "operationId": "DownloadAddonAssetByTeam",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_team"
+          },
+          {
+            "$ref": "#/components/parameters/addon_type"
+          },
+          {
+            "$ref": "#/components/parameters/addon_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonAsset"
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Response",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "addons",
+          "usage"
+        ]
+      }
+    },
     "/teams/{team_name}/invitations": {
       "get": {
         "operationId": "ListTeamInvitations",
@@ -5281,6 +5351,14 @@
       "plugin_team": {
         "in": "path",
         "name": "plugin_team",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/TeamName"
+        }
+      },
+      "addon_team": {
+        "in": "path",
+        "name": "addon_team",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TeamName"
