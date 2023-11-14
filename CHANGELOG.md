@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.4.6...v1.5.0) (2023-11-14)
+
+
+### Features
+
+* Add a `Token` struct to allow the CLI to differentiate between `Bearer` and `APIKey` tokens ([#66](https://github.com/cloudquery/cloudquery-api-go/issues/66)) ([bf70ed2](https://github.com/cloudquery/cloudquery-api-go/commit/bf70ed239f33dc280433963e3e6d1c6bf954920a))
+
 ## [1.4.6](https://github.com/cloudquery/cloudquery-api-go/compare/v1.4.5...v1.4.6) (2023-11-14)
 
 
