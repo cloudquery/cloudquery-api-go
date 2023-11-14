@@ -960,6 +960,9 @@ type VersionName = string
 // AddonSortBy defines model for addon_sort_by.
 type AddonSortBy string
 
+// AddonTeam The unique name for the team.
+type AddonTeam = TeamName
+
 // APIKeyID ID of the API key
 type APIKeyID = ID
 
@@ -1208,6 +1211,11 @@ type ListAddonsByTeamParams struct {
 
 	// IncludePrivate Whether to include private plugins
 	IncludePrivate *IncludePrivate `form:"include_private,omitempty" json:"include_private,omitempty"`
+}
+
+// DownloadAddonAssetByTeamParams defines parameters for DownloadAddonAssetByTeam.
+type DownloadAddonAssetByTeamParams struct {
+	Accept *string `json:"Accept,omitempty"`
 }
 
 // ListTeamAPIKeysParams defines parameters for ListTeamAPIKeys.
