@@ -46,7 +46,7 @@ func TestTokenClient_EnvironmentVariable(t *testing.T) {
 	token, err := NewTokenClient().GetToken()
 	require.NoError(t, err)
 
-	require.Equal(t, "my_token", token)
+	require.Equal(t, Token{Type: APIKey, Value: "my_token"}, token)
 }
 
 func TestTokenClient_GetToken_ShortExpiry(t *testing.T) {
@@ -66,13 +66,13 @@ func TestTokenClient_GetToken_ShortExpiry(t *testing.T) {
 
 	token, err := tc.GetToken()
 	require.NoError(t, err)
-	require.Equal(t, "my_id_token_0", token, "first token")
+	require.Equal(t, Token{Type: BearerToken, Value: "my_id_token_0"}, token, "first token")
 
 	tc.expiresAt = t0
 
 	token, err = tc.GetToken()
 	require.NoError(t, err)
-	require.Equal(t, "my_id_token_1", token, "expected to issue new token")
+	require.Equal(t, Token{Type: BearerToken, Value: "my_id_token_1"}, token, "expected to issue new token")
 }
 
 func TestTokenClient_GetToken_LongExpiry(t *testing.T) {
@@ -89,11 +89,11 @@ func TestTokenClient_GetToken_LongExpiry(t *testing.T) {
 
 	token, err := tc.GetToken()
 	require.NoError(t, err)
-	require.Equal(t, "my_id_token_0", token, "first token")
+	require.Equal(t, Token{Type: BearerToken, Value: "my_id_token_0"}, token, "first token")
 
 	token, err = tc.GetToken()
 	require.NoError(t, err)
-	require.Equal(t, "my_id_token_0", token, "expected to reuse token")
+	require.Equal(t, Token{Type: BearerToken, Value: "my_id_token_0"}, token, "expected to reuse token")
 }
 
 func overrideEnvironmentVariable(t *testing.T, key, value string) func() {

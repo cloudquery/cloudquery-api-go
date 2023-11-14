@@ -29,6 +29,21 @@ type tokenResponse struct {
 	ProjectID    string `json:"project_id"`
 }
 
+type TokenType int
+
+const (
+	Undefined TokenType = iota
+	BearerToken
+	APIKey
+)
+
+var UndefinedToken = Token{Type: Undefined, Value: ""}
+
+type Token struct {
+	Type  TokenType
+	Value string
+}
+
 type TokenClient struct {
 	url       string
 	apiKey    string
@@ -45,37 +60,37 @@ func NewTokenClient() *TokenClient {
 
 // GetToken returns the ID token
 // If CLOUDQUERY_API_KEY is set, it returns that value, otherwise it returns an ID token generated from the refresh token.
-func (tc *TokenClient) GetToken() (string, error) {
+func (tc *TokenClient) GetToken() (Token, error) {
 	if token := os.Getenv(EnvVarCloudQueryAPIKey); token != "" {
-		return token, nil
+		return Token{Type: APIKey, Value: token}, nil
 	}
 
 	// If the token is not expired, return it
 	if !tc.expiresAt.IsZero() && tc.expiresAt.Sub(time.Now().UTC()) > ExpiryBuffer {
-		return tc.idToken, nil
+		return Token{Type: BearerToken, Value: tc.idToken}, nil
 	}
 
 	refreshToken, err := ReadRefreshToken()
 	if err != nil {
-		return "", fmt.Errorf("failed to read refresh token: %w. Hint: You may need to run `cloudquery login` or set %s", err, EnvVarCloudQueryAPIKey)
+		return UndefinedToken, fmt.Errorf("failed to read refresh token: %w. Hint: You may need to run `cloudquery login` or set %s", err, EnvVarCloudQueryAPIKey)
 	}
 	if refreshToken == "" {
-		return "", fmt.Errorf("authentication token not found. Hint: You may need to run `cloudquery login` or set %s", EnvVarCloudQueryAPIKey)
+		return UndefinedToken, fmt.Errorf("authentication token not found. Hint: You may need to run `cloudquery login` or set %s", EnvVarCloudQueryAPIKey)
 	}
 	tokenResponse, err := tc.generateToken(refreshToken)
 	if err != nil {
-		return "", fmt.Errorf("failed to sign in with custom token: %w", err)
+		return UndefinedToken, fmt.Errorf("failed to sign in with custom token: %w", err)
 	}
 
 	if err := SaveRefreshToken(tokenResponse.RefreshToken); err != nil {
-		return "", fmt.Errorf("failed to save refresh token: %w", err)
+		return UndefinedToken, fmt.Errorf("failed to save refresh token: %w", err)
 	}
 
 	if err := tc.updateIDToken(tokenResponse); err != nil {
-		return "", fmt.Errorf("failed to update ID token: %w", err)
+		return UndefinedToken, fmt.Errorf("failed to update ID token: %w", err)
 	}
 
-	return tc.idToken, nil
+	return Token{Type: BearerToken, Value: tc.idToken}, nil
 }
 
 func (tc *TokenClient) generateToken(refreshToken string) (*tokenResponse, error) {
