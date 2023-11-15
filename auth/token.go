@@ -3,12 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cloudquery/cloudquery-api-go/config"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"time"
+
+	"github.com/cloudquery/cloudquery-api-go/config"
 )
 
 const (
@@ -42,6 +43,10 @@ var UndefinedToken = Token{Type: Undefined, Value: ""}
 type Token struct {
 	Type  TokenType
 	Value string
+}
+
+func (t Token) String() string {
+	return t.Value
 }
 
 type TokenClient struct {
