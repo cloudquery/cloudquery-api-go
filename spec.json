@@ -2283,6 +2283,64 @@
         ]
       }
     },
+    "/teams/{team_name}/addon-orders": {
+      "get": {
+        "description": "List all addon orders for the team.",
+        "operationId": "ListAddonOrdersByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/AddonOrder"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      }
+    },
     "/teams/{team_name}/memberships": {
       "get": {
         "description": "Get memberships to the team.",
@@ -4741,6 +4799,38 @@
           "display_name"
         ],
         "title": "Team",
+        "type": "object"
+      },
+      "AddonOrder": {
+        "additionalProperties": false,
+        "description": "CloudQuery Addon Order",
+        "properties": {
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "addon_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "addon_type": {
+            "$ref": "#/components/schemas/AddonType"
+          },
+          "addon_name": {
+            "$ref": "#/components/schemas/AddonName"
+          },
+          "purchase_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          }
+        },
+        "required": [
+          "team_name",
+          "addon_team",
+          "addon_type",
+          "addon_name",
+          "purchase_date"
+        ],
+        "title": "CloudQuery Addon",
         "type": "object"
       },
       "Email": {

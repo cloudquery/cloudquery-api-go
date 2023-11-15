@@ -265,6 +265,22 @@ type AddonFormat string
 // AddonName The unique name for the addon.
 type AddonName = string
 
+// AddonOrder CloudQuery Addon Order
+type AddonOrder struct {
+	// AddonName The unique name for the addon.
+	AddonName AddonName `json:"addon_name"`
+
+	// AddonTeam The unique name for the team.
+	AddonTeam TeamName `json:"addon_team"`
+
+	// AddonType Supported types for addons
+	AddonType    AddonType `json:"addon_type"`
+	PurchaseDate time.Time `json:"purchase_date"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName `json:"team_name"`
+}
+
 // AddonTier Supported tiers for addons
 type AddonTier string
 
@@ -1199,6 +1215,15 @@ type CreateTeamJSONBody struct {
 type UpdateTeamJSONBody struct {
 	// DisplayName The team's display name
 	DisplayName *string `json:"display_name,omitempty"`
+}
+
+// ListAddonOrdersByTeamParams defines parameters for ListAddonOrdersByTeam.
+type ListAddonOrdersByTeamParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
 // ListAddonsByTeamParams defines parameters for ListAddonsByTeam.
