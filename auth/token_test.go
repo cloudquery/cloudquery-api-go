@@ -3,12 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestRefreshToken_RoundTrip(t *testing.T) {
@@ -37,6 +38,12 @@ func TestRefreshToken_Removal(t *testing.T) {
 
 	_, err = ReadRefreshToken()
 	require.Error(t, err)
+}
+
+func TestToken_Stringer(t *testing.T) {
+	token := Token{Type: BearerToken, Value: "my_token"}
+	out := fmt.Sprintf("Bearer %s", token)
+	require.Equal(t, "Bearer my_token", out)
 }
 
 func TestTokenClient_EnvironmentVariable(t *testing.T) {
