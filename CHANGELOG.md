@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/cloudquery/cloudquery-api-go/compare/v1.5.0...v1.5.1) (2023-11-15)
+
+
+### Bug Fixes
+
+* Add stringer to Token ([#71](https://github.com/cloudquery/cloudquery-api-go/issues/71)) ([cd50e79](https://github.com/cloudquery/cloudquery-api-go/commit/cd50e79c7bbaaac45d63c82b8ef33aab9ce462b1))
+
 ## [1.5.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.4.6...v1.5.0) (2023-11-14)
 
 
