@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -101,6 +102,20 @@ func TestTokenClient_GetToken_LongExpiry(t *testing.T) {
 	token, err = tc.GetToken()
 	require.NoError(t, err)
 	require.Equal(t, Token{Type: BearerToken, Value: "my_id_token_0"}, token, "expected to reuse token")
+}
+
+func TestTokenClient_BearerTokenType(t *testing.T) {
+	tc := NewTokenClient()
+
+	assert.Equal(t, BearerToken, tc.GetTokenType())
+}
+
+func TestTokenClient_APIKeyTokenType(t *testing.T) {
+	t.Setenv(EnvVarCloudQueryAPIKey, "my_token")
+
+	tc := NewTokenClient()
+
+	assert.Equal(t, APIKey, tc.GetTokenType())
 }
 
 func overrideEnvironmentVariable(t *testing.T, key, value string) func() {

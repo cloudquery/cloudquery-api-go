@@ -66,8 +66,8 @@ func NewTokenClient() *TokenClient {
 // GetToken returns the ID token
 // If CLOUDQUERY_API_KEY is set, it returns that value, otherwise it returns an ID token generated from the refresh token.
 func (tc *TokenClient) GetToken() (Token, error) {
-	if token := os.Getenv(EnvVarCloudQueryAPIKey); token != "" {
-		return Token{Type: APIKey, Value: token}, nil
+	if tc.GetTokenType() == APIKey {
+		return Token{Type: APIKey, Value: os.Getenv(EnvVarCloudQueryAPIKey)}, nil
 	}
 
 	// If the token is not expired, return it
@@ -96,6 +96,14 @@ func (tc *TokenClient) GetToken() (Token, error) {
 	}
 
 	return Token{Type: BearerToken, Value: tc.idToken}, nil
+}
+
+// GetTokenType returns the type of token that will be returned by GetToken
+func (tc *TokenClient) GetTokenType() TokenType {
+	if token := os.Getenv(EnvVarCloudQueryAPIKey); token != "" {
+		return APIKey
+	}
+	return BearerToken
 }
 
 func (tc *TokenClient) generateToken(refreshToken string) (*tokenResponse, error) {
