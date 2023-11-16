@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.5.1...v1.6.0) (2023-11-16)
+
+
+### Features
+
+* Add method to return token type ([#75](https://github.com/cloudquery/cloudquery-api-go/issues/75)) ([e07af9f](https://github.com/cloudquery/cloudquery-api-go/commit/e07af9f5d7ff20cee004d497a30a50427ee31790))
+
+
+### Bug Fixes
+
+* Generate CloudQuery Go API Client from `spec.json` ([#73](https://github.com/cloudquery/cloudquery-api-go/issues/73)) ([db26b9c](https://github.com/cloudquery/cloudquery-api-go/commit/db26b9c0db72240072ef5f075a098c0c6153b6bc))
+
 ## [1.5.1](https://github.com/cloudquery/cloudquery-api-go/compare/v1.5.0...v1.5.1) (2023-11-15)
 
 
