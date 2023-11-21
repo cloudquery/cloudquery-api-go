@@ -222,6 +222,11 @@ type ClientInterface interface {
 	// ListAddonOrdersByTeam request
 	ListAddonOrdersByTeam(ctx context.Context, teamName TeamName, params *ListAddonOrdersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateAddonOrderForTeamWithBody request with any body
+	CreateAddonOrderForTeamWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateAddonOrderForTeam(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteAddonsByTeam request
 	DeleteAddonsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -899,6 +904,30 @@ func (c *Client) UpdateTeam(ctx context.Context, teamName TeamName, body UpdateT
 
 func (c *Client) ListAddonOrdersByTeam(ctx context.Context, teamName TeamName, params *ListAddonOrdersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListAddonOrdersByTeamRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAddonOrderForTeamWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAddonOrderForTeamRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateAddonOrderForTeam(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateAddonOrderForTeamRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3572,6 +3601,53 @@ func NewListAddonOrdersByTeamRequest(server string, teamName TeamName, params *L
 	return req, nil
 }
 
+// NewCreateAddonOrderForTeamRequest calls the generic CreateAddonOrderForTeam builder with application/json body
+func NewCreateAddonOrderForTeamRequest(server string, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateAddonOrderForTeamRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateAddonOrderForTeamRequestWithBody generates requests for CreateAddonOrderForTeam with any type of body
+func NewCreateAddonOrderForTeamRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/addon-orders", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeleteAddonsByTeamRequest generates requests for DeleteAddonsByTeam
 func NewDeleteAddonsByTeamRequest(server string, teamName TeamName) (*http.Request, error) {
 	var err error
@@ -5359,6 +5435,11 @@ type ClientWithResponsesInterface interface {
 	// ListAddonOrdersByTeamWithResponse request
 	ListAddonOrdersByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListAddonOrdersByTeamParams, reqEditors ...RequestEditorFn) (*ListAddonOrdersByTeamResponse, error)
 
+	// CreateAddonOrderForTeamWithBodyWithResponse request with any body
+	CreateAddonOrderForTeamWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAddonOrderForTeamResponse, error)
+
+	CreateAddonOrderForTeamWithResponse(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonOrderForTeamResponse, error)
+
 	// DeleteAddonsByTeamWithResponse request
 	DeleteAddonsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteAddonsByTeamResponse, error)
 
@@ -6388,6 +6469,30 @@ func (r ListAddonOrdersByTeamResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListAddonOrdersByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateAddonOrderForTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateAddonOrderForTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateAddonOrderForTeamResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7568,6 +7673,23 @@ func (c *ClientWithResponses) ListAddonOrdersByTeamWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseListAddonOrdersByTeamResponse(rsp)
+}
+
+// CreateAddonOrderForTeamWithBodyWithResponse request with arbitrary body returning *CreateAddonOrderForTeamResponse
+func (c *ClientWithResponses) CreateAddonOrderForTeamWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAddonOrderForTeamResponse, error) {
+	rsp, err := c.CreateAddonOrderForTeamWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAddonOrderForTeamResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateAddonOrderForTeamWithResponse(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonOrderForTeamResponse, error) {
+	rsp, err := c.CreateAddonOrderForTeam(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateAddonOrderForTeamResponse(rsp)
 }
 
 // DeleteAddonsByTeamWithResponse request returning *DeleteAddonsByTeamResponse
@@ -9759,6 +9881,46 @@ func ParseListAddonOrdersByTeamResponse(rsp *http.Response) (*ListAddonOrdersByT
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateAddonOrderForTeamResponse parses an HTTP response from a CreateAddonOrderForTeamWithResponse call
+func ParseCreateAddonOrderForTeamResponse(rsp *http.Response) (*CreateAddonOrderForTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateAddonOrderForTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
