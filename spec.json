@@ -2339,6 +2339,49 @@
         "tags": [
           "addons"
         ]
+      },
+      "post": {
+        "description": "Start the checkout process for an addon order.",
+        "operationId": "CreateAddonOrderForTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddonOrderCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": {
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
       }
     },
     "/teams/{team_name}/memberships": {
@@ -4831,6 +4874,40 @@
           "purchase_date"
         ],
         "title": "CloudQuery Addon",
+        "type": "object"
+      },
+      "AddonOrderCreate": {
+        "additionalProperties": false,
+        "description": "Create CloudQuery Addon Order",
+        "properties": {
+          "addon_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "addon_type": {
+            "$ref": "#/components/schemas/AddonType"
+          },
+          "addon_name": {
+            "$ref": "#/components/schemas/AddonName"
+          },
+          "redirect_url": {
+            "type": "string",
+            "description": "URL to redirect to after order completion",
+            "example": "https://cloud.cloudquery.io/order-completion"
+          },
+          "cancel_url": {
+            "type": "string",
+            "description": "URL to redirect to after order cancellation",
+            "example": "https://cloud.cloudquery.io/order-cancelled"
+          }
+        },
+        "required": [
+          "addon_team",
+          "addon_type",
+          "addon_name",
+          "redirect_url",
+          "cancel_url"
+        ],
+        "title": "Create CloudQuery Addon Order",
         "type": "object"
       },
       "Email": {

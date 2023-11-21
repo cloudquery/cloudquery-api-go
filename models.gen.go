@@ -281,6 +281,24 @@ type AddonOrder struct {
 	TeamName TeamName `json:"team_name"`
 }
 
+// AddonOrderCreate Create CloudQuery Addon Order
+type AddonOrderCreate struct {
+	// AddonName The unique name for the addon.
+	AddonName AddonName `json:"addon_name"`
+
+	// AddonTeam The unique name for the team.
+	AddonTeam TeamName `json:"addon_team"`
+
+	// AddonType Supported types for addons
+	AddonType AddonType `json:"addon_type"`
+
+	// CancelUrl URL to redirect to after order cancellation
+	CancelUrl string `json:"cancel_url"`
+
+	// RedirectUrl URL to redirect to after order completion
+	RedirectUrl string `json:"redirect_url"`
+}
+
 // AddonTier Supported tiers for addons
 type AddonTier string
 
@@ -1401,6 +1419,9 @@ type CreateTeamJSONRequestBody CreateTeamJSONBody
 
 // UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
 type UpdateTeamJSONRequestBody UpdateTeamJSONBody
+
+// CreateAddonOrderForTeamJSONRequestBody defines body for CreateAddonOrderForTeam for application/json ContentType.
+type CreateAddonOrderForTeamJSONRequestBody = AddonOrderCreate
 
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
 type CreateTeamAPIKeyJSONRequestBody CreateTeamAPIKeyJSONBody
