@@ -6478,6 +6478,7 @@ func (r ListAddonOrdersByTeamResponse) StatusCode() int {
 type CreateAddonOrderForTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON500      *InternalError
@@ -9915,6 +9916,13 @@ func ParseCreateAddonOrderForTeamResponse(rsp *http.Response) (*CreateAddonOrder
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
