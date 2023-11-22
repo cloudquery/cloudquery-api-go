@@ -2369,6 +2369,9 @@
             },
             "description": "Response"
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
@@ -4889,9 +4892,9 @@
           "addon_name": {
             "$ref": "#/components/schemas/AddonName"
           },
-          "redirect_url": {
+          "success_url": {
             "type": "string",
-            "description": "URL to redirect to after order completion",
+            "description": "URL to redirect to after successful order completion",
             "example": "https://cloud.cloudquery.io/order-completion"
           },
           "cancel_url": {
@@ -4904,7 +4907,7 @@
           "addon_team",
           "addon_type",
           "addon_name",
-          "redirect_url",
+          "success_url",
           "cancel_url"
         ],
         "title": "Create CloudQuery Addon Order",

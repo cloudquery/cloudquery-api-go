@@ -295,8 +295,8 @@ type AddonOrderCreate struct {
 	// CancelUrl URL to redirect to after order cancellation
 	CancelUrl string `json:"cancel_url"`
 
-	// RedirectUrl URL to redirect to after order completion
-	RedirectUrl string `json:"redirect_url"`
+	// SuccessUrl URL to redirect to after successful order completion
+	SuccessUrl string `json:"success_url"`
 }
 
 // AddonTier Supported tiers for addons
