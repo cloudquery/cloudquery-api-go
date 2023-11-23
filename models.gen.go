@@ -32,6 +32,13 @@ const (
 	Zip AddonFormat = "zip"
 )
 
+// Defines values for AddonOrderStatus.
+const (
+	Cancelled AddonOrderStatus = "cancelled"
+	Completed AddonOrderStatus = "completed"
+	Pending   AddonOrderStatus = "pending"
+)
+
 // Defines values for AddonTier.
 const (
 	AddonTierFree AddonTier = "free"
@@ -154,7 +161,7 @@ type APIKey struct {
 	ExpiresAt time.Time `json:"expires_at"`
 
 	// Id ID of the API key
-	ID ID `json:"id"`
+	APIKeyID APIKeyID `json:"id"`
 
 	// Key API key. Will be shown only in the response when creating the key.
 	Key *string `json:"key,omitempty"`
@@ -166,8 +173,8 @@ type APIKey struct {
 	Scope APIKeyScope `json:"scope"`
 }
 
-// ID ID of the API key
-type ID = openapi_types.UUID
+// APIKeyID ID of the API key
+type APIKeyID = openapi_types.UUID
 
 // APIKeyName Name of the API key
 type APIKeyName = string
@@ -274,11 +281,20 @@ type AddonOrder struct {
 	AddonTeam TeamName `json:"addon_team"`
 
 	// AddonType Supported types for addons
-	AddonType    AddonType `json:"addon_type"`
-	PurchaseDate time.Time `json:"purchase_date"`
+	AddonType   AddonType  `json:"addon_type"`
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CompletionUrl Stripe URL for completing purchase. Only shown in response to POST request.
+	CompletionURL *string   `json:"completion_url,omitempty"`
+	CreatedAt     time.Time `json:"created_at"`
+
+	// Id ID of the addon order
+	AddonOrderID AddonOrderID     `json:"id"`
+	Status       AddonOrderStatus `json:"status"`
 
 	// TeamName The unique name for the team.
-	TeamName TeamName `json:"team_name"`
+	TeamName  TeamName  `json:"team_name"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // AddonOrderCreate Create CloudQuery Addon Order
@@ -298,6 +314,12 @@ type AddonOrderCreate struct {
 	// SuccessUrl URL to redirect to after successful order completion
 	SuccessUrl string `json:"success_url"`
 }
+
+// AddonOrderID ID of the addon order
+type AddonOrderID = openapi_types.UUID
+
+// AddonOrderStatus defines model for AddonOrderStatus.
+type AddonOrderStatus string
 
 // AddonTier Supported tiers for addons
 type AddonTier string
@@ -996,9 +1018,6 @@ type AddonSortBy string
 
 // AddonTeam The unique name for the team.
 type AddonTeam = TeamName
-
-// APIKeyID ID of the API key
-type APIKeyID = ID
 
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
