@@ -227,6 +227,9 @@ type ClientInterface interface {
 
 	CreateAddonOrderForTeam(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetAddonOrderByTeam request
+	GetAddonOrderByTeam(ctx context.Context, teamName TeamName, addonOrderID AddonOrderID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteAddonsByTeam request
 	DeleteAddonsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -928,6 +931,18 @@ func (c *Client) CreateAddonOrderForTeamWithBody(ctx context.Context, teamName T
 
 func (c *Client) CreateAddonOrderForTeam(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateAddonOrderForTeamRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetAddonOrderByTeam(ctx context.Context, teamName TeamName, addonOrderID AddonOrderID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAddonOrderByTeamRequest(c.Server, teamName, addonOrderID)
 	if err != nil {
 		return nil, err
 	}
@@ -3648,6 +3663,47 @@ func NewCreateAddonOrderForTeamRequestWithBody(server string, teamName TeamName,
 	return req, nil
 }
 
+// NewGetAddonOrderByTeamRequest generates requests for GetAddonOrderByTeam
+func NewGetAddonOrderByTeamRequest(server string, teamName TeamName, addonOrderID AddonOrderID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "addon_order_id", runtime.ParamLocationPath, addonOrderID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/addon-orders/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeleteAddonsByTeamRequest generates requests for DeleteAddonsByTeam
 func NewDeleteAddonsByTeamRequest(server string, teamName TeamName) (*http.Request, error) {
 	var err error
@@ -5440,6 +5496,9 @@ type ClientWithResponsesInterface interface {
 
 	CreateAddonOrderForTeamWithResponse(ctx context.Context, teamName TeamName, body CreateAddonOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateAddonOrderForTeamResponse, error)
 
+	// GetAddonOrderByTeamWithResponse request
+	GetAddonOrderByTeamWithResponse(ctx context.Context, teamName TeamName, addonOrderID AddonOrderID, reqEditors ...RequestEditorFn) (*GetAddonOrderByTeamResponse, error)
+
 	// DeleteAddonsByTeamWithResponse request
 	DeleteAddonsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteAddonsByTeamResponse, error)
 
@@ -5806,6 +5865,7 @@ type DownloadAddonAssetResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *AddonAsset
 	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON429      *TooManyRequests
 	JSON500      *InternalError
@@ -6478,6 +6538,7 @@ func (r ListAddonOrdersByTeamResponse) StatusCode() int {
 type CreateAddonOrderForTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON201      *AddonOrder
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
@@ -6494,6 +6555,32 @@ func (r CreateAddonOrderForTeamResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateAddonOrderForTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetAddonOrderByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AddonOrder
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAddonOrderByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAddonOrderByTeamResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -6560,6 +6647,7 @@ type DownloadAddonAssetByTeamResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *AddonAsset
 	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON429      *TooManyRequests
 	JSON500      *InternalError
@@ -7693,6 +7781,15 @@ func (c *ClientWithResponses) CreateAddonOrderForTeamWithResponse(ctx context.Co
 	return ParseCreateAddonOrderForTeamResponse(rsp)
 }
 
+// GetAddonOrderByTeamWithResponse request returning *GetAddonOrderByTeamResponse
+func (c *ClientWithResponses) GetAddonOrderByTeamWithResponse(ctx context.Context, teamName TeamName, addonOrderID AddonOrderID, reqEditors ...RequestEditorFn) (*GetAddonOrderByTeamResponse, error) {
+	rsp, err := c.GetAddonOrderByTeam(ctx, teamName, addonOrderID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAddonOrderByTeamResponse(rsp)
+}
+
 // DeleteAddonsByTeamWithResponse request returning *DeleteAddonsByTeamResponse
 func (c *ClientWithResponses) DeleteAddonsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteAddonsByTeamResponse, error) {
 	rsp, err := c.DeleteAddonsByTeam(ctx, teamName, reqEditors...)
@@ -8543,6 +8640,13 @@ func ParseDownloadAddonAssetResponse(rsp *http.Response) (*DownloadAddonAssetRes
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
@@ -9916,6 +10020,13 @@ func ParseCreateAddonOrderForTeamResponse(rsp *http.Response) (*CreateAddonOrder
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest AddonOrder
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -9929,6 +10040,60 @@ func ParseCreateAddonOrderForTeamResponse(rsp *http.Response) (*CreateAddonOrder
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAddonOrderByTeamResponse parses an HTTP response from a GetAddonOrderByTeamWithResponse call
+func ParseGetAddonOrderByTeamResponse(rsp *http.Response) (*GetAddonOrderByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAddonOrderByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AddonOrder
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
@@ -10087,6 +10252,13 @@ func ParseDownloadAddonAssetByTeamResponse(rsp *http.Response) (*DownloadAddonAs
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound

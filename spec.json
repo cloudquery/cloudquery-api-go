@@ -1787,6 +1787,9 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
@@ -2359,21 +2362,62 @@
           }
         },
         "responses": {
-          "302": {
-            "headers": {
-              "Location": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/AddonOrder"
                 }
               }
-            },
-            "description": "Response"
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "addons"
+        ]
+      }
+    },
+    "/teams/{team_name}/addon-orders/{addon_order_id}": {
+      "get": {
+        "description": "Get an addon order for the team.",
+        "operationId": "GetAddonOrderByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/addon_order_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddonOrder"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -2998,6 +3042,9 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -4847,10 +4894,28 @@
         "title": "Team",
         "type": "object"
       },
+      "AddonOrderID": {
+        "description": "ID of the addon order",
+        "type": "string",
+        "format": "uuid",
+        "example": "12345678-1234-1234-1234-1234567890ab",
+        "x-go-name": "AddonOrderID"
+      },
+      "AddonOrderStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "completed",
+          "cancelled"
+        ]
+      },
       "AddonOrder": {
         "additionalProperties": false,
         "description": "CloudQuery Addon Order",
         "properties": {
+          "id": {
+            "$ref": "#/components/schemas/AddonOrderID"
+          },
           "team_name": {
             "$ref": "#/components/schemas/TeamName"
           },
@@ -4863,18 +4928,40 @@
           "addon_name": {
             "$ref": "#/components/schemas/AddonName"
           },
-          "purchase_date": {
+          "status": {
+            "$ref": "#/components/schemas/AddonOrderStatus"
+          },
+          "created_at": {
             "type": "string",
             "format": "date-time",
             "example": "2017-07-14T16:53:42Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          },
+          "completion_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Stripe URL for completing purchase. Only shown in response to POST request.",
+            "x-go-name": "CompletionURL"
           }
         },
         "required": [
+          "id",
           "team_name",
           "addon_team",
           "addon_type",
           "addon_name",
-          "purchase_date"
+          "status",
+          "created_at",
+          "updated_at"
         ],
         "title": "CloudQuery Addon",
         "type": "object"
@@ -5227,7 +5314,7 @@
         "type": "string",
         "format": "uuid",
         "example": "12345678-1234-1234-1234-1234567890ab",
-        "x-go-name": "ID"
+        "x-go-name": "APIKeyID"
       },
       "APIKeyScope": {
         "description": "Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins",
@@ -5517,6 +5604,15 @@
         "schema": {
           "type": "boolean"
         }
+      },
+      "addon_order_id": {
+        "name": "addon_order_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/AddonOrderID"
+        },
+        "x-go-name": "AddonOrderID"
       },
       "plugin_team": {
         "in": "path",
