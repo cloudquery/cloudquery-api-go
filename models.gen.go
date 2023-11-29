@@ -34,9 +34,9 @@ const (
 
 // Defines values for AddonOrderStatus.
 const (
-	Cancelled AddonOrderStatus = "cancelled"
-	Completed AddonOrderStatus = "completed"
-	Pending   AddonOrderStatus = "pending"
+	AddonOrderStatusCancelled AddonOrderStatus = "cancelled"
+	AddonOrderStatusCompleted AddonOrderStatus = "completed"
+	AddonOrderStatusPending   AddonOrderStatus = "pending"
 )
 
 // Defines values for AddonTier.
@@ -74,8 +74,9 @@ const (
 
 // Defines values for PluginTier.
 const (
-	PluginTierFree PluginTier = "free"
-	PluginTierPaid PluginTier = "paid"
+	PluginTierFree     PluginTier = "free"
+	PluginTierOpenCore PluginTier = "open-core"
+	PluginTierPaid     PluginTier = "paid"
 )
 
 // Defines values for PluginVersionPackageType.
@@ -88,6 +89,13 @@ const (
 const (
 	Free TeamPlan = "free"
 	Paid TeamPlan = "paid"
+)
+
+// Defines values for TeamSubscriptionOrderStatus.
+const (
+	TeamSubscriptionOrderStatusCancelled TeamSubscriptionOrderStatus = "cancelled"
+	TeamSubscriptionOrderStatusCompleted TeamSubscriptionOrderStatus = "completed"
+	TeamSubscriptionOrderStatusPending   TeamSubscriptionOrderStatus = "pending"
 )
 
 // Defines values for AddonSortBy.
@@ -955,6 +963,44 @@ type TeamName = string
 // TeamPlan The plan the team is on
 type TeamPlan string
 
+// TeamSubscriptionOrder Team subscription order
+type TeamSubscriptionOrder struct {
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CompletionUrl Stripe URL for completing purchase. Only shown in response to POST request when a paid plan is selected.
+	CompletionURL *string   `json:"completion_url,omitempty"`
+	CreatedAt     time.Time `json:"created_at"`
+
+	// Id ID of the team subscription order
+	TeamSubscriptionOrderID TeamSubscriptionOrderID `json:"id"`
+
+	// Plan The plan the team is on
+	Plan   TeamPlan                    `json:"plan"`
+	Status TeamSubscriptionOrderStatus `json:"status"`
+
+	// TeamName The unique name for the team.
+	TeamName  TeamName  `json:"team_name"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// TeamSubscriptionOrderCreate Create team subscription order
+type TeamSubscriptionOrderCreate struct {
+	// CancelUrl URL to redirect to after order cancellation
+	CancelUrl string `json:"cancel_url"`
+
+	// Plan The plan the team is on
+	Plan TeamPlan `json:"plan"`
+
+	// SuccessUrl URL to redirect to after successful order completion
+	SuccessUrl string `json:"success_url"`
+}
+
+// TeamSubscriptionOrderID ID of the team subscription order
+type TeamSubscriptionOrderID = openapi_types.UUID
+
+// TeamSubscriptionOrderStatus defines model for TeamSubscriptionOrderStatus.
+type TeamSubscriptionOrderStatus string
+
 // UsageCurrent The usage of a plugin within the current calendar month.
 type UsageCurrent struct {
 	// PluginKind The kind of plugin, ie. source or destination.
@@ -1355,6 +1401,15 @@ type DownloadPluginAssetByTeamParams struct {
 	Accept *string `json:"Accept,omitempty"`
 }
 
+// ListSubscriptionOrdersByTeamParams defines parameters for ListSubscriptionOrdersByTeam.
+type ListSubscriptionOrdersByTeamParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
 type ListTeamPluginUsageParams struct {
 	// Page Page number of the results to fetch
@@ -1456,6 +1511,9 @@ type CreateMonthlyLimitJSONRequestBody = MonthlyLimitCreate
 
 // UpdateMonthlyLimitJSONRequestBody defines body for UpdateMonthlyLimit for application/json ContentType.
 type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
+
+// CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
+type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
 
 // IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
 type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease

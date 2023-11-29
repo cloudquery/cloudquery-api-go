@@ -297,6 +297,17 @@ type ClientInterface interface {
 	// DownloadPluginAssetByTeam request
 	DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListSubscriptionOrdersByTeam request
+	ListSubscriptionOrdersByTeam(ctx context.Context, teamName TeamName, params *ListSubscriptionOrdersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSubscriptionOrderForTeamWithBody request with any body
+	CreateSubscriptionOrderForTeamWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSubscriptionOrderForTeam(ctx context.Context, teamName TeamName, body CreateSubscriptionOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSubscriptionOrderByTeam request
+	GetSubscriptionOrderByTeam(ctx context.Context, teamName TeamName, teamSubscriptionOrderID TeamSubscriptionOrderID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamPluginUsage request
 	ListTeamPluginUsage(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1231,6 +1242,54 @@ func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, param
 
 func (c *Client) DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadPluginAssetByTeamRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListSubscriptionOrdersByTeam(ctx context.Context, teamName TeamName, params *ListSubscriptionOrdersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSubscriptionOrdersByTeamRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSubscriptionOrderForTeamWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSubscriptionOrderForTeamRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSubscriptionOrderForTeam(ctx context.Context, teamName TeamName, body CreateSubscriptionOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSubscriptionOrderForTeamRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSubscriptionOrderByTeam(ctx context.Context, teamName TeamName, teamSubscriptionOrderID TeamSubscriptionOrderID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSubscriptionOrderByTeamRequest(c.Server, teamName, teamSubscriptionOrderID)
 	if err != nil {
 		return nil, err
 	}
@@ -4845,6 +4904,166 @@ func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, plugi
 	return req, nil
 }
 
+// NewListSubscriptionOrdersByTeamRequest generates requests for ListSubscriptionOrdersByTeam
+func NewListSubscriptionOrdersByTeamRequest(server string, teamName TeamName, params *ListSubscriptionOrdersByTeamParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/subscription-orders", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateSubscriptionOrderForTeamRequest calls the generic CreateSubscriptionOrderForTeam builder with application/json body
+func NewCreateSubscriptionOrderForTeamRequest(server string, teamName TeamName, body CreateSubscriptionOrderForTeamJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSubscriptionOrderForTeamRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateSubscriptionOrderForTeamRequestWithBody generates requests for CreateSubscriptionOrderForTeam with any type of body
+func NewCreateSubscriptionOrderForTeamRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/subscription-orders", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetSubscriptionOrderByTeamRequest generates requests for GetSubscriptionOrderByTeam
+func NewGetSubscriptionOrderByTeamRequest(server string, teamName TeamName, teamSubscriptionOrderID TeamSubscriptionOrderID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "subscription_order_id", runtime.ParamLocationPath, teamSubscriptionOrderID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/subscription-orders/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListTeamPluginUsageRequest generates requests for ListTeamPluginUsage
 func NewListTeamPluginUsageRequest(server string, teamName TeamName, params *ListTeamPluginUsageParams) (*http.Request, error) {
 	var err error
@@ -5565,6 +5784,17 @@ type ClientWithResponsesInterface interface {
 
 	// DownloadPluginAssetByTeamWithResponse request
 	DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error)
+
+	// ListSubscriptionOrdersByTeamWithResponse request
+	ListSubscriptionOrdersByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListSubscriptionOrdersByTeamParams, reqEditors ...RequestEditorFn) (*ListSubscriptionOrdersByTeamResponse, error)
+
+	// CreateSubscriptionOrderForTeamWithBodyWithResponse request with any body
+	CreateSubscriptionOrderForTeamWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSubscriptionOrderForTeamResponse, error)
+
+	CreateSubscriptionOrderForTeamWithResponse(ctx context.Context, teamName TeamName, body CreateSubscriptionOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSubscriptionOrderForTeamResponse, error)
+
+	// GetSubscriptionOrderByTeamWithResponse request
+	GetSubscriptionOrderByTeamWithResponse(ctx context.Context, teamName TeamName, teamSubscriptionOrderID TeamSubscriptionOrderID, reqEditors ...RequestEditorFn) (*GetSubscriptionOrderByTeamResponse, error)
 
 	// ListTeamPluginUsageWithResponse request
 	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
@@ -7096,6 +7326,89 @@ func (r DownloadPluginAssetByTeamResponse) StatusCode() int {
 	return 0
 }
 
+type ListSubscriptionOrdersByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Items    []TeamSubscriptionOrder `json:"items"`
+		Metadata ListMetadata            `json:"metadata"`
+	}
+	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
+	JSON404 *NotFound
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSubscriptionOrdersByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSubscriptionOrdersByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateSubscriptionOrderForTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *TeamSubscriptionOrder
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSubscriptionOrderForTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSubscriptionOrderForTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSubscriptionOrderByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *TeamSubscriptionOrder
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSubscriptionOrderByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSubscriptionOrderByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListTeamPluginUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7999,6 +8312,41 @@ func (c *ClientWithResponses) DownloadPluginAssetByTeamWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseDownloadPluginAssetByTeamResponse(rsp)
+}
+
+// ListSubscriptionOrdersByTeamWithResponse request returning *ListSubscriptionOrdersByTeamResponse
+func (c *ClientWithResponses) ListSubscriptionOrdersByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListSubscriptionOrdersByTeamParams, reqEditors ...RequestEditorFn) (*ListSubscriptionOrdersByTeamResponse, error) {
+	rsp, err := c.ListSubscriptionOrdersByTeam(ctx, teamName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSubscriptionOrdersByTeamResponse(rsp)
+}
+
+// CreateSubscriptionOrderForTeamWithBodyWithResponse request with arbitrary body returning *CreateSubscriptionOrderForTeamResponse
+func (c *ClientWithResponses) CreateSubscriptionOrderForTeamWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSubscriptionOrderForTeamResponse, error) {
+	rsp, err := c.CreateSubscriptionOrderForTeamWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSubscriptionOrderForTeamResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateSubscriptionOrderForTeamWithResponse(ctx context.Context, teamName TeamName, body CreateSubscriptionOrderForTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSubscriptionOrderForTeamResponse, error) {
+	rsp, err := c.CreateSubscriptionOrderForTeam(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSubscriptionOrderForTeamResponse(rsp)
+}
+
+// GetSubscriptionOrderByTeamWithResponse request returning *GetSubscriptionOrderByTeamResponse
+func (c *ClientWithResponses) GetSubscriptionOrderByTeamWithResponse(ctx context.Context, teamName TeamName, teamSubscriptionOrderID TeamSubscriptionOrderID, reqEditors ...RequestEditorFn) (*GetSubscriptionOrderByTeamResponse, error) {
+	rsp, err := c.GetSubscriptionOrderByTeam(ctx, teamName, teamSubscriptionOrderID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSubscriptionOrderByTeamResponse(rsp)
 }
 
 // ListTeamPluginUsageWithResponse request returning *ListTeamPluginUsageResponse
@@ -11124,6 +11472,185 @@ func ParseDownloadPluginAssetByTeamResponse(rsp *http.Response) (*DownloadPlugin
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSubscriptionOrdersByTeamResponse parses an HTTP response from a ListSubscriptionOrdersByTeamWithResponse call
+func ParseListSubscriptionOrdersByTeamResponse(rsp *http.Response) (*ListSubscriptionOrdersByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSubscriptionOrdersByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Items    []TeamSubscriptionOrder `json:"items"`
+			Metadata ListMetadata            `json:"metadata"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSubscriptionOrderForTeamResponse parses an HTTP response from a CreateSubscriptionOrderForTeamWithResponse call
+func ParseCreateSubscriptionOrderForTeamResponse(rsp *http.Response) (*CreateSubscriptionOrderForTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSubscriptionOrderForTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest TeamSubscriptionOrder
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSubscriptionOrderByTeamResponse parses an HTTP response from a GetSubscriptionOrderByTeamWithResponse call
+func ParseGetSubscriptionOrderByTeamResponse(rsp *http.Response) (*GetSubscriptionOrderByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSubscriptionOrderByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TeamSubscriptionOrder
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

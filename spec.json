@@ -3276,6 +3276,157 @@
         }
       }
     },
+    "/teams/{team_name}/subscription-orders": {
+      "get": {
+        "description": "List all subscription orders for the team.",
+        "operationId": "ListSubscriptionOrdersByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/TeamSubscriptionOrder"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      },
+      "post": {
+        "description": "Start the checkout process for a subscription order.",
+        "operationId": "CreateSubscriptionOrderForTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeamSubscriptionOrderCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamSubscriptionOrder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
+    "/teams/{team_name}/subscription-orders/{subscription_order_id}": {
+      "get": {
+        "description": "Get a subscription order for the team.",
+        "operationId": "GetSubscriptionOrderByTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/team_subscription_order_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamSubscriptionOrder"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
     "/teams/{team_name}/users": {
       "get": {
         "description": "List all users in the current team.",
@@ -3770,7 +3921,8 @@
         "type": "string",
         "enum": [
           "free",
-          "paid"
+          "paid",
+          "open-core"
         ]
       },
       "Plugin": {
@@ -5280,6 +5432,96 @@
         "title": "CloudQuery Team Membership",
         "type": "object"
       },
+      "TeamSubscriptionOrderID": {
+        "description": "ID of the team subscription order",
+        "type": "string",
+        "format": "uuid",
+        "example": "12345678-1234-1234-1234-1234567890ab",
+        "x-go-name": "TeamSubscriptionOrderID"
+      },
+      "TeamSubscriptionOrderStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "completed",
+          "cancelled"
+        ]
+      },
+      "TeamSubscriptionOrder": {
+        "additionalProperties": false,
+        "title": "Team subscription order",
+        "description": "Team subscription order",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/TeamSubscriptionOrderID"
+          },
+          "team_name": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plan": {
+            "$ref": "#/components/schemas/TeamPlan"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TeamSubscriptionOrderStatus"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-14T16:53:42Z"
+          },
+          "completion_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Stripe URL for completing purchase. Only shown in response to POST request when a paid plan is selected.",
+            "x-go-name": "CompletionURL"
+          }
+        },
+        "required": [
+          "id",
+          "team_name",
+          "plan",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "type": "object"
+      },
+      "TeamSubscriptionOrderCreate": {
+        "additionalProperties": false,
+        "description": "Create team subscription order",
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/TeamPlan"
+          },
+          "success_url": {
+            "type": "string",
+            "description": "URL to redirect to after successful order completion",
+            "example": "https://cloud.cloudquery.io/order-completion"
+          },
+          "cancel_url": {
+            "type": "string",
+            "description": "URL to redirect to after order cancellation",
+            "example": "https://cloud.cloudquery.io/order-cancelled"
+          }
+        },
+        "required": [
+          "plan",
+          "success_url",
+          "cancel_url"
+        ],
+        "title": "Create team subscription order",
+        "type": "object"
+      },
       "InvitationWithToken": {
         "additionalProperties": false,
         "allOf": [
@@ -5637,6 +5879,15 @@
         "schema": {
           "$ref": "#/components/schemas/Email"
         }
+      },
+      "team_subscription_order_id": {
+        "name": "subscription_order_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/TeamSubscriptionOrderID"
+        },
+        "x-go-name": "TeamSubscriptionOrderID"
       },
       "apikey_id": {
         "name": "apikey_id",
