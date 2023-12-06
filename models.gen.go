@@ -551,7 +551,8 @@ type ListPlugin struct {
 	TeamName TeamName `json:"team_name"`
 
 	// Tier Supported tiers for plugins
-	Tier PluginTier `json:"tier"`
+	Tier      PluginTier `json:"tier"`
+	UpdatedAt time.Time  `json:"updated_at"`
 
 	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
 	USDPerRow string `json:"usd_per_row"`
@@ -652,7 +653,8 @@ type Plugin struct {
 	TeamName TeamName `json:"team_name"`
 
 	// Tier Supported tiers for plugins
-	Tier PluginTier `json:"tier"`
+	Tier      PluginTier `json:"tier"`
+	UpdatedAt time.Time  `json:"updated_at"`
 
 	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
 	USDPerRow string `json:"usd_per_row"`
