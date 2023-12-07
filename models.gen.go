@@ -225,7 +225,8 @@ type Addon struct {
 	TeamName TeamName `json:"team_name"`
 
 	// Tier Supported tiers for addons
-	Tier AddonTier `json:"tier"`
+	Tier      AddonTier `json:"tier"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // AddonAsset CloudQuery Addon Asset
@@ -502,7 +503,8 @@ type ListAddon struct {
 	TeamName TeamName `json:"team_name"`
 
 	// Tier Supported tiers for addons
-	Tier AddonTier `json:"tier"`
+	Tier      AddonTier `json:"tier"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // ListMetadata defines model for ListMetadata.
