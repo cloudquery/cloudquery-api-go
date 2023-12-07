@@ -760,6 +760,9 @@ type PluginTable struct {
 	// IsIncremental Whether the table is incremental
 	IsIncremental bool `json:"is_incremental"`
 
+	// IsPaid Whether the table is paid
+	IsPaid *bool `json:"is_paid,omitempty"`
+
 	// Name Name of the table
 	Name PluginTableName `json:"name"`
 
@@ -807,6 +810,9 @@ type PluginTableCreate struct {
 	// IsIncremental Whether the table is incremental
 	IsIncremental *bool `json:"is_incremental,omitempty"`
 
+	// IsPaid Whether the table is paid
+	IsPaid *bool `json:"is_paid,omitempty"`
+
 	// Name Name of the table
 	Name PluginTableName `json:"name"`
 
@@ -830,6 +836,9 @@ type PluginTableDetails struct {
 
 	// IsIncremental Whether the table is incremental
 	IsIncremental bool `json:"is_incremental"`
+
+	// IsPaid Whether the table is paid
+	IsPaid *bool `json:"is_paid,omitempty"`
 
 	// Name Name of the table
 	Name string `json:"name"`
