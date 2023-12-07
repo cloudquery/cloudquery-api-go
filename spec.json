@@ -4440,6 +4440,10 @@
             "description": "Title of the table",
             "type": "string",
             "example": "AWS S3 Buckets"
+          },
+          "is_paid": {
+            "description": "Whether the table is paid",
+            "type": "boolean"
           }
         },
         "title": "CloudQuery Plugin Table",
@@ -4529,6 +4533,10 @@
             "type": "string",
             "example": "AWS S3 Buckets"
           },
+          "is_paid": {
+            "description": "Whether the table is paid",
+            "type": "boolean"
+          },
           "columns": {
             "type": "array",
             "items": {
@@ -4583,6 +4591,10 @@
           "title": {
             "description": "Title of the table",
             "type": "string"
+          },
+          "is_paid": {
+            "description": "Whether the table is paid",
+            "type": "boolean"
           }
         },
         "type": "object"
