@@ -68,8 +68,9 @@ const (
 
 // Defines values for PluginReleaseStage.
 const (
-	Ga      PluginReleaseStage = "ga"
-	Preview PluginReleaseStage = "preview"
+	ComingSoon PluginReleaseStage = "coming-soon"
+	Ga         PluginReleaseStage = "ga"
+	Preview    PluginReleaseStage = "preview"
 )
 
 // Defines values for PluginTier.
@@ -542,7 +543,8 @@ type ListPlugin struct {
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
 	Public *bool `json:"public,omitempty"`
 
-	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// ReleaseStage Official plugins can go through three release stages: Coming Soon, Preview, and GA.
+	// The Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.
 	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
 	ReleaseStage     PluginReleaseStage `json:"release_stage"`
@@ -644,7 +646,8 @@ type Plugin struct {
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
 	Public *bool `json:"public,omitempty"`
 
-	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// ReleaseStage Official plugins can go through three release stages: Coming Soon, Preview, and GA.
+	// The Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.
 	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
 	ReleaseStage     PluginReleaseStage `json:"release_stage"`
@@ -698,7 +701,8 @@ type PluginCreate struct {
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the team.
 	Public bool `json:"public"`
 
-	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// ReleaseStage Official plugins can go through three release stages: Coming Soon, Preview, and GA.
+	// The Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.
 	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
 	ReleaseStage *PluginReleaseStage `json:"release_stage,omitempty"`
@@ -747,7 +751,8 @@ type PluginName = string
 // PluginProtocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 type PluginProtocols = []int
 
-// PluginReleaseStage Official plugins go through two release stages: Preview, and GA.
+// PluginReleaseStage Official plugins can go through three release stages: Coming Soon, Preview, and GA.
+// The Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.
 // Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 // Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
 type PluginReleaseStage string
@@ -877,7 +882,8 @@ type PluginUpdate struct {
 	// Public If plugin is not public, it won't be visible to other teams in the CloudQuery Hub.
 	Public *bool `json:"public,omitempty"`
 
-	// ReleaseStage Official plugins go through two release stages: Preview, and GA.
+	// ReleaseStage Official plugins can go through three release stages: Coming Soon, Preview, and GA.
+	// The Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.
 	// Both Preview and GA plugins follow semantic versioning. The main differences between the two stages are:
 	// Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
 	ReleaseStage *PluginReleaseStage `json:"release_stage,omitempty"`
