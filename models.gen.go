@@ -1274,6 +1274,11 @@ type ListPluginVersionDocsParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
+// ReplacePluginVersionDocsJSONBody defines parameters for ReplacePluginVersionDocs.
+type ReplacePluginVersionDocsJSONBody struct {
+	Pages []PluginDocsPageCreate `json:"pages"`
+}
+
 // CreatePluginVersionDocsJSONBody defines parameters for CreatePluginVersionDocs.
 type CreatePluginVersionDocsJSONBody struct {
 	Pages []PluginDocsPageCreate `json:"pages"`
@@ -1503,6 +1508,9 @@ type CreatePluginVersionJSONRequestBody CreatePluginVersionJSONBody
 
 // DeletePluginVersionDocsJSONRequestBody defines body for DeletePluginVersionDocs for application/json ContentType.
 type DeletePluginVersionDocsJSONRequestBody DeletePluginVersionDocsJSONBody
+
+// ReplacePluginVersionDocsJSONRequestBody defines body for ReplacePluginVersionDocs for application/json ContentType.
+type ReplacePluginVersionDocsJSONRequestBody ReplacePluginVersionDocsJSONBody
 
 // CreatePluginVersionDocsJSONRequestBody defines body for CreatePluginVersionDocs for application/json ContentType.
 type CreatePluginVersionDocsJSONRequestBody CreatePluginVersionDocsJSONBody

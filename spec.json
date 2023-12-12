@@ -634,7 +634,7 @@
     },
     "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/docs": {
       "get": {
-        "description": "List all documentation pages for a given plugin version.",
+        "description": "List all documentation pages for a given plugin version",
         "operationId": "ListPluginVersionDocs",
         "parameters": [
           {
@@ -697,8 +697,87 @@
         ]
       },
       "put": {
-        "description": "Create or update one or more plugin version docs pages.",
+        "description": "Create or update one or more plugin version docs pages",
         "operationId": "CreatePluginVersionDocs",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          },
+          {
+            "$ref": "#/components/parameters/version_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "pages"
+                ],
+                "properties": {
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PluginDocsPageCreate"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created or updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "names": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PluginDocsPageName"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      },
+      "post": {
+        "description": "Replace (override) multiple plugin version docs pages",
+        "operationId": "ReplacePluginVersionDocs",
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
