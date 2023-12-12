@@ -1087,6 +1087,9 @@ type AddonTeam = TeamName
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
 
+// IncludePrereleases defines model for include_prereleases.
+type IncludePrereleases = bool
+
 // IncludePrivate defines model for include_private.
 type IncludePrivate = bool
 
@@ -1161,7 +1164,7 @@ type ListAddonVersionsParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
-	// IncludeDrafts Whether to include draft plugins
+	// IncludeDrafts Whether to include draft versions
 	IncludeDrafts *IncludeDrafts `form:"include_drafts,omitempty" json:"include_drafts,omitempty"`
 }
 
@@ -1219,8 +1222,11 @@ type ListPluginVersionsParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
-	// IncludeDrafts Whether to include draft plugins
+	// IncludeDrafts Whether to include draft versions
 	IncludeDrafts *IncludeDrafts `form:"include_drafts,omitempty" json:"include_drafts,omitempty"`
+
+	// IncludePrereleases Whether to include prerelease versions
+	IncludePrereleases *IncludePrereleases `form:"include_prereleases,omitempty" json:"include_prereleases,omitempty"`
 }
 
 // ListPluginVersionsParamsSortBy defines parameters for ListPluginVersions.
