@@ -372,6 +372,9 @@
           },
           {
             "$ref": "#/components/parameters/include_drafts"
+          },
+          {
+            "$ref": "#/components/parameters/include_prereleases"
           }
         ],
         "responses": {
@@ -5812,9 +5815,18 @@
         }
       },
       "include_drafts": {
-        "description": "Whether to include draft plugins",
+        "description": "Whether to include draft versions",
         "in": "query",
         "name": "include_drafts",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "include_prereleases": {
+        "description": "Whether to include prerelease versions",
+        "in": "query",
+        "name": "include_prereleases",
         "required": false,
         "schema": {
           "type": "boolean"
