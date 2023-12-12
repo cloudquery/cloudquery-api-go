@@ -182,6 +182,11 @@ type ClientInterface interface {
 	// ListPluginVersionDocs request
 	ListPluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ReplacePluginVersionDocsWithBody request with any body
+	ReplacePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ReplacePluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body ReplacePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreatePluginVersionDocsWithBody request with any body
 	CreatePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -738,6 +743,30 @@ func (c *Client) DeletePluginVersionDocs(ctx context.Context, teamName TeamName,
 
 func (c *Client) ListPluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPluginVersionDocsRequest(c.Server, teamName, pluginKind, pluginName, versionName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReplacePluginVersionDocsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReplacePluginVersionDocsRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReplacePluginVersionDocs(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body ReplacePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReplacePluginVersionDocsRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3070,6 +3099,74 @@ func NewListPluginVersionDocsRequest(server string, teamName TeamName, pluginKin
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewReplacePluginVersionDocsRequest calls the generic ReplacePluginVersionDocs builder with application/json body
+func NewReplacePluginVersionDocsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body ReplacePluginVersionDocsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReplacePluginVersionDocsRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
+}
+
+// NewReplacePluginVersionDocsRequestWithBody generates requests for ReplacePluginVersionDocs with any type of body
+func NewReplacePluginVersionDocsRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/docs", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -5686,6 +5783,11 @@ type ClientWithResponsesInterface interface {
 	// ListPluginVersionDocsWithResponse request
 	ListPluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, params *ListPluginVersionDocsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionDocsResponse, error)
 
+	// ReplacePluginVersionDocsWithBodyWithResponse request with any body
+	ReplacePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReplacePluginVersionDocsResponse, error)
+
+	ReplacePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body ReplacePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*ReplacePluginVersionDocsResponse, error)
+
 	// CreatePluginVersionDocsWithBodyWithResponse request with any body
 	CreatePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginVersionDocsResponse, error)
 
@@ -6497,6 +6599,36 @@ func (r ListPluginVersionDocsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ListPluginVersionDocsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReplacePluginVersionDocsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Names *[]PluginDocsPageName `json:"names,omitempty"`
+	}
+	JSON400 *BadRequest
+	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
+	JSON404 *NotFound
+	JSON422 *UnprocessableEntity
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ReplacePluginVersionDocsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReplacePluginVersionDocsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7961,6 +8093,23 @@ func (c *ClientWithResponses) ListPluginVersionDocsWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseListPluginVersionDocsResponse(rsp)
+}
+
+// ReplacePluginVersionDocsWithBodyWithResponse request with arbitrary body returning *ReplacePluginVersionDocsResponse
+func (c *ClientWithResponses) ReplacePluginVersionDocsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReplacePluginVersionDocsResponse, error) {
+	rsp, err := c.ReplacePluginVersionDocsWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReplacePluginVersionDocsResponse(rsp)
+}
+
+func (c *ClientWithResponses) ReplacePluginVersionDocsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body ReplacePluginVersionDocsJSONRequestBody, reqEditors ...RequestEditorFn) (*ReplacePluginVersionDocsResponse, error) {
+	rsp, err := c.ReplacePluginVersionDocs(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReplacePluginVersionDocsResponse(rsp)
 }
 
 // CreatePluginVersionDocsWithBodyWithResponse request with arbitrary body returning *CreatePluginVersionDocsResponse
@@ -9769,6 +9918,76 @@ func ParseListPluginVersionDocsResponse(rsp *http.Response) (*ListPluginVersionD
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReplacePluginVersionDocsResponse parses an HTTP response from a ReplacePluginVersionDocsWithResponse call
+func ParseReplacePluginVersionDocsResponse(rsp *http.Response) (*ReplacePluginVersionDocsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReplacePluginVersionDocsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Names *[]PluginDocsPageName `json:"names,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
