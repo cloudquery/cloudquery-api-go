@@ -466,6 +466,20 @@ type InvitationWithToken struct {
 	Token openapi_types.UUID `json:"token"`
 }
 
+// Invoice Invoice details
+type Invoice struct {
+	// AmountDue Amount due in cents. This is the amount that will be charged, unless there are pending invoice items. If the invoice’s total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the amount_due may be 0. The charge that gets generated for the invoice will be for the amount specified in amount_due.
+	AmountDue int64     `json:"amount_due"`
+	CreatedAt time.Time `json:"created_at"`
+	Currency  string    `json:"currency"`
+
+	// InvoicePdf The link to download the PDF for the invoice.
+	InvoicePDF string `json:"invoice_pdf"`
+
+	// Paid Whether or not payment was successfully collected for this invoice.
+	Paid bool `json:"paid"`
+}
+
 // ListAddon defines model for ListAddon.
 type ListAddon struct {
 	// AddonFormat Supported formats for addons
@@ -1394,6 +1408,15 @@ type EmailTeamInvitationJSONBodyRole string
 // AcceptTeamInvitationJSONBody defines parameters for AcceptTeamInvitation.
 type AcceptTeamInvitationJSONBody struct {
 	Token openapi_types.UUID `json:"token"`
+}
+
+// ListInvoicesByTeamParams defines parameters for ListInvoicesByTeam.
+type ListInvoicesByTeamParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
 // GetTeamMembershipsParams defines parameters for GetTeamMemberships.
