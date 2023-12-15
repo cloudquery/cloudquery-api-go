@@ -271,6 +271,9 @@ type ClientInterface interface {
 	// CancelTeamInvitation request
 	CancelTeamInvitation(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListInvoicesByTeam request
+	ListInvoicesByTeam(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetTeamMemberships request
 	GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1139,6 +1142,18 @@ func (c *Client) AcceptTeamInvitation(ctx context.Context, teamName TeamName, bo
 
 func (c *Client) CancelTeamInvitation(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCancelTeamInvitationRequest(c.Server, teamName, email)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListInvoicesByTeam(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListInvoicesByTeamRequest(c.Server, teamName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -4442,6 +4457,78 @@ func NewCancelTeamInvitationRequest(server string, teamName TeamName, email Emai
 	return req, nil
 }
 
+// NewListInvoicesByTeamRequest generates requests for ListInvoicesByTeam
+func NewListInvoicesByTeamRequest(server string, teamName TeamName, params *ListInvoicesByTeamParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/invoices", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetTeamMembershipsRequest generates requests for GetTeamMemberships
 func NewGetTeamMembershipsRequest(server string, teamName TeamName, params *GetTeamMembershipsParams) (*http.Request, error) {
 	var err error
@@ -5872,6 +5959,9 @@ type ClientWithResponsesInterface interface {
 	// CancelTeamInvitationWithResponse request
 	CancelTeamInvitationWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*CancelTeamInvitationResponse, error)
 
+	// ListInvoicesByTeamWithResponse request
+	ListInvoicesByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*ListInvoicesByTeamResponse, error)
+
 	// GetTeamMembershipsWithResponse request
 	GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error)
 
@@ -7229,6 +7319,35 @@ func (r CancelTeamInvitationResponse) StatusCode() int {
 	return 0
 }
 
+type ListInvoicesByTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Items    []Invoice    `json:"items"`
+		Metadata ListMetadata `json:"metadata"`
+	}
+	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
+	JSON404 *NotFound
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListInvoicesByTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListInvoicesByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetTeamMembershipsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8380,6 +8499,15 @@ func (c *ClientWithResponses) CancelTeamInvitationWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseCancelTeamInvitationResponse(rsp)
+}
+
+// ListInvoicesByTeamWithResponse request returning *ListInvoicesByTeamResponse
+func (c *ClientWithResponses) ListInvoicesByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*ListInvoicesByTeamResponse, error) {
+	rsp, err := c.ListInvoicesByTeam(ctx, teamName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListInvoicesByTeamResponse(rsp)
 }
 
 // GetTeamMembershipsWithResponse request returning *GetTeamMembershipsResponse
@@ -11177,6 +11305,63 @@ func ParseCancelTeamInvitationResponse(rsp *http.Response) (*CancelTeamInvitatio
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListInvoicesByTeamResponse parses an HTTP response from a ListInvoicesByTeamWithResponse call
+func ParseListInvoicesByTeamResponse(rsp *http.Response) (*ListInvoicesByTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListInvoicesByTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Items    []Invoice    `json:"items"`
+			Metadata ListMetadata `json:"metadata"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
