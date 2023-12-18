@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.3](https://github.com/cloudquery/cloudquery-api-go/compare/v1.6.2...v1.6.3) (2023-12-18)
+
+
+### Bug Fixes
+
+* Better error on expired token ([#90](https://github.com/cloudquery/cloudquery-api-go/issues/90)) ([5d40225](https://github.com/cloudquery/cloudquery-api-go/commit/5d40225648e94e8baeafec64bc88c55fb0e093a3))
+* Generate CloudQuery Go API Client from `spec.json` ([#88](https://github.com/cloudquery/cloudquery-api-go/issues/88)) ([cc496c5](https://github.com/cloudquery/cloudquery-api-go/commit/cc496c51789398000e33a07507eb6a5926b4ba0b))
+
 ## [1.6.2](https://github.com/cloudquery/cloudquery-api-go/compare/v1.6.1...v1.6.2) (2023-12-12)
 
 
