@@ -84,7 +84,10 @@ func (tc *TokenClient) GetToken() (Token, error) {
 	}
 	tokenResponse, err := tc.generateToken(refreshToken)
 	if err != nil {
-		return UndefinedToken, fmt.Errorf("failed to sign in with custom token: %w", err)
+		if IsTokenExpiredError(err) {
+			return UndefinedToken, fmt.Errorf("authentication token expired: %w. Hint: You may need to run `cloudquery login` or set %s", err, EnvVarCloudQueryAPIKey)
+		}
+		return UndefinedToken, fmt.Errorf("failed to sign in with token: %w", err)
 	}
 
 	if err := SaveRefreshToken(tokenResponse.RefreshToken); err != nil {
@@ -116,19 +119,16 @@ func (tc *TokenClient) generateToken(refreshToken string) (*tokenResponse, error
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		body, readErr := io.ReadAll(resp.Body)
-		if readErr != nil {
-			return nil, fmt.Errorf("failed to read response body: %w", readErr)
-		}
-		return nil, fmt.Errorf("failed to refresh token: %s: %s", resp.Status, body)
-	}
-
-	var tr tokenResponse
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to refresh token: %s: %w", resp.Status, TokenErrorFromBody(body))
+	}
+
+	var tr tokenResponse
 	if err := parseToken(body, &tr); err != nil {
 		return nil, err
 	}
