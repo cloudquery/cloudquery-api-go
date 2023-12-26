@@ -133,6 +133,17 @@ type ClientInterface interface {
 	// UploadAddonAsset request
 	UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreatePluginNotificationRequestWithBody request with any body
+	CreatePluginNotificationRequestWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePluginNotificationRequest(ctx context.Context, body CreatePluginNotificationRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeletePluginNotificationRequest request
+	DeletePluginNotificationRequest(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPluginNotificationRequest request
+	GetPluginNotificationRequest(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPlugins request
 	ListPlugins(ctx context.Context, params *ListPluginsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -530,6 +541,54 @@ func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addo
 
 func (c *Client) UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePluginNotificationRequestWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginNotificationRequestRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePluginNotificationRequest(ctx context.Context, body CreatePluginNotificationRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginNotificationRequestRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeletePluginNotificationRequest(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginNotificationRequestRequest(c.Server, pluginTeam, pluginKind, pluginName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPluginNotificationRequest(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPluginNotificationRequestRequest(c.Server, pluginTeam, pluginKind, pluginName)
 	if err != nil {
 		return nil, err
 	}
@@ -2208,6 +2267,142 @@ func NewUploadAddonAssetRequest(server string, teamName TeamName, addonType Addo
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreatePluginNotificationRequestRequest calls the generic CreatePluginNotificationRequest builder with application/json body
+func NewCreatePluginNotificationRequestRequest(server string, body CreatePluginNotificationRequestJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePluginNotificationRequestRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreatePluginNotificationRequestRequestWithBody generates requests for CreatePluginNotificationRequest with any type of body
+func NewCreatePluginNotificationRequestRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugin-notification-requests")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeletePluginNotificationRequestRequest generates requests for DeletePluginNotificationRequest
+func NewDeletePluginNotificationRequestRequest(server string, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugin-notification-requests/%s/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPluginNotificationRequestRequest generates requests for GetPluginNotificationRequest
+func NewGetPluginNotificationRequestRequest(server string, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugin-notification-requests/%s/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -5821,6 +6016,17 @@ type ClientWithResponsesInterface interface {
 	// UploadAddonAssetWithResponse request
 	UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error)
 
+	// CreatePluginNotificationRequestWithBodyWithResponse request with any body
+	CreatePluginNotificationRequestWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginNotificationRequestResponse, error)
+
+	CreatePluginNotificationRequestWithResponse(ctx context.Context, body CreatePluginNotificationRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginNotificationRequestResponse, error)
+
+	// DeletePluginNotificationRequestWithResponse request
+	DeletePluginNotificationRequestWithResponse(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginNotificationRequestResponse, error)
+
+	// GetPluginNotificationRequestWithResponse request
+	GetPluginNotificationRequestWithResponse(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetPluginNotificationRequestResponse, error)
+
 	// ListPluginsWithResponse request
 	ListPluginsWithResponse(ctx context.Context, params *ListPluginsParams, reqEditors ...RequestEditorFn) (*ListPluginsResponse, error)
 
@@ -6344,6 +6550,82 @@ func (r UploadAddonAssetResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UploadAddonAssetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePluginNotificationRequestResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *PluginNotificationRequest
+	JSON400      *BadRequest
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePluginNotificationRequestResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePluginNotificationRequestResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeletePluginNotificationRequestResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePluginNotificationRequestResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePluginNotificationRequestResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPluginNotificationRequestResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PluginNotificationRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPluginNotificationRequestResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPluginNotificationRequestResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8057,6 +8339,41 @@ func (c *ClientWithResponses) UploadAddonAssetWithResponse(ctx context.Context, 
 	return ParseUploadAddonAssetResponse(rsp)
 }
 
+// CreatePluginNotificationRequestWithBodyWithResponse request with arbitrary body returning *CreatePluginNotificationRequestResponse
+func (c *ClientWithResponses) CreatePluginNotificationRequestWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginNotificationRequestResponse, error) {
+	rsp, err := c.CreatePluginNotificationRequestWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePluginNotificationRequestResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePluginNotificationRequestWithResponse(ctx context.Context, body CreatePluginNotificationRequestJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginNotificationRequestResponse, error) {
+	rsp, err := c.CreatePluginNotificationRequest(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePluginNotificationRequestResponse(rsp)
+}
+
+// DeletePluginNotificationRequestWithResponse request returning *DeletePluginNotificationRequestResponse
+func (c *ClientWithResponses) DeletePluginNotificationRequestWithResponse(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginNotificationRequestResponse, error) {
+	rsp, err := c.DeletePluginNotificationRequest(ctx, pluginTeam, pluginKind, pluginName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePluginNotificationRequestResponse(rsp)
+}
+
+// GetPluginNotificationRequestWithResponse request returning *GetPluginNotificationRequestResponse
+func (c *ClientWithResponses) GetPluginNotificationRequestWithResponse(ctx context.Context, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetPluginNotificationRequestResponse, error) {
+	rsp, err := c.GetPluginNotificationRequest(ctx, pluginTeam, pluginKind, pluginName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPluginNotificationRequestResponse(rsp)
+}
+
 // ListPluginsWithResponse request returning *ListPluginsResponse
 func (c *ClientWithResponses) ListPluginsWithResponse(ctx context.Context, params *ListPluginsParams, reqEditors ...RequestEditorFn) (*ListPluginsResponse, error) {
 	rsp, err := c.ListPlugins(ctx, params, reqEditors...)
@@ -9349,6 +9666,154 @@ func ParseUploadAddonAssetResponse(rsp *http.Response) (*UploadAddonAssetRespons
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePluginNotificationRequestResponse parses an HTTP response from a CreatePluginNotificationRequestWithResponse call
+func ParseCreatePluginNotificationRequestResponse(rsp *http.Response) (*CreatePluginNotificationRequestResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePluginNotificationRequestResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest PluginNotificationRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeletePluginNotificationRequestResponse parses an HTTP response from a DeletePluginNotificationRequestWithResponse call
+func ParseDeletePluginNotificationRequestResponse(rsp *http.Response) (*DeletePluginNotificationRequestResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePluginNotificationRequestResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPluginNotificationRequestResponse parses an HTTP response from a GetPluginNotificationRequestWithResponse call
+func ParseGetPluginNotificationRequestResponse(rsp *http.Response) (*GetPluginNotificationRequestResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPluginNotificationRequestResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PluginNotificationRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

@@ -96,6 +96,128 @@
         }
       }
     },
+    "/plugin-notification-requests": {
+      "post": {
+        "description": "Create a new plugin notification request.",
+        "operationId": "CreatePluginNotificationRequest",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginNotificationRequestCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginNotificationRequest"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
+    "/plugin-notification-requests/{plugin_team}/{plugin_kind}/{plugin_name}": {
+      "get": {
+        "description": "Query plugin notification request for a given plugin.",
+        "operationId": "GetPluginNotificationRequest",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginNotificationRequest"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "delete": {
+        "description": "Remove plugin notification request for a given plugin.",
+        "operationId": "DeletePluginNotificationRequest",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/plugin_team"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      }
+    },
     "/plugins": {
       "get": {
         "description": "List all plugins",
@@ -4024,13 +4146,6 @@
         "type": "string",
         "example": "cloudquery"
       },
-      "PluginName": {
-        "description": "The unique name for the plugin.",
-        "maxLength": 255,
-        "pattern": "^[a-z](-?[a-z0-9]+)+$",
-        "type": "string",
-        "example": "aws-source"
-      },
       "PluginKind": {
         "description": "The kind of plugin, ie. source or destination.",
         "type": "string",
@@ -4038,6 +4153,102 @@
         "enum": [
           "source",
           "destination"
+        ]
+      },
+      "PluginName": {
+        "description": "The unique name for the plugin.",
+        "maxLength": 255,
+        "pattern": "^[a-z](-?[a-z0-9]+)+$",
+        "type": "string",
+        "example": "aws-source"
+      },
+      "PluginNotificationRequestCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Create a Plugin Notification Request",
+        "required": [
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name"
+        ],
+        "properties": {
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          }
+        }
+      },
+      "PluginNotificationRequestStatus": {
+        "description": "Status of a plugin notification request",
+        "type": "string",
+        "enum": [
+          "pending",
+          "sent"
+        ],
+        "default": "pending"
+      },
+      "PluginNotificationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Plugin Notification Request",
+        "required": [
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name",
+          "created_at"
+        ],
+        "properties": {
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "sent_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PluginNotificationRequestStatus"
+          }
+        }
+      },
+      "FieldError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicError"
+          },
+          {
+            "properties": {
+              "errors": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "field_errors": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
         ]
       },
       "PluginCategory": {
@@ -4276,30 +4487,6 @@
             "example": 10000
           }
         }
-      },
-      "FieldError": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BasicError"
-          },
-          {
-            "properties": {
-              "errors": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              "field_errors": {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              }
-            },
-            "type": "object"
-          }
-        ]
       },
       "PluginUpdate": {
         "type": "object",
@@ -5834,16 +6021,6 @@
         },
         "description": "Internal Error"
       },
-      "RequiresAuthentication": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/BasicError"
-            }
-          }
-        },
-        "description": "Requires authentication"
-      },
       "BadRequest": {
         "content": {
           "application/json": {
@@ -5864,6 +6041,16 @@
         },
         "description": "Forbidden"
       },
+      "NotFound": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Resource not found"
+      },
       "UnprocessableEntity": {
         "content": {
           "application/json": {
@@ -5874,7 +6061,7 @@
         },
         "description": "UnprocessableEntity"
       },
-      "NotFound": {
+      "RequiresAuthentication": {
         "content": {
           "application/json": {
             "schema": {
@@ -5882,7 +6069,7 @@
             }
           }
         },
-        "description": "Resource not found"
+        "description": "Requires authentication"
       },
       "TooManyRequests": {
         "content": {
@@ -5916,6 +6103,30 @@
       }
     },
     "parameters": {
+      "plugin_team": {
+        "in": "path",
+        "name": "plugin_team",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/TeamName"
+        }
+      },
+      "plugin_kind": {
+        "in": "path",
+        "name": "plugin_kind",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/PluginKind"
+        }
+      },
+      "plugin_name": {
+        "in": "path",
+        "name": "plugin_name",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/PluginName"
+        }
+      },
       "plugin_sort_by": {
         "description": "The field to sort by",
         "in": "query",
@@ -5962,22 +6173,6 @@
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TeamName"
-        }
-      },
-      "plugin_kind": {
-        "in": "path",
-        "name": "plugin_kind",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/PluginKind"
-        }
-      },
-      "plugin_name": {
-        "in": "path",
-        "name": "plugin_name",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/PluginName"
         }
       },
       "version_sort_by": {
@@ -6074,14 +6269,6 @@
           "$ref": "#/components/schemas/AddonOrderID"
         },
         "x-go-name": "AddonOrderID"
-      },
-      "plugin_team": {
-        "in": "path",
-        "name": "plugin_team",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/TeamName"
-        }
       },
       "addon_team": {
         "in": "path",
