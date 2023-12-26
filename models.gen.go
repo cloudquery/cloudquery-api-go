@@ -66,6 +66,12 @@ const (
 	Source      PluginKind = "source"
 )
 
+// Defines values for PluginNotificationRequestStatus.
+const (
+	PluginNotificationRequestStatusPending PluginNotificationRequestStatus = "pending"
+	PluginNotificationRequestStatusSent    PluginNotificationRequestStatus = "sent"
+)
+
 // Defines values for PluginReleaseStage.
 const (
 	ComingSoon PluginReleaseStage = "coming-soon"
@@ -94,9 +100,9 @@ const (
 
 // Defines values for TeamSubscriptionOrderStatus.
 const (
-	TeamSubscriptionOrderStatusCancelled TeamSubscriptionOrderStatus = "cancelled"
-	TeamSubscriptionOrderStatusCompleted TeamSubscriptionOrderStatus = "completed"
-	TeamSubscriptionOrderStatusPending   TeamSubscriptionOrderStatus = "pending"
+	Cancelled TeamSubscriptionOrderStatus = "cancelled"
+	Completed TeamSubscriptionOrderStatus = "completed"
+	Pending   TeamSubscriptionOrderStatus = "pending"
 )
 
 // Defines values for AddonSortBy.
@@ -761,6 +767,39 @@ type PluginKind string
 
 // PluginName The unique name for the plugin.
 type PluginName = string
+
+// PluginNotificationRequest Plugin Notification Request
+type PluginNotificationRequest struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind PluginKind `json:"plugin_kind"`
+
+	// PluginName The unique name for the plugin.
+	PluginName PluginName `json:"plugin_name"`
+
+	// PluginTeam The unique name for the team.
+	PluginTeam TeamName   `json:"plugin_team"`
+	SentAt     *time.Time `json:"sent_at,omitempty"`
+
+	// Status Status of a plugin notification request
+	Status *PluginNotificationRequestStatus `json:"status,omitempty"`
+}
+
+// PluginNotificationRequestCreate Create a Plugin Notification Request
+type PluginNotificationRequestCreate struct {
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind PluginKind `json:"plugin_kind"`
+
+	// PluginName The unique name for the plugin.
+	PluginName PluginName `json:"plugin_name"`
+
+	// PluginTeam The unique name for the team.
+	PluginTeam TeamName `json:"plugin_team"`
+}
+
+// PluginNotificationRequestStatus Status of a plugin notification request
+type PluginNotificationRequestStatus string
 
 // PluginProtocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 type PluginProtocols = []int
@@ -1516,6 +1555,9 @@ type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
 type CreateAddonVersionJSONRequestBody CreateAddonVersionJSONBody
+
+// CreatePluginNotificationRequestJSONRequestBody defines body for CreatePluginNotificationRequest for application/json ContentType.
+type CreatePluginNotificationRequestJSONRequestBody = PluginNotificationRequestCreate
 
 // CreatePluginJSONRequestBody defines body for CreatePlugin for application/json ContentType.
 type CreatePluginJSONRequestBody = PluginCreate
