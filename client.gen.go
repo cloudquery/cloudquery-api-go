@@ -219,6 +219,9 @@ type ClientInterface interface {
 	// GetPluginVersionTable request
 	GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AuthRegistryRequest request
+	AuthRegistryRequest(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeams request
 	ListTeams(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -925,6 +928,18 @@ func (c *Client) CreatePluginVersionTables(ctx context.Context, teamName TeamNam
 
 func (c *Client) GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPluginVersionTableRequest(c.Server, teamName, pluginKind, pluginName, versionName, tableName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthRegistryRequest(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthRegistryRequestRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3740,6 +3755,86 @@ func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginKin
 	return req, nil
 }
 
+// NewAuthRegistryRequestRequest generates requests for AuthRegistryRequest
+func NewAuthRegistryRequestRequest(server string, params *AuthRegistryRequestParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/registry/auth")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Account != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "account", runtime.ParamLocationQuery, *params.Account); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Scope != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "scope", runtime.ParamLocationQuery, *params.Scope); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.XPluginVersion != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "X-Plugin-Version", runtime.ParamLocationHeader, *params.XPluginVersion)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Plugin-Version", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListTeamsRequest generates requests for ListTeams
 func NewListTeamsRequest(server string, params *ListTeamsParams) (*http.Request, error) {
 	var err error
@@ -6102,6 +6197,9 @@ type ClientWithResponsesInterface interface {
 	// GetPluginVersionTableWithResponse request
 	GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error)
 
+	// AuthRegistryRequestWithResponse request
+	AuthRegistryRequestWithResponse(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*AuthRegistryRequestResponse, error)
+
 	// ListTeamsWithResponse request
 	ListTeamsWithResponse(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error)
 
@@ -7147,6 +7245,32 @@ func (r GetPluginVersionTableResponse) StatusCode() int {
 	return 0
 }
 
+type AuthRegistryRequestResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RegistryAuthToken
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthRegistryRequestResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthRegistryRequestResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListTeamsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7531,6 +7655,7 @@ type EmailTeamInvitationResponse struct {
 	JSON200      *Invitation
 	JSON400      *BadRequest
 	JSON403      *Forbidden
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -8615,6 +8740,15 @@ func (c *ClientWithResponses) GetPluginVersionTableWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetPluginVersionTableResponse(rsp)
+}
+
+// AuthRegistryRequestWithResponse request returning *AuthRegistryRequestResponse
+func (c *ClientWithResponses) AuthRegistryRequestWithResponse(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*AuthRegistryRequestResponse, error) {
+	rsp, err := c.AuthRegistryRequest(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthRegistryRequestResponse(rsp)
 }
 
 // ListTeamsWithResponse request returning *ListTeamsResponse
@@ -10892,6 +11026,60 @@ func ParseGetPluginVersionTableResponse(rsp *http.Response) (*GetPluginVersionTa
 	return response, nil
 }
 
+// ParseAuthRegistryRequestResponse parses an HTTP response from a AuthRegistryRequestWithResponse call
+func ParseAuthRegistryRequestResponse(rsp *http.Response) (*AuthRegistryRequestResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthRegistryRequestResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RegistryAuthToken
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListTeamsResponse parses an HTTP response from a ListTeamsWithResponse call
 func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -11690,6 +11878,13 @@ func ParseEmailTeamInvitationResponse(rsp *http.Response) (*EmailTeamInvitationR
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
