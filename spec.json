@@ -52,9 +52,6 @@
     },
     {
       "name": "addons"
-    },
-    {
-      "name": "registry"
     }
   ],
   "paths": {
@@ -4101,81 +4098,12 @@
           }
         }
       }
-    },
-    "/registry/auth": {
-      "get": {
-        "description": "Performs authentication and authorization for our image registry.",
-        "operationId": "AuthRegistryRequest",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "X-Plugin-Version",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Plugin version name",
-            "example": "v1.0.0"
-          },
-          {
-            "in": "query",
-            "name": "account",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Username used for `docker login`"
-          },
-          {
-            "in": "query",
-            "name": "scope",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Multi-value string containing the repository being access and the operation type (push/pull)"
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegistryAuthToken"
-                }
-              }
-            },
-            "description": "Response"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/RequiresAuthentication"
-          },
-          "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        },
-        "tags": [
-          "registry"
-        ],
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
     }
   },
   "components": {
     "securitySchemes": {
       "bearerAuth": {
         "scheme": "bearer",
-        "type": "http"
-      },
-      "basicAuth": {
-        "scheme": "basic",
         "type": "http"
       }
     },
@@ -6083,23 +6011,6 @@
             "$ref": "#/components/schemas/APIKeyScope"
           }
         }
-      },
-      "RegistryAuthToken": {
-        "type": "object",
-        "description": "JWT token for the image registry",
-        "additionalProperties": false,
-        "properties": {
-          "access_token": {
-            "type": "string"
-          },
-          "token": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "access_token",
-          "token"
-        ]
       }
     },
     "responses": {
