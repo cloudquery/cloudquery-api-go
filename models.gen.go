@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	BasicAuthScopes  = "basicAuth.Scopes"
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
@@ -1011,12 +1010,6 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string `json:"supported_targets,omitempty"`
 }
 
-// RegistryAuthToken JWT token for the image registry
-type RegistryAuthToken struct {
-	AccessToken string `json:"access_token"`
-	Token       string `json:"token"`
-}
-
 // ReleaseURL defines model for ReleaseURL.
 type ReleaseURL struct {
 	Url string `json:"url"`
@@ -1361,18 +1354,6 @@ type ListPluginVersionTablesParams struct {
 // CreatePluginVersionTablesJSONBody defines parameters for CreatePluginVersionTables.
 type CreatePluginVersionTablesJSONBody struct {
 	Tables []PluginTableCreate `json:"tables"`
-}
-
-// AuthRegistryRequestParams defines parameters for AuthRegistryRequest.
-type AuthRegistryRequestParams struct {
-	// Account Username used for `docker login`
-	Account *string `form:"account,omitempty" json:"account,omitempty"`
-
-	// Scope Multi-value string containing the repository being access and the operation type (push/pull)
-	Scope *string `form:"scope,omitempty" json:"scope,omitempty"`
-
-	// XPluginVersion Plugin version name
-	XPluginVersion *string `json:"X-Plugin-Version,omitempty"`
 }
 
 // ListTeamsParams defines parameters for ListTeams.
