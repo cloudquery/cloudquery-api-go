@@ -163,6 +163,17 @@ type ClientInterface interface {
 
 	UpdatePlugin(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeletePluginUpcomingPriceChanges request
+	DeletePluginUpcomingPriceChanges(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPluginUpcomingPriceChanges request
+	ListPluginUpcomingPriceChanges(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreatePluginUpcomingPriceChangeWithBody request with any body
+	CreatePluginUpcomingPriceChangeWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePluginUpcomingPriceChange(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body CreatePluginUpcomingPriceChangeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPluginVersions request
 	ListPluginVersions(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -219,6 +230,9 @@ type ClientInterface interface {
 	// GetPluginVersionTable request
 	GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AuthRegistryRequest request
+	AuthRegistryRequest(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeams request
 	ListTeams(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -226,6 +240,9 @@ type ClientInterface interface {
 	CreateTeamWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	CreateTeam(ctx context.Context, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteTeam request
+	DeleteTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetTeamByName request
 	GetTeamByName(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -357,6 +374,9 @@ type ClientInterface interface {
 
 	// GetCurrentUserMemberships request
 	GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteUser request
+	DeleteUser(ctx context.Context, userID UserID, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) HealthCheck(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -683,6 +703,54 @@ func (c *Client) UpdatePlugin(ctx context.Context, teamName TeamName, pluginKind
 	return c.Client.Do(req)
 }
 
+func (c *Client) DeletePluginUpcomingPriceChanges(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePluginUpcomingPriceChangesRequest(c.Server, teamName, pluginKind, pluginName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListPluginUpcomingPriceChanges(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPluginUpcomingPriceChangesRequest(c.Server, teamName, pluginKind, pluginName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePluginUpcomingPriceChangeWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginUpcomingPriceChangeRequestWithBody(c.Server, teamName, pluginKind, pluginName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePluginUpcomingPriceChange(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body CreatePluginUpcomingPriceChangeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePluginUpcomingPriceChangeRequest(c.Server, teamName, pluginKind, pluginName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListPluginVersions(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPluginVersionsRequest(c.Server, teamName, pluginKind, pluginName, params)
 	if err != nil {
@@ -935,6 +1003,18 @@ func (c *Client) GetPluginVersionTable(ctx context.Context, teamName TeamName, p
 	return c.Client.Do(req)
 }
 
+func (c *Client) AuthRegistryRequest(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthRegistryRequestRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListTeams(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListTeamsRequest(c.Server, params)
 	if err != nil {
@@ -961,6 +1041,18 @@ func (c *Client) CreateTeamWithBody(ctx context.Context, contentType string, bod
 
 func (c *Client) CreateTeam(ctx context.Context, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateTeamRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamRequest(c.Server, teamName)
 	if err != nil {
 		return nil, err
 	}
@@ -1525,6 +1617,18 @@ func (c *Client) ListCurrentUserInvitations(ctx context.Context, params *ListCur
 
 func (c *Client) GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetCurrentUserMembershipsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteUser(ctx context.Context, userID UserID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteUserRequest(c.Server, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -2688,6 +2792,163 @@ func NewUpdatePluginRequestWithBody(server string, teamName TeamName, pluginKind
 	return req, nil
 }
 
+// NewDeletePluginUpcomingPriceChangesRequest generates requests for DeletePluginUpcomingPriceChanges
+func NewDeletePluginUpcomingPriceChangesRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/upcoming-price-changes", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListPluginUpcomingPriceChangesRequest generates requests for ListPluginUpcomingPriceChanges
+func NewListPluginUpcomingPriceChangesRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/upcoming-price-changes", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreatePluginUpcomingPriceChangeRequest calls the generic CreatePluginUpcomingPriceChange builder with application/json body
+func NewCreatePluginUpcomingPriceChangeRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body CreatePluginUpcomingPriceChangeJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePluginUpcomingPriceChangeRequestWithBody(server, teamName, pluginKind, pluginName, "application/json", bodyReader)
+}
+
+// NewCreatePluginUpcomingPriceChangeRequestWithBody generates requests for CreatePluginUpcomingPriceChange with any type of body
+func NewCreatePluginUpcomingPriceChangeRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/upcoming-price-changes", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListPluginVersionsRequest generates requests for ListPluginVersions
 func NewListPluginVersionsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams) (*http.Request, error) {
 	var err error
@@ -3740,6 +4001,86 @@ func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginKin
 	return req, nil
 }
 
+// NewAuthRegistryRequestRequest generates requests for AuthRegistryRequest
+func NewAuthRegistryRequestRequest(server string, params *AuthRegistryRequestParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/registry/auth")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Account != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "account", runtime.ParamLocationQuery, *params.Account); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Scope != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "scope", runtime.ParamLocationQuery, *params.Scope); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.XMetaPluginVersion != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "X-Meta-Plugin-Version", runtime.ParamLocationHeader, *params.XMetaPluginVersion)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Meta-Plugin-Version", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewListTeamsRequest generates requests for ListTeams
 func NewListTeamsRequest(server string, params *ListTeamsParams) (*http.Request, error) {
 	var err error
@@ -3841,6 +4182,40 @@ func NewCreateTeamRequestWithBody(server string, contentType string, body io.Rea
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteTeamRequest generates requests for DeleteTeam
+func NewDeleteTeamRequest(server string, teamName TeamName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -5929,6 +6304,40 @@ func NewGetCurrentUserMembershipsRequest(server string, params *GetCurrentUserMe
 	return req, nil
 }
 
+// NewDeleteUserRequest generates requests for DeleteUser
+func NewDeleteUserRequest(server string, userID UserID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "user_id", runtime.ParamLocationPath, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/users/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -6046,6 +6455,17 @@ type ClientWithResponsesInterface interface {
 
 	UpdatePluginWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body UpdatePluginJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePluginResponse, error)
 
+	// DeletePluginUpcomingPriceChangesWithResponse request
+	DeletePluginUpcomingPriceChangesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginUpcomingPriceChangesResponse, error)
+
+	// ListPluginUpcomingPriceChangesWithResponse request
+	ListPluginUpcomingPriceChangesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*ListPluginUpcomingPriceChangesResponse, error)
+
+	// CreatePluginUpcomingPriceChangeWithBodyWithResponse request with any body
+	CreatePluginUpcomingPriceChangeWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginUpcomingPriceChangeResponse, error)
+
+	CreatePluginUpcomingPriceChangeWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body CreatePluginUpcomingPriceChangeJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginUpcomingPriceChangeResponse, error)
+
 	// ListPluginVersionsWithResponse request
 	ListPluginVersionsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionsResponse, error)
 
@@ -6102,6 +6522,9 @@ type ClientWithResponsesInterface interface {
 	// GetPluginVersionTableWithResponse request
 	GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error)
 
+	// AuthRegistryRequestWithResponse request
+	AuthRegistryRequestWithResponse(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*AuthRegistryRequestResponse, error)
+
 	// ListTeamsWithResponse request
 	ListTeamsWithResponse(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error)
 
@@ -6109,6 +6532,9 @@ type ClientWithResponsesInterface interface {
 	CreateTeamWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamResponse, error)
 
 	CreateTeamWithResponse(ctx context.Context, body CreateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamResponse, error)
+
+	// DeleteTeamWithResponse request
+	DeleteTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteTeamResponse, error)
 
 	// GetTeamByNameWithResponse request
 	GetTeamByNameWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*GetTeamByNameResponse, error)
@@ -6240,6 +6666,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetCurrentUserMembershipsWithResponse request
 	GetCurrentUserMembershipsWithResponse(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*GetCurrentUserMembershipsResponse, error)
+
+	// DeleteUserWithResponse request
+	DeleteUserWithResponse(ctx context.Context, userID UserID, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error)
 }
 
 type HealthCheckResponse struct {
@@ -6561,6 +6990,7 @@ type CreatePluginNotificationRequestResponse struct {
 	HTTPResponse *http.Response
 	JSON201      *PluginNotificationRequest
 	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
@@ -6610,10 +7040,13 @@ func (r DeletePluginNotificationRequestResponse) StatusCode() int {
 type GetPluginNotificationRequestResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *PluginNotificationRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON500      *InternalError
+	JSON200      *struct {
+		Items    []PluginNotificationRequest `json:"items"`
+		Metadata ListMetadata                `json:"metadata"`
+	}
+	JSON401 *RequiresAuthentication
+	JSON404 *NotFound
+	JSON500 *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -6757,6 +7190,87 @@ func (r UpdatePluginResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdatePluginResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeletePluginUpcomingPriceChangesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePluginUpcomingPriceChangesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePluginUpcomingPriceChangesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListPluginUpcomingPriceChangesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Items    []PluginPrice `json:"items"`
+		Metadata ListMetadata  `json:"metadata"`
+	}
+	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
+	JSON404 *NotFound
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPluginUpcomingPriceChangesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPluginUpcomingPriceChangesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePluginUpcomingPriceChangeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *PluginPrice
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePluginUpcomingPriceChangeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePluginUpcomingPriceChangeResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7147,6 +7661,32 @@ func (r GetPluginVersionTableResponse) StatusCode() int {
 	return 0
 }
 
+type AuthRegistryRequestResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RegistryAuthToken
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthRegistryRequestResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthRegistryRequestResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListTeamsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -7196,6 +7736,33 @@ func (r CreateTeamResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteTeamResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8200,6 +8767,33 @@ func (r GetCurrentUserMembershipsResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // HealthCheckWithResponse request returning *HealthCheckResponse
 func (c *ClientWithResponses) HealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*HealthCheckResponse, error) {
 	rsp, err := c.HealthCheck(ctx, reqEditors...)
@@ -8436,6 +9030,41 @@ func (c *ClientWithResponses) UpdatePluginWithResponse(ctx context.Context, team
 	return ParseUpdatePluginResponse(rsp)
 }
 
+// DeletePluginUpcomingPriceChangesWithResponse request returning *DeletePluginUpcomingPriceChangesResponse
+func (c *ClientWithResponses) DeletePluginUpcomingPriceChangesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeletePluginUpcomingPriceChangesResponse, error) {
+	rsp, err := c.DeletePluginUpcomingPriceChanges(ctx, teamName, pluginKind, pluginName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePluginUpcomingPriceChangesResponse(rsp)
+}
+
+// ListPluginUpcomingPriceChangesWithResponse request returning *ListPluginUpcomingPriceChangesResponse
+func (c *ClientWithResponses) ListPluginUpcomingPriceChangesWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*ListPluginUpcomingPriceChangesResponse, error) {
+	rsp, err := c.ListPluginUpcomingPriceChanges(ctx, teamName, pluginKind, pluginName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPluginUpcomingPriceChangesResponse(rsp)
+}
+
+// CreatePluginUpcomingPriceChangeWithBodyWithResponse request with arbitrary body returning *CreatePluginUpcomingPriceChangeResponse
+func (c *ClientWithResponses) CreatePluginUpcomingPriceChangeWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePluginUpcomingPriceChangeResponse, error) {
+	rsp, err := c.CreatePluginUpcomingPriceChangeWithBody(ctx, teamName, pluginKind, pluginName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePluginUpcomingPriceChangeResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePluginUpcomingPriceChangeWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, body CreatePluginUpcomingPriceChangeJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePluginUpcomingPriceChangeResponse, error) {
+	rsp, err := c.CreatePluginUpcomingPriceChange(ctx, teamName, pluginKind, pluginName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePluginUpcomingPriceChangeResponse(rsp)
+}
+
 // ListPluginVersionsWithResponse request returning *ListPluginVersionsResponse
 func (c *ClientWithResponses) ListPluginVersionsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, params *ListPluginVersionsParams, reqEditors ...RequestEditorFn) (*ListPluginVersionsResponse, error) {
 	rsp, err := c.ListPluginVersions(ctx, teamName, pluginKind, pluginName, params, reqEditors...)
@@ -8618,6 +9247,15 @@ func (c *ClientWithResponses) GetPluginVersionTableWithResponse(ctx context.Cont
 	return ParseGetPluginVersionTableResponse(rsp)
 }
 
+// AuthRegistryRequestWithResponse request returning *AuthRegistryRequestResponse
+func (c *ClientWithResponses) AuthRegistryRequestWithResponse(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*AuthRegistryRequestResponse, error) {
+	rsp, err := c.AuthRegistryRequest(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthRegistryRequestResponse(rsp)
+}
+
 // ListTeamsWithResponse request returning *ListTeamsResponse
 func (c *ClientWithResponses) ListTeamsWithResponse(ctx context.Context, params *ListTeamsParams, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error) {
 	rsp, err := c.ListTeams(ctx, params, reqEditors...)
@@ -8642,6 +9280,15 @@ func (c *ClientWithResponses) CreateTeamWithResponse(ctx context.Context, body C
 		return nil, err
 	}
 	return ParseCreateTeamResponse(rsp)
+}
+
+// DeleteTeamWithResponse request returning *DeleteTeamResponse
+func (c *ClientWithResponses) DeleteTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteTeamResponse, error) {
+	rsp, err := c.DeleteTeam(ctx, teamName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTeamResponse(rsp)
 }
 
 // GetTeamByNameWithResponse request returning *GetTeamByNameResponse
@@ -9055,6 +9702,15 @@ func (c *ClientWithResponses) GetCurrentUserMembershipsWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseGetCurrentUserMembershipsResponse(rsp)
+}
+
+// DeleteUserWithResponse request returning *DeleteUserResponse
+func (c *ClientWithResponses) DeleteUserWithResponse(ctx context.Context, userID UserID, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error) {
+	rsp, err := c.DeleteUser(ctx, userID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteUserResponse(rsp)
 }
 
 // ParseHealthCheckResponse parses an HTTP response from a HealthCheckWithResponse call
@@ -9708,6 +10364,13 @@ func ParseCreatePluginNotificationRequestResponse(rsp *http.Response) (*CreatePl
 		}
 		response.JSON400 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Forbidden
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -9796,7 +10459,10 @@ func ParseGetPluginNotificationRequestResponse(rsp *http.Response) (*GetPluginNo
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest PluginNotificationRequest
+		var dest struct {
+			Items    []PluginNotificationRequest `json:"items"`
+			Metadata ListMetadata                `json:"metadata"`
+		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -10053,6 +10719,171 @@ func ParseUpdatePluginResponse(rsp *http.Response) (*UpdatePluginResponse, error
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeletePluginUpcomingPriceChangesResponse parses an HTTP response from a DeletePluginUpcomingPriceChangesWithResponse call
+func ParseDeletePluginUpcomingPriceChangesResponse(rsp *http.Response) (*DeletePluginUpcomingPriceChangesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePluginUpcomingPriceChangesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPluginUpcomingPriceChangesResponse parses an HTTP response from a ListPluginUpcomingPriceChangesWithResponse call
+func ParseListPluginUpcomingPriceChangesResponse(rsp *http.Response) (*ListPluginUpcomingPriceChangesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPluginUpcomingPriceChangesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Items    []PluginPrice `json:"items"`
+			Metadata ListMetadata  `json:"metadata"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePluginUpcomingPriceChangeResponse parses an HTTP response from a CreatePluginUpcomingPriceChangeWithResponse call
+func ParseCreatePluginUpcomingPriceChangeResponse(rsp *http.Response) (*CreatePluginUpcomingPriceChangeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePluginUpcomingPriceChangeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest PluginPrice
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Forbidden
@@ -10893,6 +11724,60 @@ func ParseGetPluginVersionTableResponse(rsp *http.Response) (*GetPluginVersionTa
 	return response, nil
 }
 
+// ParseAuthRegistryRequestResponse parses an HTTP response from a AuthRegistryRequestWithResponse call
+func ParseAuthRegistryRequestResponse(rsp *http.Response) (*AuthRegistryRequestResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthRegistryRequestResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RegistryAuthToken
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListTeamsResponse parses an HTTP response from a ListTeamsWithResponse call
 func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10984,6 +11869,67 @@ func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteTeamResponse parses an HTTP response from a DeleteTeamWithResponse call
+func ParseDeleteTeamResponse(rsp *http.Response) (*DeleteTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
@@ -13007,6 +13953,67 @@ func ParseGetCurrentUserMembershipsResponse(rsp *http.Response) (*GetCurrentUser
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteUserResponse parses an HTTP response from a DeleteUserWithResponse call
+func ParseDeleteUserResponse(rsp *http.Response) (*DeleteUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

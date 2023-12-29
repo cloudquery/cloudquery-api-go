@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	BasicAuthScopes  = "basicAuth.Scopes"
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
@@ -801,6 +802,33 @@ type PluginNotificationRequestCreate struct {
 // PluginNotificationRequestStatus Status of a plugin notification request
 type PluginNotificationRequestStatus string
 
+// PluginPrice CloudQuery Plugin Price
+type PluginPrice struct {
+	// EffectiveFrom The date and time the price came (or will come) into effect.
+	EffectiveFrom time.Time `json:"effective_from"`
+
+	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	FreeRowsPerMonth int64 `json:"free_rows_per_month"`
+
+	// Id ID of the price change
+	ID openapi_types.UUID `json:"id"`
+
+	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	USDPerRow string `json:"usd_per_row"`
+}
+
+// PluginPriceCreate CloudQuery Plugin Price Create
+type PluginPriceCreate struct {
+	// EffectiveFrom The date and time the price came (or will come) into effect.
+	EffectiveFrom time.Time `json:"effective_from"`
+
+	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	FreeRowsPerMonth int64 `json:"free_rows_per_month"`
+
+	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	USDPerRow string `json:"usd_per_row"`
+}
+
 // PluginProtocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 type PluginProtocols = []int
 
@@ -1010,6 +1038,12 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string `json:"supported_targets,omitempty"`
 }
 
+// RegistryAuthToken JWT token for the image registry
+type RegistryAuthToken struct {
+	AccessToken string `json:"access_token"`
+	Token       string `json:"token"`
+}
+
 // ReleaseURL defines model for ReleaseURL.
 type ReleaseURL struct {
 	Url string `json:"url"`
@@ -1124,6 +1158,9 @@ type User struct {
 	Name      *UserName  `json:"name,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
+
+// UserID ID of the User
+type UserID = openapi_types.UUID
 
 // UserName The unique name for the user.
 type UserName = string
@@ -1356,6 +1393,18 @@ type CreatePluginVersionTablesJSONBody struct {
 	Tables []PluginTableCreate `json:"tables"`
 }
 
+// AuthRegistryRequestParams defines parameters for AuthRegistryRequest.
+type AuthRegistryRequestParams struct {
+	// Account Username used for `docker login`
+	Account *string `form:"account,omitempty" json:"account,omitempty"`
+
+	// Scope Multi-value string containing the repository being access and the operation type (push/pull)
+	Scope *string `form:"scope,omitempty" json:"scope,omitempty"`
+
+	// XMetaPluginVersion Plugin version name
+	XMetaPluginVersion *string `json:"X-Meta-Plugin-Version,omitempty"`
+}
+
 // ListTeamsParams defines parameters for ListTeams.
 type ListTeamsParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -1564,6 +1613,9 @@ type CreatePluginJSONRequestBody = PluginCreate
 
 // UpdatePluginJSONRequestBody defines body for UpdatePlugin for application/json ContentType.
 type UpdatePluginJSONRequestBody = PluginUpdate
+
+// CreatePluginUpcomingPriceChangeJSONRequestBody defines body for CreatePluginUpcomingPriceChange for application/json ContentType.
+type CreatePluginUpcomingPriceChangeJSONRequestBody = PluginPriceCreate
 
 // UpdatePluginVersionJSONRequestBody defines body for UpdatePluginVersion for application/json ContentType.
 type UpdatePluginVersionJSONRequestBody = PluginVersionUpdate
