@@ -52,6 +52,9 @@
     },
     {
       "name": "addons"
+    },
+    {
+      "name": "registry"
     }
   ],
   "paths": {
@@ -125,6 +128,9 @@
           "400": {
             "$ref": "#/components/responses/BadRequest"
           },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
@@ -160,14 +166,28 @@
         ],
         "responses": {
           "200": {
+            "description": "Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginNotificationRequest"
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PluginNotificationRequest"
+                      }
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
                 }
               }
-            },
-            "description": "Response"
+            }
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
@@ -179,7 +199,6 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "security": [],
         "tags": [
           "plugins"
         ]
@@ -212,7 +231,6 @@
             "$ref": "#/components/responses/InternalError"
           }
         },
-        "security": [],
         "tags": [
           "plugins"
         ]
@@ -465,6 +483,154 @@
         },
         "tags": [
           "teams",
+          "plugins"
+        ]
+      }
+    },
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/upcoming-price-changes": {
+      "get": {
+        "description": "List upcoming price changes for a given plugin. If the plugin has no upcoming price changes, an empty list is returned. At most one upcoming price change is returned.",
+        "operationId": "ListPluginUpcomingPriceChanges",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/PluginPrice"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [],
+        "tags": [
+          "plugins"
+        ]
+      },
+      "post": {
+        "description": "Create an upcoming plugin price change. If the plugin has no upcoming price change, a new one is created. If the plugin already has an upcoming price change, this call will fail. (Delete pending price changes with the appropriate delete call.) The effective date of the price change must be at least 8 days in the future.",
+        "operationId": "CreatePluginUpcomingPriceChange",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginPriceCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginPrice"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      },
+      "delete": {
+        "description": "Delete all pending plugin price changes.",
+        "operationId": "DeletePluginUpcomingPriceChanges",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_kind"
+          },
+          {
+            "$ref": "#/components/parameters/plugin_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
           "plugins"
         ]
       }
@@ -2263,6 +2429,42 @@
         "tags": [
           "teams"
         ]
+      },
+      "delete": {
+        "description": "Delete team",
+        "operationId": "DeleteTeam",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "x-internal": true,
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
       }
     },
     "/teams/{team_name}/plugins": {
@@ -3952,6 +4154,44 @@
         ]
       }
     },
+    "/users/{user_id}": {
+      "delete": {
+        "description": "Delete user",
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/user_id"
+          }
+        ],
+        "x-internal": true,
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/teams/{team_name}/apikeys": {
       "get": {
         "description": "List all team API Keys",
@@ -4098,12 +4338,81 @@
           }
         }
       }
+    },
+    "/registry/auth": {
+      "get": {
+        "description": "Performs authentication and authorization for our image registry.",
+        "operationId": "AuthRegistryRequest",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Meta-Plugin-Version",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Plugin version name",
+            "example": "v1.0.0"
+          },
+          {
+            "in": "query",
+            "name": "account",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Username used for `docker login`"
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Multi-value string containing the repository being access and the operation type (push/pull)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistryAuthToken"
+                }
+              }
+            },
+            "description": "Response"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "registry"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
     "securitySchemes": {
       "bearerAuth": {
         "scheme": "bearer",
+        "type": "http"
+      },
+      "basicAuth": {
+        "scheme": "basic",
         "type": "http"
       }
     },
@@ -4254,6 +4563,16 @@
           }
         ]
       },
+      "ListMetadata": {
+        "properties": {
+          "total_count": {
+            "type": "integer"
+          },
+          "last_page": {
+            "type": "integer"
+          }
+        }
+      },
       "PluginCategory": {
         "description": "Supported categories for plugins",
         "type": "string",
@@ -4402,16 +4721,6 @@
           }
         ]
       },
-      "ListMetadata": {
-        "properties": {
-          "total_count": {
-            "type": "integer"
-          },
-          "last_page": {
-            "type": "integer"
-          }
-        }
-      },
       "PluginCreate": {
         "type": "object",
         "required": [
@@ -4548,6 +4857,78 @@
             "example": 1000
           }
         }
+      },
+      "PluginPrice": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Price",
+        "properties": {
+          "id": {
+            "description": "ID of the price change",
+            "type": "string",
+            "format": "uuid",
+            "example": "12345678-1234-1234-1234-1234567890ab",
+            "x-go-name": "ID"
+          },
+          "usd_per_row": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "example": "0.0001",
+            "x-go-name": "USDPerRow"
+          },
+          "free_rows_per_month": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The number of rows that can be synced for free each month.",
+            "example": 1000
+          },
+          "effective_from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the price came (or will come) into effect.",
+            "example": "2024-01-02T00:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "usd_per_row",
+          "free_rows_per_month",
+          "effective_from"
+        ],
+        "title": "CloudQuery Plugin Price",
+        "type": "object"
+      },
+      "PluginPriceCreate": {
+        "additionalProperties": false,
+        "description": "CloudQuery Plugin Price Create",
+        "properties": {
+          "usd_per_row": {
+            "type": "string",
+            "pattern": "^\\d+(?:\\.\\d{1,10})?$",
+            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "example": "0.0001",
+            "x-go-name": "USDPerRow"
+          },
+          "free_rows_per_month": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The number of rows that can be synced for free each month.",
+            "example": 1000
+          },
+          "effective_from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time the price came (or will come) into effect.",
+            "example": "2024-01-02T00:00:00Z"
+          }
+        },
+        "required": [
+          "usd_per_row",
+          "free_rows_per_month",
+          "effective_from"
+        ],
+        "title": "CloudQuery Plugin Price Create",
+        "type": "object"
       },
       "PluginProtocols": {
         "description": "The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).",
@@ -5943,6 +6324,13 @@
           }
         ]
       },
+      "UserID": {
+        "description": "ID of the User",
+        "type": "string",
+        "format": "uuid",
+        "example": "12345678-1234-1234-1234-1234567890ab",
+        "x-go-name": "UserID"
+      },
       "APIKeyName": {
         "description": "Name of the API key",
         "type": "string",
@@ -6011,6 +6399,23 @@
             "$ref": "#/components/schemas/APIKeyScope"
           }
         }
+      },
+      "RegistryAuthToken": {
+        "type": "object",
+        "description": "JWT token for the image registry",
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "token"
+        ]
       }
     },
     "responses": {
@@ -6033,6 +6438,16 @@
           }
         },
         "description": "Bad request"
+      },
+      "RequiresAuthentication": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description": "Requires authentication"
       },
       "Forbidden": {
         "content": {
@@ -6063,16 +6478,6 @@
           }
         },
         "description": "UnprocessableEntity"
-      },
-      "RequiresAuthentication": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/BasicError"
-            }
-          }
-        },
-        "description": "Requires authentication"
       },
       "TooManyRequests": {
         "content": {
@@ -6297,6 +6702,15 @@
           "$ref": "#/components/schemas/TeamSubscriptionOrderID"
         },
         "x-go-name": "TeamSubscriptionOrderID"
+      },
+      "user_id": {
+        "name": "user_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/UserID"
+        },
+        "x-go-name": "UserID"
       },
       "apikey_id": {
         "name": "apikey_id",
