@@ -55,6 +55,9 @@
     },
     {
       "name": "registry"
+    },
+    {
+      "name": "syncs"
     }
   ],
   "paths": {
@@ -100,6 +103,53 @@
       }
     },
     "/plugin-notification-requests": {
+      "get": {
+        "description": "List all plugin notification requests",
+        "operationId": "ListPluginNotificationRequests",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PluginNotificationRequest"
+                      }
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "plugins"
+        ]
+      },
       "post": {
         "description": "Create a new plugin notification request.",
         "operationId": "CreatePluginNotificationRequest",
@@ -4403,6 +4453,466 @@
           }
         ]
       }
+    },
+    "/teams/{team_name}/syncs": {
+      "get": {
+        "description": "List all Syncs.",
+        "operationId": "ListSyncs",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/Sync"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create new Sync definition. Sync runs can be scheduled automatically and manually after sync is created.",
+        "operationId": "CreateSync",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "spec",
+                  "schedule",
+                  "disabled"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Unique name for the sync"
+                  },
+                  "spec": {
+                    "type": "string",
+                    "format": "YAML specification to run the sync"
+                  },
+                  "schedule": {
+                    "type": "string",
+                    "description": "Cron schedule for the sync"
+                  },
+                  "disabled": {
+                    "type": "boolean",
+                    "description": "Whether the sync is disabled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sync"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/syncs/{sync_name}": {
+      "get": {
+        "description": "Get a Sync",
+        "operationId": "GetSync",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sync"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a Sync",
+        "operationId": "UpdateSync",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "spec": {
+                    "type": "string",
+                    "format": "YAML specification to run the sync"
+                  },
+                  "schedule": {
+                    "type": "string",
+                    "description": "Cron schedule for the sync"
+                  },
+                  "disabled": {
+                    "type": "boolean",
+                    "description": "Whether the sync is disabled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sync"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete Sync. This will delete Sync configuration and all associated sync runs",
+        "operationId": "DeleteSync",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/syncs/{sync_name}/runs": {
+      "get": {
+        "description": "List all Sync Runs.",
+        "operationId": "ListSyncRuns",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/SyncRun"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create new SyncRun. This will trigger a manual job run.",
+        "operationId": "CreateSyncRun",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncRun"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/syncs/{sync_name}/runs/{sync_run_id}": {
+      "get": {
+        "description": "Get a Sync Run.",
+        "operationId": "GetSyncRun",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_run_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncRun"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a SyncRun",
+        "operationId": "UpdateSyncRun",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_run_id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "$ref": "#/components/schemas/SyncRunStatus"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncRun"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4474,27 +4984,6 @@
         "type": "string",
         "example": "aws-source"
       },
-      "PluginNotificationRequestCreate": {
-        "type": "object",
-        "additionalProperties": false,
-        "description": "Create a Plugin Notification Request",
-        "required": [
-          "plugin_team",
-          "plugin_kind",
-          "plugin_name"
-        ],
-        "properties": {
-          "plugin_team": {
-            "$ref": "#/components/schemas/TeamName"
-          },
-          "plugin_kind": {
-            "$ref": "#/components/schemas/PluginKind"
-          },
-          "plugin_name": {
-            "$ref": "#/components/schemas/PluginName"
-          }
-        }
-      },
       "PluginNotificationRequestStatus": {
         "description": "Status of a plugin notification request",
         "type": "string",
@@ -4539,6 +5028,37 @@
           }
         }
       },
+      "ListMetadata": {
+        "properties": {
+          "total_count": {
+            "type": "integer"
+          },
+          "last_page": {
+            "type": "integer"
+          }
+        }
+      },
+      "PluginNotificationRequestCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Create a Plugin Notification Request",
+        "required": [
+          "plugin_team",
+          "plugin_kind",
+          "plugin_name"
+        ],
+        "properties": {
+          "plugin_team": {
+            "$ref": "#/components/schemas/TeamName"
+          },
+          "plugin_kind": {
+            "$ref": "#/components/schemas/PluginKind"
+          },
+          "plugin_name": {
+            "$ref": "#/components/schemas/PluginName"
+          }
+        }
+      },
       "FieldError": {
         "allOf": [
           {
@@ -4562,16 +5082,6 @@
             "type": "object"
           }
         ]
-      },
-      "ListMetadata": {
-        "properties": {
-          "total_count": {
-            "type": "integer"
-          },
-          "last_page": {
-            "type": "integer"
-          }
-        }
       },
       "PluginCategory": {
         "description": "Supported categories for plugins",
@@ -6416,6 +6926,107 @@
           "access_token",
           "token"
         ]
+      },
+      "Sync": {
+        "description": "Managed Sync definition",
+        "type": "object",
+        "required": [
+          "name",
+          "spec",
+          "disabled",
+          "schedule",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name for the sync"
+          },
+          "spec": {
+            "type": "string",
+            "description": "YAML specification to run the sync"
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Whether the sync is disabled"
+          },
+          "schedule": {
+            "type": "string",
+            "description": "Cron schedule for the sync"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the sync was created"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time when the sync was updated"
+          }
+        }
+      },
+      "SyncName": {
+        "description": "Unique name of the sync",
+        "type": "string",
+        "x-go-name": "SyncName"
+      },
+      "SyncRunStatus": {
+        "description": "The status of the sync run",
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed",
+          "started",
+          "cancelled"
+        ]
+      },
+      "SyncRun": {
+        "description": "Managed Sync Run definition",
+        "type": "object",
+        "required": [
+          "sync_name",
+          "id",
+          "status",
+          "started_at"
+        ],
+        "properties": {
+          "sync_name": {
+            "type": "string",
+            "description": "Name of the sync"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "12345678-1234-1234-1234-1234567890ab",
+            "description": "unique ID of the run",
+            "x-go-name": "ID"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SyncRunStatus",
+            "description": "Status of the sync run"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "Whether the sync is disabled"
+          },
+          "completed_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "Cron schedule for the sync"
+          }
+        }
+      },
+      "SyncRunID": {
+        "description": "ID of the SyncRun",
+        "type": "string",
+        "format": "uuid",
+        "example": "12345678-1234-1234-1234-1234567890ab",
+        "x-go-name": "SyncRunID"
       }
     },
     "responses": {
@@ -6429,16 +7040,6 @@
         },
         "description": "Internal Error"
       },
-      "BadRequest": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/FieldError"
-            }
-          }
-        },
-        "description": "Bad request"
-      },
       "RequiresAuthentication": {
         "content": {
           "application/json": {
@@ -6448,6 +7049,16 @@
           }
         },
         "description": "Requires authentication"
+      },
+      "BadRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FieldError"
+            }
+          }
+        },
+        "description": "Bad request"
       },
       "Forbidden": {
         "content": {
@@ -6511,6 +7122,31 @@
       }
     },
     "parameters": {
+      "page": {
+        "description": "Page number of the results to fetch",
+        "in": "query",
+        "name": "page",
+        "required": false,
+        "schema": {
+          "default": 1,
+          "minimum": 1,
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "per_page": {
+        "description": "The number of results per page (max 1000).",
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "schema": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 1,
+          "type": "integer",
+          "format": "int64"
+        }
+      },
       "plugin_team": {
         "in": "path",
         "name": "plugin_team",
@@ -6548,31 +7184,6 @@
             "downloads"
           ],
           "type": "string"
-        }
-      },
-      "page": {
-        "description": "Page number of the results to fetch",
-        "in": "query",
-        "name": "page",
-        "required": false,
-        "schema": {
-          "default": 1,
-          "minimum": 1,
-          "type": "integer",
-          "format": "int64"
-        }
-      },
-      "per_page": {
-        "description": "The number of results per page (max 1000).",
-        "in": "query",
-        "name": "per_page",
-        "required": false,
-        "schema": {
-          "default": 100,
-          "maximum": 1000,
-          "minimum": 1,
-          "type": "integer",
-          "format": "int64"
         }
       },
       "team_name": {
@@ -6720,6 +7331,22 @@
           "$ref": "#/components/schemas/APIKeyID"
         },
         "x-go-name": "APIKeyID"
+      },
+      "sync_name": {
+        "name": "sync_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/SyncName"
+        }
+      },
+      "sync_run_id": {
+        "name": "sync_run_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/SyncRunID"
+        }
       }
     }
   }

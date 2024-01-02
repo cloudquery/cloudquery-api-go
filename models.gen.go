@@ -93,6 +93,14 @@ const (
 	PluginVersionPackageTypeNative PluginVersionPackageType = "native"
 )
 
+// Defines values for SyncRunStatus.
+const (
+	SyncRunStatusCancelled SyncRunStatus = "cancelled"
+	SyncRunStatusCompleted SyncRunStatus = "completed"
+	SyncRunStatusFailed    SyncRunStatus = "failed"
+	SyncRunStatusStarted   SyncRunStatus = "started"
+)
+
 // Defines values for TeamPlan.
 const (
 	Free TeamPlan = "free"
@@ -101,9 +109,9 @@ const (
 
 // Defines values for TeamSubscriptionOrderStatus.
 const (
-	Cancelled TeamSubscriptionOrderStatus = "cancelled"
-	Completed TeamSubscriptionOrderStatus = "completed"
-	Pending   TeamSubscriptionOrderStatus = "pending"
+	TeamSubscriptionOrderStatusCancelled TeamSubscriptionOrderStatus = "cancelled"
+	TeamSubscriptionOrderStatusCompleted TeamSubscriptionOrderStatus = "completed"
+	TeamSubscriptionOrderStatusPending   TeamSubscriptionOrderStatus = "pending"
 )
 
 // Defines values for AddonSortBy.
@@ -1049,6 +1057,54 @@ type ReleaseURL struct {
 	Url string `json:"url"`
 }
 
+// Sync Managed Sync definition
+type Sync struct {
+	// CreatedAt Time when the sync was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Disabled Whether the sync is disabled
+	Disabled bool `json:"disabled"`
+
+	// Name Unique name for the sync
+	Name string `json:"name"`
+
+	// Schedule Cron schedule for the sync
+	Schedule string `json:"schedule"`
+
+	// Spec YAML specification to run the sync
+	Spec string `json:"spec"`
+
+	// UpdatedAt Time when the sync was updated
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// SyncName Unique name of the sync
+type SyncName = string
+
+// SyncRun Managed Sync Run definition
+type SyncRun struct {
+	// CompletedAt Cron schedule for the sync
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CreatedAt Whether the sync is disabled
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+
+	// Id unique ID of the run
+	ID openapi_types.UUID `json:"id"`
+
+	// Status The status of the sync run
+	Status SyncRunStatus `json:"status"`
+
+	// SyncName Name of the sync
+	SyncName string `json:"sync_name"`
+}
+
+// SyncRunID ID of the SyncRun
+type SyncRunID = openapi_types.UUID
+
+// SyncRunStatus The status of the sync run
+type SyncRunStatus string
+
 // Team CloudQuery Team
 type Team struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -1195,6 +1251,9 @@ type PluginSortBy string
 // PluginTeam The unique name for the team.
 type PluginTeam = TeamName
 
+// SyncRunId ID of the SyncRun
+type SyncRunId = SyncRunID
+
 // TargetName defines model for target_name.
 type TargetName = string
 
@@ -1284,6 +1343,15 @@ type CreateAddonVersionJSONBody struct {
 // DownloadAddonAssetParams defines parameters for DownloadAddonAsset.
 type DownloadAddonAssetParams struct {
 	Accept *string `json:"Accept,omitempty"`
+}
+
+// ListPluginNotificationRequestsParams defines parameters for ListPluginNotificationRequests.
+type ListPluginNotificationRequestsParams struct {
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
 // ListPluginsParams defines parameters for ListPlugins.
@@ -1551,6 +1619,53 @@ type ListSubscriptionOrdersByTeamParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
+// ListSyncsParams defines parameters for ListSyncs.
+type ListSyncsParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// CreateSyncJSONBody defines parameters for CreateSync.
+type CreateSyncJSONBody struct {
+	// Disabled Whether the sync is disabled
+	Disabled bool `json:"disabled"`
+
+	// Name Unique name for the sync
+	Name string `json:"name"`
+
+	// Schedule Cron schedule for the sync
+	Schedule string `json:"schedule"`
+	Spec     string `json:"spec"`
+}
+
+// UpdateSyncJSONBody defines parameters for UpdateSync.
+type UpdateSyncJSONBody struct {
+	// Disabled Whether the sync is disabled
+	Disabled *bool `json:"disabled,omitempty"`
+
+	// Schedule Cron schedule for the sync
+	Schedule *string `json:"schedule,omitempty"`
+	Spec     *string `json:"spec,omitempty"`
+}
+
+// ListSyncRunsParams defines parameters for ListSyncRuns.
+type ListSyncRunsParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// UpdateSyncRunJSONBody defines parameters for UpdateSyncRun.
+type UpdateSyncRunJSONBody struct {
+	// Status The status of the sync run
+	Status *SyncRunStatus `json:"status,omitempty"`
+}
+
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
 type ListTeamPluginUsageParams struct {
 	// Page Page number of the results to fetch
@@ -1664,6 +1779,15 @@ type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
 
 // CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
 type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
+
+// CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
+type CreateSyncJSONRequestBody CreateSyncJSONBody
+
+// UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
+type UpdateSyncJSONRequestBody UpdateSyncJSONBody
+
+// UpdateSyncRunJSONRequestBody defines body for UpdateSyncRun for application/json ContentType.
+type UpdateSyncRunJSONRequestBody UpdateSyncRunJSONBody
 
 // IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
 type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
