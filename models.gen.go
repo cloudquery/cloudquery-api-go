@@ -1059,11 +1059,23 @@ type ReleaseURL struct {
 
 // Sync Managed Sync definition
 type Sync struct {
+	// Cpu CPU quota for the sync
+	CPU string `json:"cpu"`
+
 	// CreatedAt Time when the sync was created
 	CreatedAt time.Time `json:"created_at"`
 
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
+
+	// EnvKeys Environment variable names for the sync
+	EnvKeys []string `json:"env_keys"`
+
+	// EnvValues Environment variable values for the sync
+	EnvValues []string `json:"env_values"`
+
+	// Memory Memory quota for the sync
+	Memory string `json:"memory"`
 
 	// Name Unique name for the sync
 	Name string `json:"name"`
@@ -1471,6 +1483,9 @@ type AuthRegistryRequestParams struct {
 
 	// XMetaPluginVersion Plugin version name
 	XMetaPluginVersion *string `json:"X-Meta-Plugin-Version,omitempty"`
+
+	// XMetaUserTeamName User's team name
+	XMetaUserTeamName *string `json:"X-Meta-User-Team-Name,omitempty"`
 }
 
 // ListTeamsParams defines parameters for ListTeams.
@@ -1630,8 +1645,20 @@ type ListSyncsParams struct {
 
 // CreateSyncJSONBody defines parameters for CreateSync.
 type CreateSyncJSONBody struct {
+	// Cpu CPU quota for the sync
+	CPU *string `json:"cpu,omitempty"`
+
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
+
+	// EnvKeys Environment variable names for the sync
+	EnvKeys *[]string `json:"env_keys,omitempty"`
+
+	// EnvValues Environment variable values for the sync
+	EnvValues *[]string `json:"env_values,omitempty"`
+
+	// Memory Memory quota for the sync
+	Memory *string `json:"memory,omitempty"`
 
 	// Name Unique name for the sync
 	Name string `json:"name"`
@@ -1643,8 +1670,20 @@ type CreateSyncJSONBody struct {
 
 // UpdateSyncJSONBody defines parameters for UpdateSync.
 type UpdateSyncJSONBody struct {
+	// Cpu CPU quota for the sync
+	CPU *string `json:"cpu,omitempty"`
+
 	// Disabled Whether the sync is disabled
 	Disabled *bool `json:"disabled,omitempty"`
+
+	// EnvKeys Environment variable names for the sync
+	EnvKeys *[]string `json:"env_keys,omitempty"`
+
+	// EnvValues Environment variable values for the sync
+	EnvValues *[]string `json:"env_values,omitempty"`
+
+	// Memory Memory quota for the sync
+	Memory *string `json:"memory,omitempty"`
 
 	// Schedule Cron schedule for the sync
 	Schedule *string `json:"schedule,omitempty"`
