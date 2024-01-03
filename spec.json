@@ -2964,6 +2964,44 @@
         ]
       }
     },
+    "/teams/{team_name}/memberships/{email}": {
+      "delete": {
+        "description": "Remove a user from the team",
+        "operationId": "DeleteTeamMembership",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/email"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams",
+          "users"
+        ]
+      }
+    },
     "/teams/{team_name}/monthly-limits": {
       "get": {
         "description": "List all monthly limits for the team.",
@@ -4404,6 +4442,14 @@
             "example": "v1.0.0"
           },
           {
+            "in": "header",
+            "name": "X-Meta-User-Team-Name",
+            "schema": {
+              "type": "string"
+            },
+            "description": "User's team name"
+          },
+          {
             "in": "query",
             "name": "account",
             "schema": {
@@ -4546,7 +4592,33 @@
                   },
                   "disabled": {
                     "type": "boolean",
-                    "description": "Whether the sync is disabled"
+                    "description": "Whether the sync is disabled",
+                    "default": false
+                  },
+                  "env_keys": {
+                    "type": "array",
+                    "description": "Environment variable names for the sync",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "env_values": {
+                    "type": "array",
+                    "description": "Environment variable values for the sync",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cpu": {
+                    "type": "string",
+                    "description": "CPU quota for the sync",
+                    "default": "1",
+                    "x-go-name": "CPU"
+                  },
+                  "memory": {
+                    "type": "string",
+                    "description": "Memory quota for the sync",
+                    "default": "2Gi"
                   }
                 }
               }
@@ -4650,6 +4722,31 @@
                   "disabled": {
                     "type": "boolean",
                     "description": "Whether the sync is disabled"
+                  },
+                  "env_keys": {
+                    "type": "array",
+                    "description": "Environment variable names for the sync",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "env_values": {
+                    "type": "array",
+                    "description": "Environment variable values for the sync",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cpu": {
+                    "type": "string",
+                    "description": "CPU quota for the sync",
+                    "default": "1",
+                    "x-go-name": "CPU"
+                  },
+                  "memory": {
+                    "type": "string",
+                    "description": "Memory quota for the sync",
+                    "default": "2Gi"
                   }
                 }
               }
@@ -6935,6 +7032,10 @@
           "spec",
           "disabled",
           "schedule",
+          "env_keys",
+          "env_values",
+          "cpu",
+          "memory",
           "created_at",
           "updated_at"
         ],
@@ -6954,6 +7055,29 @@
           "schedule": {
             "type": "string",
             "description": "Cron schedule for the sync"
+          },
+          "env_keys": {
+            "type": "array",
+            "description": "Environment variable names for the sync",
+            "items": {
+              "type": "string"
+            }
+          },
+          "env_values": {
+            "type": "array",
+            "description": "Environment variable values for the sync",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cpu": {
+            "type": "string",
+            "description": "CPU quota for the sync",
+            "x-go-name": "CPU"
+          },
+          "memory": {
+            "type": "string",
+            "description": "Memory quota for the sync"
           },
           "created_at": {
             "type": "string",
@@ -7289,20 +7413,20 @@
         },
         "x-go-name": "AddonOrderID"
       },
-      "addon_team": {
-        "in": "path",
-        "name": "addon_team",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/TeamName"
-        }
-      },
       "email": {
         "in": "path",
         "name": "email",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/Email"
+        }
+      },
+      "addon_team": {
+        "in": "path",
+        "name": "addon_team",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/TeamName"
         }
       },
       "team_subscription_order_id": {

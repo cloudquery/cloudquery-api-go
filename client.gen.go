@@ -308,6 +308,9 @@ type ClientInterface interface {
 	// GetTeamMemberships request
 	GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteTeamMembership request
+	DeleteTeamMembership(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListMonthlyLimitsByTeam request
 	ListMonthlyLimitsByTeam(ctx context.Context, teamName TeamName, params *ListMonthlyLimitsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1365,6 +1368,18 @@ func (c *Client) ListInvoicesByTeam(ctx context.Context, teamName TeamName, para
 
 func (c *Client) GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTeamMembershipsRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteTeamMembership(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamMembershipRequest(c.Server, teamName, email)
 	if err != nil {
 		return nil, err
 	}
@@ -4333,6 +4348,17 @@ func NewAuthRegistryRequestRequest(server string, params *AuthRegistryRequestPar
 			req.Header.Set("X-Meta-Plugin-Version", headerParam0)
 		}
 
+		if params.XMetaUserTeamName != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithLocation("simple", false, "X-Meta-User-Team-Name", runtime.ParamLocationHeader, *params.XMetaUserTeamName)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Meta-User-Team-Name", headerParam1)
+		}
+
 	}
 
 	return req, nil
@@ -5421,6 +5447,47 @@ func NewGetTeamMembershipsRequest(server string, teamName TeamName, params *GetT
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteTeamMembershipRequest generates requests for DeleteTeamMembership
+func NewDeleteTeamMembershipRequest(server string, teamName TeamName, email Email) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "email", runtime.ParamLocationPath, email)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/memberships/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -7341,6 +7408,9 @@ type ClientWithResponsesInterface interface {
 	// GetTeamMembershipsWithResponse request
 	GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error)
 
+	// DeleteTeamMembershipWithResponse request
+	DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error)
+
 	// ListMonthlyLimitsByTeamWithResponse request
 	ListMonthlyLimitsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListMonthlyLimitsByTeamParams, reqEditors ...RequestEditorFn) (*ListMonthlyLimitsByTeamResponse, error)
 
@@ -9032,6 +9102,32 @@ func (r GetTeamMembershipsResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteTeamMembershipResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteTeamMembershipResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteTeamMembershipResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListMonthlyLimitsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -10533,6 +10629,15 @@ func (c *ClientWithResponses) GetTeamMembershipsWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseGetTeamMembershipsResponse(rsp)
+}
+
+// DeleteTeamMembershipWithResponse request returning *DeleteTeamMembershipResponse
+func (c *ClientWithResponses) DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error) {
+	rsp, err := c.DeleteTeamMembership(ctx, teamName, email, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTeamMembershipResponse(rsp)
 }
 
 // ListMonthlyLimitsByTeamWithResponse request returning *ListMonthlyLimitsByTeamResponse
@@ -14038,6 +14143,60 @@ func ParseGetTeamMembershipsResponse(rsp *http.Response) (*GetTeamMembershipsRes
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteTeamMembershipResponse parses an HTTP response from a DeleteTeamMembershipWithResponse call
+func ParseDeleteTeamMembershipResponse(rsp *http.Response) (*DeleteTeamMembershipResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteTeamMembershipResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
