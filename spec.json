@@ -4459,6 +4459,14 @@
           },
           {
             "in": "query",
+            "name": "service",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Service requesting the JTW token"
+          },
+          {
+            "in": "query",
             "name": "scope",
             "schema": {
               "type": "string"

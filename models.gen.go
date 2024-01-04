@@ -1478,6 +1478,9 @@ type AuthRegistryRequestParams struct {
 	// Account Username used for `docker login`
 	Account *string `form:"account,omitempty" json:"account,omitempty"`
 
+	// Service Service requesting the JTW token
+	Service *string `form:"service,omitempty" json:"service,omitempty"`
+
 	// Scope Multi-value string containing the repository being access and the operation type (push/pull)
 	Scope *string `form:"scope,omitempty" json:"scope,omitempty"`
 
