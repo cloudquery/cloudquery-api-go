@@ -17,7 +17,7 @@
   },
   "servers": [
     {
-      "url": "https://api.cloudquery.io/v1"
+      "url": "https://api.cloudquery.io"
     }
   ],
   "security": [
