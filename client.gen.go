@@ -286,6 +286,11 @@ type ClientInterface interface {
 	// DeleteTeamAPIKey request
 	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateTeamImagesWithBody request with any body
+	CreateTeamImagesWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateTeamImages(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamInvitations request
 	ListTeamInvitations(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1272,6 +1277,30 @@ func (c *Client) CreateTeamAPIKey(ctx context.Context, teamName TeamName, body C
 
 func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTeamImagesWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTeamImagesRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTeamImages(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTeamImagesRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5119,6 +5148,53 @@ func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyID APIKe
 	return req, nil
 }
 
+// NewCreateTeamImagesRequest calls the generic CreateTeamImages builder with application/json body
+func NewCreateTeamImagesRequest(server string, teamName TeamName, body CreateTeamImagesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateTeamImagesRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateTeamImagesRequestWithBody generates requests for CreateTeamImages with any type of body
+func NewCreateTeamImagesRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/images", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListTeamInvitationsRequest generates requests for ListTeamInvitations
 func NewListTeamInvitationsRequest(server string, teamName TeamName, params *ListTeamInvitationsParams) (*http.Request, error) {
 	var err error
@@ -7402,6 +7478,11 @@ type ClientWithResponsesInterface interface {
 	// DeleteTeamAPIKeyWithResponse request
 	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
 
+	// CreateTeamImagesWithBodyWithResponse request with any body
+	CreateTeamImagesWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error)
+
+	CreateTeamImagesWithResponse(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error)
+
 	// ListTeamInvitationsWithResponse request
 	ListTeamInvitationsWithResponse(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*ListTeamInvitationsResponse, error)
 
@@ -8949,6 +9030,35 @@ func (r DeleteTeamAPIKeyResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DeleteTeamAPIKeyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateTeamImagesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Items    []TeamImage  `json:"items"`
+		Metadata ListMetadata `json:"metadata"`
+	}
+	JSON401 *RequiresAuthentication
+	JSON403 *Forbidden
+	JSON404 *NotFound
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateTeamImagesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateTeamImagesResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -10575,6 +10685,23 @@ func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseDeleteTeamAPIKeyResponse(rsp)
+}
+
+// CreateTeamImagesWithBodyWithResponse request with arbitrary body returning *CreateTeamImagesResponse
+func (c *ClientWithResponses) CreateTeamImagesWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error) {
+	rsp, err := c.CreateTeamImagesWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTeamImagesResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateTeamImagesWithResponse(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error) {
+	rsp, err := c.CreateTeamImages(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTeamImagesResponse(rsp)
 }
 
 // ListTeamInvitationsWithResponse request returning *ListTeamInvitationsResponse
@@ -13860,6 +13987,63 @@ func ParseDeleteTeamAPIKeyResponse(rsp *http.Response) (*DeleteTeamAPIKeyRespons
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateTeamImagesResponse parses an HTTP response from a CreateTeamImagesWithResponse call
+func ParseCreateTeamImagesResponse(rsp *http.Response) (*CreateTeamImagesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateTeamImagesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Items    []TeamImage  `json:"items"`
+			Metadata ListMetadata `json:"metadata"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
