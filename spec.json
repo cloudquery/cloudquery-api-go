@@ -6517,11 +6517,13 @@
           },
           "url": {
             "type": "string",
-            "description": "URL to download image"
+            "description": "URL to download image",
+            "x-go-name": "URL"
           },
           "upload_url": {
             "type": "string",
-            "description": "URL to upload image"
+            "description": "URL to upload image",
+            "x-go-name": "UploadURL"
           }
         }
       },
