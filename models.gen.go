@@ -1131,6 +1131,30 @@ type Team struct {
 	Plan *TeamPlan `json:"plan,omitempty"`
 }
 
+// TeamImage defines model for TeamImage.
+type TeamImage struct {
+	// Checksum SHA1 checksum of image
+	Checksum string `json:"checksum"`
+
+	// Name Name of image
+	Name string `json:"name"`
+
+	// UploadUrl URL to upload image
+	UploadUrl *string `json:"upload_url,omitempty"`
+
+	// Url URL to download image
+	Url string `json:"url"`
+}
+
+// TeamImageCreate defines model for TeamImageCreate.
+type TeamImageCreate struct {
+	// Checksum SHA1 checksum of image
+	Checksum string `json:"checksum"`
+
+	// Name Name of image
+	Name string `json:"name"`
+}
+
 // TeamName The unique name for the team.
 type TeamName = string
 
@@ -1561,6 +1585,11 @@ type CreateTeamAPIKeyJSONBody struct {
 	Name APIKeyName `json:"name"`
 }
 
+// CreateTeamImagesJSONBody defines parameters for CreateTeamImages.
+type CreateTeamImagesJSONBody struct {
+	Images []TeamImageCreate `json:"images"`
+}
+
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
 type ListTeamInvitationsParams struct {
 	// Page Page number of the results to fetch
@@ -1806,6 +1835,9 @@ type CreateAddonOrderForTeamJSONRequestBody = AddonOrderCreate
 
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
 type CreateTeamAPIKeyJSONRequestBody CreateTeamAPIKeyJSONBody
+
+// CreateTeamImagesJSONRequestBody defines body for CreateTeamImages for application/json ContentType.
+type CreateTeamImagesJSONRequestBody CreateTeamImagesJSONBody
 
 // EmailTeamInvitationJSONRequestBody defines body for EmailTeamInvitation for application/json ContentType.
 type EmailTeamInvitationJSONRequestBody EmailTeamInvitationJSONBody
