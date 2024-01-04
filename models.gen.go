@@ -1140,10 +1140,10 @@ type TeamImage struct {
 	Name string `json:"name"`
 
 	// UploadUrl URL to upload image
-	UploadUrl *string `json:"upload_url,omitempty"`
+	UploadURL *string `json:"upload_url,omitempty"`
 
 	// Url URL to download image
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 // TeamImageCreate defines model for TeamImageCreate.
