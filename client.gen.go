@@ -8636,10 +8636,11 @@ type AuthRegistryRequestResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *RegistryAuthToken
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
+	JSON400      *DockerError
+	JSON401      *DockerError
+	JSON404      *DockerError
+	JSON422      *DockerError
+	JSON500      *DockerError
 }
 
 // Status returns HTTPResponse.Status
@@ -13193,28 +13194,35 @@ func ParseAuthRegistryRequestResponse(rsp *http.Response) (*AuthRegistryRequestR
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
+		var dest DockerError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
+		var dest DockerError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest DockerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
+		var dest DockerError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
+		var dest DockerError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

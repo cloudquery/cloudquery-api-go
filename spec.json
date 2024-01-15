@@ -4562,16 +4562,19 @@
             "description": "Response"
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "$ref": "#/components/responses/DockerError"
           },
           "401": {
-            "$ref": "#/components/responses/RequiresAuthentication"
+            "$ref": "#/components/responses/DockerError"
+          },
+          "404": {
+            "$ref": "#/components/responses/DockerError"
           },
           "422": {
-            "$ref": "#/components/responses/UnprocessableEntity"
+            "$ref": "#/components/responses/DockerError"
           },
           "500": {
-            "$ref": "#/components/responses/InternalError"
+            "$ref": "#/components/responses/DockerError"
           }
         },
         "tags": [
@@ -7158,6 +7161,20 @@
           "token"
         ]
       },
+      "DockerError": {
+        "additionalProperties": false,
+        "description": "Error Returned from the Docker Authorization Handler to the Docker Registry",
+        "required": [
+          "details"
+        ],
+        "properties": {
+          "details": {
+            "type": "string"
+          }
+        },
+        "title": "Docker Error",
+        "type": "object"
+      },
       "Sync": {
         "description": "Managed Sync definition",
         "type": "object",
@@ -7377,6 +7394,16 @@
           }
         },
         "description": "Method not allowed"
+      },
+      "DockerError": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DockerError"
+            }
+          }
+        },
+        "description": "Error Returned from the Docker Authorization Handler to the Docker Registry"
       }
     },
     "parameters": {
