@@ -441,6 +441,11 @@ type BasicError struct {
 	Status  int    `json:"status"`
 }
 
+// DockerError Error Returned from the Docker Authorization Handler to the Docker Registry
+type DockerError struct {
+	Details string `json:"details"`
+}
+
 // Email defines model for Email.
 type Email = openapi_types.Email
 
