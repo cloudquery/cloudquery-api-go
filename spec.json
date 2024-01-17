@@ -5275,6 +5275,15 @@
           "databases",
           "sales-marketing",
           "engineering-analytics",
+          "marketing-analytics",
+          "shipment-tracking",
+          "product-analytics",
+          "cloud-finops",
+          "project-management",
+          "fleet-management",
+          "security",
+          "data-warehouses",
+          "human-resources",
           "other"
         ]
       },
