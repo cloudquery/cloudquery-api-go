@@ -54,11 +54,20 @@ const (
 
 // Defines values for PluginCategory.
 const (
+	PluginCategoryCloudFinops          PluginCategory = "cloud-finops"
 	PluginCategoryCloudInfrastructure  PluginCategory = "cloud-infrastructure"
+	PluginCategoryDataWarehouses       PluginCategory = "data-warehouses"
 	PluginCategoryDatabases            PluginCategory = "databases"
 	PluginCategoryEngineeringAnalytics PluginCategory = "engineering-analytics"
+	PluginCategoryFleetManagement      PluginCategory = "fleet-management"
+	PluginCategoryHumanResources       PluginCategory = "human-resources"
+	PluginCategoryMarketingAnalytics   PluginCategory = "marketing-analytics"
 	PluginCategoryOther                PluginCategory = "other"
+	PluginCategoryProductAnalytics     PluginCategory = "product-analytics"
+	PluginCategoryProjectManagement    PluginCategory = "project-management"
 	PluginCategorySalesMarketing       PluginCategory = "sales-marketing"
+	PluginCategorySecurity             PluginCategory = "security"
+	PluginCategoryShipmentTracking     PluginCategory = "shipment-tracking"
 )
 
 // Defines values for PluginKind.
