@@ -782,7 +782,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginVersion"
+                  "$ref": "#/components/schemas/PluginVersionDetails"
                 }
               }
             },
@@ -865,12 +865,7 @@
                     }
                   },
                   "package_type": {
-                    "type": "string",
-                    "description": "The package type of the plugin assets",
-                    "enum": [
-                      "native",
-                      "docker"
-                    ]
+                    "$ref": "#/components/schemas/PluginPackageType"
                   }
                 }
               }
@@ -5630,6 +5625,14 @@
           ]
         }
       },
+      "PluginPackageType": {
+        "description": "The package type of the plugin assets",
+        "type": "string",
+        "enum": [
+          "native",
+          "docker"
+        ]
+      },
       "PluginVersion": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Version",
@@ -5696,16 +5699,30 @@
             "description": "The checksums of the plugin assets"
           },
           "package_type": {
-            "type": "string",
-            "description": "The package type of the plugin assets",
-            "enum": [
-              "native",
-              "docker"
-            ]
+            "$ref": "#/components/schemas/PluginPackageType"
           }
         },
         "title": "CloudQuery Plugin Version",
         "type": "object"
+      },
+      "PluginVersionDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PluginVersion"
+          },
+          {
+            "type": "object",
+            "required": [
+              "example_config"
+            ],
+            "properties": {
+              "example_config": {
+                "type": "string",
+                "description": "Example configuration for the plugin. This can be used in generated quickstart guides, for example. Markdown format."
+              }
+            }
+          }
+        ]
       },
       "PluginVersionUpdate": {
         "type": "object",

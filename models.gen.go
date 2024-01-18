@@ -82,6 +82,12 @@ const (
 	PluginNotificationRequestStatusSent    PluginNotificationRequestStatus = "sent"
 )
 
+// Defines values for PluginPackageType.
+const (
+	Docker PluginPackageType = "docker"
+	Native PluginPackageType = "native"
+)
+
 // Defines values for PluginReleaseStage.
 const (
 	ComingSoon PluginReleaseStage = "coming-soon"
@@ -94,12 +100,6 @@ const (
 	PluginTierFree     PluginTier = "free"
 	PluginTierOpenCore PluginTier = "open-core"
 	PluginTierPaid     PluginTier = "paid"
-)
-
-// Defines values for PluginVersionPackageType.
-const (
-	PluginVersionPackageTypeDocker PluginVersionPackageType = "docker"
-	PluginVersionPackageTypeNative PluginVersionPackageType = "native"
 )
 
 // Defines values for SyncRunStatus.
@@ -168,12 +168,6 @@ const (
 // Defines values for ListPluginVersionsParamsSortBy.
 const (
 	CreatedAt ListPluginVersionsParamsSortBy = "created_at"
-)
-
-// Defines values for CreatePluginVersionJSONBodyPackageType.
-const (
-	CreatePluginVersionJSONBodyPackageTypeDocker CreatePluginVersionJSONBodyPackageType = "docker"
-	CreatePluginVersionJSONBodyPackageTypeNative CreatePluginVersionJSONBodyPackageType = "native"
 )
 
 // Defines values for EmailTeamInvitationJSONBodyRole.
@@ -824,6 +818,9 @@ type PluginNotificationRequestCreate struct {
 // PluginNotificationRequestStatus Status of a plugin notification request
 type PluginNotificationRequestStatus string
 
+// PluginPackageType The package type of the plugin assets
+type PluginPackageType string
+
 // PluginPrice CloudQuery Plugin Price
 type PluginPrice struct {
 	// EffectiveFrom The date and time the price came (or will come) into effect.
@@ -1020,7 +1017,7 @@ type PluginVersion struct {
 	Name VersionName `json:"name"`
 
 	// PackageType The package type of the plugin assets
-	PackageType PluginVersionPackageType `json:"package_type"`
+	PackageType PluginPackageType `json:"package_type"`
 
 	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 	Protocols PluginProtocols `json:"protocols"`
@@ -1035,8 +1032,41 @@ type PluginVersion struct {
 	SupportedTargets []string `json:"supported_targets"`
 }
 
-// PluginVersionPackageType The package type of the plugin assets
-type PluginVersionPackageType string
+// PluginVersionDetails defines model for PluginVersionDetails.
+type PluginVersionDetails struct {
+	// Checksums The checksums of the plugin assets
+	Checksums []string `json:"checksums"`
+
+	// CreatedAt The date and time the plugin version was created.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Draft If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version.
+	Draft bool `json:"draft"`
+
+	// ExampleConfig Example configuration for the plugin. This can be used in generated quickstart guides, for example. Markdown format.
+	ExampleConfig string `json:"example_config"`
+
+	// Message Description of what's new or changed in this version (supports markdown)
+	Message string `json:"message"`
+
+	// Name The version in semantic version format.
+	Name VersionName `json:"name"`
+
+	// PackageType The package type of the plugin assets
+	PackageType PluginPackageType `json:"package_type"`
+
+	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+	Protocols PluginProtocols `json:"protocols"`
+
+	// PublishedAt The date and time the plugin version was set to non-draft (published).
+	PublishedAt *time.Time `json:"published_at,omitempty"`
+
+	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
+	Retracted bool `json:"retracted"`
+
+	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
+	SupportedTargets []string `json:"supported_targets"`
+}
 
 // PluginVersionUpdate defines model for PluginVersionUpdate.
 type PluginVersionUpdate struct {
@@ -1460,7 +1490,7 @@ type CreatePluginVersionJSONBody struct {
 	Message string `json:"message"`
 
 	// PackageType The package type of the plugin assets
-	PackageType CreatePluginVersionJSONBodyPackageType `json:"package_type"`
+	PackageType PluginPackageType `json:"package_type"`
 
 	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 	Protocols PluginProtocols `json:"protocols"`
@@ -1468,9 +1498,6 @@ type CreatePluginVersionJSONBody struct {
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
 	SupportedTargets []string `json:"supported_targets"`
 }
-
-// CreatePluginVersionJSONBodyPackageType defines parameters for CreatePluginVersion.
-type CreatePluginVersionJSONBodyPackageType string
 
 // DownloadPluginAssetParams defines parameters for DownloadPluginAsset.
 type DownloadPluginAssetParams struct {
