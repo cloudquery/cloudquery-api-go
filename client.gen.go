@@ -8280,7 +8280,7 @@ func (r ListPluginVersionsResponse) StatusCode() int {
 type GetPluginVersionResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *PluginVersion
+	JSON200      *PluginVersionDetails
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
@@ -12438,7 +12438,7 @@ func ParseGetPluginVersionResponse(rsp *http.Response) (*GetPluginVersionRespons
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest PluginVersion
+		var dest PluginVersionDetails
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
