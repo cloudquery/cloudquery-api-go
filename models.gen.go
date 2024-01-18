@@ -1082,11 +1082,8 @@ type Sync struct {
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
 
-	// EnvKeys Environment variable names for the sync
-	EnvKeys []string `json:"env_keys"`
-
-	// EnvValues Environment variable values for the sync
-	EnvValues []string `json:"env_values"`
+	// Env Environment variables for the sync
+	Env []SyncEnv `json:"env"`
 
 	// Memory Memory quota for the sync
 	Memory string `json:"memory"`
@@ -1102,6 +1099,15 @@ type Sync struct {
 
 	// UpdatedAt Time when the sync was updated
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// SyncEnv Environment variable
+type SyncEnv struct {
+	// Name Name of the environment variable
+	Name string `json:"name"`
+
+	// Value Value of the environment variable
+	Value string `json:"value"`
 }
 
 // SyncName Unique name of the sync
@@ -1259,6 +1265,9 @@ type UsageIncrease struct {
 type User struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	Email     Email      `json:"email"`
+
+	// Id ID of the User
+	ID openapi_types.UUID `json:"id"`
 
 	// Name The unique name for the user.
 	Name      *UserName  `json:"name,omitempty"`
@@ -1697,11 +1706,8 @@ type CreateSyncJSONBody struct {
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
 
-	// EnvKeys Environment variable names for the sync
-	EnvKeys *[]string `json:"env_keys,omitempty"`
-
-	// EnvValues Environment variable values for the sync
-	EnvValues *[]string `json:"env_values,omitempty"`
+	// Env Environment variables for the sync
+	Env *[]SyncEnv `json:"env,omitempty"`
 
 	// Memory Memory quota for the sync
 	Memory *string `json:"memory,omitempty"`
@@ -1722,11 +1728,8 @@ type UpdateSyncJSONBody struct {
 	// Disabled Whether the sync is disabled
 	Disabled *bool `json:"disabled,omitempty"`
 
-	// EnvKeys Environment variable names for the sync
-	EnvKeys *[]string `json:"env_keys,omitempty"`
-
-	// EnvValues Environment variable values for the sync
-	EnvValues *[]string `json:"env_values,omitempty"`
+	// Env Environment variables for the sync
+	Env *[]SyncEnv `json:"env,omitempty"`
 
 	// Memory Memory quota for the sync
 	Memory *string `json:"memory,omitempty"`
