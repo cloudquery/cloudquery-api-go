@@ -82,7 +82,6 @@
         "operationId": "UploadImage",
         "parameters": [],
         "tags": [
-          "uploads",
           "images"
         ],
         "responses": {
@@ -499,7 +498,6 @@
       "delete": {
         "description": "Delete plugin by team and plugin name",
         "operationId": "DeletePluginByTeamAndPluginName",
-        "x-internal": true,
         "parameters": [
           {
             "$ref": "#/components/parameters/team_name"
@@ -532,7 +530,6 @@
           }
         },
         "tags": [
-          "teams",
           "plugins"
         ]
       }
@@ -2315,8 +2312,7 @@
           }
         },
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ]
       },
       "post": {
@@ -2582,9 +2578,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "addons"
+          "teams"
         ]
       }
     },
@@ -2698,8 +2692,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins"
+          "teams"
         ]
       }
     },
@@ -2812,7 +2805,6 @@
           }
         },
         "tags": [
-          "teams",
           "addons"
         ]
       }
@@ -3031,8 +3023,7 @@
           }
         },
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ]
       }
     },
@@ -3069,8 +3060,7 @@
           }
         },
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ]
       }
     },
@@ -3128,9 +3118,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "limits"
+          "teams"
         ]
       },
       "post": {
@@ -3178,9 +3166,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "limits"
+          "teams"
         ]
       }
     },
@@ -3227,9 +3213,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "limits"
+          "teams"
         ]
       },
       "put": {
@@ -3286,9 +3270,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "limits"
+          "teams"
         ]
       },
       "delete": {
@@ -3326,9 +3308,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "limits"
+          "teams"
         ]
       }
     },
@@ -3444,9 +3424,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "usage"
+          "teams"
         ]
       },
       "post": {
@@ -3490,9 +3468,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "usage"
+          "teams"
         ]
       }
     },
@@ -3539,9 +3515,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "usage"
+          "teams"
         ]
       }
     },
@@ -3612,9 +3586,7 @@
           }
         },
         "tags": [
-          "teams",
-          "plugins",
-          "usage"
+          "plugins"
         ]
       }
     },
@@ -3685,9 +3657,7 @@
           }
         },
         "tags": [
-          "teams",
-          "addons",
-          "usage"
+          "addons"
         ]
       }
     },
@@ -3696,8 +3666,7 @@
         "operationId": "ListTeamInvitations",
         "description": "List of open invitations to the team",
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ],
         "parameters": [
           {
@@ -3747,8 +3716,7 @@
         "operationId": "EmailTeamInvitation",
         "description": "Invite a user to join a team with their email address",
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ],
         "parameters": [
           {
@@ -3812,8 +3780,7 @@
         "operationId": "AcceptTeamInvitation",
         "description": "Accept an invitation to the team, creating a user membership",
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ],
         "parameters": [
           {
@@ -3874,8 +3841,7 @@
         "operationId": "CancelTeamInvitation",
         "description": "Cancel an invitation to the team, preventing the user becoming a team member",
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ],
         "parameters": [
           {
@@ -4115,8 +4081,7 @@
           }
         },
         "tags": [
-          "teams",
-          "users"
+          "teams"
         ]
       }
     },
@@ -4209,7 +4174,6 @@
         "operationId": "ListCurrentUserInvitations",
         "description": "List of the current user's unaccepted invitations",
         "tags": [
-          "teams",
           "users"
         ],
         "parameters": [
@@ -4309,7 +4273,6 @@
           }
         },
         "tags": [
-          "teams",
           "users"
         ]
       }
