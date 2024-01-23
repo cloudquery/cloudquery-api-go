@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.7.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.6.5...v1.7.0) (2024-01-23)
+
+
+### Features
+
+* Add Sync Run API Token Type ([#109](https://github.com/cloudquery/cloudquery-api-go/issues/109)) ([f1bcc50](https://github.com/cloudquery/cloudquery-api-go/commit/f1bcc50c874ba18f66acc38a43a87ce8a4140cd7))
+
+
+### Bug Fixes
+
+* Generate CloudQuery Go API Client from `spec.json` ([#107](https://github.com/cloudquery/cloudquery-api-go/issues/107)) ([3e8e533](https://github.com/cloudquery/cloudquery-api-go/commit/3e8e5331a7e6d661e4919828aa65e7a6a80fe524))
+* Generate CloudQuery Go API Client from `spec.json` ([#110](https://github.com/cloudquery/cloudquery-api-go/issues/110)) ([bcf1462](https://github.com/cloudquery/cloudquery-api-go/commit/bcf1462886b934c9cdb4754c37f45e48b1ba9d5d))
+
 ## [1.6.5](https://github.com/cloudquery/cloudquery-api-go/compare/v1.6.4...v1.6.5) (2024-01-18)
 
 
