@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/cloudquery/cloudquery-api-go/config"
@@ -18,6 +19,7 @@ const (
 	EnvVarCloudQueryAPIKey = "CLOUDQUERY_API_KEY"
 	ExpiryBuffer           = 60 * time.Second
 	tokenFilePath          = "cloudquery/token"
+	syncRunAPIKeyPrefix    = "cqsr_"
 )
 
 type tokenResponse struct {
@@ -36,6 +38,7 @@ const (
 	Undefined TokenType = iota
 	BearerToken
 	APIKey
+	SyncRunAPIKey
 )
 
 var UndefinedToken = Token{Type: Undefined, Value: ""}
@@ -66,8 +69,9 @@ func NewTokenClient() *TokenClient {
 // GetToken returns the ID token
 // If CLOUDQUERY_API_KEY is set, it returns that value, otherwise it returns an ID token generated from the refresh token.
 func (tc *TokenClient) GetToken() (Token, error) {
-	if tc.GetTokenType() == APIKey {
-		return Token{Type: APIKey, Value: os.Getenv(EnvVarCloudQueryAPIKey)}, nil
+	tokenType := tc.GetTokenType()
+	if tokenType != BearerToken {
+		return Token{Type: tokenType, Value: os.Getenv(EnvVarCloudQueryAPIKey)}, nil
 	}
 
 	// If the token is not expired, return it
@@ -104,6 +108,9 @@ func (tc *TokenClient) GetToken() (Token, error) {
 // GetTokenType returns the type of token that will be returned by GetToken
 func (tc *TokenClient) GetTokenType() TokenType {
 	if token := os.Getenv(EnvVarCloudQueryAPIKey); token != "" {
+		if strings.HasPrefix(token, syncRunAPIKeyPrefix) {
+			return SyncRunAPIKey
+		}
 		return APIKey
 	}
 	return BearerToken

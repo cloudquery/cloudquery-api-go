@@ -118,6 +118,14 @@ func TestTokenClient_APIKeyTokenType(t *testing.T) {
 	assert.Equal(t, APIKey, tc.GetTokenType())
 }
 
+func TestTokenClient_SyncRunAPIKeyTokenType(t *testing.T) {
+	t.Setenv(EnvVarCloudQueryAPIKey, "cqsr_my_token")
+
+	tc := NewTokenClient()
+
+	assert.Equal(t, SyncRunAPIKey, tc.GetTokenType())
+}
+
 func overrideEnvironmentVariable(t *testing.T, key, value string) func() {
 	originalValue := os.Getenv(key)
 	resetFn := func() {
