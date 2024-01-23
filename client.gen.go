@@ -388,6 +388,11 @@ type ClientInterface interface {
 
 	UpdateSyncRun(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateSyncRunProgressWithBody request with any body
+	CreateSyncRunProgressWithBody(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSyncRunProgress(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body CreateSyncRunProgressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamPluginUsage request
 	ListTeamPluginUsage(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1721,6 +1726,30 @@ func (c *Client) UpdateSyncRunWithBody(ctx context.Context, teamName TeamName, s
 
 func (c *Client) UpdateSyncRun(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateSyncRunRequest(c.Server, teamName, syncName, syncRunId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSyncRunProgressWithBody(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSyncRunProgressRequestWithBody(c.Server, teamName, syncName, syncRunId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSyncRunProgress(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body CreateSyncRunProgressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSyncRunProgressRequest(c.Server, teamName, syncName, syncRunId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6734,6 +6763,67 @@ func NewUpdateSyncRunRequestWithBody(server string, teamName TeamName, syncName 
 	return req, nil
 }
 
+// NewCreateSyncRunProgressRequest calls the generic CreateSyncRunProgress builder with application/json body
+func NewCreateSyncRunProgressRequest(server string, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body CreateSyncRunProgressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSyncRunProgressRequestWithBody(server, teamName, syncName, syncRunId, "application/json", bodyReader)
+}
+
+// NewCreateSyncRunProgressRequestWithBody generates requests for CreateSyncRunProgress with any type of body
+func NewCreateSyncRunProgressRequestWithBody(server string, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_name", runtime.ParamLocationPath, syncName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_run_id", runtime.ParamLocationPath, syncRunId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/syncs/%s/runs/%s/progress", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListTeamPluginUsageRequest generates requests for ListTeamPluginUsage
 func NewListTeamPluginUsageRequest(server string, teamName TeamName, params *ListTeamPluginUsageParams) (*http.Request, error) {
 	var err error
@@ -7579,6 +7669,11 @@ type ClientWithResponsesInterface interface {
 	UpdateSyncRunWithBodyWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncRunResponse, error)
 
 	UpdateSyncRunWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncRunResponse, error)
+
+	// CreateSyncRunProgressWithBodyWithResponse request with any body
+	CreateSyncRunProgressWithBodyWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncRunProgressResponse, error)
+
+	CreateSyncRunProgressWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body CreateSyncRunProgressJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncRunProgressResponse, error)
 
 	// ListTeamPluginUsageWithResponse request
 	ListTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, params *ListTeamPluginUsageParams, reqEditors ...RequestEditorFn) (*ListTeamPluginUsageResponse, error)
@@ -9791,6 +9886,32 @@ func (r UpdateSyncRunResponse) StatusCode() int {
 	return 0
 }
 
+type CreateSyncRunProgressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSyncRunProgressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSyncRunProgressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListTeamPluginUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -11010,6 +11131,23 @@ func (c *ClientWithResponses) UpdateSyncRunWithResponse(ctx context.Context, tea
 		return nil, err
 	}
 	return ParseUpdateSyncRunResponse(rsp)
+}
+
+// CreateSyncRunProgressWithBodyWithResponse request with arbitrary body returning *CreateSyncRunProgressResponse
+func (c *ClientWithResponses) CreateSyncRunProgressWithBodyWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncRunProgressResponse, error) {
+	rsp, err := c.CreateSyncRunProgressWithBody(ctx, teamName, syncName, syncRunId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSyncRunProgressResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateSyncRunProgressWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body CreateSyncRunProgressJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncRunProgressResponse, error) {
+	rsp, err := c.CreateSyncRunProgress(ctx, teamName, syncName, syncRunId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSyncRunProgressResponse(rsp)
 }
 
 // ListTeamPluginUsageWithResponse request returning *ListTeamPluginUsageResponse
@@ -15520,6 +15658,60 @@ func ParseUpdateSyncRunResponse(rsp *http.Response) (*UpdateSyncRunResponse, err
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSyncRunProgressResponse parses an HTTP response from a CreateSyncRunProgressWithResponse call
+func ParseCreateSyncRunProgressResponse(rsp *http.Response) (*CreateSyncRunProgressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSyncRunProgressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
