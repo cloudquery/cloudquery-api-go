@@ -5042,6 +5042,67 @@
           }
         }
       }
+    },
+    "/teams/{team_name}/syncs/{sync_name}/runs/{sync_run_id}/progress": {
+      "post": {
+        "description": "Create a new sync run progress update.",
+        "operationId": "CreateSyncRunProgress",
+        "x-internal": true,
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_run_id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "rows"
+                ],
+                "properties": {
+                  "rows": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Number of rows synced so far"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Progress was reported successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -7258,7 +7319,8 @@
           "sync_name",
           "id",
           "status",
-          "started_at"
+          "started_at",
+          "total_rows"
         ],
         "properties": {
           "sync_name": {
@@ -7287,6 +7349,11 @@
             "format": "date-time",
             "type": "string",
             "description": "Cron schedule for the sync"
+          },
+          "total_rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Total number of rows in the sync"
           }
         }
       },

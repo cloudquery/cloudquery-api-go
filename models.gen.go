@@ -1159,6 +1159,9 @@ type SyncRun struct {
 
 	// SyncName Name of the sync
 	SyncName string `json:"sync_name"`
+
+	// TotalRows Total number of rows in the sync
+	TotalRows int64 `json:"total_rows"`
 }
 
 // SyncRunID ID of the SyncRun
@@ -1781,6 +1784,12 @@ type UpdateSyncRunJSONBody struct {
 	Status *SyncRunStatus `json:"status,omitempty"`
 }
 
+// CreateSyncRunProgressJSONBody defines parameters for CreateSyncRunProgress.
+type CreateSyncRunProgressJSONBody struct {
+	// Rows Number of rows synced so far
+	Rows int64 `json:"rows"`
+}
+
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
 type ListTeamPluginUsageParams struct {
 	// Page Page number of the results to fetch
@@ -1906,6 +1915,9 @@ type UpdateSyncJSONRequestBody UpdateSyncJSONBody
 
 // UpdateSyncRunJSONRequestBody defines body for UpdateSyncRun for application/json ContentType.
 type UpdateSyncRunJSONRequestBody UpdateSyncRunJSONBody
+
+// CreateSyncRunProgressJSONRequestBody defines body for CreateSyncRunProgress for application/json ContentType.
+type CreateSyncRunProgressJSONRequestBody CreateSyncRunProgressJSONBody
 
 // IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
 type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
