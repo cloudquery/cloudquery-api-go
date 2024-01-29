@@ -3760,6 +3760,16 @@
               }
             }
           },
+          "202": {
+            "description": "Response, email failed to send",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invitation"
+                }
+              }
+            }
+          },
           "400": {
             "$ref": "#/components/responses/BadRequest"
           },
@@ -5085,6 +5095,65 @@
         "responses": {
           "204": {
             "description": "Progress was reported successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/syncs/{sync_name}/runs/{sync_run_id}/logs": {
+      "get": {
+        "description": "Get logs for a sync run.",
+        "operationId": "GetSyncRunLogs",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_run_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chunked response logs for a sync run that is in progress.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "A stream of logs for a sync run."
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Redirect to the logs download URL for a sync run that has completed.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string",
+                  "description": "URL to download logs"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
