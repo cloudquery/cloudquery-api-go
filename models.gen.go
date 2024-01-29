@@ -102,6 +102,45 @@ const (
 	PluginTierPaid     PluginTier = "paid"
 )
 
+// Defines values for SyncDestinationMigrateMode.
+const (
+	SyncDestinationMigrateModeForced SyncDestinationMigrateMode = "forced"
+	SyncDestinationMigrateModeSafe   SyncDestinationMigrateMode = "safe"
+)
+
+// Defines values for SyncDestinationWriteMode.
+const (
+	SyncDestinationWriteModeAppend               SyncDestinationWriteMode = "append"
+	SyncDestinationWriteModeOverwrite            SyncDestinationWriteMode = "overwrite"
+	SyncDestinationWriteModeOverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
+)
+
+// Defines values for SyncDestinationCreateMigrateMode.
+const (
+	SyncDestinationCreateMigrateModeForced SyncDestinationCreateMigrateMode = "forced"
+	SyncDestinationCreateMigrateModeSafe   SyncDestinationCreateMigrateMode = "safe"
+)
+
+// Defines values for SyncDestinationCreateWriteMode.
+const (
+	SyncDestinationCreateWriteModeAppend               SyncDestinationCreateWriteMode = "append"
+	SyncDestinationCreateWriteModeOverwrite            SyncDestinationCreateWriteMode = "overwrite"
+	SyncDestinationCreateWriteModeOverwriteDeleteStale SyncDestinationCreateWriteMode = "overwrite-delete-stale"
+)
+
+// Defines values for SyncDestinationUpdateMigrateMode.
+const (
+	Forced SyncDestinationUpdateMigrateMode = "forced"
+	Safe   SyncDestinationUpdateMigrateMode = "safe"
+)
+
+// Defines values for SyncDestinationUpdateWriteMode.
+const (
+	Append               SyncDestinationUpdateWriteMode = "append"
+	Overwrite            SyncDestinationUpdateWriteMode = "overwrite"
+	OverwriteDeleteStale SyncDestinationUpdateWriteMode = "overwrite-delete-stale"
+)
+
 // Defines values for SyncRunStatus.
 const (
 	SyncRunStatusCancelled SyncRunStatus = "cancelled"
@@ -1109,29 +1148,138 @@ type Sync struct {
 	// CreatedAt Time when the sync was created
 	CreatedAt time.Time `json:"created_at"`
 
+	// Destinations List of destinations for the sync
+	Destinations []string `json:"destinations"`
+
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
-
-	// Env Environment variables for the sync
-	Env []SyncEnv `json:"env"`
 
 	// Memory Memory quota for the sync
 	Memory string `json:"memory"`
 
-	// Name Unique name for the sync
+	// Name Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
 
 	// Schedule Cron schedule for the sync
 	Schedule string `json:"schedule"`
 
-	// Spec YAML specification to run the sync
-	Spec string `json:"spec"`
+	// Source Unique name of the source
+	Source string `json:"source"`
 
 	// UpdatedAt Time when the sync was updated
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// SyncEnv Environment variable
+// SyncCreate Managed Sync definition
+type SyncCreate struct {
+	// Cpu CPU quota for the sync
+	CPU          *string  `json:"cpu,omitempty"`
+	Destinations []string `json:"destinations"`
+
+	// Disabled Whether the sync is disabled
+	Disabled bool `json:"disabled"`
+
+	// Memory Memory quota for the sync
+	Memory *string `json:"memory,omitempty"`
+
+	// Name Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// Schedule Cron schedule for the sync
+	Schedule string `json:"schedule"`
+
+	// Source Unique name of the source
+	Source string `json:"source"`
+}
+
+// SyncDestination defines model for SyncDestination.
+type SyncDestination struct {
+	// CreatedAt Time when the source was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env []SyncEnv `json:"env"`
+
+	// MigrateMode Migrate mode for the destination
+	MigrateMode SyncDestinationMigrateMode `json:"migrate_mode"`
+
+	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// Path Plugin path in CloudQuery registry
+	Path string                 `json:"path"`
+	Spec map[string]interface{} `json:"spec"`
+
+	// UpdatedAt Time when the source was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
+
+	// WriteMode Write mode for the destination
+	WriteMode SyncDestinationWriteMode `json:"write_mode"`
+}
+
+// SyncDestinationMigrateMode Migrate mode for the destination
+type SyncDestinationMigrateMode string
+
+// SyncDestinationWriteMode Write mode for the destination
+type SyncDestinationWriteMode string
+
+// SyncDestinationCreate Sync Destination Definition
+type SyncDestinationCreate struct {
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnv `json:"env,omitempty"`
+
+	// MigrateMode Migrate mode for the destination
+	MigrateMode *SyncDestinationCreateMigrateMode `json:"migrate_mode,omitempty"`
+
+	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// Path Plugin path in CloudQuery registry
+	Path string                  `json:"path"`
+	Spec *map[string]interface{} `json:"spec,omitempty"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
+
+	// WriteMode Write mode for the destination
+	WriteMode *SyncDestinationCreateWriteMode `json:"write_mode,omitempty"`
+}
+
+// SyncDestinationCreateMigrateMode Migrate mode for the destination
+type SyncDestinationCreateMigrateMode string
+
+// SyncDestinationCreateWriteMode Write mode for the destination
+type SyncDestinationCreateWriteMode string
+
+// SyncDestinationUpdate Sync Destination Definition
+type SyncDestinationUpdate struct {
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnv `json:"env,omitempty"`
+
+	// MigrateMode Migrate mode for the destination
+	MigrateMode *SyncDestinationUpdateMigrateMode `json:"migrate_mode,omitempty"`
+
+	// Path Plugin path in CloudQuery registry
+	Path *string                 `json:"path,omitempty"`
+	Spec *map[string]interface{} `json:"spec,omitempty"`
+
+	// Version Version of the plugin
+	Version *string `json:"version,omitempty"`
+
+	// WriteMode Write mode for the destination
+	WriteMode *SyncDestinationUpdateWriteMode `json:"write_mode,omitempty"`
+}
+
+// SyncDestinationUpdateMigrateMode Migrate mode for the destination
+type SyncDestinationUpdateMigrateMode string
+
+// SyncDestinationUpdateWriteMode Write mode for the destination
+type SyncDestinationUpdateWriteMode string
+
+// SyncEnv Environment variable. Environment variables are assumed to be secret.
 type SyncEnv struct {
 	// Name Name of the environment variable
 	Name string `json:"name"`
@@ -1139,9 +1287,6 @@ type SyncEnv struct {
 	// Value Value of the environment variable
 	Value string `json:"value"`
 }
-
-// SyncName Unique name of the sync
-type SyncName = string
 
 // SyncRun Managed Sync Run definition
 type SyncRun struct {
@@ -1169,6 +1314,97 @@ type SyncRunID = openapi_types.UUID
 
 // SyncRunStatus The status of the sync run
 type SyncRunStatus string
+
+// SyncSource defines model for SyncSource.
+type SyncSource struct {
+	// CreatedAt Time when the source was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env []SyncEnv `json:"env"`
+
+	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// Path Plugin path in CloudQuery registry
+	Path string `json:"path"`
+
+	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
+	SkipTables []string               `json:"skip_tables"`
+	Spec       map[string]interface{} `json:"spec"`
+
+	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
+	Tables []string `json:"tables"`
+
+	// UpdatedAt Time when the source was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
+}
+
+// SyncSourceCreate Sync Source Definition
+type SyncSourceCreate struct {
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnv `json:"env,omitempty"`
+
+	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// Path Plugin path in CloudQuery registry
+	Path string `json:"path"`
+
+	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
+	SkipTables *[]string               `json:"skip_tables,omitempty"`
+	Spec       *map[string]interface{} `json:"spec,omitempty"`
+
+	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
+	Tables []string `json:"tables"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
+}
+
+// SyncSourceUpdate Sync Source Update Definition
+type SyncSourceUpdate struct {
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnv `json:"env,omitempty"`
+
+	// Path Plugin path in CloudQuery registry
+	Path *string `json:"path,omitempty"`
+
+	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
+	SkipTables *[]string               `json:"skip_tables,omitempty"`
+	Spec       *map[string]interface{} `json:"spec,omitempty"`
+
+	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
+	Tables *[]string `json:"tables,omitempty"`
+
+	// Version Version of the plugin
+	Version *string `json:"version,omitempty"`
+}
+
+// SyncUpdate Managed Sync definition
+type SyncUpdate struct {
+	// Cpu CPU quota for the sync
+	CPU          *string   `json:"cpu,omitempty"`
+	Destinations *[]string `json:"destinations,omitempty"`
+
+	// Disabled Whether the sync is disabled
+	Disabled *bool `json:"disabled,omitempty"`
+
+	// Env Environment variables for the sync
+	Env *[]SyncEnv `json:"env,omitempty"`
+
+	// Memory Memory quota for the sync
+	Memory *string `json:"memory,omitempty"`
+
+	// Schedule Cron schedule for the sync
+	Schedule *string `json:"schedule,omitempty"`
+
+	// Source Unique name of the source
+	Source *string `json:"source,omitempty"`
+}
 
 // Team CloudQuery Team
 type Team struct {
@@ -1343,8 +1579,17 @@ type PluginSortBy string
 // PluginTeam The unique name for the team.
 type PluginTeam = TeamName
 
+// SyncDestinationName Unique name of the sync destination
+type SyncDestinationName = string
+
+// SyncName Unique name of the sync
+type SyncName = string
+
 // SyncRunId ID of the SyncRun
 type SyncRunId = SyncRunID
+
+// SyncSourceName Unique name of the sync source
+type SyncSourceName = string
 
 // TargetName defines model for target_name.
 type TargetName = string
@@ -1719,8 +1964,8 @@ type ListSubscriptionOrdersByTeamParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
-// ListSyncsParams defines parameters for ListSyncs.
-type ListSyncsParams struct {
+// ListSyncDestinationsParams defines parameters for ListSyncDestinations.
+type ListSyncDestinationsParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
@@ -1728,45 +1973,22 @@ type ListSyncsParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// CreateSyncJSONBody defines parameters for CreateSync.
-type CreateSyncJSONBody struct {
-	// Cpu CPU quota for the sync
-	CPU *string `json:"cpu,omitempty"`
+// ListSyncSourcesParams defines parameters for ListSyncSources.
+type ListSyncSourcesParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
-	// Disabled Whether the sync is disabled
-	Disabled bool `json:"disabled"`
-
-	// Env Environment variables for the sync
-	Env *[]SyncEnv `json:"env,omitempty"`
-
-	// Memory Memory quota for the sync
-	Memory *string `json:"memory,omitempty"`
-
-	// Name Unique name for the sync
-	Name string `json:"name"`
-
-	// Schedule Cron schedule for the sync
-	Schedule string `json:"schedule"`
-	Spec     string `json:"spec"`
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// UpdateSyncJSONBody defines parameters for UpdateSync.
-type UpdateSyncJSONBody struct {
-	// Cpu CPU quota for the sync
-	CPU *string `json:"cpu,omitempty"`
+// ListSyncsParams defines parameters for ListSyncs.
+type ListSyncsParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
-	// Disabled Whether the sync is disabled
-	Disabled *bool `json:"disabled,omitempty"`
-
-	// Env Environment variables for the sync
-	Env *[]SyncEnv `json:"env,omitempty"`
-
-	// Memory Memory quota for the sync
-	Memory *string `json:"memory,omitempty"`
-
-	// Schedule Cron schedule for the sync
-	Schedule *string `json:"schedule,omitempty"`
-	Spec     *string `json:"spec,omitempty"`
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
 // ListSyncRunsParams defines parameters for ListSyncRuns.
@@ -1907,11 +2129,23 @@ type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
 // CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
 type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
 
+// CreateSyncDestinationJSONRequestBody defines body for CreateSyncDestination for application/json ContentType.
+type CreateSyncDestinationJSONRequestBody = SyncDestinationCreate
+
+// UpdateSyncDestinationJSONRequestBody defines body for UpdateSyncDestination for application/json ContentType.
+type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
+
+// CreateSyncSourceJSONRequestBody defines body for CreateSyncSource for application/json ContentType.
+type CreateSyncSourceJSONRequestBody = SyncSourceCreate
+
+// UpdateSyncSourceJSONRequestBody defines body for UpdateSyncSource for application/json ContentType.
+type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
+
 // CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
-type CreateSyncJSONRequestBody CreateSyncJSONBody
+type CreateSyncJSONRequestBody = SyncCreate
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
-type UpdateSyncJSONRequestBody UpdateSyncJSONBody
+type UpdateSyncJSONRequestBody = SyncUpdate
 
 // UpdateSyncRunJSONRequestBody defines body for UpdateSyncRun for application/json ContentType.
 type UpdateSyncRunJSONRequestBody UpdateSyncRunJSONBody
