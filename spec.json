@@ -4556,6 +4556,452 @@
         ]
       }
     },
+    "/teams/{team_name}/sync-sources": {
+      "get": {
+        "description": "List all sync source definitions.",
+        "operationId": "ListSyncSources",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/SyncSource"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create new Sync Source definition.",
+        "operationId": "CreateSyncSource",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncSourceCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncSource"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/sync-sources/{sync_source_name}": {
+      "get": {
+        "description": "Get a single sync source definition.",
+        "operationId": "GetSyncSource",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_source_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncSource"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a Sync Source definition.",
+        "operationId": "UpdateSyncSource",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_source_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncSourceUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncSource"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a Sync Source definition. Any syncs relying on this source must be deleted first.",
+        "operationId": "DeleteSyncSource",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_source_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/sync-destinations": {
+      "get": {
+        "description": "List all sync destination definitions.",
+        "operationId": "ListSyncDestinations",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "items": {
+                        "$ref": "#/components/schemas/SyncDestination"
+                      },
+                      "type": "array"
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/ListMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "description": "Create new Sync Destination definition.",
+        "operationId": "CreateSyncDestination",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncDestinationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncDestination"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/sync-destinations/{sync_destination_name}": {
+      "get": {
+        "description": "Get a single sync destination definition.",
+        "operationId": "GetSyncDestination",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_destination_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncDestination"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a Sync Destination definition.",
+        "operationId": "UpdateSyncDestination",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_destination_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncDestinationUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncDestination"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a Sync Destination definition. Any syncs relying on this destination must be deleted first.",
+        "operationId": "DeleteSyncDestination",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_destination_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/teams/{team_name}/syncs": {
       "get": {
         "description": "List all Syncs.",
@@ -4626,50 +5072,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "spec",
-                  "schedule",
-                  "disabled"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Unique name for the sync"
-                  },
-                  "spec": {
-                    "type": "string",
-                    "format": "YAML specification to run the sync"
-                  },
-                  "schedule": {
-                    "type": "string",
-                    "description": "Cron schedule for the sync"
-                  },
-                  "disabled": {
-                    "type": "boolean",
-                    "description": "Whether the sync is disabled",
-                    "default": false
-                  },
-                  "env": {
-                    "type": "array",
-                    "description": "Environment variables for the sync",
-                    "items": {
-                      "$ref": "#/components/schemas/SyncEnv"
-                    }
-                  },
-                  "cpu": {
-                    "type": "string",
-                    "description": "CPU quota for the sync",
-                    "default": "1",
-                    "x-go-name": "CPU"
-                  },
-                  "memory": {
-                    "type": "string",
-                    "description": "Memory quota for the sync",
-                    "default": "2Gi"
-                  }
-                }
+                "$ref": "#/components/schemas/SyncCreate"
               }
             }
           }
@@ -4758,39 +5161,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "spec": {
-                    "type": "string",
-                    "format": "YAML specification to run the sync"
-                  },
-                  "schedule": {
-                    "type": "string",
-                    "description": "Cron schedule for the sync"
-                  },
-                  "disabled": {
-                    "type": "boolean",
-                    "description": "Whether the sync is disabled"
-                  },
-                  "env": {
-                    "type": "array",
-                    "description": "Environment variables for the sync",
-                    "items": {
-                      "$ref": "#/components/schemas/SyncEnv"
-                    }
-                  },
-                  "cpu": {
-                    "type": "string",
-                    "description": "CPU quota for the sync",
-                    "default": "1",
-                    "x-go-name": "CPU"
-                  },
-                  "memory": {
-                    "type": "string",
-                    "description": "Memory quota for the sync",
-                    "default": "2Gi"
-                  }
-                }
+                "$ref": "#/components/schemas/SyncUpdate"
               }
             }
           }
@@ -7291,7 +7662,7 @@
       },
       "SyncEnv": {
         "type": "object",
-        "description": "Environment variable",
+        "description": "Environment variable. Environment variables are assumed to be secret.",
         "required": [
           "name",
           "value"
@@ -7307,15 +7678,290 @@
           }
         }
       },
+      "SyncSourceCreate": {
+        "title": "Sync Source definition for creating a new source",
+        "description": "Sync Source Definition",
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "version",
+          "tables"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "my-source-definition",
+            "description": "Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.",
+            "pattern": "^[a-zA-Z0-9_-]+$"
+          },
+          "path": {
+            "type": "string",
+            "description": "Plugin path in CloudQuery registry",
+            "example": "cloudquery/aws"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the plugin",
+            "example": "v1.2.3"
+          },
+          "tables": {
+            "type": "array",
+            "description": "Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skip_tables": {
+            "type": "array",
+            "description": "Tables matched by `tables` that should be skipped. Wildcards are supported.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "spec": {
+            "type": "object",
+            "additionalProperties": true,
+            "format": "Plugin parameters, specific to each plugin"
+          },
+          "env": {
+            "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncEnv"
+            }
+          }
+        }
+      },
+      "SyncSource": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SyncSourceCreate"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "path",
+              "version",
+              "tables",
+              "skip_tables",
+              "spec",
+              "env",
+              "created_at",
+              "updated_at"
+            ],
+            "properties": {
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-07-14T16:53:42Z",
+                "description": "Time when the source was created"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-07-14T16:53:42Z",
+                "description": "Time when the source was last updated"
+              }
+            }
+          }
+        ]
+      },
+      "SyncSourceUpdate": {
+        "title": "Sync Source definition for creating a new source",
+        "description": "Sync Source Update Definition",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Plugin path in CloudQuery registry",
+            "example": "cloudquery/aws"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the plugin",
+            "example": "v1.2.3"
+          },
+          "tables": {
+            "type": "array",
+            "description": "Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skip_tables": {
+            "type": "array",
+            "description": "Tables matched by `tables` that should be skipped. Wildcards are supported.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "spec": {
+            "type": "object",
+            "additionalProperties": true,
+            "format": "Plugin parameters, specific to each plugin"
+          },
+          "env": {
+            "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncEnv"
+            }
+          }
+        }
+      },
+      "SyncDestinationCreate": {
+        "title": "Sync Destination definition for creating a new destination",
+        "description": "Sync Destination Definition",
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "version"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "my-destination-definition",
+            "description": "Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.",
+            "pattern": "^[a-zA-Z0-9_-]+$"
+          },
+          "path": {
+            "type": "string",
+            "description": "Plugin path in CloudQuery registry",
+            "example": "cloudquery/aws"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the plugin",
+            "example": "v1.2.3"
+          },
+          "write_mode": {
+            "type": "string",
+            "description": "Write mode for the destination",
+            "enum": [
+              "append",
+              "overwrite",
+              "overwrite-delete-stale"
+            ],
+            "default": "overwrite-delete-stale"
+          },
+          "migrate_mode": {
+            "type": "string",
+            "description": "Migrate mode for the destination",
+            "enum": [
+              "safe",
+              "forced"
+            ],
+            "default": "safe"
+          },
+          "spec": {
+            "type": "object",
+            "additionalProperties": true,
+            "format": "Plugin parameters, specific to each plugin"
+          },
+          "env": {
+            "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncEnv"
+            }
+          }
+        }
+      },
+      "SyncDestination": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SyncDestinationCreate"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "path",
+              "version",
+              "write_mode",
+              "migrate_mode",
+              "spec",
+              "env",
+              "created_at",
+              "updated_at"
+            ],
+            "properties": {
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-07-14T16:53:42Z",
+                "description": "Time when the source was created"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-07-14T16:53:42Z",
+                "description": "Time when the source was last updated"
+              }
+            }
+          }
+        ]
+      },
+      "SyncDestinationUpdate": {
+        "title": "Sync Destination definition for creating a new destination",
+        "description": "Sync Destination Definition",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Plugin path in CloudQuery registry",
+            "example": "cloudquery/aws"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the plugin",
+            "example": "v1.2.3"
+          },
+          "write_mode": {
+            "type": "string",
+            "description": "Write mode for the destination",
+            "enum": [
+              "append",
+              "overwrite",
+              "overwrite-delete-stale"
+            ],
+            "default": "overwrite-delete-stale"
+          },
+          "migrate_mode": {
+            "type": "string",
+            "description": "Migrate mode for the destination",
+            "enum": [
+              "safe",
+              "forced"
+            ],
+            "default": "safe"
+          },
+          "spec": {
+            "type": "object",
+            "additionalProperties": true,
+            "format": "Plugin parameters, specific to each plugin"
+          },
+          "env": {
+            "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncEnv"
+            }
+          }
+        }
+      },
       "Sync": {
         "description": "Managed Sync definition",
         "type": "object",
         "required": [
           "name",
-          "spec",
+          "source",
+          "destinations",
           "disabled",
           "schedule",
-          "env",
           "cpu",
           "memory",
           "created_at",
@@ -7324,11 +7970,20 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Unique name for the sync"
+            "description": "Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.",
+            "pattern": "^[a-zA-Z0-9_-]+$"
           },
-          "spec": {
+          "source": {
             "type": "string",
-            "description": "YAML specification to run the sync"
+            "description": "Unique name of the source"
+          },
+          "destinations": {
+            "type": "array",
+            "description": "List of destinations for the sync",
+            "items": {
+              "type": "string",
+              "description": "Unique name of the destination"
+            }
           },
           "disabled": {
             "type": "boolean",
@@ -7337,13 +7992,6 @@
           "schedule": {
             "type": "string",
             "description": "Cron schedule for the sync"
-          },
-          "env": {
-            "type": "array",
-            "description": "Environment variables for the sync",
-            "items": {
-              "$ref": "#/components/schemas/SyncEnv"
-            }
           },
           "cpu": {
             "type": "string",
@@ -7366,10 +8014,98 @@
           }
         }
       },
-      "SyncName": {
-        "description": "Unique name of the sync",
-        "type": "string",
-        "x-go-name": "SyncName"
+      "SyncCreate": {
+        "type": "object",
+        "description": "Managed Sync definition",
+        "required": [
+          "name",
+          "source",
+          "destinations",
+          "schedule",
+          "disabled"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.",
+            "pattern": "^[a-zA-Z0-9_-]+$"
+          },
+          "source": {
+            "type": "string",
+            "description": "Unique name of the source"
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Unique name of the destination"
+            }
+          },
+          "schedule": {
+            "type": "string",
+            "description": "Cron schedule for the sync"
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Whether the sync is disabled",
+            "default": false
+          },
+          "cpu": {
+            "type": "string",
+            "description": "CPU quota for the sync",
+            "default": "1",
+            "x-go-name": "CPU"
+          },
+          "memory": {
+            "type": "string",
+            "description": "Memory quota for the sync",
+            "default": "2Gi"
+          }
+        }
+      },
+      "SyncUpdate": {
+        "type": "object",
+        "description": "Managed Sync definition",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Unique name of the source"
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Unique name of the destination"
+            }
+          },
+          "schedule": {
+            "type": "string",
+            "description": "Cron schedule for the sync"
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Whether the sync is disabled",
+            "default": false
+          },
+          "env": {
+            "type": "array",
+            "description": "Environment variables for the sync",
+            "items": {
+              "$ref": "#/components/schemas/SyncEnv"
+            }
+          },
+          "cpu": {
+            "type": "string",
+            "description": "CPU quota for the sync",
+            "default": "1",
+            "x-go-name": "CPU"
+          },
+          "memory": {
+            "type": "string",
+            "description": "Memory quota for the sync",
+            "default": "2Gi"
+          }
+        }
       },
       "SyncRunStatus": {
         "description": "The status of the sync run",
@@ -7747,12 +8483,37 @@
         },
         "x-go-name": "APIKeyID"
       },
+      "sync_source_name": {
+        "name": "sync_source_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "description": "Unique name of the sync source",
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "x-go-name": "SyncSourceName"
+        }
+      },
+      "sync_destination_name": {
+        "name": "sync_destination_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "description": "Unique name of the sync destination",
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "x-go-name": "SyncDestinationName"
+        }
+      },
       "sync_name": {
         "name": "sync_name",
         "in": "path",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SyncName"
+          "description": "Unique name of the sync",
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "x-go-name": "SyncName"
         }
       },
       "sync_run_id": {
