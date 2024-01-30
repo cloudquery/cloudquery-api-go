@@ -863,6 +863,9 @@
                   },
                   "package_type": {
                     "$ref": "#/components/schemas/PluginPackageType"
+                  },
+                  "spec_json_schema": {
+                    "$ref": "#/components/schemas/PluginSpecJSONSchema"
                   }
                 }
               }
@@ -6097,6 +6100,10 @@
           "docker"
         ]
       },
+      "PluginSpecJSONSchema": {
+        "description": "The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.",
+        "type": "string"
+      },
       "PluginVersion": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Version",
@@ -6164,6 +6171,9 @@
           },
           "package_type": {
             "$ref": "#/components/schemas/PluginPackageType"
+          },
+          "spec_json_schema": {
+            "$ref": "#/components/schemas/PluginSpecJSONSchema"
           }
         },
         "title": "CloudQuery Plugin Version",
@@ -6223,6 +6233,9 @@
           "package_type": {
             "type": "string",
             "description": "The package type of the plugin binaries"
+          },
+          "spec_json_schema": {
+            "$ref": "#/components/schemas/PluginSpecJSONSchema"
           }
         }
       },
@@ -7996,11 +8009,13 @@
           "cpu": {
             "type": "string",
             "description": "CPU quota for the sync",
+            "example": "1",
             "x-go-name": "CPU"
           },
           "memory": {
             "type": "string",
-            "description": "Memory quota for the sync"
+            "description": "Memory quota for the sync",
+            "example": "2Gi"
           },
           "created_at": {
             "type": "string",
