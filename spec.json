@@ -36,19 +36,10 @@
       "name": "plugins"
     },
     {
-      "name": "uploads"
-    },
-    {
       "name": "images"
     },
     {
       "name": "healthcheck"
-    },
-    {
-      "name": "limits"
-    },
-    {
-      "name": "usage"
     },
     {
       "name": "addons"
@@ -724,7 +715,7 @@
                   "properties": {
                     "items": {
                       "items": {
-                        "$ref": "#/components/schemas/PluginVersion"
+                        "$ref": "#/components/schemas/PluginVersionList"
                       },
                       "type": "array"
                     },
@@ -863,6 +854,9 @@
                   },
                   "package_type": {
                     "$ref": "#/components/schemas/PluginPackageType"
+                  },
+                  "spec_json_schema": {
+                    "$ref": "#/components/schemas/PluginSpecJSONSchema"
                   }
                 }
               }
@@ -6097,7 +6091,7 @@
           "docker"
         ]
       },
-      "PluginVersion": {
+      "PluginVersionBase": {
         "additionalProperties": false,
         "description": "CloudQuery Plugin Version",
         "required": [
@@ -6169,6 +6163,32 @@
         "title": "CloudQuery Plugin Version",
         "type": "object"
       },
+      "PluginVersionList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PluginVersionBase"
+          }
+        ]
+      },
+      "PluginSpecJSONSchema": {
+        "description": "The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.",
+        "type": "string"
+      },
+      "PluginVersion": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PluginVersionBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "spec_json_schema": {
+                "$ref": "#/components/schemas/PluginSpecJSONSchema"
+              }
+            }
+          }
+        ]
+      },
       "PluginVersionDetails": {
         "allOf": [
           {
@@ -6223,6 +6243,9 @@
           "package_type": {
             "type": "string",
             "description": "The package type of the plugin binaries"
+          },
+          "spec_json_schema": {
+            "$ref": "#/components/schemas/PluginSpecJSONSchema"
           }
         }
       },
@@ -7996,11 +8019,13 @@
           "cpu": {
             "type": "string",
             "description": "CPU quota for the sync",
+            "example": "1",
             "x-go-name": "CPU"
           },
           "memory": {
             "type": "string",
-            "description": "Memory quota for the sync"
+            "description": "Memory quota for the sync",
+            "example": "2Gi"
           },
           "created_at": {
             "type": "string",

@@ -896,6 +896,9 @@ type PluginProtocols = []int
 // Preview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.
 type PluginReleaseStage string
 
+// PluginSpecJSONSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
+type PluginSpecJSONSchema = string
+
 // PluginTable CloudQuery Plugin Table
 type PluginTable struct {
 	// Description Description of the table
@@ -1038,8 +1041,44 @@ type PluginUpdate struct {
 	USDPerRow *string `json:"usd_per_row,omitempty"`
 }
 
-// PluginVersion CloudQuery Plugin Version
+// PluginVersion defines model for PluginVersion.
 type PluginVersion struct {
+	// Checksums The checksums of the plugin assets
+	Checksums []string `json:"checksums"`
+
+	// CreatedAt The date and time the plugin version was created.
+	CreatedAt time.Time `json:"created_at"`
+
+	// Draft If a plugin version is in draft, it will not show to members outside the team or be counted as the latest version.
+	Draft bool `json:"draft"`
+
+	// Message Description of what's new or changed in this version (supports markdown)
+	Message string `json:"message"`
+
+	// Name The version in semantic version format.
+	Name VersionName `json:"name"`
+
+	// PackageType The package type of the plugin assets
+	PackageType PluginPackageType `json:"package_type"`
+
+	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+	Protocols PluginProtocols `json:"protocols"`
+
+	// PublishedAt The date and time the plugin version was set to non-draft (published).
+	PublishedAt *time.Time `json:"published_at,omitempty"`
+
+	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
+	Retracted bool `json:"retracted"`
+
+	// SpecJsonSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
+	SpecJsonSchema *PluginSpecJSONSchema `json:"spec_json_schema,omitempty"`
+
+	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
+	SupportedTargets []string `json:"supported_targets"`
+}
+
+// PluginVersionBase CloudQuery Plugin Version
+type PluginVersionBase struct {
 	// Checksums The checksums of the plugin assets
 	Checksums []string `json:"checksums"`
 
@@ -1103,9 +1142,15 @@ type PluginVersionDetails struct {
 	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
 	Retracted bool `json:"retracted"`
 
+	// SpecJsonSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
+	SpecJsonSchema *PluginSpecJSONSchema `json:"spec_json_schema,omitempty"`
+
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
 	SupportedTargets []string `json:"supported_targets"`
 }
+
+// PluginVersionList CloudQuery Plugin Version
+type PluginVersionList = PluginVersionBase
 
 // PluginVersionUpdate defines model for PluginVersionUpdate.
 type PluginVersionUpdate struct {
@@ -1125,8 +1170,11 @@ type PluginVersionUpdate struct {
 	Protocols *PluginProtocols `json:"protocols,omitempty"`
 
 	// Retracted If a plugin version is retracted, assets will still be available for download, but the version will be marked as retracted to discourage use.
-	Retracted        *bool     `json:"retracted,omitempty"`
-	SupportedTargets *[]string `json:"supported_targets,omitempty"`
+	Retracted *bool `json:"retracted,omitempty"`
+
+	// SpecJsonSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
+	SpecJsonSchema   *PluginSpecJSONSchema `json:"spec_json_schema,omitempty"`
+	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
 // RegistryAuthToken JWT token for the image registry
@@ -1742,6 +1790,9 @@ type CreatePluginVersionJSONBody struct {
 
 	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
 	Protocols PluginProtocols `json:"protocols"`
+
+	// SpecJsonSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
+	SpecJsonSchema *PluginSpecJSONSchema `json:"spec_json_schema,omitempty"`
 
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
 	SupportedTargets []string `json:"supported_targets"`
