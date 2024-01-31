@@ -1255,7 +1255,7 @@ type SyncDestination struct {
 	Name string `json:"name"`
 
 	// Path Plugin path in CloudQuery registry
-	Path string                 `json:"path"`
+	Path SyncPluginPath         `json:"path"`
 	Spec map[string]interface{} `json:"spec"`
 
 	// UpdatedAt Time when the source was last updated
@@ -1286,7 +1286,7 @@ type SyncDestinationCreate struct {
 	Name string `json:"name"`
 
 	// Path Plugin path in CloudQuery registry
-	Path string                  `json:"path"`
+	Path SyncPluginPath          `json:"path"`
 	Spec *map[string]interface{} `json:"spec,omitempty"`
 
 	// Version Version of the plugin
@@ -1311,7 +1311,7 @@ type SyncDestinationUpdate struct {
 	MigrateMode *SyncDestinationUpdateMigrateMode `json:"migrate_mode,omitempty"`
 
 	// Path Plugin path in CloudQuery registry
-	Path *string                 `json:"path,omitempty"`
+	Path *SyncPluginPath         `json:"path,omitempty"`
 	Spec *map[string]interface{} `json:"spec,omitempty"`
 
 	// Version Version of the plugin
@@ -1335,6 +1335,9 @@ type SyncEnv struct {
 	// Value Value of the environment variable
 	Value string `json:"value"`
 }
+
+// SyncPluginPath Plugin path in CloudQuery registry
+type SyncPluginPath = string
 
 // SyncRun Managed Sync Run definition
 type SyncRun struct {
@@ -1375,7 +1378,7 @@ type SyncSource struct {
 	Name string `json:"name"`
 
 	// Path Plugin path in CloudQuery registry
-	Path string `json:"path"`
+	Path SyncPluginPath `json:"path"`
 
 	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
 	SkipTables []string               `json:"skip_tables"`
@@ -1400,7 +1403,7 @@ type SyncSourceCreate struct {
 	Name string `json:"name"`
 
 	// Path Plugin path in CloudQuery registry
-	Path string `json:"path"`
+	Path SyncPluginPath `json:"path"`
 
 	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
 	SkipTables *[]string               `json:"skip_tables,omitempty"`
@@ -1419,7 +1422,7 @@ type SyncSourceUpdate struct {
 	Env *[]SyncEnv `json:"env,omitempty"`
 
 	// Path Plugin path in CloudQuery registry
-	Path *string `json:"path,omitempty"`
+	Path *SyncPluginPath `json:"path,omitempty"`
 
 	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
 	SkipTables *[]string               `json:"skip_tables,omitempty"`
