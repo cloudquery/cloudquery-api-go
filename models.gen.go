@@ -1225,7 +1225,7 @@ type SyncCreate struct {
 	Destinations []string `json:"destinations"`
 
 	// Disabled Whether the sync is disabled
-	Disabled bool `json:"disabled"`
+	Disabled *bool `json:"disabled,omitempty"`
 
 	// Memory Memory quota for the sync
 	Memory *string `json:"memory,omitempty"`
@@ -1234,7 +1234,7 @@ type SyncCreate struct {
 	Name string `json:"name"`
 
 	// Schedule Cron schedule for the sync
-	Schedule string `json:"schedule"`
+	Schedule *string `json:"schedule,omitempty"`
 
 	// Source Unique name of the source
 	Source string `json:"source"`
