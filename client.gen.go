@@ -9167,8 +9167,8 @@ type ListPluginVersionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Items    []PluginVersion `json:"items"`
-		Metadata ListMetadata    `json:"metadata"`
+		Items    []PluginVersionList `json:"items"`
+		Metadata ListMetadata        `json:"metadata"`
 	}
 	JSON401 *RequiresAuthentication
 	JSON403 *Forbidden
@@ -13760,8 +13760,8 @@ func ParseListPluginVersionsResponse(rsp *http.Response) (*ListPluginVersionsRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Items    []PluginVersion `json:"items"`
-			Metadata ListMetadata    `json:"metadata"`
+			Items    []PluginVersionList `json:"items"`
+			Metadata ListMetadata        `json:"metadata"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
