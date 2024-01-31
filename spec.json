@@ -7683,6 +7683,11 @@
         "title": "Docker Error",
         "type": "object"
       },
+      "SyncPluginPath": {
+        "type": "string",
+        "description": "Plugin path in CloudQuery registry",
+        "pattern": "^cloudquery/[^/]+"
+      },
       "SyncEnv": {
         "type": "object",
         "description": "Environment variable. Environment variables are assumed to be secret.",
@@ -7719,8 +7724,7 @@
             "pattern": "^[a-zA-Z0-9_-]+$"
           },
           "path": {
-            "type": "string",
-            "description": "Plugin path in CloudQuery registry",
+            "$ref": "#/components/schemas/SyncPluginPath",
             "example": "cloudquery/aws"
           },
           "version": {
@@ -7797,8 +7801,7 @@
         "type": "object",
         "properties": {
           "path": {
-            "type": "string",
-            "description": "Plugin path in CloudQuery registry",
+            "$ref": "#/components/schemas/SyncPluginPath",
             "example": "cloudquery/aws"
           },
           "version": {
@@ -7851,9 +7854,8 @@
             "pattern": "^[a-zA-Z0-9_-]+$"
           },
           "path": {
-            "type": "string",
-            "description": "Plugin path in CloudQuery registry",
-            "example": "cloudquery/aws"
+            "$ref": "#/components/schemas/SyncPluginPath",
+            "example": "cloudquery/postgresql"
           },
           "version": {
             "type": "string",
@@ -7934,9 +7936,8 @@
         "type": "object",
         "properties": {
           "path": {
-            "type": "string",
-            "description": "Plugin path in CloudQuery registry",
-            "example": "cloudquery/aws"
+            "$ref": "#/components/schemas/SyncPluginPath",
+            "example": "cloudquery/postgresql"
           },
           "version": {
             "type": "string",
