@@ -7688,7 +7688,7 @@
         "description": "Plugin path in CloudQuery registry",
         "pattern": "^cloudquery/[^/]+"
       },
-      "SyncEnv": {
+      "SyncEnvCreate": {
         "type": "object",
         "description": "Environment variable. Environment variables are assumed to be secret.",
         "required": [
@@ -7755,8 +7755,21 @@
             "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SyncEnv"
+              "$ref": "#/components/schemas/SyncEnvCreate"
             }
+          }
+        }
+      },
+      "SyncEnv": {
+        "type": "object",
+        "description": "Environment variable. Environment variables are assumed to be secret.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the environment variable"
           }
         }
       },
@@ -7790,6 +7803,13 @@
                 "format": "date-time",
                 "example": "2023-07-14T16:53:42Z",
                 "description": "Time when the source was last updated"
+              },
+              "env": {
+                "description": "Environment variables for the plugin.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SyncEnv"
+                }
               }
             }
           }
@@ -7832,7 +7852,7 @@
             "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SyncEnv"
+              "$ref": "#/components/schemas/SyncEnvCreate"
             }
           }
         }
@@ -7890,7 +7910,7 @@
             "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SyncEnv"
+              "$ref": "#/components/schemas/SyncEnvCreate"
             }
           }
         }
@@ -7925,6 +7945,13 @@
                 "format": "date-time",
                 "example": "2023-07-14T16:53:42Z",
                 "description": "Time when the source was last updated"
+              },
+              "env": {
+                "description": "Environment variables for the plugin.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SyncEnv"
+                }
               }
             }
           }
@@ -7972,7 +7999,7 @@
             "description": "Environment variables for the plugin. All environment variables will be stored as secrets.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SyncEnv"
+              "$ref": "#/components/schemas/SyncEnvCreate"
             }
           }
         }

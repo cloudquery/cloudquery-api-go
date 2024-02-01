@@ -1245,7 +1245,7 @@ type SyncDestination struct {
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	// Env Environment variables for the plugin.
 	Env []SyncEnv `json:"env"`
 
 	// MigrateMode Migrate mode for the destination
@@ -1277,7 +1277,7 @@ type SyncDestinationWriteMode string
 // SyncDestinationCreate Sync Destination Definition
 type SyncDestinationCreate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnv `json:"env,omitempty"`
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
 	MigrateMode *SyncDestinationCreateMigrateMode `json:"migrate_mode,omitempty"`
@@ -1305,7 +1305,7 @@ type SyncDestinationCreateWriteMode string
 // SyncDestinationUpdate Sync Destination Definition
 type SyncDestinationUpdate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnv `json:"env,omitempty"`
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
 	MigrateMode *SyncDestinationUpdateMigrateMode `json:"migrate_mode,omitempty"`
@@ -1329,6 +1329,12 @@ type SyncDestinationUpdateWriteMode string
 
 // SyncEnv Environment variable. Environment variables are assumed to be secret.
 type SyncEnv struct {
+	// Name Name of the environment variable
+	Name string `json:"name"`
+}
+
+// SyncEnvCreate Environment variable. Environment variables are assumed to be secret.
+type SyncEnvCreate struct {
 	// Name Name of the environment variable
 	Name string `json:"name"`
 
@@ -1371,7 +1377,7 @@ type SyncSource struct {
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	// Env Environment variables for the plugin.
 	Env []SyncEnv `json:"env"`
 
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
@@ -1397,7 +1403,7 @@ type SyncSource struct {
 // SyncSourceCreate Sync Source Definition
 type SyncSourceCreate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnv `json:"env,omitempty"`
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
@@ -1419,7 +1425,7 @@ type SyncSourceCreate struct {
 // SyncSourceUpdate Sync Source Update Definition
 type SyncSourceUpdate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnv `json:"env,omitempty"`
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
 	// Path Plugin path in CloudQuery registry
 	Path *SyncPluginPath `json:"path,omitempty"`
