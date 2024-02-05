@@ -427,7 +427,7 @@ type ClientInterface interface {
 	UpdateSyncRun(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetSyncRunLogs request
-	GetSyncRunLogs(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetSyncRunLogs(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateSyncRunProgressWithBody request with any body
 	CreateSyncRunProgressWithBody(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1945,8 +1945,8 @@ func (c *Client) UpdateSyncRun(ctx context.Context, teamName TeamName, syncName 
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetSyncRunLogs(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetSyncRunLogsRequest(c.Server, teamName, syncName, syncRunId)
+func (c *Client) GetSyncRunLogs(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSyncRunLogsRequest(c.Server, teamName, syncName, syncRunId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -7495,7 +7495,7 @@ func NewUpdateSyncRunRequestWithBody(server string, teamName TeamName, syncName 
 }
 
 // NewGetSyncRunLogsRequest generates requests for GetSyncRunLogs
-func NewGetSyncRunLogsRequest(server string, teamName TeamName, syncName SyncName, syncRunId SyncRunId) (*http.Request, error) {
+func NewGetSyncRunLogsRequest(server string, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -7537,6 +7537,21 @@ func NewGetSyncRunLogsRequest(server string, teamName TeamName, syncName SyncNam
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Accept", runtime.ParamLocationHeader, *params.Accept)
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
 	}
 
 	return req, nil
@@ -8488,7 +8503,7 @@ type ClientWithResponsesInterface interface {
 	UpdateSyncRunWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncRunResponse, error)
 
 	// GetSyncRunLogsWithResponse request
-	GetSyncRunLogsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, reqEditors ...RequestEditorFn) (*GetSyncRunLogsResponse, error)
+	GetSyncRunLogsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams, reqEditors ...RequestEditorFn) (*GetSyncRunLogsResponse, error)
 
 	// CreateSyncRunProgressWithBodyWithResponse request with any body
 	CreateSyncRunProgressWithBodyWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncRunProgressResponse, error)
@@ -10972,11 +10987,15 @@ func (r UpdateSyncRunResponse) StatusCode() int {
 type GetSyncRunLogsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
+	JSON200      *struct {
+		// Location The location to download the sync run logs from
+		Location string `json:"location"`
+	}
+	JSON400 *BadRequest
+	JSON401 *RequiresAuthentication
+	JSON404 *NotFound
+	JSON422 *UnprocessableEntity
+	JSON500 *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12365,8 +12384,8 @@ func (c *ClientWithResponses) UpdateSyncRunWithResponse(ctx context.Context, tea
 }
 
 // GetSyncRunLogsWithResponse request returning *GetSyncRunLogsResponse
-func (c *ClientWithResponses) GetSyncRunLogsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, reqEditors ...RequestEditorFn) (*GetSyncRunLogsResponse, error) {
-	rsp, err := c.GetSyncRunLogs(ctx, teamName, syncName, syncRunId, reqEditors...)
+func (c *ClientWithResponses) GetSyncRunLogsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams, reqEditors ...RequestEditorFn) (*GetSyncRunLogsResponse, error) {
+	rsp, err := c.GetSyncRunLogs(ctx, teamName, syncName, syncRunId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -17464,6 +17483,16 @@ func ParseGetSyncRunLogsResponse(rsp *http.Response) (*GetSyncRunLogsResponse, e
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Location The location to download the sync run logs from
+			Location string `json:"location"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -17498,6 +17527,9 @@ func ParseGetSyncRunLogsResponse(rsp *http.Response) (*GetSyncRunLogsResponse, e
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	case rsp.StatusCode == 200:
+		// Content-type (text/plain) unsupported
 
 	}
 
