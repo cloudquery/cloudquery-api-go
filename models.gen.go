@@ -2066,6 +2066,11 @@ type UpdateSyncRunJSONBody struct {
 	Status *SyncRunStatus `json:"status,omitempty"`
 }
 
+// GetSyncRunLogsParams defines parameters for GetSyncRunLogs.
+type GetSyncRunLogsParams struct {
+	Accept *string `json:"Accept,omitempty"`
+}
+
 // CreateSyncRunProgressJSONBody defines parameters for CreateSyncRunProgress.
 type CreateSyncRunProgressJSONBody struct {
 	// Rows Number of rows synced so far

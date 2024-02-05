@@ -5488,6 +5488,14 @@
         ],
         "parameters": [
           {
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "$ref": "#/components/parameters/team_name"
           },
           {
@@ -5499,12 +5507,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Chunked response logs for a sync run that is in progress.",
+            "description": "Response",
             "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "required": [
+                    "location"
+                  ],
+                  "properties": {
+                    "location": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "The location to download the sync run logs from"
+                    }
+                  },
+                  "title": "Sync Run Logs",
+                  "type": "object"
+                }
+              },
               "text/plain": {
                 "schema": {
                   "type": "string",
-                  "description": "A stream of logs for a sync run."
+                  "description": "Chunked response logs for a sync run that is in progress."
                 }
               }
             }
