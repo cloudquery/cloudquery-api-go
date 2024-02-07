@@ -4642,6 +4642,9 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntity"
           },
@@ -4865,6 +4868,9 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntity"
           },
@@ -5051,7 +5057,7 @@
         }
       },
       "post": {
-        "description": "Create new Sync definition. Sync runs can be scheduled automatically and manually after sync is created.",
+        "description": "Create new Sync definition. Sync runs can be scheduled automatically, or triggered manually after sync is created.",
         "operationId": "CreateSync",
         "tags": [
           "syncs"
@@ -5189,7 +5195,7 @@
         }
       },
       "delete": {
-        "description": "Delete Sync. This will delete Sync configuration and all associated sync runs",
+        "description": "Delete Sync. This will delete Sync configuration and all associated sync runs, but will not delete the associated source and destination(s). These will need to be deleted separately.",
         "operationId": "DeleteSync",
         "tags": [
           "syncs"
@@ -5759,8 +5765,7 @@
           "coming-soon",
           "preview",
           "ga"
-        ],
-        "default": "coming-soon"
+        ]
       },
       "PluginTier": {
         "description": "Supported tiers for plugins",
@@ -5889,6 +5894,16 @@
           }
         ]
       },
+      "PluginReleaseStageCreate": {
+        "description": "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
+        "type": "string",
+        "enum": [
+          "coming-soon",
+          "preview",
+          "ga"
+        ],
+        "default": "coming-soon"
+      },
       "PluginCreate": {
         "type": "object",
         "required": [
@@ -5946,7 +5961,7 @@
             "example": "https://github.com/cloudquery/cloudquery"
           },
           "release_stage": {
-            "$ref": "#/components/schemas/PluginReleaseStage"
+            "$ref": "#/components/schemas/PluginReleaseStageCreate"
           },
           "logo": {
             "type": "string",
@@ -5967,6 +5982,15 @@
             "example": 10000
           }
         }
+      },
+      "PluginReleaseStageUpdate": {
+        "description": "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
+        "type": "string",
+        "enum": [
+          "coming-soon",
+          "preview",
+          "ga"
+        ]
       },
       "PluginUpdate": {
         "type": "object",
@@ -6009,7 +6033,7 @@
             "description": "If plugin is not public, it won't be visible to other teams in the CloudQuery Hub."
           },
           "release_stage": {
-            "$ref": "#/components/schemas/PluginReleaseStage"
+            "$ref": "#/components/schemas/PluginReleaseStageUpdate"
           },
           "usd_per_row": {
             "type": "string",
