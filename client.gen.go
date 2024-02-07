@@ -10518,6 +10518,7 @@ type CreateSyncDestinationResponse struct {
 	JSON201      *SyncDestination
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
@@ -10649,6 +10650,7 @@ type CreateSyncSourceResponse struct {
 	JSON201      *SyncSource
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
@@ -16558,6 +16560,13 @@ func ParseCreateSyncDestinationResponse(rsp *http.Response) (*CreateSyncDestinat
 		}
 		response.JSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -16816,6 +16825,13 @@ func ParseCreateSyncSourceResponse(rsp *http.Response) (*CreateSyncSourceRespons
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
