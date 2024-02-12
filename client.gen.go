@@ -8648,7 +8648,7 @@ func (r DeleteAddonByTeamAndNameResponse) StatusCode() int {
 type GetAddonResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Addon
+	JSON200      *ListAddon
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON500      *InternalError
@@ -9048,7 +9048,7 @@ func (r DeletePluginByTeamAndPluginNameResponse) StatusCode() int {
 type GetPluginResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Plugin
+	JSON200      *ListPlugin
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON500      *InternalError
@@ -12699,7 +12699,7 @@ func ParseGetAddonResponse(rsp *http.Response) (*GetAddonResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Addon
+		var dest ListAddon
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -13507,7 +13507,7 @@ func ParseGetPluginResponse(rsp *http.Response) (*GetPluginResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Plugin
+		var dest ListPlugin
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
