@@ -411,7 +411,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plugin"
+                  "$ref": "#/components/schemas/ListPlugin"
                 }
               }
             },
@@ -1752,7 +1752,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Addon"
+                  "$ref": "#/components/schemas/ListAddon"
                 }
               }
             },
