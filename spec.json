@@ -2332,9 +2332,6 @@
                     "description": "The team's display name",
                     "minLength": 1,
                     "maxLength": 255
-                  },
-                  "plan": {
-                    "$ref": "#/components/schemas/TeamPlan"
                   }
                 }
               }
