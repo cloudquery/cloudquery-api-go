@@ -2098,6 +2098,9 @@ type GetSyncRunLogsParams struct {
 type CreateSyncRunProgressJSONBody struct {
 	// Rows Number of rows synced so far
 	Rows int64 `json:"rows"`
+
+	// Status The status of the sync run
+	Status *SyncRunStatus `json:"status,omitempty"`
 }
 
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.

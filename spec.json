@@ -5454,6 +5454,9 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Number of rows synced so far"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/SyncRunStatus"
                   }
                 }
               }
