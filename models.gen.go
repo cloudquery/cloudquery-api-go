@@ -1915,9 +1915,6 @@ type CreateTeamJSONBody struct {
 
 	// Name The unique name for the team.
 	Name TeamName `json:"name"`
-
-	// Plan The plan the team is on
-	Plan *TeamPlan `json:"plan,omitempty"`
 }
 
 // UpdateTeamJSONBody defines parameters for UpdateTeam.
