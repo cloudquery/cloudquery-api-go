@@ -5853,6 +5853,12 @@
             "format": "int64",
             "description": "The number of rows that can be synced for free each month.",
             "example": 1000
+          },
+          "minimum_cloud_version": {
+            "type": "string",
+            "description": "Minimum plugin version that is supported in CloudQuery managed syncs.",
+            "maxLength": 64,
+            "example": "v1.2.3"
           }
         },
         "required": [
