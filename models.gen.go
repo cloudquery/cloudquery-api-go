@@ -1385,6 +1385,9 @@ type SyncRun struct {
 	// CreatedAt Whether the sync is disabled
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 
+	// Errors Number of errors encountered during the sync
+	Errors int64 `json:"errors"`
+
 	// Id unique ID of the run
 	ID openapi_types.UUID `json:"id"`
 
@@ -1396,6 +1399,9 @@ type SyncRun struct {
 
 	// TotalRows Total number of rows in the sync
 	TotalRows int64 `json:"total_rows"`
+
+	// Warnings Number of warnings encountered during the sync
+	Warnings int64 `json:"warnings"`
 }
 
 // SyncRunID ID of the SyncRun
@@ -2102,11 +2108,17 @@ type GetSyncRunLogsParams struct {
 
 // CreateSyncRunProgressJSONBody defines parameters for CreateSyncRunProgress.
 type CreateSyncRunProgressJSONBody struct {
+	// Errors Number of errors encountered so far
+	Errors int64 `json:"errors"`
+
 	// Rows Number of rows synced so far
 	Rows int64 `json:"rows"`
 
 	// Status The status of the sync run
 	Status *SyncRunStatus `json:"status,omitempty"`
+
+	// Warnings Number of warnings encountered so far
+	Warnings int64 `json:"warnings"`
 }
 
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.

@@ -5447,13 +5447,25 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "rows"
+                  "rows",
+                  "warnings",
+                  "errors"
                 ],
                 "properties": {
                   "rows": {
                     "type": "integer",
                     "format": "int64",
                     "description": "Number of rows synced so far"
+                  },
+                  "warnings": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Number of warnings encountered so far"
+                  },
+                  "errors": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Number of errors encountered so far"
                   },
                   "status": {
                     "$ref": "#/components/schemas/SyncRunStatus"
@@ -8231,7 +8243,9 @@
           "id",
           "status",
           "started_at",
-          "total_rows"
+          "total_rows",
+          "warnings",
+          "errors"
         ],
         "properties": {
           "sync_name": {
@@ -8265,6 +8279,16 @@
             "type": "integer",
             "format": "int64",
             "description": "Total number of rows in the sync"
+          },
+          "warnings": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of warnings encountered during the sync"
+          },
+          "errors": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of errors encountered during the sync"
           }
         }
       },
