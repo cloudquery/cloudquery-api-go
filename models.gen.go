@@ -159,6 +159,7 @@ const (
 const (
 	SyncRunStatusCancelled SyncRunStatus = "cancelled"
 	SyncRunStatusCompleted SyncRunStatus = "completed"
+	SyncRunStatusCreated   SyncRunStatus = "created"
 	SyncRunStatusFailed    SyncRunStatus = "failed"
 	SyncRunStatusStarted   SyncRunStatus = "started"
 )
@@ -1383,7 +1384,7 @@ type SyncRun struct {
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
 
 	// CreatedAt Whether the sync is disabled
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 
 	// Errors Number of errors encountered during the sync
 	Errors int64 `json:"errors"`

@@ -8232,17 +8232,18 @@
           "completed",
           "failed",
           "started",
-          "cancelled"
+          "cancelled",
+          "created"
         ]
       },
       "SyncRun": {
         "description": "Managed Sync Run definition",
         "type": "object",
         "required": [
+          "created_at",
           "sync_name",
           "id",
           "status",
-          "started_at",
           "total_rows",
           "warnings",
           "errors"
