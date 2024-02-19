@@ -8150,14 +8150,17 @@
           },
           "source": {
             "type": "string",
-            "description": "Unique name of the source"
+            "description": "Unique name of the source",
+            "pattern": "^[a-zA-Z0-9_-]+$"
           },
           "destinations": {
             "type": "array",
             "items": {
               "type": "string",
-              "description": "Unique name of the destination"
-            }
+              "description": "Unique name of the destination",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            "minItems": 1
           },
           "schedule": {
             "type": "string",
@@ -8187,14 +8190,17 @@
         "properties": {
           "source": {
             "type": "string",
-            "description": "Unique name of the source"
+            "description": "Unique name of the source",
+            "pattern": "^[a-zA-Z0-9_-]+$"
           },
           "destinations": {
             "type": "array",
             "items": {
               "type": "string",
-              "description": "Unique name of the destination"
-            }
+              "description": "Unique name of the destination",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            "minItems": 1
           },
           "schedule": {
             "type": "string",
