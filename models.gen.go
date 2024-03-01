@@ -1228,6 +1228,7 @@ type Sync struct {
 
 	// CreatedAt Time when the sync was created
 	CreatedAt time.Time `json:"created_at"`
+	CreatedBy *string   `json:"created_by,omitempty"`
 
 	// Destinations List of destinations for the sync
 	Destinations []string `json:"destinations"`

@@ -8131,6 +8131,9 @@
             "type": "string",
             "format": "date-time",
             "description": "Time when the sync was updated"
+          },
+          "created_by": {
+            "type": "string"
           }
         }
       },
