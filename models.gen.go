@@ -118,41 +118,15 @@ const (
 
 // Defines values for SyncDestinationMigrateMode.
 const (
-	SyncDestinationMigrateModeForced SyncDestinationMigrateMode = "forced"
-	SyncDestinationMigrateModeSafe   SyncDestinationMigrateMode = "safe"
+	Forced SyncDestinationMigrateMode = "forced"
+	Safe   SyncDestinationMigrateMode = "safe"
 )
 
 // Defines values for SyncDestinationWriteMode.
 const (
-	SyncDestinationWriteModeAppend               SyncDestinationWriteMode = "append"
-	SyncDestinationWriteModeOverwrite            SyncDestinationWriteMode = "overwrite"
-	SyncDestinationWriteModeOverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
-)
-
-// Defines values for SyncDestinationCreateMigrateMode.
-const (
-	SyncDestinationCreateMigrateModeForced SyncDestinationCreateMigrateMode = "forced"
-	SyncDestinationCreateMigrateModeSafe   SyncDestinationCreateMigrateMode = "safe"
-)
-
-// Defines values for SyncDestinationCreateWriteMode.
-const (
-	SyncDestinationCreateWriteModeAppend               SyncDestinationCreateWriteMode = "append"
-	SyncDestinationCreateWriteModeOverwrite            SyncDestinationCreateWriteMode = "overwrite"
-	SyncDestinationCreateWriteModeOverwriteDeleteStale SyncDestinationCreateWriteMode = "overwrite-delete-stale"
-)
-
-// Defines values for SyncDestinationUpdateMigrateMode.
-const (
-	Forced SyncDestinationUpdateMigrateMode = "forced"
-	Safe   SyncDestinationUpdateMigrateMode = "safe"
-)
-
-// Defines values for SyncDestinationUpdateWriteMode.
-const (
-	Append               SyncDestinationUpdateWriteMode = "append"
-	Overwrite            SyncDestinationUpdateWriteMode = "overwrite"
-	OverwriteDeleteStale SyncDestinationUpdateWriteMode = "overwrite-delete-stale"
+	Append               SyncDestinationWriteMode = "append"
+	Overwrite            SyncDestinationWriteMode = "overwrite"
+	OverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
 )
 
 // Defines values for SyncRunStatus.
@@ -1302,19 +1276,13 @@ type SyncDestination struct {
 	WriteMode SyncDestinationWriteMode `json:"write_mode"`
 }
 
-// SyncDestinationMigrateMode Migrate mode for the destination
-type SyncDestinationMigrateMode string
-
-// SyncDestinationWriteMode Write mode for the destination
-type SyncDestinationWriteMode string
-
 // SyncDestinationCreate Sync Destination Definition
 type SyncDestinationCreate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationCreateMigrateMode `json:"migrate_mode,omitempty"`
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
 
 	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
@@ -1327,14 +1295,11 @@ type SyncDestinationCreate struct {
 	Version string `json:"version"`
 
 	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationCreateWriteMode `json:"write_mode,omitempty"`
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
 }
 
-// SyncDestinationCreateMigrateMode Migrate mode for the destination
-type SyncDestinationCreateMigrateMode string
-
-// SyncDestinationCreateWriteMode Write mode for the destination
-type SyncDestinationCreateWriteMode string
+// SyncDestinationMigrateMode Migrate mode for the destination
+type SyncDestinationMigrateMode string
 
 // SyncDestinationUpdate Sync Destination Definition
 type SyncDestinationUpdate struct {
@@ -1342,7 +1307,7 @@ type SyncDestinationUpdate struct {
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationUpdateMigrateMode `json:"migrate_mode,omitempty"`
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
 
 	// Path Plugin path in CloudQuery registry
 	Path *SyncPluginPath         `json:"path,omitempty"`
@@ -1352,14 +1317,11 @@ type SyncDestinationUpdate struct {
 	Version *string `json:"version,omitempty"`
 
 	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationUpdateWriteMode `json:"write_mode,omitempty"`
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
 }
 
-// SyncDestinationUpdateMigrateMode Migrate mode for the destination
-type SyncDestinationUpdateMigrateMode string
-
-// SyncDestinationUpdateWriteMode Write mode for the destination
-type SyncDestinationUpdateWriteMode string
+// SyncDestinationWriteMode Write mode for the destination
+type SyncDestinationWriteMode string
 
 // SyncEnv Environment variable. Environment variables are assumed to be secret.
 type SyncEnv struct {
@@ -1381,10 +1343,10 @@ type SyncPluginPath = string
 
 // SyncRun Managed Sync Run definition
 type SyncRun struct {
-	// CompletedAt Cron schedule for the sync
+	// CompletedAt Time the sync run was completed
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
 
-	// CreatedAt Whether the sync is disabled
+	// CreatedAt Time the sync run was created
 	CreatedAt time.Time `json:"created_at"`
 
 	// Errors Number of errors encountered during the sync

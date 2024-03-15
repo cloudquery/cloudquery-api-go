@@ -7924,6 +7924,25 @@
           }
         }
       },
+      "SyncDestinationWriteMode": {
+        "type": "string",
+        "description": "Write mode for the destination",
+        "enum": [
+          "append",
+          "overwrite",
+          "overwrite-delete-stale"
+        ],
+        "default": "overwrite-delete-stale"
+      },
+      "SyncDestinationMigrateMode": {
+        "type": "string",
+        "description": "Migrate mode for the destination",
+        "enum": [
+          "safe",
+          "forced"
+        ],
+        "default": "safe"
+      },
       "SyncDestinationCreate": {
         "title": "Sync Destination definition for creating a new destination",
         "description": "Sync Destination Definition",
@@ -7950,23 +7969,10 @@
             "example": "v1.2.3"
           },
           "write_mode": {
-            "type": "string",
-            "description": "Write mode for the destination",
-            "enum": [
-              "append",
-              "overwrite",
-              "overwrite-delete-stale"
-            ],
-            "default": "overwrite-delete-stale"
+            "$ref": "#/components/schemas/SyncDestinationWriteMode"
           },
           "migrate_mode": {
-            "type": "string",
-            "description": "Migrate mode for the destination",
-            "enum": [
-              "safe",
-              "forced"
-            ],
-            "default": "safe"
+            "$ref": "#/components/schemas/SyncDestinationMigrateMode"
           },
           "spec": {
             "type": "object",
@@ -8039,23 +8045,10 @@
             "example": "v1.2.3"
           },
           "write_mode": {
-            "type": "string",
-            "description": "Write mode for the destination",
-            "enum": [
-              "append",
-              "overwrite",
-              "overwrite-delete-stale"
-            ],
-            "default": "overwrite-delete-stale"
+            "$ref": "#/components/schemas/SyncDestinationWriteMode"
           },
           "migrate_mode": {
-            "type": "string",
-            "description": "Migrate mode for the destination",
-            "enum": [
-              "safe",
-              "forced"
-            ],
-            "default": "safe"
+            "$ref": "#/components/schemas/SyncDestinationMigrateMode"
           },
           "spec": {
             "type": "object",
@@ -8277,13 +8270,13 @@
             "example": "2017-07-14T16:53:42Z",
             "format": "date-time",
             "type": "string",
-            "description": "Whether the sync is disabled"
+            "description": "Time the sync run was created"
           },
           "completed_at": {
             "example": "2017-07-14T16:53:42Z",
             "format": "date-time",
             "type": "string",
-            "description": "Cron schedule for the sync"
+            "description": "Time the sync run was completed"
           },
           "total_rows": {
             "type": "integer",
