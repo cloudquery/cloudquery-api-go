@@ -14,12 +14,13 @@ import (
 )
 
 const (
-	FirebaseAPIKey         = "AIzaSyCxsrwjABEF-dWLzUqmwiL-ct02cnG9GCs"
-	TokenBaseURL           = "https://securetoken.googleapis.com"
-	EnvVarCloudQueryAPIKey = "CLOUDQUERY_API_KEY"
-	ExpiryBuffer           = 60 * time.Second
-	tokenFilePath          = "cloudquery/token"
-	syncRunAPIKeyPrefix    = "cqsr_"
+	FirebaseAPIKey                 = "AIzaSyCxsrwjABEF-dWLzUqmwiL-ct02cnG9GCs"
+	TokenBaseURL                   = "https://securetoken.googleapis.com"
+	EnvVarCloudQueryAPIKey         = "CLOUDQUERY_API_KEY"
+	ExpiryBuffer                   = 60 * time.Second
+	tokenFilePath                  = "cloudquery/token"
+	syncRunAPIKeyPrefix            = "cqsr_"
+	syncTestConnectionAPIKeyPrefix = "cqstc_"
 )
 
 type tokenResponse struct {
@@ -39,6 +40,7 @@ const (
 	BearerToken
 	APIKey
 	SyncRunAPIKey
+	SyncTestConnectionAPIKey
 )
 
 var UndefinedToken = Token{Type: Undefined, Value: ""}
@@ -108,10 +110,14 @@ func (tc *TokenClient) GetToken() (Token, error) {
 // GetTokenType returns the type of token that will be returned by GetToken
 func (tc *TokenClient) GetTokenType() TokenType {
 	if token := os.Getenv(EnvVarCloudQueryAPIKey); token != "" {
-		if strings.HasPrefix(token, syncRunAPIKeyPrefix) {
+		switch {
+		case strings.HasPrefix(token, syncRunAPIKeyPrefix):
 			return SyncRunAPIKey
+		case strings.HasPrefix(token, syncTestConnectionAPIKeyPrefix):
+			return SyncTestConnectionAPIKey
+		default:
+			return APIKey
 		}
-		return APIKey
 	}
 	return BearerToken
 }
