@@ -138,6 +138,14 @@ const (
 	SyncRunStatusStarted   SyncRunStatus = "started"
 )
 
+// Defines values for SyncTestConnectionStatus.
+const (
+	SyncTestConnectionStatusCompleted SyncTestConnectionStatus = "completed"
+	SyncTestConnectionStatusCreated   SyncTestConnectionStatus = "created"
+	SyncTestConnectionStatusFailed    SyncTestConnectionStatus = "failed"
+	SyncTestConnectionStatusStarted   SyncTestConnectionStatus = "started"
+)
+
 // Defines values for TeamPlan.
 const (
 	Free TeamPlan = "free"
@@ -146,9 +154,9 @@ const (
 
 // Defines values for TeamSubscriptionOrderStatus.
 const (
-	TeamSubscriptionOrderStatusCancelled TeamSubscriptionOrderStatus = "cancelled"
-	TeamSubscriptionOrderStatusCompleted TeamSubscriptionOrderStatus = "completed"
-	TeamSubscriptionOrderStatusPending   TeamSubscriptionOrderStatus = "pending"
+	Cancelled TeamSubscriptionOrderStatus = "cancelled"
+	Completed TeamSubscriptionOrderStatus = "completed"
+	Pending   TeamSubscriptionOrderStatus = "pending"
 )
 
 // Defines values for AddonSortBy.
@@ -1443,6 +1451,27 @@ type SyncSourceUpdate struct {
 	Version *string `json:"version,omitempty"`
 }
 
+// SyncTestConnection defines model for SyncTestConnection.
+type SyncTestConnection struct {
+	// CompletedAt Cron schedule for the sync
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CreatedAt Whether the sync is disabled
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id unique ID of the test connection
+	ID ID `json:"id"`
+
+	// Status The status of the sync run
+	Status SyncTestConnectionStatus `json:"status"`
+}
+
+// ID unique ID of the test connection
+type ID = openapi_types.UUID
+
+// SyncTestConnectionStatus The status of the sync run
+type SyncTestConnectionStatus string
+
 // SyncUpdate Managed Sync definition
 type SyncUpdate struct {
 	// Cpu CPU quota for the sync
@@ -1649,6 +1678,9 @@ type SyncRunId = SyncRunID
 
 // SyncSourceName Unique name of the sync source
 type SyncSourceName = string
+
+// SyncTestConnectionId unique ID of the test connection
+type SyncTestConnectionId = ID
 
 // TargetName defines model for target_name.
 type TargetName = string
@@ -2050,6 +2082,12 @@ type ListSyncsParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
+// UpdateSyncTestConnectionJSONBody defines parameters for UpdateSyncTestConnection.
+type UpdateSyncTestConnectionJSONBody struct {
+	// Status The status of the sync run
+	Status SyncTestConnectionStatus `json:"status"`
+}
+
 // ListSyncRunsParams defines parameters for ListSyncRuns.
 type ListSyncRunsParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -2205,17 +2243,26 @@ type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
 // CreateSyncDestinationJSONRequestBody defines body for CreateSyncDestination for application/json ContentType.
 type CreateSyncDestinationJSONRequestBody = SyncDestinationCreate
 
+// TestSyncDestinationJSONRequestBody defines body for TestSyncDestination for application/json ContentType.
+type TestSyncDestinationJSONRequestBody = SyncDestinationCreate
+
 // UpdateSyncDestinationJSONRequestBody defines body for UpdateSyncDestination for application/json ContentType.
 type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
 
 // CreateSyncSourceJSONRequestBody defines body for CreateSyncSource for application/json ContentType.
 type CreateSyncSourceJSONRequestBody = SyncSourceCreate
 
+// TestSyncSourceJSONRequestBody defines body for TestSyncSource for application/json ContentType.
+type TestSyncSourceJSONRequestBody = SyncSourceCreate
+
 // UpdateSyncSourceJSONRequestBody defines body for UpdateSyncSource for application/json ContentType.
 type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
 
 // CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
 type CreateSyncJSONRequestBody = SyncCreate
+
+// UpdateSyncTestConnectionJSONRequestBody defines body for UpdateSyncTestConnection for application/json ContentType.
+type UpdateSyncTestConnectionJSONRequestBody UpdateSyncTestConnectionJSONBody
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
 type UpdateSyncJSONRequestBody = SyncUpdate
