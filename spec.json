@@ -4651,6 +4651,57 @@
         }
       }
     },
+    "/teams/{team_name}/sync-sources/test": {
+      "post": {
+        "description": "Test a Sync Source definition.",
+        "operationId": "TestSyncSource",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncSourceCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncTestConnection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/teams/{team_name}/sync-sources/{sync_source_name}": {
       "get": {
         "description": "Get a single sync source definition.",
@@ -4855,6 +4906,57 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SyncDestination"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/sync-destinations/test": {
+      "post": {
+        "description": "Test a Sync Destination definition.",
+        "operationId": "TestSyncDestination",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncDestinationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncTestConnection"
                 }
               }
             }
@@ -5568,6 +5670,103 @@
           },
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}": {
+      "get": {
+        "description": "Get a Sync Test Connection",
+        "operationId": "GetSyncTestConnection",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_test_connection_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncTestConnection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a Sync Test Connection",
+        "operationId": "UpdateSyncTestConnection",
+        "tags": [
+          "syncs"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "$ref": "#/components/parameters/sync_test_connection_id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "$ref": "#/components/schemas/SyncTestConnectionStatus"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncTestConnection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -7882,6 +8081,52 @@
           }
         ]
       },
+      "SyncTestConnectionID": {
+        "type": "string",
+        "format": "uuid",
+        "example": "12345678-1234-1234-1234-1234567890ab",
+        "description": "unique ID of the test connection",
+        "x-go-name": "ID"
+      },
+      "SyncTestConnectionStatus": {
+        "description": "The status of the sync run",
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed",
+          "started",
+          "created"
+        ]
+      },
+      "SyncTestConnection": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SyncTestConnectionID"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SyncTestConnectionStatus",
+            "description": "Status of the sync test connection"
+          },
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "Whether the sync is disabled"
+          },
+          "completed_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "Cron schedule for the sync"
+          }
+        }
+      },
       "SyncSourceUpdate": {
         "title": "Sync Source definition for creating a new source",
         "description": "Sync Source Update Definition",
@@ -8655,6 +8900,14 @@
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/SyncRunID"
+        }
+      },
+      "sync_test_connection_id": {
+        "name": "sync_test_connection_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/SyncTestConnectionID"
         }
       }
     }
