@@ -129,6 +129,12 @@ const (
 	OverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
 )
 
+// Defines values for SyncLastUpdateSource.
+const (
+	Ui   SyncLastUpdateSource = "ui"
+	Yaml SyncLastUpdateSource = "yaml"
+)
+
 // Defines values for SyncRunStatus.
 const (
 	SyncRunStatusCancelled SyncRunStatus = "cancelled"
@@ -1264,6 +1270,9 @@ type SyncDestination struct {
 	// Env Environment variables for the plugin.
 	Env []SyncEnv `json:"env"`
 
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource SyncLastUpdateSource `json:"last_update_source"`
+
 	// MigrateMode Migrate mode for the destination
 	MigrateMode SyncDestinationMigrateMode `json:"migrate_mode"`
 
@@ -1289,6 +1298,9 @@ type SyncDestinationCreate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
+
 	// MigrateMode Migrate mode for the destination
 	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
 
@@ -1313,6 +1325,9 @@ type SyncDestinationMigrateMode string
 type SyncDestinationUpdate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
+
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
 	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
@@ -1345,6 +1360,9 @@ type SyncEnvCreate struct {
 	// Value Value of the environment variable
 	Value string `json:"value"`
 }
+
+// SyncLastUpdateSource How was the source or destination been created or updated last
+type SyncLastUpdateSource string
 
 // SyncPluginPath Plugin path in CloudQuery registry
 type SyncPluginPath = string
@@ -1390,6 +1408,9 @@ type SyncSource struct {
 	// Env Environment variables for the plugin.
 	Env []SyncEnv `json:"env"`
 
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource SyncLastUpdateSource `json:"last_update_source"`
+
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
 
@@ -1415,6 +1436,9 @@ type SyncSourceCreate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
+
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
 
@@ -1436,6 +1460,9 @@ type SyncSourceCreate struct {
 type SyncSourceUpdate struct {
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
+
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
 	// Path Plugin path in CloudQuery registry
 	Path *SyncPluginPath `json:"path,omitempty"`
