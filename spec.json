@@ -7972,6 +7972,14 @@
           }
         }
       },
+      "SyncLastUpdateSource": {
+        "description": "How was the source or destination been created or updated last",
+        "type": "string",
+        "enum": [
+          "yaml",
+          "ui"
+        ]
+      },
       "SyncSourceCreate": {
         "title": "Sync Source definition for creating a new source",
         "description": "Sync Source Definition",
@@ -8023,6 +8031,9 @@
             "items": {
               "$ref": "#/components/schemas/SyncEnvCreate"
             }
+          },
+          "last_update_source": {
+            "$ref": "#/components/schemas/SyncLastUpdateSource"
           }
         }
       },
@@ -8055,7 +8066,8 @@
               "spec",
               "env",
               "created_at",
-              "updated_at"
+              "updated_at",
+              "last_update_source"
             ],
             "properties": {
               "created_at": {
@@ -8166,6 +8178,9 @@
             "items": {
               "$ref": "#/components/schemas/SyncEnvCreate"
             }
+          },
+          "last_update_source": {
+            "$ref": "#/components/schemas/SyncLastUpdateSource"
           }
         }
       },
@@ -8230,6 +8245,9 @@
             "items": {
               "$ref": "#/components/schemas/SyncEnvCreate"
             }
+          },
+          "last_update_source": {
+            "$ref": "#/components/schemas/SyncLastUpdateSource"
           }
         }
       },
@@ -8249,7 +8267,8 @@
               "spec",
               "env",
               "created_at",
-              "updated_at"
+              "updated_at",
+              "last_update_source"
             ],
             "properties": {
               "created_at": {
@@ -8306,6 +8325,9 @@
             "items": {
               "$ref": "#/components/schemas/SyncEnvCreate"
             }
+          },
+          "last_update_source": {
+            "$ref": "#/components/schemas/SyncLastUpdateSource"
           }
         }
       },
