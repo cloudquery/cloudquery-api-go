@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.9.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.8.1...v1.9.0) (2024-03-28)
+
+
+### Features
+
+* Add retry to API requests ([#141](https://github.com/cloudquery/cloudquery-api-go/issues/141)) ([bf7b4e6](https://github.com/cloudquery/cloudquery-api-go/commit/bf7b4e60808a4c48de4b5d9b83cb2d9968e2dc17))
+
+
+### Bug Fixes
+
+* Generate CloudQuery Go API Client from `spec.json` ([#139](https://github.com/cloudquery/cloudquery-api-go/issues/139)) ([0eb7391](https://github.com/cloudquery/cloudquery-api-go/commit/0eb73912341ed29313c58d35828f7e548e5893fc))
+
 ## [1.8.1](https://github.com/cloudquery/cloudquery-api-go/compare/v1.8.0...v1.8.1) (2024-03-18)
 
 
