@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/deepmap/oapi-codegen/pkg/runtime"
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -48,6 +49,7 @@ type ClientOption func(*Client) error
 
 // Creates a new Client, with reasonable defaults
 func NewClient(server string, opts ...ClientOption) (*Client, error) {
+	opts = append([]ClientOption{WithHTTPClient(retryablehttp.NewClient().StandardClient())}, opts...)
 	// create a client with sane default values
 	client := Client{
 		Server: server,
