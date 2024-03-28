@@ -2,3 +2,7 @@ package: cloudquery_api
 generate:
   client: true
 output: client.gen.go
+output-options:
+  user-templates:
+    # Based on https://github.com/deepmap/oapi-codegen/blob/v1.15.0/pkg/codegen/templates/client.tmpl
+    client.tmpl: templates/client.tmpl

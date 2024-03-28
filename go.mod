@@ -5,6 +5,7 @@ go 1.21.0
 require (
 	github.com/adrg/xdg v0.4.0
 	github.com/deepmap/oapi-codegen v1.15.0
+	github.com/hashicorp/go-retryablehttp v0.7.5
 	github.com/stretchr/testify v1.8.4
 )
 
@@ -33,6 +34,7 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20230716120725-531d2d74bc12 // indirect
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/iris-contrib/schema v0.0.6 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
