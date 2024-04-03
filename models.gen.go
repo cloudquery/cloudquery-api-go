@@ -154,8 +154,10 @@ const (
 
 // Defines values for TeamPlan.
 const (
-	Free TeamPlan = "free"
-	Paid TeamPlan = "paid"
+	Enterprise TeamPlan = "enterprise"
+	Free       TeamPlan = "free"
+	Paid       TeamPlan = "paid"
+	Trial      TeamPlan = "trial"
 )
 
 // Defines values for TeamSubscriptionOrderStatus.
@@ -1209,6 +1211,30 @@ type ReleaseURL struct {
 	Url string `json:"url"`
 }
 
+// SpendingLimit A configurable spending limit for the team.
+type SpendingLimit struct {
+	// CreatedAt The date and time the team limit was created.
+	CreatedAt time.Time `json:"created_at"`
+
+	// UpdatedAt The date and time the team limit was last updated.
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// Usd The maximum USD amount the team is allowed to use within a calendar month.
+	USD int `json:"usd"`
+}
+
+// SpendingLimitCreate A configurable monthly limit for team usage.
+type SpendingLimitCreate struct {
+	// Usd The maximum USD amount the team is allowed to use within a calendar month.
+	USD int `json:"usd"`
+}
+
+// SpendingLimitUpdate A configurable spending limit for the team.
+type SpendingLimitUpdate struct {
+	// Usd The maximum USD amount the team is allowed to use within a calendar month.
+	USD int `json:"usd"`
+}
+
 // Sync Managed Sync definition
 type Sync struct {
 	// Cpu CPU quota for the sync
@@ -1641,8 +1667,15 @@ type UsageIncrease struct {
 	// RequestId A unique ID associated with the usage increase.
 	RequestId openapi_types.UUID `json:"request_id"`
 
-	// Rows The additional rows used by the plugin.
-	Rows int `json:"rows"`
+	// Rows The total number of additional rows used by the plugin.
+	Rows   int `json:"rows"`
+	Tables *[]struct {
+		// Name The name of the table.
+		Name string `json:"name"`
+
+		// Rows The additional rows used by the table.
+		Rows int `json:"rows"`
+	} `json:"tables,omitempty"`
 }
 
 // User CloudQuery User
@@ -2263,6 +2296,12 @@ type CreateMonthlyLimitJSONRequestBody = MonthlyLimitCreate
 
 // UpdateMonthlyLimitJSONRequestBody defines body for UpdateMonthlyLimit for application/json ContentType.
 type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
+
+// CreateSpendingLimitJSONRequestBody defines body for CreateSpendingLimit for application/json ContentType.
+type CreateSpendingLimitJSONRequestBody = SpendingLimitCreate
+
+// UpdateSpendingLimitJSONRequestBody defines body for UpdateSpendingLimit for application/json ContentType.
+type UpdateSpendingLimitJSONRequestBody = SpendingLimitUpdate
 
 // CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
 type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate

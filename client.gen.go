@@ -346,6 +346,22 @@ type ClientInterface interface {
 	// DownloadPluginAssetByTeam request
 	DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteSpendingLimit request
+	DeleteSpendingLimit(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSpendingLimit request
+	GetSpendingLimit(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSpendingLimitWithBody request with any body
+	CreateSpendingLimitWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateSpendingLimit(ctx context.Context, teamName TeamName, body CreateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSpendingLimitWithBody request with any body
+	UpdateSpendingLimitWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateSpendingLimit(ctx context.Context, teamName TeamName, body UpdateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListSubscriptionOrdersByTeam request
 	ListSubscriptionOrdersByTeam(ctx context.Context, teamName TeamName, params *ListSubscriptionOrdersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1595,6 +1611,78 @@ func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, param
 
 func (c *Client) DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadPluginAssetByTeamRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSpendingLimit(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSpendingLimitRequest(c.Server, teamName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSpendingLimit(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSpendingLimitRequest(c.Server, teamName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSpendingLimitWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSpendingLimitRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateSpendingLimit(ctx context.Context, teamName TeamName, body CreateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSpendingLimitRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSpendingLimitWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSpendingLimitRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateSpendingLimit(ctx context.Context, teamName TeamName, body UpdateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSpendingLimitRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6444,6 +6532,168 @@ func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, plugi
 	return req, nil
 }
 
+// NewDeleteSpendingLimitRequest generates requests for DeleteSpendingLimit
+func NewDeleteSpendingLimitRequest(server string, teamName TeamName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/spending-limits", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSpendingLimitRequest generates requests for GetSpendingLimit
+func NewGetSpendingLimitRequest(server string, teamName TeamName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/spending-limits", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateSpendingLimitRequest calls the generic CreateSpendingLimit builder with application/json body
+func NewCreateSpendingLimitRequest(server string, teamName TeamName, body CreateSpendingLimitJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSpendingLimitRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateSpendingLimitRequestWithBody generates requests for CreateSpendingLimit with any type of body
+func NewCreateSpendingLimitRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/spending-limits", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUpdateSpendingLimitRequest calls the generic UpdateSpendingLimit builder with application/json body
+func NewUpdateSpendingLimitRequest(server string, teamName TeamName, body UpdateSpendingLimitJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSpendingLimitRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewUpdateSpendingLimitRequestWithBody generates requests for UpdateSpendingLimit with any type of body
+func NewUpdateSpendingLimitRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/spending-limits", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListSubscriptionOrdersByTeamRequest generates requests for ListSubscriptionOrdersByTeam
 func NewListSubscriptionOrdersByTeamRequest(server string, teamName TeamName, params *ListSubscriptionOrdersByTeamParams) (*http.Request, error) {
 	var err error
@@ -8713,6 +8963,22 @@ type ClientWithResponsesInterface interface {
 	// DownloadPluginAssetByTeamWithResponse request
 	DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error)
 
+	// DeleteSpendingLimitWithResponse request
+	DeleteSpendingLimitWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteSpendingLimitResponse, error)
+
+	// GetSpendingLimitWithResponse request
+	GetSpendingLimitWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*GetSpendingLimitResponse, error)
+
+	// CreateSpendingLimitWithBodyWithResponse request with any body
+	CreateSpendingLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSpendingLimitResponse, error)
+
+	CreateSpendingLimitWithResponse(ctx context.Context, teamName TeamName, body CreateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSpendingLimitResponse, error)
+
+	// UpdateSpendingLimitWithBodyWithResponse request with any body
+	UpdateSpendingLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSpendingLimitResponse, error)
+
+	UpdateSpendingLimitWithResponse(ctx context.Context, teamName TeamName, body UpdateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSpendingLimitResponse, error)
+
 	// ListSubscriptionOrdersByTeamWithResponse request
 	ListSubscriptionOrdersByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListSubscriptionOrdersByTeamParams, reqEditors ...RequestEditorFn) (*ListSubscriptionOrdersByTeamResponse, error)
 
@@ -10712,6 +10978,111 @@ func (r DownloadPluginAssetByTeamResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteSpendingLimitResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSpendingLimitResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSpendingLimitResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSpendingLimitResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SpendingLimit
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSpendingLimitResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSpendingLimitResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateSpendingLimitResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *SpendingLimit
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSpendingLimitResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSpendingLimitResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateSpendingLimitResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SpendingLimit
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSpendingLimitResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSpendingLimitResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListSubscriptionOrdersByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -12538,6 +12909,58 @@ func (c *ClientWithResponses) DownloadPluginAssetByTeamWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseDownloadPluginAssetByTeamResponse(rsp)
+}
+
+// DeleteSpendingLimitWithResponse request returning *DeleteSpendingLimitResponse
+func (c *ClientWithResponses) DeleteSpendingLimitWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteSpendingLimitResponse, error) {
+	rsp, err := c.DeleteSpendingLimit(ctx, teamName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSpendingLimitResponse(rsp)
+}
+
+// GetSpendingLimitWithResponse request returning *GetSpendingLimitResponse
+func (c *ClientWithResponses) GetSpendingLimitWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*GetSpendingLimitResponse, error) {
+	rsp, err := c.GetSpendingLimit(ctx, teamName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSpendingLimitResponse(rsp)
+}
+
+// CreateSpendingLimitWithBodyWithResponse request with arbitrary body returning *CreateSpendingLimitResponse
+func (c *ClientWithResponses) CreateSpendingLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSpendingLimitResponse, error) {
+	rsp, err := c.CreateSpendingLimitWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSpendingLimitResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateSpendingLimitWithResponse(ctx context.Context, teamName TeamName, body CreateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSpendingLimitResponse, error) {
+	rsp, err := c.CreateSpendingLimit(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSpendingLimitResponse(rsp)
+}
+
+// UpdateSpendingLimitWithBodyWithResponse request with arbitrary body returning *UpdateSpendingLimitResponse
+func (c *ClientWithResponses) UpdateSpendingLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSpendingLimitResponse, error) {
+	rsp, err := c.UpdateSpendingLimitWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSpendingLimitResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateSpendingLimitWithResponse(ctx context.Context, teamName TeamName, body UpdateSpendingLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSpendingLimitResponse, error) {
+	rsp, err := c.UpdateSpendingLimit(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSpendingLimitResponse(rsp)
 }
 
 // ListSubscriptionOrdersByTeamWithResponse request returning *ListSubscriptionOrdersByTeamResponse
@@ -16760,6 +17183,229 @@ func ParseDownloadPluginAssetByTeamResponse(rsp *http.Response) (*DownloadPlugin
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSpendingLimitResponse parses an HTTP response from a DeleteSpendingLimitWithResponse call
+func ParseDeleteSpendingLimitResponse(rsp *http.Response) (*DeleteSpendingLimitResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSpendingLimitResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSpendingLimitResponse parses an HTTP response from a GetSpendingLimitWithResponse call
+func ParseGetSpendingLimitResponse(rsp *http.Response) (*GetSpendingLimitResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSpendingLimitResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SpendingLimit
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSpendingLimitResponse parses an HTTP response from a CreateSpendingLimitWithResponse call
+func ParseCreateSpendingLimitResponse(rsp *http.Response) (*CreateSpendingLimitResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSpendingLimitResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SpendingLimit
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSpendingLimitResponse parses an HTTP response from a UpdateSpendingLimitWithResponse call
+func ParseUpdateSpendingLimitResponse(rsp *http.Response) (*UpdateSpendingLimitResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSpendingLimitResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SpendingLimit
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
