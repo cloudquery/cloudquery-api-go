@@ -3161,6 +3161,169 @@
         ]
       }
     },
+    "/teams/{team_name}/spending-limits": {
+      "get": {
+        "description": "Get monthly spending limit for team.",
+        "operationId": "GetSpendingLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Spending limit retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendingLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      },
+      "post": {
+        "description": "Create a spending limit for a team",
+        "operationId": "CreateSpendingLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpendingLimitCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New spending limit created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendingLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      },
+      "put": {
+        "description": "Update a spending limit for a team",
+        "operationId": "UpdateSpendingLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpendingLimitUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Spending limit updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendingLimit"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      },
+      "delete": {
+        "description": "Delete a spending limit for a team",
+        "operationId": "DeleteSpendingLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Spending limit deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
     "/teams/{team_name}/monthly-limits/{plugin_team}/{plugin_kind}/{plugin_name}": {
       "get": {
         "description": "Get a monthly limit for a plugin",
@@ -7214,7 +7377,9 @@
         "type": "string",
         "enum": [
           "free",
-          "paid"
+          "paid",
+          "enterprise",
+          "trial"
         ]
       },
       "Team": {
@@ -7542,6 +7707,77 @@
           }
         }
       },
+      "SpendingLimit": {
+        "title": "Team Spending Limit",
+        "description": "A configurable spending limit for the team.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "created_at",
+          "updated_at",
+          "usd"
+        ],
+        "properties": {
+          "created_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the team limit was created."
+          },
+          "updated_at": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string",
+            "description": "The date and time the team limit was last updated."
+          },
+          "usd": {
+            "example": 1000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "The maximum USD amount the team is allowed to use within a calendar month.",
+            "x-go-name": "USD"
+          }
+        }
+      },
+      "SpendingLimitUpdate": {
+        "title": "Team Spending Limit",
+        "description": "A configurable spending limit for the team.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "usd"
+        ],
+        "properties": {
+          "usd": {
+            "example": 1000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "The maximum USD amount the team is allowed to use within a calendar month.",
+            "x-go-name": "USD"
+          }
+        }
+      },
+      "SpendingLimitCreate": {
+        "title": "Team Spending Limit",
+        "description": "A configurable monthly limit for team usage.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "usd"
+        ],
+        "properties": {
+          "usd": {
+            "example": 1000,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000,
+            "description": "The maximum USD amount the team is allowed to use within a calendar month.",
+            "x-go-name": "USD"
+          }
+        }
+      },
       "MonthlyLimitUpdate": {
         "title": "CloudQuery Plugin Monthly Limit",
         "description": "A configurable monthly limit for plugin usage.",
@@ -7674,11 +7910,34 @@
           "plugin_name": {
             "$ref": "#/components/schemas/PluginName"
           },
+          "tables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "rows"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the table.",
+                  "example": "my_table"
+                },
+                "rows": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "The additional rows used by the table.",
+                  "example": 100
+                }
+              }
+            }
+          },
           "rows": {
             "example": 1000000,
             "type": "integer",
             "minimum": 0,
-            "description": "The additional rows used by the plugin."
+            "description": "The total number of additional rows used by the plugin."
           },
           "request_id": {
             "type": "string",
