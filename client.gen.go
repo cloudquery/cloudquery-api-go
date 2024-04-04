@@ -49,7 +49,9 @@ type ClientOption func(*Client) error
 
 // Creates a new Client, with reasonable defaults
 func NewClient(server string, opts ...ClientOption) (*Client, error) {
-	opts = append([]ClientOption{WithHTTPClient(retryablehttp.NewClient().StandardClient())}, opts...)
+	retryClient := retryablehttp.NewClient()
+	retryClient.Logger = nil
+	opts = append([]ClientOption{WithHTTPClient(retryClient.StandardClient())}, opts...)
 	// create a client with sane default values
 	client := Client{
 		Server: server,
