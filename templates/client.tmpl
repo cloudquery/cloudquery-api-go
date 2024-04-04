@@ -33,7 +33,7 @@ type ClientOption func(*{{ $clientTypeName }}) error
 // Creates a new {{ $clientTypeName }}, with reasonable defaults
 func NewClient(server string, opts ...ClientOption) (*{{ $clientTypeName }}, error) {
     retryClient := retryablehttp.NewClient()
-	retryClient.Logger = nil
+    retryClient.Logger = nil
     opts = append([]ClientOption{WithHTTPClient(retryClient.StandardClient())}, opts...)
     // create a client with sane default values
     client := {{ $clientTypeName }}{
