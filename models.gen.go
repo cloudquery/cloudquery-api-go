@@ -1420,6 +1420,42 @@ type SyncRun struct {
 	Warnings int64 `json:"warnings"`
 }
 
+// SyncRunDetails defines model for SyncRunDetails.
+type SyncRunDetails struct {
+	// CompletedAt Time the sync run was completed
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CpuSeconds Total CPU seconds utilized during this sync run
+	CPUSeconds *float64 `json:"cpu_seconds,omitempty"`
+
+	// CreatedAt Time the sync run was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Errors Number of errors encountered during the sync
+	Errors int64 `json:"errors"`
+
+	// Id unique ID of the run
+	ID openapi_types.UUID `json:"id"`
+
+	// MemoryByteSeconds Total memory byte seconds utilized during this sync run
+	MemoryByteSeconds *float64 `json:"memory_byte_seconds,omitempty"`
+
+	// NetworkEgressBytes Total network egress bytes during this sync run
+	NetworkEgressBytes *float64 `json:"network_egress_bytes,omitempty"`
+
+	// Status The status of the sync run
+	Status SyncRunStatus `json:"status"`
+
+	// SyncName Name of the sync
+	SyncName string `json:"sync_name"`
+
+	// TotalRows Total number of rows in the sync
+	TotalRows int64 `json:"total_rows"`
+
+	// Warnings Number of warnings encountered during the sync
+	Warnings int64 `json:"warnings"`
+}
+
 // SyncRunID ID of the SyncRun
 type SyncRunID = openapi_types.UUID
 

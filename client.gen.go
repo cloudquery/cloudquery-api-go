@@ -11727,7 +11727,7 @@ func (r CreateSyncRunResponse) StatusCode() int {
 type GetSyncRunResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *SyncRun
+	JSON200      *SyncRunDetails
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON500      *InternalError
@@ -18747,7 +18747,7 @@ func ParseGetSyncRunResponse(rsp *http.Response) (*GetSyncRunResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SyncRun
+		var dest SyncRunDetails
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
