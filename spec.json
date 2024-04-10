@@ -5610,7 +5610,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SyncRun"
+                  "$ref": "#/components/schemas/SyncRunDetails"
                 }
               }
             }
@@ -8827,6 +8827,43 @@
         "format": "uuid",
         "example": "12345678-1234-1234-1234-1234567890ab",
         "x-go-name": "SyncRunID"
+      },
+      "SyncRunDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SyncRun"
+          },
+          {
+            "type": "object",
+            "required": [
+              "created_at",
+              "sync_name",
+              "id",
+              "status",
+              "total_rows",
+              "warnings",
+              "errors"
+            ],
+            "properties": {
+              "cpu_seconds": {
+                "type": "number",
+                "format": "double",
+                "description": "Total CPU seconds utilized during this sync run",
+                "x-go-name": "CPUSeconds"
+              },
+              "memory_byte_seconds": {
+                "type": "number",
+                "format": "double",
+                "description": "Total memory byte seconds utilized during this sync run"
+              },
+              "network_egress_bytes": {
+                "type": "number",
+                "format": "double",
+                "description": "Total network egress bytes during this sync run"
+              }
+            }
+          }
+        ]
       }
     },
     "responses": {
