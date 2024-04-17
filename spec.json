@@ -4412,7 +4412,9 @@
                           "team": {
                             "created_at": "2017-07-14T16:53:42Z",
                             "name": "cloudquery",
-                            "display_name": "CloudQuery"
+                            "display_name": "CloudQuery",
+                            "plan": "free",
+                            "is_trial_active": false
                           }
                         }
                       ]
@@ -7397,6 +7399,20 @@
           "plan": {
             "$ref": "#/components/schemas/TeamPlan"
           },
+          "plan_end_time": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "is_trial_active": {
+            "type": "boolean",
+            "example": false
+          },
+          "trial_end_time": {
+            "example": "2017-07-14T16:53:42Z",
+            "format": "date-time",
+            "type": "string"
+          },
           "display_name": {
             "description": "The team's display name",
             "maxLength": 255,
@@ -7406,7 +7422,9 @@
         },
         "required": [
           "name",
-          "display_name"
+          "display_name",
+          "plan",
+          "is_trial_active"
         ],
         "title": "Team",
         "type": "object"

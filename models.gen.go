@@ -1588,13 +1588,16 @@ type Team struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 
 	// DisplayName The team's display name
-	DisplayName string `json:"display_name"`
+	DisplayName   string `json:"display_name"`
+	IsTrialActive bool   `json:"is_trial_active"`
 
 	// Name The unique name for the team.
 	Name TeamName `json:"name"`
 
 	// Plan The plan the team is on
-	Plan *TeamPlan `json:"plan,omitempty"`
+	Plan         TeamPlan   `json:"plan"`
+	PlanEndTime  *time.Time `json:"plan_end_time,omitempty"`
+	TrialEndTime *time.Time `json:"trial_end_time,omitempty"`
 }
 
 // TeamImage defines model for TeamImage.
