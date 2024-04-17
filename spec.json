@@ -2355,6 +2355,9 @@
           "401": {
             "$ref": "#/components/responses/RequiresAuthentication"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntity"
           },
