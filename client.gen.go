@@ -10203,6 +10203,7 @@ type CreateTeamResponse struct {
 	JSON201      *Team
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
@@ -15625,6 +15626,13 @@ func ParseCreateTeamResponse(rsp *http.Response) (*CreateTeamResponse, error) {
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
