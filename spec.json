@@ -7889,23 +7889,26 @@
             "description": "The number of rows used by the plugin in the calendar month."
           },
           "usd": {
+            "deprecated": true,
             "type": "string",
             "example": "43.95",
             "description": "The USD amount used by the plugin in the calendar month, rounded to two decimal places.",
             "x-go-name": "USD"
           },
           "remaining_usd": {
+            "deprecated": true,
             "type": "string",
             "example": "56.05",
             "description": "The remaining USD amount in the plugin's quota for the calendar month.",
             "x-go-name": "RemainingUSD"
           },
           "remaining_rows": {
-            "example": 1000000,
+            "deprecated": true,
+            "example": 1,
             "type": "integer",
             "format": "int64",
             "minimum": 0,
-            "description": "The estimated number of rows remaining in the plugin's quota for the calendar month at the current price per row. This includes both free and paid rows up to the monthly limit defined for the plugin."
+            "description": "Deprecated - this field used to contain the estimated remaining rows but now returns 1 to indicate rows are remaining or 0 if there are no more remaining rows."
           }
         }
       },

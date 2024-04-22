@@ -1679,16 +1679,19 @@ type UsageCurrent struct {
 	// PluginTeam The unique name for the team.
 	PluginTeam TeamName `json:"plugin_team"`
 
-	// RemainingRows The estimated number of rows remaining in the plugin's quota for the calendar month at the current price per row. This includes both free and paid rows up to the monthly limit defined for the plugin.
+	// RemainingRows Deprecated - this field used to contain the estimated remaining rows but now returns 1 to indicate rows are remaining or 0 if there are no more remaining rows.
+	// Deprecated:
 	RemainingRows *int64 `json:"remaining_rows,omitempty"`
 
 	// RemainingUsd The remaining USD amount in the plugin's quota for the calendar month.
+	// Deprecated:
 	RemainingUSD *string `json:"remaining_usd,omitempty"`
 
 	// Rows The number of rows used by the plugin in the calendar month.
 	Rows int64 `json:"rows"`
 
 	// Usd The USD amount used by the plugin in the calendar month, rounded to two decimal places.
+	// Deprecated:
 	USD string `json:"usd"`
 }
 
