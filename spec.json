@@ -3676,6 +3676,93 @@
         ]
       }
     },
+    "/teams/{team_name}/usage-summary/{group_by}": {
+      "get": {
+        "description": "Get a summary of usage for the specified time range, grouped by plugin.",
+        "operationId": "GetTeamUsageSummary",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "in": "path",
+            "name": "group_by",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "price_category",
+                "plugin"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "A valid ISO-8601-formatted date and time, indicating the inclusive start of the query time range. Defaults to 30 days ago."
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "A valid ISO-8601-formatted date and time, indicating the exclusive end of the query time range. Defaults to the current time."
+            }
+          },
+          {
+            "in": "query",
+            "name": "aggregation_period",
+            "description": "An aggregation period to sum data over. In other words, data will be returned at this granularity. Currently only supports day and month.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "day",
+              "enum": [
+                "day",
+                "month"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A summary of usage for the specified time range.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
     "/teams/{team_name}/plugins/{plugin_team}/{plugin_kind}/{plugin_name}/versions/{version_name}/assets/{target_name}": {
       "get": {
         "description": "Download an asset for a given plugin version as the current team.",
@@ -7968,6 +8055,132 @@
             "format": "uuid",
             "description": "A unique ID associated with the usage increase.",
             "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "UsageSummaryGroup": {
+        "title": "CloudQuery Usage Summary Group",
+        "description": "A usage summary group.",
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the group.",
+            "example": "plugin"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the group at this index.",
+            "example": "cloudquery/source/aws"
+          }
+        }
+      },
+      "UsageSummaryValue": {
+        "title": "CloudQuery Usage Summary Value",
+        "description": "A usage summary value.",
+        "type": "object",
+        "required": [
+          "timestamp"
+        ],
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp marking the start of a period."
+          },
+          "paid_rows": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "The paid rows that were synced in this period, one per group."
+          }
+        }
+      },
+      "UsageSummary": {
+        "title": "CloudQuery Usage Summary",
+        "description": "A usage summary for a team, summarizing the paid rows synced by each plugin or price category over a given time range.\nNote that empty or all-zero values are not included in the response.\n",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "groups",
+          "values",
+          "metadata"
+        ],
+        "properties": {
+          "groups": {
+            "type": "array",
+            "description": "The groups of the usage summary. Every group will have a corresponding value at the same index in the values array.",
+            "items": {
+              "$ref": "#/components/schemas/UsageSummaryGroup"
+            },
+            "example": [
+              {
+                "name": "plugin",
+                "value": "cloudquery/source/aws"
+              },
+              {
+                "name": "plugin",
+                "value": "cloudquery/source/gcp"
+              }
+            ]
+          },
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/UsageSummaryValue"
+            },
+            "type": "array",
+            "example": [
+              {
+                "timestamp": "2021-01-01T00:00:00Z",
+                "paid_rows": [
+                  100,
+                  200
+                ]
+              },
+              {
+                "timestamp": "2021-01-02T00:00:00Z",
+                "paid_rows": [
+                  150,
+                  300
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata about the usage summary. This may include information about the time range, the aggregation period, or other details.",
+            "required": [
+              "start",
+              "end",
+              "aggregation_period"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The inclusive start of the query time range."
+              },
+              "end": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The exclusive end of the query time range."
+              },
+              "aggregation_period": {
+                "type": "string",
+                "description": "The aggregation period to sum data over. In other words, data will be returned at this granularity.",
+                "enum": [
+                  "day",
+                  "month"
+                ]
+              }
+            }
           }
         }
       },
