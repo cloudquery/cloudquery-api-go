@@ -3763,6 +3763,67 @@
         ]
       }
     },
+    "/teams/{team_name}/spend": {
+      "get": {
+        "description": "Get team spend for defined period.",
+        "operationId": "GetTeamSpend",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/team_name"
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "A valid ISO 8601 date string representing the inclusive start of the period."
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "A valid ISO 8601 date string representing the exclusive end of the period."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team spend for defined period.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/RequiresAuthentication"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "tags": [
+          "teams"
+        ]
+      }
+    },
     "/teams/{team_name}/plugins/{plugin_team}/{plugin_kind}/{plugin_name}/versions/{version_name}/assets/{target_name}": {
       "get": {
         "description": "Download an asset for a given plugin version as the current team.",
@@ -8179,6 +8240,100 @@
                   "day",
                   "month"
                 ]
+              }
+            }
+          }
+        }
+      },
+      "PriceCategory": {
+        "description": "Supported price categories for billing",
+        "type": "string",
+        "enum": [
+          "unknown",
+          "api",
+          "database"
+        ]
+      },
+      "PriceCategorySpend": {
+        "title": "Spend by price category",
+        "description": "Spend by price category for a defined period.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "total"
+        ],
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/PriceCategory"
+          },
+          "total": {
+            "type": "string"
+          }
+        }
+      },
+      "SpendSummaryValue": {
+        "title": "CloudQuery Spend Summary Value",
+        "description": "A spend summary value.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "by_category",
+          "total"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp for the spend summary."
+          },
+          "by_category": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceCategorySpend"
+            }
+          },
+          "total": {
+            "type": "string",
+            "description": "Total spend for the period in USD."
+          }
+        }
+      },
+      "SpendSummary": {
+        "title": "CloudQuery Spend Summary",
+        "description": "A spend summary for a team, summarizing the spend by each price category over a given time range.\nNote that empty or all-zero values are not included in the response.\n",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "values",
+          "metadata"
+        ],
+        "properties": {
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/SpendSummaryValue"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.",
+            "required": [
+              "start",
+              "end"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The inclusive start of the query time range."
+              },
+              "end": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The exclusive end of the query time range."
               }
             }
           }

@@ -348,6 +348,9 @@ type ClientInterface interface {
 	// DownloadPluginAssetByTeam request
 	DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetTeamSpend request
+	GetTeamSpend(ctx context.Context, teamName TeamName, params *GetTeamSpendParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteSpendingLimit request
 	DeleteSpendingLimit(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1616,6 +1619,18 @@ func (c *Client) ListPluginsByTeam(ctx context.Context, teamName TeamName, param
 
 func (c *Client) DownloadPluginAssetByTeam(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadPluginAssetByTeamRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, versionName, targetName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTeamSpend(ctx context.Context, teamName TeamName, params *GetTeamSpendParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTeamSpendRequest(c.Server, teamName, params)
 	if err != nil {
 		return nil, err
 	}
@@ -6549,6 +6564,78 @@ func NewDownloadPluginAssetByTeamRequest(server string, teamName TeamName, plugi
 	return req, nil
 }
 
+// NewGetTeamSpendRequest generates requests for GetTeamSpend
+func NewGetTeamSpendRequest(server string, teamName TeamName, params *GetTeamSpendParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/spend", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Start != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start", runtime.ParamLocationQuery, *params.Start); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.End != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end", runtime.ParamLocationQuery, *params.End); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeleteSpendingLimitRequest generates requests for DeleteSpendingLimit
 func NewDeleteSpendingLimitRequest(server string, teamName TeamName) (*http.Request, error) {
 	var err error
@@ -9075,6 +9162,9 @@ type ClientWithResponsesInterface interface {
 	// DownloadPluginAssetByTeamWithResponse request
 	DownloadPluginAssetByTeamWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, versionName VersionName, targetName TargetName, params *DownloadPluginAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadPluginAssetByTeamResponse, error)
 
+	// GetTeamSpendWithResponse request
+	GetTeamSpendWithResponse(ctx context.Context, teamName TeamName, params *GetTeamSpendParams, reqEditors ...RequestEditorFn) (*GetTeamSpendResponse, error)
+
 	// DeleteSpendingLimitWithResponse request
 	DeleteSpendingLimitWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeleteSpendingLimitResponse, error)
 
@@ -11094,6 +11184,33 @@ func (r DownloadPluginAssetByTeamResponse) StatusCode() int {
 	return 0
 }
 
+type GetTeamSpendResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SpendSummary
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTeamSpendResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTeamSpendResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteSpendingLimitResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -13052,6 +13169,15 @@ func (c *ClientWithResponses) DownloadPluginAssetByTeamWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseDownloadPluginAssetByTeamResponse(rsp)
+}
+
+// GetTeamSpendWithResponse request returning *GetTeamSpendResponse
+func (c *ClientWithResponses) GetTeamSpendWithResponse(ctx context.Context, teamName TeamName, params *GetTeamSpendParams, reqEditors ...RequestEditorFn) (*GetTeamSpendResponse, error) {
+	rsp, err := c.GetTeamSpend(ctx, teamName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTeamSpendResponse(rsp)
 }
 
 // DeleteSpendingLimitWithResponse request returning *DeleteSpendingLimitResponse
@@ -17342,6 +17468,67 @@ func ParseDownloadPluginAssetByTeamResponse(rsp *http.Response) (*DownloadPlugin
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTeamSpendResponse parses an HTTP response from a GetTeamSpendWithResponse call
+func ParseGetTeamSpendResponse(rsp *http.Response) (*GetTeamSpendResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTeamSpendResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SpendSummary
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

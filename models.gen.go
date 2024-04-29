@@ -116,6 +116,13 @@ const (
 	PluginTierPaid     PluginTier = "paid"
 )
 
+// Defines values for PriceCategory.
+const (
+	Api      PriceCategory = "api"
+	Database PriceCategory = "database"
+	Unknown  PriceCategory = "unknown"
+)
+
 // Defines values for SyncDestinationMigrateMode.
 const (
 	Forced SyncDestinationMigrateMode = "forced"
@@ -1218,6 +1225,16 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
+// PriceCategory Supported price categories for billing
+type PriceCategory string
+
+// PriceCategorySpend Spend by price category for a defined period.
+type PriceCategorySpend struct {
+	// Category Supported price categories for billing
+	Category PriceCategory `json:"category"`
+	Total    string        `json:"total"`
+}
+
 // RegistryAuthToken JWT token for the image registry
 type RegistryAuthToken struct {
 	AccessToken string `json:"access_token"`
@@ -1227,6 +1244,31 @@ type RegistryAuthToken struct {
 // ReleaseURL defines model for ReleaseURL.
 type ReleaseURL struct {
 	Url string `json:"url"`
+}
+
+// SpendSummary A spend summary for a team, summarizing the spend by each price category over a given time range.
+// Note that empty or all-zero values are not included in the response.
+type SpendSummary struct {
+	// Metadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
+	Metadata struct {
+		// End The exclusive end of the query time range.
+		End time.Time `json:"end"`
+
+		// Start The inclusive start of the query time range.
+		Start time.Time `json:"start"`
+	} `json:"metadata"`
+	Values []SpendSummaryValue `json:"values"`
+}
+
+// SpendSummaryValue A spend summary value.
+type SpendSummaryValue struct {
+	ByCategory []PriceCategorySpend `json:"by_category"`
+
+	// Date The timestamp for the spend summary.
+	Date time.Time `json:"date"`
+
+	// Total Total spend for the period in USD.
+	Total string `json:"total"`
 }
 
 // SpendingLimit A configurable spending limit for the team.
@@ -2205,6 +2247,15 @@ type ListPluginsByTeamParams struct {
 // DownloadPluginAssetByTeamParams defines parameters for DownloadPluginAssetByTeam.
 type DownloadPluginAssetByTeamParams struct {
 	Accept *string `json:"Accept,omitempty"`
+}
+
+// GetTeamSpendParams defines parameters for GetTeamSpend.
+type GetTeamSpendParams struct {
+	// Start A valid ISO 8601 date string representing the inclusive start of the period.
+	Start *time.Time `form:"start,omitempty" json:"start,omitempty"`
+
+	// End A valid ISO 8601 date string representing the exclusive end of the period.
+	End *time.Time `form:"end,omitempty" json:"end,omitempty"`
 }
 
 // ListSubscriptionOrdersByTeamParams defines parameters for ListSubscriptionOrdersByTeam.
