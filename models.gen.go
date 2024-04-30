@@ -88,6 +88,12 @@ const (
 	Native PluginPackageType = "native"
 )
 
+// Defines values for PluginPriceCategory.
+const (
+	Api      PluginPriceCategory = "api"
+	Database PluginPriceCategory = "database"
+)
+
 // Defines values for PluginReleaseStage.
 const (
 	PluginReleaseStageComingSoon PluginReleaseStage = "coming-soon"
@@ -114,13 +120,6 @@ const (
 	PluginTierFree     PluginTier = "free"
 	PluginTierOpenCore PluginTier = "open-core"
 	PluginTierPaid     PluginTier = "paid"
-)
-
-// Defines values for PriceCategory.
-const (
-	Api      PriceCategory = "api"
-	Database PriceCategory = "database"
-	Unknown  PriceCategory = "unknown"
 )
 
 // Defines values for SyncDestinationMigrateMode.
@@ -649,6 +648,9 @@ type ListPlugin struct {
 	// Official True if the plugin is maintained by CloudQuery, false otherwise
 	Official bool `json:"official"`
 
+	// PriceCategory Supported price categories for billing
+	PriceCategory *PluginPriceCategory `json:"price_category,omitempty"`
+
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
 	Public *bool `json:"public,omitempty"`
 
@@ -755,6 +757,9 @@ type Plugin struct {
 	// Official True if the plugin is maintained by CloudQuery, false otherwise
 	Official bool `json:"official"`
 
+	// PriceCategory Supported price categories for billing
+	PriceCategory *PluginPriceCategory `json:"price_category,omitempty"`
+
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the plugin's team.
 	Public *bool `json:"public,omitempty"`
 
@@ -809,6 +814,9 @@ type PluginCreate struct {
 
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
+
+	// PriceCategory Supported price categories for billing
+	PriceCategory *PluginPriceCategory `json:"price_category,omitempty"`
 
 	// Public Whether the plugin is listed in the CloudQuery Hub. If false, the plugin will not be shown in the CloudQuery Hub and will only be visible to members of the team.
 	Public bool `json:"public"`
@@ -910,6 +918,9 @@ type PluginPrice struct {
 	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
 	USDPerRow string `json:"usd_per_row"`
 }
+
+// PluginPriceCategory Supported price categories for billing
+type PluginPriceCategory string
 
 // PluginPriceCreate CloudQuery Plugin Price Create
 type PluginPriceCreate struct {
@@ -1069,6 +1080,9 @@ type PluginUpdate struct {
 	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...
 	Logo *string `json:"logo,omitempty"`
 
+	// PriceCategory Supported price categories for billing
+	PriceCategory *PluginPriceCategory `json:"price_category,omitempty"`
+
 	// Public If plugin is not public, it won't be visible to other teams in the CloudQuery Hub.
 	Public *bool `json:"public,omitempty"`
 
@@ -1225,14 +1239,11 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
-// PriceCategory Supported price categories for billing
-type PriceCategory string
-
 // PriceCategorySpend Spend by price category for a defined period.
 type PriceCategorySpend struct {
 	// Category Supported price categories for billing
-	Category PriceCategory `json:"category"`
-	Total    string        `json:"total"`
+	Category PluginPriceCategory `json:"category"`
+	Total    string              `json:"total"`
 }
 
 // RegistryAuthToken JWT token for the image registry
