@@ -6285,6 +6285,14 @@
           "other"
         ]
       },
+      "PluginPriceCategory": {
+        "description": "Supported price categories for billing",
+        "type": "string",
+        "enum": [
+          "api",
+          "database"
+        ]
+      },
       "PluginReleaseStage": {
         "description": "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
         "type": "string",
@@ -6318,6 +6326,9 @@
           },
           "category": {
             "$ref": "#/components/schemas/PluginCategory"
+          },
+          "price_category": {
+            "$ref": "#/components/schemas/PluginPriceCategory"
           },
           "created_at": {
             "example": "2017-07-14T16:53:42Z",
@@ -6463,6 +6474,9 @@
           "category": {
             "$ref": "#/components/schemas/PluginCategory"
           },
+          "price_category": {
+            "$ref": "#/components/schemas/PluginPriceCategory"
+          },
           "tier": {
             "$ref": "#/components/schemas/PluginTier"
           },
@@ -6530,6 +6544,9 @@
         "properties": {
           "category": {
             "$ref": "#/components/schemas/PluginCategory"
+          },
+          "price_category": {
+            "$ref": "#/components/schemas/PluginPriceCategory"
           },
           "tier": {
             "$ref": "#/components/schemas/PluginTier"
@@ -8245,15 +8262,6 @@
           }
         }
       },
-      "PriceCategory": {
-        "description": "Supported price categories for billing",
-        "type": "string",
-        "enum": [
-          "unknown",
-          "api",
-          "database"
-        ]
-      },
       "PriceCategorySpend": {
         "title": "Spend by price category",
         "description": "Spend by price category for a defined period.",
@@ -8265,7 +8273,7 @@
         ],
         "properties": {
           "category": {
-            "$ref": "#/components/schemas/PriceCategory"
+            "$ref": "#/components/schemas/PluginPriceCategory"
           },
           "total": {
             "type": "string"
