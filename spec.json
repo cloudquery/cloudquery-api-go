@@ -527,7 +527,8 @@
     },
     "/plugins/{team_name}/{plugin_kind}/{plugin_name}/upcoming-price-changes": {
       "get": {
-        "description": "List upcoming price changes for a given plugin. If the plugin has no upcoming price changes, an empty list is returned. At most one upcoming price change is returned.",
+        "deprecated": true,
+        "description": "DEPRECATED. Plugin prices are now managed by category. This endpoint will be removed in the near future and currently returns only empty data.",
         "operationId": "ListPluginUpcomingPriceChanges",
         "parameters": [
           {
@@ -584,7 +585,8 @@
         ]
       },
       "post": {
-        "description": "Create an upcoming plugin price change. If the plugin has no upcoming price change, a new one is created. If the plugin already has an upcoming price change, this call will fail. (Delete pending price changes with the appropriate delete call.) The effective date of the price change must be at least 8 days in the future.",
+        "deprecated": true,
+        "description": "DEPRECATED. Plugin prices are now managed by category. This endpoint will be removed in the near future and currently returns only empty data.",
         "operationId": "CreatePluginUpcomingPriceChange",
         "parameters": [
           {
@@ -638,7 +640,8 @@
         ]
       },
       "delete": {
-        "description": "Delete all pending plugin price changes.",
+        "deprecated": true,
+        "description": "DEPRECATED. Plugin prices are now managed by category. This endpoint will be removed in the near future and currently returns only empty data.",
         "operationId": "DeletePluginUpcomingPriceChanges",
         "parameters": [
           {
@@ -6303,7 +6306,7 @@
         ]
       },
       "PluginTier": {
-        "description": "Supported tiers for plugins",
+        "description": "Supported tiers for plugins.\n  - free: Free tier, with no paid tables.\n  - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.\n  - open-core: This option is deprecated, please use either free or paid.\n",
         "type": "string",
         "enum": [
           "free",
@@ -6380,16 +6383,18 @@
             "type": "boolean"
           },
           "usd_per_row": {
+            "deprecated": true,
             "type": "string",
             "pattern": "^\\d+(?:\\.\\d{1,10})?$",
-            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "description": "Deprecated. Refer to `price_category` instead.",
             "example": "0.0001",
             "x-go-name": "USDPerRow"
           },
           "free_rows_per_month": {
+            "deprecated": true,
             "type": "integer",
             "format": "int64",
-            "description": "The number of rows that can be synced for free each month.",
+            "description": "Deprecated. Refer to `price_category` instead.",
             "example": 1000
           },
           "minimum_cloud_version": {
@@ -6516,16 +6521,18 @@
             "example": "https://images.cloudquery.io/logos/aws.png"
           },
           "usd_per_row": {
+            "deprecated": true,
             "type": "string",
             "pattern": "^\\d+(?:\\.\\d{1,10})?$",
-            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "description": "Deprecated. Use `price_category` instead.",
             "example": "0.00001",
             "x-go-name": "USDPerRow"
           },
           "free_rows_per_month": {
+            "deprecated": true,
             "type": "integer",
             "format": "int64",
-            "description": "The number of rows that can be synced for free each month.",
+            "description": "Deprecated. Use `price_category` instead.",
             "example": 10000
           }
         }
@@ -6586,16 +6593,18 @@
             "$ref": "#/components/schemas/PluginReleaseStageUpdate"
           },
           "usd_per_row": {
+            "deprecated": true,
             "type": "string",
             "pattern": "^\\d+(?:\\.\\d{1,10})?$",
-            "description": "The price per row in USD. This is used to calculate the price of a sync.",
+            "description": "Deprecated. Update `price_category` instead.",
             "example": "0.0001",
             "x-go-name": "USDPerRow"
           },
           "free_rows_per_month": {
+            "deprecated": true,
             "type": "integer",
             "format": "int64",
-            "description": "The number of rows that can be synced for free each month.",
+            "description": "Deprecated. Update `price_category` instead.",
             "example": 1000
           }
         }

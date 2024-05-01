@@ -628,7 +628,8 @@ type ListPlugin struct {
 	// DisplayName The plugin's display name
 	DisplayName string `json:"display_name"`
 
-	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	// FreeRowsPerMonth Deprecated. Refer to `price_category` instead.
+	// Deprecated:
 	FreeRowsPerMonth int64   `json:"free_rows_per_month"`
 	Homepage         *string `json:"homepage,omitempty"`
 
@@ -665,11 +666,15 @@ type ListPlugin struct {
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
 
-	// Tier Supported tiers for plugins
+	// Tier Supported tiers for plugins.
+	//   - free: Free tier, with no paid tables.
+	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
+	//   - open-core: This option is deprecated, please use either free or paid.
 	Tier      PluginTier `json:"tier"`
 	UpdatedAt time.Time  `json:"updated_at"`
 
-	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	// UsdPerRow Deprecated. Refer to `price_category` instead.
+	// Deprecated:
 	USDPerRow string `json:"usd_per_row"`
 }
 
@@ -740,7 +745,8 @@ type Plugin struct {
 	// DisplayName The plugin's display name
 	DisplayName string `json:"display_name"`
 
-	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	// FreeRowsPerMonth Deprecated. Refer to `price_category` instead.
+	// Deprecated:
 	FreeRowsPerMonth int64   `json:"free_rows_per_month"`
 	Homepage         *string `json:"homepage,omitempty"`
 
@@ -774,11 +780,15 @@ type Plugin struct {
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
 
-	// Tier Supported tiers for plugins
+	// Tier Supported tiers for plugins.
+	//   - free: Free tier, with no paid tables.
+	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
+	//   - open-core: This option is deprecated, please use either free or paid.
 	Tier      PluginTier `json:"tier"`
 	UpdatedAt time.Time  `json:"updated_at"`
 
-	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	// UsdPerRow Deprecated. Refer to `price_category` instead.
+	// Deprecated:
 	USDPerRow string `json:"usd_per_row"`
 }
 
@@ -802,7 +812,8 @@ type PluginCreate struct {
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
 	DisplayName string `json:"display_name"`
 
-	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	// FreeRowsPerMonth Deprecated. Use `price_category` instead.
+	// Deprecated:
 	FreeRowsPerMonth *int64  `json:"free_rows_per_month,omitempty"`
 	Homepage         *string `json:"homepage,omitempty"`
 
@@ -834,10 +845,14 @@ type PluginCreate struct {
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
 
-	// Tier Supported tiers for plugins
+	// Tier Supported tiers for plugins.
+	//   - free: Free tier, with no paid tables.
+	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
+	//   - open-core: This option is deprecated, please use either free or paid.
 	Tier PluginTier `json:"tier"`
 
-	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	// UsdPerRow Deprecated. Use `price_category` instead.
+	// Deprecated:
 	USDPerRow *string `json:"usd_per_row,omitempty"`
 }
 
@@ -1062,7 +1077,10 @@ type PluginTableDetails struct {
 // PluginTableName Name of the table
 type PluginTableName = string
 
-// PluginTier Supported tiers for plugins
+// PluginTier Supported tiers for plugins.
+//   - free: Free tier, with no paid tables.
+//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
+//   - open-core: This option is deprecated, please use either free or paid.
 type PluginTier string
 
 // PluginUpdate defines model for PluginUpdate.
@@ -1073,7 +1091,8 @@ type PluginUpdate struct {
 	// DisplayName The plugin's display name, as shown in the CloudQuery Hub.
 	DisplayName *string `json:"display_name,omitempty"`
 
-	// FreeRowsPerMonth The number of rows that can be synced for free each month.
+	// FreeRowsPerMonth Deprecated. Update `price_category` instead.
+	// Deprecated:
 	FreeRowsPerMonth *int64  `json:"free_rows_per_month,omitempty"`
 	Homepage         *string `json:"homepage,omitempty"`
 
@@ -1096,10 +1115,14 @@ type PluginUpdate struct {
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription *string `json:"short_description,omitempty"`
 
-	// Tier Supported tiers for plugins
+	// Tier Supported tiers for plugins.
+	//   - free: Free tier, with no paid tables.
+	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
+	//   - open-core: This option is deprecated, please use either free or paid.
 	Tier *PluginTier `json:"tier,omitempty"`
 
-	// UsdPerRow The price per row in USD. This is used to calculate the price of a sync.
+	// UsdPerRow Deprecated. Update `price_category` instead.
+	// Deprecated:
 	USDPerRow *string `json:"usd_per_row,omitempty"`
 }
 
