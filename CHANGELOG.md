@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.9.2](https://github.com/cloudquery/cloudquery-api-go/compare/v1.9.1...v1.9.2) (2024-05-06)
+
+
+### Bug Fixes
+
+* Generate CloudQuery Go API Client from `spec.json` ([#146](https://github.com/cloudquery/cloudquery-api-go/issues/146)) ([a90e87b](https://github.com/cloudquery/cloudquery-api-go/commit/a90e87b9f0025bdf7a4badf17927369dc167916a))
+* Generate CloudQuery Go API Client from `spec.json` ([#148](https://github.com/cloudquery/cloudquery-api-go/issues/148)) ([15e0252](https://github.com/cloudquery/cloudquery-api-go/commit/15e02524a5da068c9cc104a3d0ce09c1a268c093))
+* Generate CloudQuery Go API Client from `spec.json` ([#149](https://github.com/cloudquery/cloudquery-api-go/issues/149)) ([33fe0a6](https://github.com/cloudquery/cloudquery-api-go/commit/33fe0a62af1b44e23908e4cc308b6585a96e095d))
+* Generate CloudQuery Go API Client from `spec.json` ([#150](https://github.com/cloudquery/cloudquery-api-go/issues/150)) ([7885344](https://github.com/cloudquery/cloudquery-api-go/commit/788534459b01f2786bb8dd7a840f49743995b471))
+* Generate CloudQuery Go API Client from `spec.json` ([#151](https://github.com/cloudquery/cloudquery-api-go/issues/151)) ([cd9aa44](https://github.com/cloudquery/cloudquery-api-go/commit/cd9aa4416b92b586b754906b7772d998822e1c28))
+* Generate CloudQuery Go API Client from `spec.json` ([#152](https://github.com/cloudquery/cloudquery-api-go/issues/152)) ([57939a5](https://github.com/cloudquery/cloudquery-api-go/commit/57939a53deb3f8bd2c7219ae0ebe58633e3c8adf))
+* Generate CloudQuery Go API Client from `spec.json` ([#153](https://github.com/cloudquery/cloudquery-api-go/issues/153)) ([13e63ad](https://github.com/cloudquery/cloudquery-api-go/commit/13e63ad91365ea906dec430b68d7255261a091fa))
+* Generate CloudQuery Go API Client from `spec.json` ([#154](https://github.com/cloudquery/cloudquery-api-go/issues/154)) ([ecfd659](https://github.com/cloudquery/cloudquery-api-go/commit/ecfd6590a9e8a183be8de0fc56d790513c4b3b36))
+* Generate CloudQuery Go API Client from `spec.json` ([#155](https://github.com/cloudquery/cloudquery-api-go/issues/155)) ([1b3d18c](https://github.com/cloudquery/cloudquery-api-go/commit/1b3d18ce2ee5dc61edce4767c70b04026fd095bb))
+* Generate CloudQuery Go API Client from `spec.json` ([#156](https://github.com/cloudquery/cloudquery-api-go/issues/156)) ([bffc1b7](https://github.com/cloudquery/cloudquery-api-go/commit/bffc1b7219558250661590d6c6342da3408b7690))
+* Generate CloudQuery Go API Client from `spec.json` ([#157](https://github.com/cloudquery/cloudquery-api-go/issues/157)) ([6846e84](https://github.com/cloudquery/cloudquery-api-go/commit/6846e843cc68715a9110947add0a312c74dc21f5))
+
 ## [1.9.1](https://github.com/cloudquery/cloudquery-api-go/compare/v1.9.0...v1.9.1) (2024-04-04)
 
 
