@@ -6,7 +6,7 @@
       "name": "CloudQuery Support Team",
       "url": "https://cloudquery.io"
     },
-    "description": "API to interact with CloudQuery Cloud",
+    "description": "Welcome to the CloudQuery API documentation! This API can be used to interact with the CloudQuery platform. The API allows you to manage your teams, usage, spend limits, plugins, addons, cloud syncs, and much more.\n\nThe API is secured using bearer tokens. To get started, you can generate an API key from the CloudQuery dashboard. For a step-by-step guide, see: https://docs.cloudquery.io/docs/deployment/generate-api-key.\n\nThe base URL for the API is `https://api.cloudquery.io`.\n",
     "license": {
       "name": "MIT",
       "url": "https://spdx.org/licenses/MIT"
