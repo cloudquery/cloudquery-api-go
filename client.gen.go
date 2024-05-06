@@ -484,7 +484,10 @@ type ClientInterface interface {
 	IncreaseTeamPluginUsage(ctx context.Context, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetTeamUsageSummary request
-	GetTeamUsageSummary(ctx context.Context, teamName TeamName, groupBy GetTeamUsageSummaryParamsGroupBy, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetTeamUsageSummary(ctx context.Context, teamName TeamName, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGroupedTeamUsageSummary request
+	GetGroupedTeamUsageSummary(ctx context.Context, teamName TeamName, groupBy GetGroupedTeamUsageSummaryParamsGroupBy, params *GetGroupedTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetTeamPluginUsage request
 	GetTeamPluginUsage(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2229,8 +2232,20 @@ func (c *Client) IncreaseTeamPluginUsage(ctx context.Context, teamName TeamName,
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetTeamUsageSummary(ctx context.Context, teamName TeamName, groupBy GetTeamUsageSummaryParamsGroupBy, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetTeamUsageSummaryRequest(c.Server, teamName, groupBy, params)
+func (c *Client) GetTeamUsageSummary(ctx context.Context, teamName TeamName, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTeamUsageSummaryRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetGroupedTeamUsageSummary(ctx context.Context, teamName TeamName, groupBy GetGroupedTeamUsageSummaryParamsGroupBy, params *GetGroupedTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGroupedTeamUsageSummaryRequest(c.Server, teamName, groupBy, params)
 	if err != nil {
 		return nil, err
 	}
@@ -8385,7 +8400,111 @@ func NewIncreaseTeamPluginUsageRequestWithBody(server string, teamName TeamName,
 }
 
 // NewGetTeamUsageSummaryRequest generates requests for GetTeamUsageSummary
-func NewGetTeamUsageSummaryRequest(server string, teamName TeamName, groupBy GetTeamUsageSummaryParamsGroupBy, params *GetTeamUsageSummaryParams) (*http.Request, error) {
+func NewGetTeamUsageSummaryRequest(server string, teamName TeamName, params *GetTeamUsageSummaryParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/usage-summary", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "metrics", runtime.ParamLocationQuery, *params.Metrics); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Start != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "start", runtime.ParamLocationQuery, *params.Start); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.End != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "end", runtime.ParamLocationQuery, *params.End); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AggregationPeriod != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "aggregation_period", runtime.ParamLocationQuery, *params.AggregationPeriod); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGroupedTeamUsageSummaryRequest generates requests for GetGroupedTeamUsageSummary
+func NewGetGroupedTeamUsageSummaryRequest(server string, teamName TeamName, groupBy GetGroupedTeamUsageSummaryParamsGroupBy, params *GetGroupedTeamUsageSummaryParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -8419,6 +8538,22 @@ func NewGetTeamUsageSummaryRequest(server string, teamName TeamName, groupBy Get
 
 	if params != nil {
 		queryValues := queryURL.Query()
+
+		if params.Metrics != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "metrics", runtime.ParamLocationQuery, *params.Metrics); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
 
 		if params.Start != nil {
 
@@ -9298,7 +9433,10 @@ type ClientWithResponsesInterface interface {
 	IncreaseTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, body IncreaseTeamPluginUsageJSONRequestBody, reqEditors ...RequestEditorFn) (*IncreaseTeamPluginUsageResponse, error)
 
 	// GetTeamUsageSummaryWithResponse request
-	GetTeamUsageSummaryWithResponse(ctx context.Context, teamName TeamName, groupBy GetTeamUsageSummaryParamsGroupBy, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*GetTeamUsageSummaryResponse, error)
+	GetTeamUsageSummaryWithResponse(ctx context.Context, teamName TeamName, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*GetTeamUsageSummaryResponse, error)
+
+	// GetGroupedTeamUsageSummaryWithResponse request
+	GetGroupedTeamUsageSummaryWithResponse(ctx context.Context, teamName TeamName, groupBy GetGroupedTeamUsageSummaryParamsGroupBy, params *GetGroupedTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*GetGroupedTeamUsageSummaryResponse, error)
 
 	// GetTeamPluginUsageWithResponse request
 	GetTeamPluginUsageWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetTeamPluginUsageResponse, error)
@@ -12123,6 +12261,7 @@ type GetTeamUsageSummaryResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *UsageSummary
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
@@ -12140,6 +12279,34 @@ func (r GetTeamUsageSummaryResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetTeamUsageSummaryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetGroupedTeamUsageSummaryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UsageSummary
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGroupedTeamUsageSummaryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGroupedTeamUsageSummaryResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -13607,12 +13774,21 @@ func (c *ClientWithResponses) IncreaseTeamPluginUsageWithResponse(ctx context.Co
 }
 
 // GetTeamUsageSummaryWithResponse request returning *GetTeamUsageSummaryResponse
-func (c *ClientWithResponses) GetTeamUsageSummaryWithResponse(ctx context.Context, teamName TeamName, groupBy GetTeamUsageSummaryParamsGroupBy, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*GetTeamUsageSummaryResponse, error) {
-	rsp, err := c.GetTeamUsageSummary(ctx, teamName, groupBy, params, reqEditors...)
+func (c *ClientWithResponses) GetTeamUsageSummaryWithResponse(ctx context.Context, teamName TeamName, params *GetTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*GetTeamUsageSummaryResponse, error) {
+	rsp, err := c.GetTeamUsageSummary(ctx, teamName, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseGetTeamUsageSummaryResponse(rsp)
+}
+
+// GetGroupedTeamUsageSummaryWithResponse request returning *GetGroupedTeamUsageSummaryResponse
+func (c *ClientWithResponses) GetGroupedTeamUsageSummaryWithResponse(ctx context.Context, teamName TeamName, groupBy GetGroupedTeamUsageSummaryParamsGroupBy, params *GetGroupedTeamUsageSummaryParams, reqEditors ...RequestEditorFn) (*GetGroupedTeamUsageSummaryResponse, error) {
+	rsp, err := c.GetGroupedTeamUsageSummary(ctx, teamName, groupBy, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGroupedTeamUsageSummaryResponse(rsp)
 }
 
 // GetTeamPluginUsageWithResponse request returning *GetTeamPluginUsageResponse
@@ -19443,6 +19619,81 @@ func ParseGetTeamUsageSummaryResponse(rsp *http.Response) (*GetTeamUsageSummaryR
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGroupedTeamUsageSummaryResponse parses an HTTP response from a GetGroupedTeamUsageSummaryWithResponse call
+func ParseGetGroupedTeamUsageSummaryResponse(rsp *http.Response) (*GetGroupedTeamUsageSummaryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGroupedTeamUsageSummaryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UsageSummary
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
