@@ -186,6 +186,14 @@ const (
 	UsageSummaryMetadataAggregationPeriodMonth UsageSummaryMetadataAggregationPeriod = "month"
 )
 
+// Defines values for UsageSummaryMetadataMetrics.
+const (
+	UsageSummaryMetadataMetricsCloudEgressBytes     UsageSummaryMetadataMetrics = "cloud_egress_bytes"
+	UsageSummaryMetadataMetricsCloudVcpuSeconds     UsageSummaryMetadataMetrics = "cloud_vcpu_seconds"
+	UsageSummaryMetadataMetricsCloudVramByteSeconds UsageSummaryMetadataMetrics = "cloud_vram_byte_seconds"
+	UsageSummaryMetadataMetricsPaidRows             UsageSummaryMetadataMetrics = "paid_rows"
+)
+
 // Defines values for AddonSortBy.
 const (
 	AddonSortByCreatedAt AddonSortBy = "created_at"
@@ -239,16 +247,39 @@ const (
 	Member EmailTeamInvitationJSONBodyRole = "member"
 )
 
+// Defines values for GetTeamUsageSummaryParamsMetrics.
+const (
+	GetTeamUsageSummaryParamsMetricsCloudVcpuSeconds     GetTeamUsageSummaryParamsMetrics = "cloud_vcpu_seconds"
+	GetTeamUsageSummaryParamsMetricsCloudVramByteSeconds GetTeamUsageSummaryParamsMetrics = "cloud_vram_byte_seconds"
+	GetTeamUsageSummaryParamsMetricsNetworkEgressBytes   GetTeamUsageSummaryParamsMetrics = "network_egress_bytes"
+	GetTeamUsageSummaryParamsMetricsPaidRows             GetTeamUsageSummaryParamsMetrics = "paid_rows"
+)
+
 // Defines values for GetTeamUsageSummaryParamsAggregationPeriod.
 const (
 	GetTeamUsageSummaryParamsAggregationPeriodDay   GetTeamUsageSummaryParamsAggregationPeriod = "day"
 	GetTeamUsageSummaryParamsAggregationPeriodMonth GetTeamUsageSummaryParamsAggregationPeriod = "month"
 )
 
-// Defines values for GetTeamUsageSummaryParamsGroupBy.
+// Defines values for GetGroupedTeamUsageSummaryParamsMetrics.
 const (
-	GetTeamUsageSummaryParamsGroupByPlugin        GetTeamUsageSummaryParamsGroupBy = "plugin"
-	GetTeamUsageSummaryParamsGroupByPriceCategory GetTeamUsageSummaryParamsGroupBy = "price_category"
+	CloudVcpuSeconds     GetGroupedTeamUsageSummaryParamsMetrics = "cloud_vcpu_seconds"
+	CloudVramByteSeconds GetGroupedTeamUsageSummaryParamsMetrics = "cloud_vram_byte_seconds"
+	NetworkEgressBytes   GetGroupedTeamUsageSummaryParamsMetrics = "network_egress_bytes"
+	PaidRows             GetGroupedTeamUsageSummaryParamsMetrics = "paid_rows"
+)
+
+// Defines values for GetGroupedTeamUsageSummaryParamsAggregationPeriod.
+const (
+	Day   GetGroupedTeamUsageSummaryParamsAggregationPeriod = "day"
+	Month GetGroupedTeamUsageSummaryParamsAggregationPeriod = "month"
+)
+
+// Defines values for GetGroupedTeamUsageSummaryParamsGroupBy.
+const (
+	GetGroupedTeamUsageSummaryParamsGroupByPlugin        GetGroupedTeamUsageSummaryParamsGroupBy = "plugin"
+	GetGroupedTeamUsageSummaryParamsGroupByPriceCategory GetGroupedTeamUsageSummaryParamsGroupBy = "price_category"
+	GetGroupedTeamUsageSummaryParamsGroupBySyncId        GetGroupedTeamUsageSummaryParamsGroupBy = "sync_id"
 )
 
 // APIKey API Key to interact with CloudQuery Cloud under specific team
@@ -1326,16 +1357,16 @@ type SpendSummaryValue struct {
 	Total string `json:"total"`
 }
 
-// SpendingLimit A configurable spending limit for the team.
+// SpendingLimit A configurable spending limit for the team. Empty values indicate no limit.
 type SpendingLimit struct {
 	// CreatedAt The date and time the team limit was created.
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
 
 	// UpdatedAt The date and time the team limit was last updated.
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 
 	// Usd The maximum USD amount the team is allowed to use within a calendar month.
-	USD int `json:"usd"`
+	USD *int `json:"usd,omitempty"`
 }
 
 // SpendingLimitCreate A configurable monthly limit for team usage.
@@ -1844,7 +1875,7 @@ type UsageIncrease struct {
 	} `json:"tables,omitempty"`
 }
 
-// UsageSummary A usage summary for a team, summarizing the paid rows synced by each plugin or price category over a given time range.
+// UsageSummary A usage summary for a team, summarizing the paid rows synced and/or cloud resource usage over a given time range.
 // Note that empty or all-zero values are not included in the response.
 type UsageSummary struct {
 	// Groups The groups of the usage summary. Every group will have a corresponding value at the same index in the values array.
@@ -1858,6 +1889,9 @@ type UsageSummary struct {
 		// End The exclusive end of the query time range.
 		End time.Time `json:"end"`
 
+		// Metrics List of metrics included in the response.
+		Metrics []UsageSummaryMetadataMetrics `json:"metrics"`
+
 		// Start The inclusive start of the query time range.
 		Start time.Time `json:"start"`
 	} `json:"metadata"`
@@ -1866,6 +1900,9 @@ type UsageSummary struct {
 
 // UsageSummaryMetadataAggregationPeriod The aggregation period to sum data over. In other words, data will be returned at this granularity.
 type UsageSummaryMetadataAggregationPeriod string
+
+// UsageSummaryMetadataMetrics defines model for UsageSummary.Metadata.Metrics.
+type UsageSummaryMetadataMetrics string
 
 // UsageSummaryGroup A usage summary group.
 type UsageSummaryGroup struct {
@@ -1878,6 +1915,15 @@ type UsageSummaryGroup struct {
 
 // UsageSummaryValue A usage summary value.
 type UsageSummaryValue struct {
+	// CloudEgressBytes Egress bytes consumed in this period, one per group.
+	CloudEgressBytes *[]int64 `json:"cloud_egress_bytes,omitempty"`
+
+	// CloudVcpuSeconds vCPU/seconds consumed in this period, one per group.
+	CloudVcpuSeconds *[]int64 `json:"cloud_vcpu_seconds,omitempty"`
+
+	// CloudVramByteSeconds vRAM/byte-seconds consumed in this period, one per group.
+	CloudVramByteSeconds *[]int64 `json:"cloud_vram_byte_seconds,omitempty"`
+
 	// PaidRows The paid rows that were synced in this period, one per group.
 	PaidRows *[]int64 `json:"paid_rows,omitempty"`
 
@@ -2413,18 +2459,38 @@ type ListTeamPluginUsageParams struct {
 
 // GetTeamUsageSummaryParams defines parameters for GetTeamUsageSummary.
 type GetTeamUsageSummaryParams struct {
-	Start *time.Time `form:"start,omitempty" json:"start,omitempty"`
-	End   *time.Time `form:"end,omitempty" json:"end,omitempty"`
+	Metrics *[]GetTeamUsageSummaryParamsMetrics `form:"metrics,omitempty" json:"metrics,omitempty"`
+	Start   *time.Time                          `form:"start,omitempty" json:"start,omitempty"`
+	End     *time.Time                          `form:"end,omitempty" json:"end,omitempty"`
 
 	// AggregationPeriod An aggregation period to sum data over. In other words, data will be returned at this granularity. Currently only supports day and month.
 	AggregationPeriod *GetTeamUsageSummaryParamsAggregationPeriod `form:"aggregation_period,omitempty" json:"aggregation_period,omitempty"`
 }
 
+// GetTeamUsageSummaryParamsMetrics defines parameters for GetTeamUsageSummary.
+type GetTeamUsageSummaryParamsMetrics string
+
 // GetTeamUsageSummaryParamsAggregationPeriod defines parameters for GetTeamUsageSummary.
 type GetTeamUsageSummaryParamsAggregationPeriod string
 
-// GetTeamUsageSummaryParamsGroupBy defines parameters for GetTeamUsageSummary.
-type GetTeamUsageSummaryParamsGroupBy string
+// GetGroupedTeamUsageSummaryParams defines parameters for GetGroupedTeamUsageSummary.
+type GetGroupedTeamUsageSummaryParams struct {
+	Metrics *[]GetGroupedTeamUsageSummaryParamsMetrics `form:"metrics,omitempty" json:"metrics,omitempty"`
+	Start   *time.Time                                 `form:"start,omitempty" json:"start,omitempty"`
+	End     *time.Time                                 `form:"end,omitempty" json:"end,omitempty"`
+
+	// AggregationPeriod An aggregation period to sum data over. In other words, data will be returned at this granularity. Currently only supports day and month.
+	AggregationPeriod *GetGroupedTeamUsageSummaryParamsAggregationPeriod `form:"aggregation_period,omitempty" json:"aggregation_period,omitempty"`
+}
+
+// GetGroupedTeamUsageSummaryParamsMetrics defines parameters for GetGroupedTeamUsageSummary.
+type GetGroupedTeamUsageSummaryParamsMetrics string
+
+// GetGroupedTeamUsageSummaryParamsAggregationPeriod defines parameters for GetGroupedTeamUsageSummary.
+type GetGroupedTeamUsageSummaryParamsAggregationPeriod string
+
+// GetGroupedTeamUsageSummaryParamsGroupBy defines parameters for GetGroupedTeamUsageSummary.
+type GetGroupedTeamUsageSummaryParamsGroupBy string
 
 // ListUsersByTeamParams defines parameters for ListUsersByTeam.
 type ListUsersByTeamParams struct {
