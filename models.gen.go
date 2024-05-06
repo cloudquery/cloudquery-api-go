@@ -90,8 +90,9 @@ const (
 
 // Defines values for PluginPriceCategory.
 const (
-	Api      PluginPriceCategory = "api"
-	Database PluginPriceCategory = "database"
+	PluginPriceCategoryApi      PluginPriceCategory = "api"
+	PluginPriceCategoryDatabase PluginPriceCategory = "database"
+	PluginPriceCategoryFree     PluginPriceCategory = "free"
 )
 
 // Defines values for PluginReleaseStage.
@@ -150,6 +151,12 @@ const (
 	SyncRunStatusStarted   SyncRunStatus = "started"
 )
 
+// Defines values for SyncRunStatusReason.
+const (
+	Error     SyncRunStatusReason = "error"
+	OomKilled SyncRunStatusReason = "oom_killed"
+)
+
 // Defines values for SyncTestConnectionStatus.
 const (
 	SyncTestConnectionStatusCompleted SyncTestConnectionStatus = "completed"
@@ -160,10 +167,10 @@ const (
 
 // Defines values for TeamPlan.
 const (
-	Enterprise TeamPlan = "enterprise"
-	Free       TeamPlan = "free"
-	Paid       TeamPlan = "paid"
-	Trial      TeamPlan = "trial"
+	TeamPlanEnterprise TeamPlan = "enterprise"
+	TeamPlanFree       TeamPlan = "free"
+	TeamPlanPaid       TeamPlan = "paid"
+	TeamPlanTrial      TeamPlan = "trial"
 )
 
 // Defines values for TeamSubscriptionOrderStatus.
@@ -666,10 +673,13 @@ type ListPlugin struct {
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
 
-	// Tier Supported tiers for plugins.
+	// Tier This field is deprecated, refer to `price_category` instead.
+	// This field is only kept for backward compatibility and may be removed in a future release.
+	// Supported tiers for plugins.
 	//   - free: Free tier, with no paid tables.
 	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
-	//   - open-core: This option is deprecated, please use either free or paid.
+	//   - open-core: This option is deprecated, values will either be free or paid.
+	// Deprecated:
 	Tier      PluginTier `json:"tier"`
 	UpdatedAt time.Time  `json:"updated_at"`
 
@@ -780,10 +790,13 @@ type Plugin struct {
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
 
-	// Tier Supported tiers for plugins.
+	// Tier This field is deprecated, refer to `price_category` instead.
+	// This field is only kept for backward compatibility and may be removed in a future release.
+	// Supported tiers for plugins.
 	//   - free: Free tier, with no paid tables.
 	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
-	//   - open-core: This option is deprecated, please use either free or paid.
+	//   - open-core: This option is deprecated, values will either be free or paid.
+	// Deprecated:
 	Tier      PluginTier `json:"tier"`
 	UpdatedAt time.Time  `json:"updated_at"`
 
@@ -845,11 +858,14 @@ type PluginCreate struct {
 	// TeamName The unique name for the team.
 	TeamName TeamName `json:"team_name"`
 
-	// Tier Supported tiers for plugins.
+	// Tier This field is deprecated, refer to `price_category` instead.
+	// This field is only kept for backward compatibility and may be removed in a future release.
+	// Supported tiers for plugins.
 	//   - free: Free tier, with no paid tables.
 	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
-	//   - open-core: This option is deprecated, please use either free or paid.
-	Tier PluginTier `json:"tier"`
+	//   - open-core: This option is deprecated, values will either be free or paid.
+	// Deprecated:
+	Tier *PluginTier `json:"tier,omitempty"`
 
 	// UsdPerRow Deprecated. Use `price_category` instead.
 	// Deprecated:
@@ -1077,10 +1093,12 @@ type PluginTableDetails struct {
 // PluginTableName Name of the table
 type PluginTableName = string
 
-// PluginTier Supported tiers for plugins.
+// PluginTier This field is deprecated, refer to `price_category` instead.
+// This field is only kept for backward compatibility and may be removed in a future release.
+// Supported tiers for plugins.
 //   - free: Free tier, with no paid tables.
 //   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
-//   - open-core: This option is deprecated, please use either free or paid.
+//   - open-core: This option is deprecated, values will either be free or paid.
 type PluginTier string
 
 // PluginUpdate defines model for PluginUpdate.
@@ -1115,10 +1133,13 @@ type PluginUpdate struct {
 	// ShortDescription Short description of the plugin. This will be shown in the CloudQuery Hub.
 	ShortDescription *string `json:"short_description,omitempty"`
 
-	// Tier Supported tiers for plugins.
+	// Tier This field is deprecated, refer to `price_category` instead.
+	// This field is only kept for backward compatibility and may be removed in a future release.
+	// Supported tiers for plugins.
 	//   - free: Free tier, with no paid tables.
 	//   - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.
-	//   - open-core: This option is deprecated, please use either free or paid.
+	//   - open-core: This option is deprecated, values will either be free or paid.
+	// Deprecated:
 	Tier *PluginTier `json:"tier,omitempty"`
 
 	// UsdPerRow Deprecated. Update `price_category` instead.
@@ -1504,6 +1525,9 @@ type SyncRun struct {
 	// Status The status of the sync run
 	Status SyncRunStatus `json:"status"`
 
+	// StatusReason The reason for the status
+	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
+
 	// SyncName Name of the sync
 	SyncName string `json:"sync_name"`
 
@@ -1540,6 +1564,9 @@ type SyncRunDetails struct {
 	// Status The status of the sync run
 	Status SyncRunStatus `json:"status"`
 
+	// StatusReason The reason for the status
+	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
+
 	// SyncName Name of the sync
 	SyncName string `json:"sync_name"`
 
@@ -1555,6 +1582,9 @@ type SyncRunID = openapi_types.UUID
 
 // SyncRunStatus The status of the sync run
 type SyncRunStatus string
+
+// SyncRunStatusReason The reason for the status
+type SyncRunStatusReason string
 
 // SyncSource defines model for SyncSource.
 type SyncSource struct {
@@ -2347,6 +2377,9 @@ type ListSyncRunsParams struct {
 type UpdateSyncRunJSONBody struct {
 	// Status The status of the sync run
 	Status *SyncRunStatus `json:"status,omitempty"`
+
+	// StatusReason The reason for the status
+	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
 }
 
 // GetSyncRunLogsParams defines parameters for GetSyncRunLogs.

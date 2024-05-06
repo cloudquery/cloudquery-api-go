@@ -5807,6 +5807,9 @@
                 "properties": {
                   "status": {
                     "$ref": "#/components/schemas/SyncRunStatus"
+                  },
+                  "status_reason": {
+                    "$ref": "#/components/schemas/SyncRunStatusReason"
                   }
                 }
               }
@@ -6293,7 +6296,8 @@
         "type": "string",
         "enum": [
           "api",
-          "database"
+          "database",
+          "free"
         ]
       },
       "PluginReleaseStage": {
@@ -6306,8 +6310,9 @@
         ]
       },
       "PluginTier": {
-        "description": "Supported tiers for plugins.\n  - free: Free tier, with no paid tables.\n  - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.\n  - open-core: This option is deprecated, please use either free or paid.\n",
+        "description": "This field is deprecated, refer to `price_category` instead.\nThis field is only kept for backward compatibility and may be removed in a future release.\nSupported tiers for plugins.\n  - free: Free tier, with no paid tables.\n  - paid: Paid tier. These plugins may have paid tables, but can also have free tables. They require login to access.\n  - open-core: This option is deprecated, values will either be free or paid.\n",
         "type": "string",
+        "deprecated": true,
         "enum": [
           "free",
           "paid",
@@ -6460,7 +6465,6 @@
           "kind",
           "name",
           "category",
-          "tier",
           "display_name",
           "short_description",
           "logo",
@@ -9173,6 +9177,14 @@
           "created"
         ]
       },
+      "SyncRunStatusReason": {
+        "description": "The reason for the status",
+        "type": "string",
+        "enum": [
+          "error",
+          "oom_killed"
+        ]
+      },
       "SyncRun": {
         "description": "Managed Sync Run definition",
         "type": "object",
@@ -9200,6 +9212,10 @@
           "status": {
             "$ref": "#/components/schemas/SyncRunStatus",
             "description": "Status of the sync run"
+          },
+          "status_reason": {
+            "$ref": "#/components/schemas/SyncRunStatusReason",
+            "description": "Reason for the status of the sync run"
           },
           "created_at": {
             "example": "2017-07-14T16:53:42Z",
