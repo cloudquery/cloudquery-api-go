@@ -16,7 +16,7 @@ const (
 
 // Defines values for APIKeyScope.
 const (
-	ReadAndWrite APIKeyScope = "read-and-write"
+	APIKeyScopeReadAndWrite APIKeyScope = "read-and-write"
 )
 
 // Defines values for AddonCategory.
@@ -30,7 +30,7 @@ const (
 
 // Defines values for AddonFormat.
 const (
-	Zip AddonFormat = "zip"
+	AddonFormatZip AddonFormat = "zip"
 )
 
 // Defines values for AddonOrderStatus.
@@ -48,8 +48,8 @@ const (
 
 // Defines values for AddonType.
 const (
-	Transformation AddonType = "transformation"
-	Visualization  AddonType = "visualization"
+	AddonTypeTransformation AddonType = "transformation"
+	AddonTypeVisualization  AddonType = "visualization"
 )
 
 // Defines values for PluginCategory.
@@ -72,8 +72,8 @@ const (
 
 // Defines values for PluginKind.
 const (
-	Destination PluginKind = "destination"
-	Source      PluginKind = "source"
+	PluginKindDestination PluginKind = "destination"
+	PluginKindSource      PluginKind = "source"
 )
 
 // Defines values for PluginNotificationRequestStatus.
@@ -84,8 +84,8 @@ const (
 
 // Defines values for PluginPackageType.
 const (
-	Docker PluginPackageType = "docker"
-	Native PluginPackageType = "native"
+	PluginPackageTypeDocker PluginPackageType = "docker"
+	PluginPackageTypeNative PluginPackageType = "native"
 )
 
 // Defines values for PluginPriceCategory.
@@ -111,9 +111,9 @@ const (
 
 // Defines values for PluginReleaseStageUpdate.
 const (
-	ComingSoon PluginReleaseStageUpdate = "coming-soon"
-	Ga         PluginReleaseStageUpdate = "ga"
-	Preview    PluginReleaseStageUpdate = "preview"
+	PluginReleaseStageUpdateComingSoon PluginReleaseStageUpdate = "coming-soon"
+	PluginReleaseStageUpdateGa         PluginReleaseStageUpdate = "ga"
+	PluginReleaseStageUpdatePreview    PluginReleaseStageUpdate = "preview"
 )
 
 // Defines values for PluginTier.
@@ -125,21 +125,21 @@ const (
 
 // Defines values for SyncDestinationMigrateMode.
 const (
-	Forced SyncDestinationMigrateMode = "forced"
-	Safe   SyncDestinationMigrateMode = "safe"
+	SyncDestinationMigrateModeForced SyncDestinationMigrateMode = "forced"
+	SyncDestinationMigrateModeSafe   SyncDestinationMigrateMode = "safe"
 )
 
 // Defines values for SyncDestinationWriteMode.
 const (
-	Append               SyncDestinationWriteMode = "append"
-	Overwrite            SyncDestinationWriteMode = "overwrite"
-	OverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
+	SyncDestinationWriteModeAppend               SyncDestinationWriteMode = "append"
+	SyncDestinationWriteModeOverwrite            SyncDestinationWriteMode = "overwrite"
+	SyncDestinationWriteModeOverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
 )
 
 // Defines values for SyncLastUpdateSource.
 const (
-	Ui   SyncLastUpdateSource = "ui"
-	Yaml SyncLastUpdateSource = "yaml"
+	SyncLastUpdateSourceUi   SyncLastUpdateSource = "ui"
+	SyncLastUpdateSourceYaml SyncLastUpdateSource = "yaml"
 )
 
 // Defines values for SyncRunStatus.
@@ -153,8 +153,8 @@ const (
 
 // Defines values for SyncRunStatusReason.
 const (
-	Error     SyncRunStatusReason = "error"
-	OomKilled SyncRunStatusReason = "oom_killed"
+	SyncRunStatusReasonError     SyncRunStatusReason = "error"
+	SyncRunStatusReasonOomKilled SyncRunStatusReason = "oom_killed"
 )
 
 // Defines values for SyncTestConnectionStatus.
@@ -175,9 +175,9 @@ const (
 
 // Defines values for TeamSubscriptionOrderStatus.
 const (
-	Cancelled TeamSubscriptionOrderStatus = "cancelled"
-	Completed TeamSubscriptionOrderStatus = "completed"
-	Pending   TeamSubscriptionOrderStatus = "pending"
+	TeamSubscriptionOrderStatusCancelled TeamSubscriptionOrderStatus = "cancelled"
+	TeamSubscriptionOrderStatusCompleted TeamSubscriptionOrderStatus = "completed"
+	TeamSubscriptionOrderStatusPending   TeamSubscriptionOrderStatus = "pending"
 )
 
 // Defines values for UsageSummaryMetadataAggregationPeriod.
@@ -238,13 +238,13 @@ const (
 
 // Defines values for ListPluginVersionsParamsSortBy.
 const (
-	CreatedAt ListPluginVersionsParamsSortBy = "created_at"
+	ListPluginVersionsParamsSortByCreatedAt ListPluginVersionsParamsSortBy = "created_at"
 )
 
 // Defines values for EmailTeamInvitationJSONBodyRole.
 const (
-	Admin  EmailTeamInvitationJSONBodyRole = "admin"
-	Member EmailTeamInvitationJSONBodyRole = "member"
+	EmailTeamInvitationJSONBodyRoleAdmin  EmailTeamInvitationJSONBodyRole = "admin"
+	EmailTeamInvitationJSONBodyRoleMember EmailTeamInvitationJSONBodyRole = "member"
 )
 
 // Defines values for GetTeamUsageSummaryParamsMetrics.
@@ -263,16 +263,16 @@ const (
 
 // Defines values for GetGroupedTeamUsageSummaryParamsMetrics.
 const (
-	CloudVcpuSeconds     GetGroupedTeamUsageSummaryParamsMetrics = "cloud_vcpu_seconds"
-	CloudVramByteSeconds GetGroupedTeamUsageSummaryParamsMetrics = "cloud_vram_byte_seconds"
-	NetworkEgressBytes   GetGroupedTeamUsageSummaryParamsMetrics = "network_egress_bytes"
-	PaidRows             GetGroupedTeamUsageSummaryParamsMetrics = "paid_rows"
+	GetGroupedTeamUsageSummaryParamsMetricsCloudVcpuSeconds     GetGroupedTeamUsageSummaryParamsMetrics = "cloud_vcpu_seconds"
+	GetGroupedTeamUsageSummaryParamsMetricsCloudVramByteSeconds GetGroupedTeamUsageSummaryParamsMetrics = "cloud_vram_byte_seconds"
+	GetGroupedTeamUsageSummaryParamsMetricsNetworkEgressBytes   GetGroupedTeamUsageSummaryParamsMetrics = "network_egress_bytes"
+	GetGroupedTeamUsageSummaryParamsMetricsPaidRows             GetGroupedTeamUsageSummaryParamsMetrics = "paid_rows"
 )
 
 // Defines values for GetGroupedTeamUsageSummaryParamsAggregationPeriod.
 const (
-	Day   GetGroupedTeamUsageSummaryParamsAggregationPeriod = "day"
-	Month GetGroupedTeamUsageSummaryParamsAggregationPeriod = "month"
+	GetGroupedTeamUsageSummaryParamsAggregationPeriodDay   GetGroupedTeamUsageSummaryParamsAggregationPeriod = "day"
+	GetGroupedTeamUsageSummaryParamsAggregationPeriodMonth GetGroupedTeamUsageSummaryParamsAggregationPeriod = "month"
 )
 
 // Defines values for GetGroupedTeamUsageSummaryParamsGroupBy.
