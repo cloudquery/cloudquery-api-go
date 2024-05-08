@@ -16,6 +16,15 @@ jobs:
         run: |
           curl -H "Authorization: token ${{ secrets.GH_CQ_BOT }}" https://raw.githubusercontent.com/cloudquery/cloud/main/internal/servergen/spec.json -o spec.json
 
+      - name: Format Specs File
+        run: |
+          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/spec.json -g openapi --skip-validate-spec -o /local/generated
+
+      - name: Move Generated spec file and delete the rest
+        run: |
+          mv generated/openapi.json spec.json
+          rm -rf generated
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
