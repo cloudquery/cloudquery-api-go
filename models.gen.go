@@ -4,8 +4,6 @@
 package cloudquery_api
 
 import (
-	"encoding/json"
-	"fmt"
 	"time"
 
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
@@ -18,7 +16,7 @@ const (
 
 // Defines values for APIKeyScope.
 const (
-	ReadAndWrite APIKeyScope = "read-and-write"
+	APIKeyScopeReadAndWrite APIKeyScope = "read-and-write"
 )
 
 // Defines values for AddonCategory.
@@ -32,7 +30,7 @@ const (
 
 // Defines values for AddonFormat.
 const (
-	Zip AddonFormat = "zip"
+	AddonFormatZip AddonFormat = "zip"
 )
 
 // Defines values for AddonOrderStatus.
@@ -50,14 +48,14 @@ const (
 
 // Defines values for AddonType.
 const (
-	Transformation AddonType = "transformation"
-	Visualization  AddonType = "visualization"
+	AddonTypeTransformation AddonType = "transformation"
+	AddonTypeVisualization  AddonType = "visualization"
 )
 
 // Defines values for EmailTeamInvitationRequestRole.
 const (
-	Admin  EmailTeamInvitationRequestRole = "admin"
-	Member EmailTeamInvitationRequestRole = "member"
+	EmailTeamInvitationRequestRoleAdmin  EmailTeamInvitationRequestRole = "admin"
+	EmailTeamInvitationRequestRoleMember EmailTeamInvitationRequestRole = "member"
 )
 
 // Defines values for PluginCategory.
@@ -80,8 +78,8 @@ const (
 
 // Defines values for PluginKind.
 const (
-	Destination PluginKind = "destination"
-	Source      PluginKind = "source"
+	PluginKindDestination PluginKind = "destination"
+	PluginKindSource      PluginKind = "source"
 )
 
 // Defines values for PluginNotificationRequestStatus.
@@ -92,8 +90,8 @@ const (
 
 // Defines values for PluginPackageType.
 const (
-	Docker PluginPackageType = "docker"
-	Native PluginPackageType = "native"
+	PluginPackageTypeDocker PluginPackageType = "docker"
+	PluginPackageTypeNative PluginPackageType = "native"
 )
 
 // Defines values for PluginPriceCategory.
@@ -119,9 +117,9 @@ const (
 
 // Defines values for PluginReleaseStageUpdate.
 const (
-	ComingSoon PluginReleaseStageUpdate = "coming-soon"
-	Ga         PluginReleaseStageUpdate = "ga"
-	Preview    PluginReleaseStageUpdate = "preview"
+	PluginReleaseStageUpdateComingSoon PluginReleaseStageUpdate = "coming-soon"
+	PluginReleaseStageUpdateGa         PluginReleaseStageUpdate = "ga"
+	PluginReleaseStageUpdatePreview    PluginReleaseStageUpdate = "preview"
 )
 
 // Defines values for PluginTier.
@@ -133,21 +131,21 @@ const (
 
 // Defines values for SyncDestinationMigrateMode.
 const (
-	Forced SyncDestinationMigrateMode = "forced"
-	Safe   SyncDestinationMigrateMode = "safe"
+	SyncDestinationMigrateModeForced SyncDestinationMigrateMode = "forced"
+	SyncDestinationMigrateModeSafe   SyncDestinationMigrateMode = "safe"
 )
 
 // Defines values for SyncDestinationWriteMode.
 const (
-	Append               SyncDestinationWriteMode = "append"
-	Overwrite            SyncDestinationWriteMode = "overwrite"
-	OverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
+	SyncDestinationWriteModeAppend               SyncDestinationWriteMode = "append"
+	SyncDestinationWriteModeOverwrite            SyncDestinationWriteMode = "overwrite"
+	SyncDestinationWriteModeOverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
 )
 
 // Defines values for SyncLastUpdateSource.
 const (
-	Ui   SyncLastUpdateSource = "ui"
-	Yaml SyncLastUpdateSource = "yaml"
+	SyncLastUpdateSourceUi   SyncLastUpdateSource = "ui"
+	SyncLastUpdateSourceYaml SyncLastUpdateSource = "yaml"
 )
 
 // Defines values for SyncRunStatus.
@@ -161,8 +159,8 @@ const (
 
 // Defines values for SyncRunStatusReason.
 const (
-	Error     SyncRunStatusReason = "error"
-	OomKilled SyncRunStatusReason = "oom_killed"
+	SyncRunStatusReasonError     SyncRunStatusReason = "error"
+	SyncRunStatusReasonOomKilled SyncRunStatusReason = "oom_killed"
 )
 
 // Defines values for SyncTestConnectionStatus.
@@ -183,9 +181,15 @@ const (
 
 // Defines values for TeamSubscriptionOrderStatus.
 const (
-	Cancelled TeamSubscriptionOrderStatus = "cancelled"
-	Completed TeamSubscriptionOrderStatus = "completed"
-	Pending   TeamSubscriptionOrderStatus = "pending"
+	TeamSubscriptionOrderStatusCancelled TeamSubscriptionOrderStatus = "cancelled"
+	TeamSubscriptionOrderStatusCompleted TeamSubscriptionOrderStatus = "completed"
+	TeamSubscriptionOrderStatusPending   TeamSubscriptionOrderStatus = "pending"
+)
+
+// Defines values for UsageSummaryMetadataAggregationPeriod.
+const (
+	UsageSummaryMetadataAggregationPeriodDay   UsageSummaryMetadataAggregationPeriod = "day"
+	UsageSummaryMetadataAggregationPeriodMonth UsageSummaryMetadataAggregationPeriod = "month"
 )
 
 // Defines values for AddonSortBy.
@@ -232,7 +236,7 @@ const (
 
 // Defines values for ListPluginVersionsParamsSortBy.
 const (
-	CreatedAt ListPluginVersionsParamsSortBy = "created_at"
+	ListPluginVersionsParamsSortByCreatedAt ListPluginVersionsParamsSortBy = "created_at"
 )
 
 // Defines values for GetTeamUsageSummaryParamsMetrics.
@@ -642,12 +646,10 @@ type CreateTeamImagesRequest struct {
 
 // CreateTeamRequest defines model for CreateTeam_request.
 type CreateTeamRequest struct {
-	// DisplayName The team's display name
 	DisplayName interface{} `json:"display_name"`
 
 	// Name The unique name for the team.
-	Name                 TeamName               `json:"name"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	Name TeamName `json:"name"`
 }
 
 // DeletePluginVersionDocsRequest defines model for DeletePluginVersionDocs_request.
@@ -1589,13 +1591,6 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
-// PriceCategorySpend Spend by price category for a defined period.
-type PriceCategorySpend struct {
-	// Category Supported price categories for billing
-	Category PluginPriceCategory `json:"category"`
-	Total    string              `json:"total"`
-}
-
 // RegistryAuthToken JWT token for the image registry
 type RegistryAuthToken struct {
 	AccessToken string `json:"access_token"`
@@ -1611,28 +1606,13 @@ type ReleaseURL struct {
 // Note that empty or all-zero values are not included in the response.
 type SpendSummary struct {
 	// Metadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
-	Metadata             SpendSummaryMetadata   `json:"metadata"`
-	Values               interface{}            `json:"values"`
-	AdditionalProperties map[string]interface{} `json:"-"`
-}
-
-// SpendSummaryValue A spend summary value.
-type SpendSummaryValue struct {
-	ByCategory []PriceCategorySpend `json:"by_category"`
-
-	// Date The timestamp for the spend summary.
-	Date time.Time `json:"date"`
-
-	// Total Total spend for the period in USD.
-	Total string `json:"total"`
+	Metadata SpendSummaryMetadata `json:"metadata"`
+	Values   interface{}          `json:"values"`
 }
 
 // SpendSummaryMetadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
 type SpendSummaryMetadata struct {
-	// End The exclusive end of the query time range.
-	End interface{} `json:"end"`
-
-	// Start The inclusive start of the query time range.
+	End   interface{} `json:"end"`
 	Start interface{} `json:"start"`
 }
 
@@ -2019,9 +1999,7 @@ type SyncUpdate struct {
 
 // SyncRunLogs defines model for Sync_Run_Logs.
 type SyncRunLogs struct {
-	// Location The location to download the sync run logs from
-	Location             interface{}            `json:"location"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	Location interface{} `json:"location"`
 }
 
 // Team CloudQuery Team
@@ -2111,9 +2089,7 @@ type TeamSubscriptionOrderStatus string
 
 // UpdateCurrentUserRequest defines model for UpdateCurrentUser_request.
 type UpdateCurrentUserRequest struct {
-	// Name The user's name
-	Name                 *interface{}           `json:"name,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	Name *interface{} `json:"name,omitempty"`
 }
 
 // UpdateSyncRunRequest defines model for UpdateSyncRun_request.
@@ -2133,9 +2109,7 @@ type UpdateSyncTestConnectionRequest struct {
 
 // UpdateTeamRequest defines model for UpdateTeam_request.
 type UpdateTeamRequest struct {
-	// DisplayName The team's display name
-	DisplayName          *interface{}           `json:"display_name,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	DisplayName *interface{} `json:"display_name,omitempty"`
 }
 
 // UsageCurrent The usage of a plugin within the current calendar month.
@@ -2196,56 +2170,24 @@ type UsageIncreaseTablesInner struct {
 // UsageSummary A usage summary for a team, summarizing the paid rows synced and/or cloud resource usage over a given time range.
 // Note that empty or all-zero values are not included in the response.
 type UsageSummary struct {
-	// Groups The groups of the usage summary. Every group will have a corresponding value at the same index in the values array.
 	Groups interface{} `json:"groups"`
 
 	// Metadata Additional metadata about the usage summary. This may include information about the time range, the aggregation period, or other details.
-	Metadata             UsageSummaryMetadata   `json:"metadata"`
-	Values               interface{}            `json:"values"`
-	AdditionalProperties map[string]interface{} `json:"-"`
-}
-
-// UsageSummaryGroup A usage summary group.
-type UsageSummaryGroup struct {
-	// Name The name of the group.
-	Name string `json:"name"`
-
-	// Value The value of the group at this index.
-	Value string `json:"value"`
-}
-
-// UsageSummaryValue A usage summary value.
-type UsageSummaryValue struct {
-	// CloudEgressBytes Egress bytes consumed in this period, one per group.
-	CloudEgressBytes *[]int64 `json:"cloud_egress_bytes,omitempty"`
-
-	// CloudVcpuSeconds vCPU/seconds consumed in this period, one per group.
-	CloudVcpuSeconds *[]int64 `json:"cloud_vcpu_seconds,omitempty"`
-
-	// CloudVramByteSeconds vRAM/byte-seconds consumed in this period, one per group.
-	CloudVramByteSeconds *[]int64 `json:"cloud_vram_byte_seconds,omitempty"`
-
-	// PaidRows The paid rows that were synced in this period, one per group.
-	PaidRows *[]int64 `json:"paid_rows,omitempty"`
-
-	// Timestamp The timestamp marking the start of a period.
-	Timestamp time.Time `json:"timestamp"`
+	Metadata UsageSummaryMetadata `json:"metadata"`
+	Values   interface{}          `json:"values"`
 }
 
 // UsageSummaryMetadata Additional metadata about the usage summary. This may include information about the time range, the aggregation period, or other details.
 type UsageSummaryMetadata struct {
 	// AggregationPeriod The aggregation period to sum data over. In other words, data will be returned at this granularity.
-	AggregationPeriod interface{} `json:"aggregation_period"`
-
-	// End The exclusive end of the query time range.
-	End interface{} `json:"end"`
-
-	// Metrics List of metrics included in the response.
-	Metrics interface{} `json:"metrics"`
-
-	// Start The inclusive start of the query time range.
-	Start interface{} `json:"start"`
+	AggregationPeriod UsageSummaryMetadataAggregationPeriod `json:"aggregation_period"`
+	End               interface{}                           `json:"end"`
+	Metrics           interface{}                           `json:"metrics"`
+	Start             interface{}                           `json:"start"`
 }
+
+// UsageSummaryMetadataAggregationPeriod The aggregation period to sum data over. In other words, data will be returned at this granularity.
+type UsageSummaryMetadataAggregationPeriod string
 
 // User CloudQuery User
 type User struct {
@@ -2814,455 +2756,3 @@ type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
 
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody = UpdateCurrentUserRequest
-
-// Getter for additional properties for CreateTeamRequest. Returns the specified
-// element and whether it was found
-func (a CreateTeamRequest) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for CreateTeamRequest
-func (a *CreateTeamRequest) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for CreateTeamRequest to handle AdditionalProperties
-func (a *CreateTeamRequest) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["display_name"]; found {
-		err = json.Unmarshal(raw, &a.DisplayName)
-		if err != nil {
-			return fmt.Errorf("error reading 'display_name': %w", err)
-		}
-		delete(object, "display_name")
-	}
-
-	if raw, found := object["name"]; found {
-		err = json.Unmarshal(raw, &a.Name)
-		if err != nil {
-			return fmt.Errorf("error reading 'name': %w", err)
-		}
-		delete(object, "name")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for CreateTeamRequest to handle AdditionalProperties
-func (a CreateTeamRequest) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["display_name"], err = json.Marshal(a.DisplayName)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'display_name': %w", err)
-	}
-
-	object["name"], err = json.Marshal(a.Name)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'name': %w", err)
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for SpendSummary. Returns the specified
-// element and whether it was found
-func (a SpendSummary) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for SpendSummary
-func (a *SpendSummary) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for SpendSummary to handle AdditionalProperties
-func (a *SpendSummary) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["metadata"]; found {
-		err = json.Unmarshal(raw, &a.Metadata)
-		if err != nil {
-			return fmt.Errorf("error reading 'metadata': %w", err)
-		}
-		delete(object, "metadata")
-	}
-
-	if raw, found := object["values"]; found {
-		err = json.Unmarshal(raw, &a.Values)
-		if err != nil {
-			return fmt.Errorf("error reading 'values': %w", err)
-		}
-		delete(object, "values")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for SpendSummary to handle AdditionalProperties
-func (a SpendSummary) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["metadata"], err = json.Marshal(a.Metadata)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'metadata': %w", err)
-	}
-
-	object["values"], err = json.Marshal(a.Values)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'values': %w", err)
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for SyncRunLogs. Returns the specified
-// element and whether it was found
-func (a SyncRunLogs) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for SyncRunLogs
-func (a *SyncRunLogs) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for SyncRunLogs to handle AdditionalProperties
-func (a *SyncRunLogs) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["location"]; found {
-		err = json.Unmarshal(raw, &a.Location)
-		if err != nil {
-			return fmt.Errorf("error reading 'location': %w", err)
-		}
-		delete(object, "location")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for SyncRunLogs to handle AdditionalProperties
-func (a SyncRunLogs) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["location"], err = json.Marshal(a.Location)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'location': %w", err)
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for UpdateCurrentUserRequest. Returns the specified
-// element and whether it was found
-func (a UpdateCurrentUserRequest) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for UpdateCurrentUserRequest
-func (a *UpdateCurrentUserRequest) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for UpdateCurrentUserRequest to handle AdditionalProperties
-func (a *UpdateCurrentUserRequest) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["name"]; found {
-		err = json.Unmarshal(raw, &a.Name)
-		if err != nil {
-			return fmt.Errorf("error reading 'name': %w", err)
-		}
-		delete(object, "name")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for UpdateCurrentUserRequest to handle AdditionalProperties
-func (a UpdateCurrentUserRequest) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	if a.Name != nil {
-		object["name"], err = json.Marshal(a.Name)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'name': %w", err)
-		}
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for UpdateTeamRequest. Returns the specified
-// element and whether it was found
-func (a UpdateTeamRequest) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for UpdateTeamRequest
-func (a *UpdateTeamRequest) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for UpdateTeamRequest to handle AdditionalProperties
-func (a *UpdateTeamRequest) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["display_name"]; found {
-		err = json.Unmarshal(raw, &a.DisplayName)
-		if err != nil {
-			return fmt.Errorf("error reading 'display_name': %w", err)
-		}
-		delete(object, "display_name")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for UpdateTeamRequest to handle AdditionalProperties
-func (a UpdateTeamRequest) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	if a.DisplayName != nil {
-		object["display_name"], err = json.Marshal(a.DisplayName)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'display_name': %w", err)
-		}
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for UsageSummary. Returns the specified
-// element and whether it was found
-func (a UsageSummary) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for UsageSummary
-func (a *UsageSummary) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for UsageSummary to handle AdditionalProperties
-func (a *UsageSummary) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["groups"]; found {
-		err = json.Unmarshal(raw, &a.Groups)
-		if err != nil {
-			return fmt.Errorf("error reading 'groups': %w", err)
-		}
-		delete(object, "groups")
-	}
-
-	if raw, found := object["metadata"]; found {
-		err = json.Unmarshal(raw, &a.Metadata)
-		if err != nil {
-			return fmt.Errorf("error reading 'metadata': %w", err)
-		}
-		delete(object, "metadata")
-	}
-
-	if raw, found := object["values"]; found {
-		err = json.Unmarshal(raw, &a.Values)
-		if err != nil {
-			return fmt.Errorf("error reading 'values': %w", err)
-		}
-		delete(object, "values")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for UsageSummary to handle AdditionalProperties
-func (a UsageSummary) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["groups"], err = json.Marshal(a.Groups)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'groups': %w", err)
-	}
-
-	object["metadata"], err = json.Marshal(a.Metadata)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'metadata': %w", err)
-	}
-
-	object["values"], err = json.Marshal(a.Values)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'values': %w", err)
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}

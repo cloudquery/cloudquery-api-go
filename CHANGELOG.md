@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.9.2...v1.10.0) (2024-05-08)
+
+
+### Features
+
+* Use consistent enum naming ([#159](https://github.com/cloudquery/cloudquery-api-go/issues/159)) ([3d854f8](https://github.com/cloudquery/cloudquery-api-go/commit/3d854f8120d9bbb7a6c80c1c61f1a5a3c2cf5c20))
+
 ## [1.9.2](https://github.com/cloudquery/cloudquery-api-go/compare/v1.9.1...v1.9.2) (2024-05-06)
 
 
