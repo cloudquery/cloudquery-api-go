@@ -14,7 +14,7 @@ gen-client:
 		echo "You can install it by following the instructions at: https://github.com/OpenAPITools/openapi-generator?tab=readme-ov-file#1---installation"; \
 		exit 1; \
 	}
-	openapi-generator generate -g openapi --skip-validate-spec -i spec.json -o .openapi-tmp
+	openapi-generator generate -g openapi -i spec.json -o .openapi-tmp
 	mv .openapi-tmp/openapi.json spec.json
 	rm -rf .openapi-tmp
 	go generate ./...
