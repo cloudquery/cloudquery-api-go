@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.10.0...v1.11.0) (2024-05-09)
+
+
+### Features
+
+* Extract nested properties in their own structs ([#158](https://github.com/cloudquery/cloudquery-api-go/issues/158)) ([01453e3](https://github.com/cloudquery/cloudquery-api-go/commit/01453e3bf74fa1f9f36a43c9ae78e4130a254f52))
+
 ## [1.10.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.9.2...v1.10.0) (2024-05-08)
 
 
