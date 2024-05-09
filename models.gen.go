@@ -52,6 +52,12 @@ const (
 	AddonTypeVisualization  AddonType = "visualization"
 )
 
+// Defines values for EmailTeamInvitationRequestRole.
+const (
+	EmailTeamInvitationRequestRoleAdmin  EmailTeamInvitationRequestRole = "admin"
+	EmailTeamInvitationRequestRoleMember EmailTeamInvitationRequestRole = "member"
+)
+
 // Defines values for PluginCategory.
 const (
 	PluginCategoryCloudFinops          PluginCategory = "cloud-finops"
@@ -186,14 +192,6 @@ const (
 	UsageSummaryMetadataAggregationPeriodMonth UsageSummaryMetadataAggregationPeriod = "month"
 )
 
-// Defines values for UsageSummaryMetadataMetrics.
-const (
-	UsageSummaryMetadataMetricsCloudEgressBytes     UsageSummaryMetadataMetrics = "cloud_egress_bytes"
-	UsageSummaryMetadataMetricsCloudVcpuSeconds     UsageSummaryMetadataMetrics = "cloud_vcpu_seconds"
-	UsageSummaryMetadataMetricsCloudVramByteSeconds UsageSummaryMetadataMetrics = "cloud_vram_byte_seconds"
-	UsageSummaryMetadataMetricsPaidRows             UsageSummaryMetadataMetrics = "paid_rows"
-)
-
 // Defines values for AddonSortBy.
 const (
 	AddonSortByCreatedAt AddonSortBy = "created_at"
@@ -239,12 +237,6 @@ const (
 // Defines values for ListPluginVersionsParamsSortBy.
 const (
 	ListPluginVersionsParamsSortByCreatedAt ListPluginVersionsParamsSortBy = "created_at"
-)
-
-// Defines values for EmailTeamInvitationJSONBodyRole.
-const (
-	EmailTeamInvitationJSONBodyRoleAdmin  EmailTeamInvitationJSONBodyRole = "admin"
-	EmailTeamInvitationJSONBodyRoleMember EmailTeamInvitationJSONBodyRole = "member"
 )
 
 // Defines values for GetTeamUsageSummaryParamsMetrics.
@@ -314,6 +306,11 @@ type APIKeyName = string
 
 // APIKeyScope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
 type APIKeyScope string
+
+// AcceptTeamInvitationRequest defines model for AcceptTeamInvitation_request.
+type AcceptTeamInvitationRequest struct {
+	Token openapi_types.UUID `json:"token"`
+}
 
 // Addon CloudQuery Addon
 type Addon struct {
@@ -550,6 +547,121 @@ type BasicError struct {
 	Status  int    `json:"status"`
 }
 
+// CreateAddonVersionRequest defines model for CreateAddonVersion_request.
+type CreateAddonVersionRequest struct {
+	// AddonDeps addon dependencies in the format of ['team_name/type/addon_name@version']
+	AddonDeps *[]string `json:"addon_deps,omitempty"`
+
+	// Checksum SHA-256 checksum for the addon asset
+	Checksum string `json:"checksum"`
+
+	// Doc Main README in MD format
+	Doc string `json:"doc"`
+
+	// Message A message describing what's new or changed in this version.
+	// This message will be displayed to users in the addon's changelog.
+	// Supports limited markdown syntax.
+	Message string `json:"message"`
+
+	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
+	PluginDeps *[]string `json:"plugin_deps,omitempty"`
+}
+
+// CreatePluginVersionDocs201Response defines model for CreatePluginVersionDocs_201_response.
+type CreatePluginVersionDocs201Response struct {
+	Names *[]PluginDocsPageName `json:"names,omitempty"`
+}
+
+// CreatePluginVersionDocsRequest defines model for CreatePluginVersionDocs_request.
+type CreatePluginVersionDocsRequest struct {
+	Pages []PluginDocsPageCreate `json:"pages"`
+}
+
+// CreatePluginVersionTables201Response defines model for CreatePluginVersionTables_201_response.
+type CreatePluginVersionTables201Response struct {
+	Names *[]PluginTableName `json:"names,omitempty"`
+}
+
+// CreatePluginVersionTablesRequest defines model for CreatePluginVersionTables_request.
+type CreatePluginVersionTablesRequest struct {
+	Tables []PluginTableCreate `json:"tables"`
+}
+
+// CreatePluginVersionRequest defines model for CreatePluginVersion_request.
+type CreatePluginVersionRequest struct {
+	// Checksums List of SHA-256 checksums for this plugin version, one for each supported target.
+	Checksums []string `json:"checksums"`
+
+	// Message A message describing what's new or changed in this version.
+	// This message will be displayed to users in the plugin's changelog.
+	// Supports limited markdown syntax.
+	Message string `json:"message"`
+
+	// PackageType The package type of the plugin assets
+	PackageType PluginPackageType `json:"package_type"`
+
+	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
+	Protocols PluginProtocols `json:"protocols"`
+
+	// SpecJsonSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
+	SpecJsonSchema *PluginSpecJSONSchema `json:"spec_json_schema,omitempty"`
+
+	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
+	SupportedTargets []string `json:"supported_targets"`
+}
+
+// CreateSyncRunProgressRequest defines model for CreateSyncRunProgress_request.
+type CreateSyncRunProgressRequest struct {
+	// Errors Number of errors encountered so far
+	Errors int64 `json:"errors"`
+
+	// Rows Number of rows synced so far
+	Rows int64 `json:"rows"`
+
+	// Status The status of the sync run
+	Status *SyncRunStatus `json:"status,omitempty"`
+
+	// Warnings Number of warnings encountered so far
+	Warnings int64 `json:"warnings"`
+}
+
+// CreateTeamAPIKeyRequest defines model for CreateTeamAPIKey_request.
+type CreateTeamAPIKeyRequest struct {
+	ExpiresAt time.Time `json:"expires_at"`
+
+	// Name Name of the API key
+	Name APIKeyName `json:"name"`
+}
+
+// CreateTeamImages201Response defines model for CreateTeamImages_201_response.
+type CreateTeamImages201Response struct {
+	Items    []TeamImage  `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// CreateTeamImagesRequest defines model for CreateTeamImages_request.
+type CreateTeamImagesRequest struct {
+	Images []TeamImageCreate `json:"images"`
+}
+
+// CreateTeamRequest defines model for CreateTeam_request.
+type CreateTeamRequest struct {
+	DisplayName interface{} `json:"display_name"`
+
+	// Name The unique name for the team.
+	Name TeamName `json:"name"`
+}
+
+// DeletePluginVersionDocsRequest defines model for DeletePluginVersionDocs_request.
+type DeletePluginVersionDocsRequest struct {
+	Names []PluginDocsPageName `json:"names"`
+}
+
+// DeletePluginVersionTablesRequest defines model for DeletePluginVersionTables_request.
+type DeletePluginVersionTablesRequest struct {
+	Names []PluginTableName `json:"names"`
+}
+
 // DockerError Error Returned from the Docker Authorization Handler to the Docker Registry
 type DockerError struct {
 	Details string `json:"details"`
@@ -558,12 +670,33 @@ type DockerError struct {
 // Email defines model for Email.
 type Email = openapi_types.Email
 
+// EmailTeamInvitationRequest defines model for EmailTeamInvitation_request.
+type EmailTeamInvitationRequest struct {
+	Email openapi_types.Email            `json:"email"`
+	Role  EmailTeamInvitationRequestRole `json:"role"`
+}
+
+// EmailTeamInvitationRequestRole defines model for EmailTeamInvitationRequest.Role.
+type EmailTeamInvitationRequestRole string
+
 // FieldError defines model for FieldError.
 type FieldError struct {
 	Errors      *[]string          `json:"errors,omitempty"`
 	FieldErrors *map[string]string `json:"field_errors,omitempty"`
 	Message     string             `json:"message"`
 	Status      int                `json:"status"`
+}
+
+// GetCurrentUserMemberships200Response defines model for GetCurrentUserMemberships_200_response.
+type GetCurrentUserMemberships200Response struct {
+	Items    []MembershipWithTeam `json:"items"`
+	Metadata ListMetadata         `json:"metadata"`
+}
+
+// GetTeamMemberships200Response defines model for GetTeamMemberships_200_response.
+type GetTeamMemberships200Response struct {
+	Items    []MembershipWithUser `json:"items"`
+	Metadata ListMetadata         `json:"metadata"`
 }
 
 // ImageURL defines model for ImageURL.
@@ -651,10 +784,52 @@ type ListAddon struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// ListAddonOrdersByTeam200Response defines model for ListAddonOrdersByTeam_200_response.
+type ListAddonOrdersByTeam200Response struct {
+	Items    []AddonOrder `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListAddonVersions200Response defines model for ListAddonVersions_200_response.
+type ListAddonVersions200Response struct {
+	Items    []AddonVersion `json:"items"`
+	Metadata ListMetadata   `json:"metadata"`
+}
+
+// ListAddonsByTeam200Response defines model for ListAddonsByTeam_200_response.
+type ListAddonsByTeam200Response struct {
+	Items    []Addon      `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListAddons200Response defines model for ListAddons_200_response.
+type ListAddons200Response struct {
+	Items    []ListAddon  `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListCurrentUserInvitations200Response defines model for ListCurrentUserInvitations_200_response.
+type ListCurrentUserInvitations200Response struct {
+	Items    []InvitationWithToken `json:"items"`
+	Metadata ListMetadata          `json:"metadata"`
+}
+
+// ListInvoicesByTeam200Response defines model for ListInvoicesByTeam_200_response.
+type ListInvoicesByTeam200Response struct {
+	Items    []Invoice    `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
 // ListMetadata defines model for ListMetadata.
 type ListMetadata struct {
 	LastPage   *int `json:"last_page,omitempty"`
 	TotalCount *int `json:"total_count,omitempty"`
+}
+
+// ListMonthlyLimitsByTeam200Response defines model for ListMonthlyLimitsByTeam_200_response.
+type ListMonthlyLimitsByTeam200Response struct {
+	Items    []MonthlyLimit `json:"items"`
+	Metadata ListMetadata   `json:"metadata"`
 }
 
 // ListPlugin defines model for ListPlugin.
@@ -717,6 +892,108 @@ type ListPlugin struct {
 	// UsdPerRow Deprecated. Refer to `price_category` instead.
 	// Deprecated:
 	USDPerRow string `json:"usd_per_row"`
+}
+
+// ListPluginNotificationRequests200Response defines model for ListPluginNotificationRequests_200_response.
+type ListPluginNotificationRequests200Response struct {
+	Items    []PluginNotificationRequest `json:"items"`
+	Metadata ListMetadata                `json:"metadata"`
+}
+
+// ListPluginUpcomingPriceChanges200Response defines model for ListPluginUpcomingPriceChanges_200_response.
+type ListPluginUpcomingPriceChanges200Response struct {
+	Items    []PluginPrice `json:"items"`
+	Metadata ListMetadata  `json:"metadata"`
+}
+
+// ListPluginVersionDocs200Response defines model for ListPluginVersionDocs_200_response.
+type ListPluginVersionDocs200Response struct {
+	Items    []PluginDocsPage `json:"items"`
+	Metadata ListMetadata     `json:"metadata"`
+}
+
+// ListPluginVersionTables200Response defines model for ListPluginVersionTables_200_response.
+type ListPluginVersionTables200Response struct {
+	Items    []PluginTable `json:"items"`
+	Metadata ListMetadata  `json:"metadata"`
+}
+
+// ListPluginVersions200Response defines model for ListPluginVersions_200_response.
+type ListPluginVersions200Response struct {
+	Items    []PluginVersionList `json:"items"`
+	Metadata ListMetadata        `json:"metadata"`
+}
+
+// ListPluginsByTeam200Response defines model for ListPluginsByTeam_200_response.
+type ListPluginsByTeam200Response struct {
+	Items    []Plugin     `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListPlugins200Response defines model for ListPlugins_200_response.
+type ListPlugins200Response struct {
+	Items    []ListPlugin `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListSubscriptionOrdersByTeam200Response defines model for ListSubscriptionOrdersByTeam_200_response.
+type ListSubscriptionOrdersByTeam200Response struct {
+	Items    []TeamSubscriptionOrder `json:"items"`
+	Metadata ListMetadata            `json:"metadata"`
+}
+
+// ListSyncDestinations200Response defines model for ListSyncDestinations_200_response.
+type ListSyncDestinations200Response struct {
+	Items    []SyncDestination `json:"items"`
+	Metadata ListMetadata      `json:"metadata"`
+}
+
+// ListSyncRuns200Response defines model for ListSyncRuns_200_response.
+type ListSyncRuns200Response struct {
+	Items    []SyncRun    `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListSyncSources200Response defines model for ListSyncSources_200_response.
+type ListSyncSources200Response struct {
+	Items    []SyncSource `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListSyncs200Response defines model for ListSyncs_200_response.
+type ListSyncs200Response struct {
+	Items    []Sync       `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListTeamAPIKeys200Response defines model for ListTeamAPIKeys_200_response.
+type ListTeamAPIKeys200Response struct {
+	Items    []APIKey     `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListTeamInvitations200Response defines model for ListTeamInvitations_200_response.
+type ListTeamInvitations200Response struct {
+	Items    []Invitation `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListTeamPluginUsage200Response defines model for ListTeamPluginUsage_200_response.
+type ListTeamPluginUsage200Response struct {
+	Items    []UsageCurrent `json:"items"`
+	Metadata ListMetadata   `json:"metadata"`
+}
+
+// ListTeams200Response defines model for ListTeams_200_response.
+type ListTeams200Response struct {
+	Items    []Team       `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListUsersByTeam200Response defines model for ListUsersByTeam_200_response.
+type ListUsersByTeam200Response struct {
+	Items    []User       `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
 }
 
 // MembershipWithTeam defines model for MembershipWithTeam.
@@ -1314,13 +1591,6 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
-// PriceCategorySpend Spend by price category for a defined period.
-type PriceCategorySpend struct {
-	// Category Supported price categories for billing
-	Category PluginPriceCategory `json:"category"`
-	Total    string              `json:"total"`
-}
-
 // RegistryAuthToken JWT token for the image registry
 type RegistryAuthToken struct {
 	AccessToken string `json:"access_token"`
@@ -1336,25 +1606,14 @@ type ReleaseURL struct {
 // Note that empty or all-zero values are not included in the response.
 type SpendSummary struct {
 	// Metadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
-	Metadata struct {
-		// End The exclusive end of the query time range.
-		End time.Time `json:"end"`
-
-		// Start The inclusive start of the query time range.
-		Start time.Time `json:"start"`
-	} `json:"metadata"`
-	Values []SpendSummaryValue `json:"values"`
+	Metadata SpendSummaryMetadata `json:"metadata"`
+	Values   interface{}          `json:"values"`
 }
 
-// SpendSummaryValue A spend summary value.
-type SpendSummaryValue struct {
-	ByCategory []PriceCategorySpend `json:"by_category"`
-
-	// Date The timestamp for the spend summary.
-	Date time.Time `json:"date"`
-
-	// Total Total spend for the period in USD.
-	Total string `json:"total"`
+// SpendSummaryMetadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
+type SpendSummaryMetadata struct {
+	End   interface{} `json:"end"`
+	Start interface{} `json:"start"`
 }
 
 // SpendingLimit A configurable spending limit for the team. Empty values indicate no limit.
@@ -1443,17 +1702,17 @@ type SyncDestination struct {
 	Env []SyncEnv `json:"env"`
 
 	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource SyncLastUpdateSource `json:"last_update_source"`
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
-	MigrateMode SyncDestinationMigrateMode `json:"migrate_mode"`
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
 
 	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
 
 	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath         `json:"path"`
-	Spec map[string]interface{} `json:"spec"`
+	Path SyncPluginPath          `json:"path"`
+	Spec *map[string]interface{} `json:"spec,omitempty"`
 
 	// UpdatedAt Time when the source was last updated
 	UpdatedAt time.Time `json:"updated_at"`
@@ -1462,7 +1721,7 @@ type SyncDestination struct {
 	Version string `json:"version"`
 
 	// WriteMode Write mode for the destination
-	WriteMode SyncDestinationWriteMode `json:"write_mode"`
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
 }
 
 // SyncDestinationCreate Sync Destination Definition
@@ -1626,7 +1885,7 @@ type SyncSource struct {
 	Env []SyncEnv `json:"env"`
 
 	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource SyncLastUpdateSource `json:"last_update_source"`
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
@@ -1635,8 +1894,8 @@ type SyncSource struct {
 	Path SyncPluginPath `json:"path"`
 
 	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables []string               `json:"skip_tables"`
-	Spec       map[string]interface{} `json:"spec"`
+	SkipTables *[]string               `json:"skip_tables,omitempty"`
+	Spec       *map[string]interface{} `json:"spec,omitempty"`
 
 	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
 	Tables []string `json:"tables"`
@@ -1738,6 +1997,11 @@ type SyncUpdate struct {
 	Source *string `json:"source,omitempty"`
 }
 
+// SyncRunLogs defines model for Sync_Run_Logs.
+type SyncRunLogs struct {
+	Location interface{} `json:"location"`
+}
+
 // Team CloudQuery Team
 type Team struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -1823,6 +2087,31 @@ type TeamSubscriptionOrderID = openapi_types.UUID
 // TeamSubscriptionOrderStatus defines model for TeamSubscriptionOrderStatus.
 type TeamSubscriptionOrderStatus string
 
+// UpdateCurrentUserRequest defines model for UpdateCurrentUser_request.
+type UpdateCurrentUserRequest struct {
+	Name *interface{} `json:"name,omitempty"`
+}
+
+// UpdateSyncRunRequest defines model for UpdateSyncRun_request.
+type UpdateSyncRunRequest struct {
+	// Status The status of the sync run
+	Status *SyncRunStatus `json:"status,omitempty"`
+
+	// StatusReason The reason for the status
+	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
+}
+
+// UpdateSyncTestConnectionRequest defines model for UpdateSyncTestConnection_request.
+type UpdateSyncTestConnectionRequest struct {
+	// Status The status of the sync run
+	Status SyncTestConnectionStatus `json:"status"`
+}
+
+// UpdateTeamRequest defines model for UpdateTeam_request.
+type UpdateTeamRequest struct {
+	DisplayName *interface{} `json:"display_name,omitempty"`
+}
+
 // UsageCurrent The usage of a plugin within the current calendar month.
 type UsageCurrent struct {
 	// PluginKind The kind of plugin, ie. source or destination.
@@ -1865,71 +2154,40 @@ type UsageIncrease struct {
 	RequestId openapi_types.UUID `json:"request_id"`
 
 	// Rows The total number of additional rows used by the plugin.
-	Rows   int `json:"rows"`
-	Tables *[]struct {
-		// Name The name of the table.
-		Name string `json:"name"`
+	Rows   int                         `json:"rows"`
+	Tables *[]UsageIncreaseTablesInner `json:"tables,omitempty"`
+}
 
-		// Rows The additional rows used by the table.
-		Rows int `json:"rows"`
-	} `json:"tables,omitempty"`
+// UsageIncreaseTablesInner defines model for UsageIncrease_tables_inner.
+type UsageIncreaseTablesInner struct {
+	// Name The name of the table.
+	Name string `json:"name"`
+
+	// Rows The additional rows used by the table.
+	Rows int `json:"rows"`
 }
 
 // UsageSummary A usage summary for a team, summarizing the paid rows synced and/or cloud resource usage over a given time range.
 // Note that empty or all-zero values are not included in the response.
 type UsageSummary struct {
-	// Groups The groups of the usage summary. Every group will have a corresponding value at the same index in the values array.
-	Groups []UsageSummaryGroup `json:"groups"`
+	Groups interface{} `json:"groups"`
 
 	// Metadata Additional metadata about the usage summary. This may include information about the time range, the aggregation period, or other details.
-	Metadata struct {
-		// AggregationPeriod The aggregation period to sum data over. In other words, data will be returned at this granularity.
-		AggregationPeriod UsageSummaryMetadataAggregationPeriod `json:"aggregation_period"`
+	Metadata UsageSummaryMetadata `json:"metadata"`
+	Values   interface{}          `json:"values"`
+}
 
-		// End The exclusive end of the query time range.
-		End time.Time `json:"end"`
-
-		// Metrics List of metrics included in the response.
-		Metrics []UsageSummaryMetadataMetrics `json:"metrics"`
-
-		// Start The inclusive start of the query time range.
-		Start time.Time `json:"start"`
-	} `json:"metadata"`
-	Values []UsageSummaryValue `json:"values"`
+// UsageSummaryMetadata Additional metadata about the usage summary. This may include information about the time range, the aggregation period, or other details.
+type UsageSummaryMetadata struct {
+	// AggregationPeriod The aggregation period to sum data over. In other words, data will be returned at this granularity.
+	AggregationPeriod UsageSummaryMetadataAggregationPeriod `json:"aggregation_period"`
+	End               interface{}                           `json:"end"`
+	Metrics           interface{}                           `json:"metrics"`
+	Start             interface{}                           `json:"start"`
 }
 
 // UsageSummaryMetadataAggregationPeriod The aggregation period to sum data over. In other words, data will be returned at this granularity.
 type UsageSummaryMetadataAggregationPeriod string
-
-// UsageSummaryMetadataMetrics defines model for UsageSummary.Metadata.Metrics.
-type UsageSummaryMetadataMetrics string
-
-// UsageSummaryGroup A usage summary group.
-type UsageSummaryGroup struct {
-	// Name The name of the group.
-	Name string `json:"name"`
-
-	// Value The value of the group at this index.
-	Value string `json:"value"`
-}
-
-// UsageSummaryValue A usage summary value.
-type UsageSummaryValue struct {
-	// CloudEgressBytes Egress bytes consumed in this period, one per group.
-	CloudEgressBytes *[]int64 `json:"cloud_egress_bytes,omitempty"`
-
-	// CloudVcpuSeconds vCPU/seconds consumed in this period, one per group.
-	CloudVcpuSeconds *[]int64 `json:"cloud_vcpu_seconds,omitempty"`
-
-	// CloudVramByteSeconds vRAM/byte-seconds consumed in this period, one per group.
-	CloudVramByteSeconds *[]int64 `json:"cloud_vram_byte_seconds,omitempty"`
-
-	// PaidRows The paid rows that were synced in this period, one per group.
-	PaidRows *[]int64 `json:"paid_rows,omitempty"`
-
-	// Timestamp The timestamp marking the start of a period.
-	Timestamp time.Time `json:"timestamp"`
-}
 
 // User CloudQuery User
 type User struct {
@@ -2061,26 +2319,6 @@ type ListAddonVersionsParams struct {
 // ListAddonVersionsParamsSortBy defines parameters for ListAddonVersions.
 type ListAddonVersionsParamsSortBy string
 
-// CreateAddonVersionJSONBody defines parameters for CreateAddonVersion.
-type CreateAddonVersionJSONBody struct {
-	// AddonDeps addon dependencies in the format of ['team_name/type/addon_name@version']
-	AddonDeps *[]string `json:"addon_deps,omitempty"`
-
-	// Checksum SHA-256 checksum for the addon asset
-	Checksum string `json:"checksum"`
-
-	// Doc Main README in MD format
-	Doc string `json:"doc"`
-
-	// Message A message describing what's new or changed in this version.
-	// This message will be displayed to users in the addon's changelog.
-	// Supports limited markdown syntax.
-	Message string `json:"message"`
-
-	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
-	PluginDeps *[]string `json:"plugin_deps,omitempty"`
-}
-
 // DownloadAddonAssetParams defines parameters for DownloadAddonAsset.
 type DownloadAddonAssetParams struct {
 	Accept *string `json:"Accept,omitempty"`
@@ -2131,37 +2369,9 @@ type ListPluginVersionsParams struct {
 // ListPluginVersionsParamsSortBy defines parameters for ListPluginVersions.
 type ListPluginVersionsParamsSortBy string
 
-// CreatePluginVersionJSONBody defines parameters for CreatePluginVersion.
-type CreatePluginVersionJSONBody struct {
-	// Checksums List of SHA-256 checksums for this plugin version, one for each supported target.
-	Checksums []string `json:"checksums"`
-
-	// Message A message describing what's new or changed in this version.
-	// This message will be displayed to users in the plugin's changelog.
-	// Supports limited markdown syntax.
-	Message string `json:"message"`
-
-	// PackageType The package type of the plugin assets
-	PackageType PluginPackageType `json:"package_type"`
-
-	// Protocols The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).
-	Protocols PluginProtocols `json:"protocols"`
-
-	// SpecJsonSchema The specification of the plugin. This is a JSON schema that describes the configuration of the plugin.
-	SpecJsonSchema *PluginSpecJSONSchema `json:"spec_json_schema,omitempty"`
-
-	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
-	SupportedTargets []string `json:"supported_targets"`
-}
-
 // DownloadPluginAssetParams defines parameters for DownloadPluginAsset.
 type DownloadPluginAssetParams struct {
 	Accept *string `json:"Accept,omitempty"`
-}
-
-// DeletePluginVersionDocsJSONBody defines parameters for DeletePluginVersionDocs.
-type DeletePluginVersionDocsJSONBody struct {
-	Names []PluginDocsPageName `json:"names"`
 }
 
 // ListPluginVersionDocsParams defines parameters for ListPluginVersionDocs.
@@ -2173,21 +2383,6 @@ type ListPluginVersionDocsParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
-// ReplacePluginVersionDocsJSONBody defines parameters for ReplacePluginVersionDocs.
-type ReplacePluginVersionDocsJSONBody struct {
-	Pages []PluginDocsPageCreate `json:"pages"`
-}
-
-// CreatePluginVersionDocsJSONBody defines parameters for CreatePluginVersionDocs.
-type CreatePluginVersionDocsJSONBody struct {
-	Pages []PluginDocsPageCreate `json:"pages"`
-}
-
-// DeletePluginVersionTablesJSONBody defines parameters for DeletePluginVersionTables.
-type DeletePluginVersionTablesJSONBody struct {
-	Names []PluginTableName `json:"names"`
-}
-
 // ListPluginVersionTablesParams defines parameters for ListPluginVersionTables.
 type ListPluginVersionTablesParams struct {
 	// Page Page number of the results to fetch
@@ -2195,11 +2390,6 @@ type ListPluginVersionTablesParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-}
-
-// CreatePluginVersionTablesJSONBody defines parameters for CreatePluginVersionTables.
-type CreatePluginVersionTablesJSONBody struct {
-	Tables []PluginTableCreate `json:"tables"`
 }
 
 // AuthRegistryRequestParams defines parameters for AuthRegistryRequest.
@@ -2227,21 +2417,6 @@ type ListTeamsParams struct {
 
 	// Page Page number of the results to fetch
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// CreateTeamJSONBody defines parameters for CreateTeam.
-type CreateTeamJSONBody struct {
-	// DisplayName The team's display name
-	DisplayName string `json:"display_name"`
-
-	// Name The unique name for the team.
-	Name TeamName `json:"name"`
-}
-
-// UpdateTeamJSONBody defines parameters for UpdateTeam.
-type UpdateTeamJSONBody struct {
-	// DisplayName The team's display name
-	DisplayName *string `json:"display_name,omitempty"`
 }
 
 // ListAddonOrdersByTeamParams defines parameters for ListAddonOrdersByTeam.
@@ -2279,19 +2454,6 @@ type ListTeamAPIKeysParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// CreateTeamAPIKeyJSONBody defines parameters for CreateTeamAPIKey.
-type CreateTeamAPIKeyJSONBody struct {
-	ExpiresAt time.Time `json:"expires_at"`
-
-	// Name Name of the API key
-	Name APIKeyName `json:"name"`
-}
-
-// CreateTeamImagesJSONBody defines parameters for CreateTeamImages.
-type CreateTeamImagesJSONBody struct {
-	Images []TeamImageCreate `json:"images"`
-}
-
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
 type ListTeamInvitationsParams struct {
 	// Page Page number of the results to fetch
@@ -2299,20 +2461,6 @@ type ListTeamInvitationsParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-}
-
-// EmailTeamInvitationJSONBody defines parameters for EmailTeamInvitation.
-type EmailTeamInvitationJSONBody struct {
-	Email openapi_types.Email             `json:"email"`
-	Role  EmailTeamInvitationJSONBodyRole `json:"role"`
-}
-
-// EmailTeamInvitationJSONBodyRole defines parameters for EmailTeamInvitation.
-type EmailTeamInvitationJSONBodyRole string
-
-// AcceptTeamInvitationJSONBody defines parameters for AcceptTeamInvitation.
-type AcceptTeamInvitationJSONBody struct {
-	Token openapi_types.UUID `json:"token"`
 }
 
 // ListInvoicesByTeamParams defines parameters for ListInvoicesByTeam.
@@ -2404,12 +2552,6 @@ type ListSyncsParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// UpdateSyncTestConnectionJSONBody defines parameters for UpdateSyncTestConnection.
-type UpdateSyncTestConnectionJSONBody struct {
-	// Status The status of the sync run
-	Status SyncTestConnectionStatus `json:"status"`
-}
-
 // ListSyncRunsParams defines parameters for ListSyncRuns.
 type ListSyncRunsParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -2419,33 +2561,9 @@ type ListSyncRunsParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// UpdateSyncRunJSONBody defines parameters for UpdateSyncRun.
-type UpdateSyncRunJSONBody struct {
-	// Status The status of the sync run
-	Status *SyncRunStatus `json:"status,omitempty"`
-
-	// StatusReason The reason for the status
-	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
-}
-
 // GetSyncRunLogsParams defines parameters for GetSyncRunLogs.
 type GetSyncRunLogsParams struct {
 	Accept *string `json:"Accept,omitempty"`
-}
-
-// CreateSyncRunProgressJSONBody defines parameters for CreateSyncRunProgress.
-type CreateSyncRunProgressJSONBody struct {
-	// Errors Number of errors encountered so far
-	Errors int64 `json:"errors"`
-
-	// Rows Number of rows synced so far
-	Rows int64 `json:"rows"`
-
-	// Status The status of the sync run
-	Status *SyncRunStatus `json:"status,omitempty"`
-
-	// Warnings Number of warnings encountered so far
-	Warnings int64 `json:"warnings"`
 }
 
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
@@ -2501,12 +2619,6 @@ type ListUsersByTeamParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// UpdateCurrentUserJSONBody defines parameters for UpdateCurrentUser.
-type UpdateCurrentUserJSONBody struct {
-	// Name The user's name
-	Name *string `json:"name,omitempty"`
-}
-
 // ListCurrentUserInvitationsParams defines parameters for ListCurrentUserInvitations.
 type ListCurrentUserInvitationsParams struct {
 	// Page Page number of the results to fetch
@@ -2535,7 +2647,7 @@ type UpdateAddonJSONRequestBody = AddonUpdate
 type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
-type CreateAddonVersionJSONRequestBody CreateAddonVersionJSONBody
+type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
 
 // CreatePluginNotificationRequestJSONRequestBody defines body for CreatePluginNotificationRequest for application/json ContentType.
 type CreatePluginNotificationRequestJSONRequestBody = PluginNotificationRequestCreate
@@ -2553,43 +2665,43 @@ type CreatePluginUpcomingPriceChangeJSONRequestBody = PluginPriceCreate
 type UpdatePluginVersionJSONRequestBody = PluginVersionUpdate
 
 // CreatePluginVersionJSONRequestBody defines body for CreatePluginVersion for application/json ContentType.
-type CreatePluginVersionJSONRequestBody CreatePluginVersionJSONBody
+type CreatePluginVersionJSONRequestBody = CreatePluginVersionRequest
 
 // DeletePluginVersionDocsJSONRequestBody defines body for DeletePluginVersionDocs for application/json ContentType.
-type DeletePluginVersionDocsJSONRequestBody DeletePluginVersionDocsJSONBody
+type DeletePluginVersionDocsJSONRequestBody = DeletePluginVersionDocsRequest
 
 // ReplacePluginVersionDocsJSONRequestBody defines body for ReplacePluginVersionDocs for application/json ContentType.
-type ReplacePluginVersionDocsJSONRequestBody ReplacePluginVersionDocsJSONBody
+type ReplacePluginVersionDocsJSONRequestBody = CreatePluginVersionDocsRequest
 
 // CreatePluginVersionDocsJSONRequestBody defines body for CreatePluginVersionDocs for application/json ContentType.
-type CreatePluginVersionDocsJSONRequestBody CreatePluginVersionDocsJSONBody
+type CreatePluginVersionDocsJSONRequestBody = CreatePluginVersionDocsRequest
 
 // DeletePluginVersionTablesJSONRequestBody defines body for DeletePluginVersionTables for application/json ContentType.
-type DeletePluginVersionTablesJSONRequestBody DeletePluginVersionTablesJSONBody
+type DeletePluginVersionTablesJSONRequestBody = DeletePluginVersionTablesRequest
 
 // CreatePluginVersionTablesJSONRequestBody defines body for CreatePluginVersionTables for application/json ContentType.
-type CreatePluginVersionTablesJSONRequestBody CreatePluginVersionTablesJSONBody
+type CreatePluginVersionTablesJSONRequestBody = CreatePluginVersionTablesRequest
 
 // CreateTeamJSONRequestBody defines body for CreateTeam for application/json ContentType.
-type CreateTeamJSONRequestBody CreateTeamJSONBody
+type CreateTeamJSONRequestBody = CreateTeamRequest
 
 // UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
-type UpdateTeamJSONRequestBody UpdateTeamJSONBody
+type UpdateTeamJSONRequestBody = UpdateTeamRequest
 
 // CreateAddonOrderForTeamJSONRequestBody defines body for CreateAddonOrderForTeam for application/json ContentType.
 type CreateAddonOrderForTeamJSONRequestBody = AddonOrderCreate
 
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
-type CreateTeamAPIKeyJSONRequestBody CreateTeamAPIKeyJSONBody
+type CreateTeamAPIKeyJSONRequestBody = CreateTeamAPIKeyRequest
 
 // CreateTeamImagesJSONRequestBody defines body for CreateTeamImages for application/json ContentType.
-type CreateTeamImagesJSONRequestBody CreateTeamImagesJSONBody
+type CreateTeamImagesJSONRequestBody = CreateTeamImagesRequest
 
 // EmailTeamInvitationJSONRequestBody defines body for EmailTeamInvitation for application/json ContentType.
-type EmailTeamInvitationJSONRequestBody EmailTeamInvitationJSONBody
+type EmailTeamInvitationJSONRequestBody = EmailTeamInvitationRequest
 
 // AcceptTeamInvitationJSONRequestBody defines body for AcceptTeamInvitation for application/json ContentType.
-type AcceptTeamInvitationJSONRequestBody AcceptTeamInvitationJSONBody
+type AcceptTeamInvitationJSONRequestBody = AcceptTeamInvitationRequest
 
 // CreateMonthlyLimitJSONRequestBody defines body for CreateMonthlyLimit for application/json ContentType.
 type CreateMonthlyLimitJSONRequestBody = MonthlyLimitCreate
@@ -2628,19 +2740,19 @@ type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
 type CreateSyncJSONRequestBody = SyncCreate
 
 // UpdateSyncTestConnectionJSONRequestBody defines body for UpdateSyncTestConnection for application/json ContentType.
-type UpdateSyncTestConnectionJSONRequestBody UpdateSyncTestConnectionJSONBody
+type UpdateSyncTestConnectionJSONRequestBody = UpdateSyncTestConnectionRequest
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
 type UpdateSyncJSONRequestBody = SyncUpdate
 
 // UpdateSyncRunJSONRequestBody defines body for UpdateSyncRun for application/json ContentType.
-type UpdateSyncRunJSONRequestBody UpdateSyncRunJSONBody
+type UpdateSyncRunJSONRequestBody = UpdateSyncRunRequest
 
 // CreateSyncRunProgressJSONRequestBody defines body for CreateSyncRunProgress for application/json ContentType.
-type CreateSyncRunProgressJSONRequestBody CreateSyncRunProgressJSONBody
+type CreateSyncRunProgressJSONRequestBody = CreateSyncRunProgressRequest
 
 // IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
 type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
 
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
-type UpdateCurrentUserJSONRequestBody UpdateCurrentUserJSONBody
+type UpdateCurrentUserJSONRequestBody = UpdateCurrentUserRequest

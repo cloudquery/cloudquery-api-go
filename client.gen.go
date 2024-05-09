@@ -9489,12 +9489,9 @@ func (r HealthCheckResponse) StatusCode() int {
 type ListAddonsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []ListAddon  `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON500 *InternalError
+	JSON200      *ListAddons200Response
+	JSON401      *RequiresAuthentication
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -9620,14 +9617,11 @@ func (r UpdateAddonResponse) StatusCode() int {
 type ListAddonVersionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []AddonVersion `json:"items"`
-		Metadata ListMetadata   `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListAddonVersions200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -9782,12 +9776,9 @@ func (r UploadAddonAssetResponse) StatusCode() int {
 type ListPluginNotificationRequestsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []PluginNotificationRequest `json:"items"`
-		Metadata ListMetadata                `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON500 *InternalError
+	JSON200      *ListPluginNotificationRequests200Response
+	JSON401      *RequiresAuthentication
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -9861,13 +9852,10 @@ func (r DeletePluginNotificationRequestResponse) StatusCode() int {
 type GetPluginNotificationRequestResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []PluginNotificationRequest `json:"items"`
-		Metadata ListMetadata                `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListPluginNotificationRequests200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -9889,12 +9877,9 @@ func (r GetPluginNotificationRequestResponse) StatusCode() int {
 type ListPluginsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []ListPlugin `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON500 *InternalError
+	JSON200      *ListPlugins200Response
+	JSON401      *RequiresAuthentication
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10045,14 +10030,11 @@ func (r DeletePluginUpcomingPriceChangesResponse) StatusCode() int {
 type ListPluginUpcomingPriceChangesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []PluginPrice `json:"items"`
-		Metadata ListMetadata  `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListPluginUpcomingPriceChanges200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10101,14 +10083,11 @@ func (r CreatePluginUpcomingPriceChangeResponse) StatusCode() int {
 type ListPluginVersionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []PluginVersionList `json:"items"`
-		Metadata ListMetadata        `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListPluginVersions200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10287,13 +10266,10 @@ func (r DeletePluginVersionDocsResponse) StatusCode() int {
 type ListPluginVersionDocsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []PluginDocsPage `json:"items"`
-		Metadata ListMetadata     `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListPluginVersionDocs200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10315,15 +10291,13 @@ func (r ListPluginVersionDocsResponse) StatusCode() int {
 type ReplacePluginVersionDocsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *struct {
-		Names *[]PluginDocsPageName `json:"names,omitempty"`
-	}
-	JSON400 *BadRequest
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
-	JSON500 *InternalError
+	JSON201      *CreatePluginVersionDocs201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10345,15 +10319,13 @@ func (r ReplacePluginVersionDocsResponse) StatusCode() int {
 type CreatePluginVersionDocsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *struct {
-		Names *[]PluginDocsPageName `json:"names,omitempty"`
-	}
-	JSON400 *BadRequest
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
-	JSON500 *InternalError
+	JSON201      *CreatePluginVersionDocs201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10402,13 +10374,10 @@ func (r DeletePluginVersionTablesResponse) StatusCode() int {
 type ListPluginVersionTablesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []PluginTable `json:"items"`
-		Metadata ListMetadata  `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListPluginVersionTables200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10430,15 +10399,13 @@ func (r ListPluginVersionTablesResponse) StatusCode() int {
 type CreatePluginVersionTablesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *struct {
-		Names *[]PluginTableName `json:"names,omitempty"`
-	}
-	JSON400 *BadRequest
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
-	JSON500 *InternalError
+	JSON201      *CreatePluginVersionTables201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10512,14 +10479,11 @@ func (r AuthRegistryRequestResponse) StatusCode() int {
 type ListTeamsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []Team       `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListTeams200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10649,14 +10613,11 @@ func (r UpdateTeamResponse) StatusCode() int {
 type ListAddonOrdersByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []AddonOrder `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListAddonOrdersByTeam200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10756,14 +10717,11 @@ func (r DeleteAddonsByTeamResponse) StatusCode() int {
 type ListAddonsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []Addon      `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListAddonsByTeam200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10812,13 +10770,10 @@ func (r DownloadAddonAssetByTeamResponse) StatusCode() int {
 type ListTeamAPIKeysResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []APIKey     `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListTeamAPIKeys200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10891,14 +10846,11 @@ func (r DeleteTeamAPIKeyResponse) StatusCode() int {
 type CreateTeamImagesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON201      *struct {
-		Items    []TeamImage  `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON201      *CreateTeamImages201Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -10920,12 +10872,9 @@ func (r CreateTeamImagesResponse) StatusCode() int {
 type ListTeamInvitationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []Invitation `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON403 *Forbidden
-	JSON500 *InternalError
+	JSON200      *ListTeamInvitations200Response
+	JSON403      *Forbidden
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11025,14 +10974,11 @@ func (r CancelTeamInvitationResponse) StatusCode() int {
 type ListInvoicesByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []Invoice    `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListInvoicesByTeam200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11054,15 +11000,12 @@ func (r ListInvoicesByTeamResponse) StatusCode() int {
 type GetTeamMembershipsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []MembershipWithUser `json:"items"`
-		Metadata ListMetadata         `json:"metadata"`
-	}
-	JSON400 *BadRequest
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *GetTeamMemberships200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11110,14 +11053,11 @@ func (r DeleteTeamMembershipResponse) StatusCode() int {
 type ListMonthlyLimitsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []MonthlyLimit `json:"items"`
-		Metadata ListMetadata   `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListMonthlyLimitsByTeam200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11270,14 +11210,11 @@ func (r DeletePluginsByTeamResponse) StatusCode() int {
 type ListPluginsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []Plugin     `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListPluginsByTeam200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11457,14 +11394,11 @@ func (r UpdateSpendingLimitResponse) StatusCode() int {
 type ListSubscriptionOrdersByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []TeamSubscriptionOrder `json:"items"`
-		Metadata ListMetadata            `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListSubscriptionOrdersByTeam200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11540,13 +11474,10 @@ func (r GetSubscriptionOrderByTeamResponse) StatusCode() int {
 type ListSyncDestinationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []SyncDestination `json:"items"`
-		Metadata ListMetadata      `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListSyncDestinations200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11699,13 +11630,10 @@ func (r UpdateSyncDestinationResponse) StatusCode() int {
 type ListSyncSourcesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []SyncSource `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListSyncSources200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -11858,13 +11786,10 @@ func (r UpdateSyncSourceResponse) StatusCode() int {
 type ListSyncsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []Sync       `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListSyncs200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12042,13 +11967,10 @@ func (r UpdateSyncResponse) StatusCode() int {
 type ListSyncRunsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []SyncRun    `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListSyncRuns200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12148,15 +12070,12 @@ func (r UpdateSyncRunResponse) StatusCode() int {
 type GetSyncRunLogsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		// Location The location to download the sync run logs from
-		Location string `json:"location"`
-	}
-	JSON400 *BadRequest
-	JSON401 *RequiresAuthentication
-	JSON404 *NotFound
-	JSON422 *UnprocessableEntity
-	JSON500 *InternalError
+	JSON200      *SyncRunLogs
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12204,14 +12123,11 @@ func (r CreateSyncRunProgressResponse) StatusCode() int {
 type ListTeamPluginUsageResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []UsageCurrent `json:"items"`
-		Metadata ListMetadata   `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListTeamPluginUsage200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12342,15 +12258,12 @@ func (r GetTeamPluginUsageResponse) StatusCode() int {
 type ListUsersByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []User       `json:"items"`
-		Metadata ListMetadata `json:"metadata"`
-	}
-	JSON400 *BadRequest
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON404 *NotFound
-	JSON500 *InternalError
+	JSON200      *ListUsersByTeam200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12447,11 +12360,8 @@ func (r UpdateCurrentUserResponse) StatusCode() int {
 type ListCurrentUserInvitationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []InvitationWithToken `json:"items"`
-		Metadata ListMetadata          `json:"metadata"`
-	}
-	JSON500 *InternalError
+	JSON200      *ListCurrentUserInvitations200Response
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -12473,13 +12383,10 @@ func (r ListCurrentUserInvitationsResponse) StatusCode() int {
 type GetCurrentUserMembershipsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *struct {
-		Items    []MembershipWithTeam `json:"items"`
-		Metadata ListMetadata         `json:"metadata"`
-	}
-	JSON401 *RequiresAuthentication
-	JSON403 *Forbidden
-	JSON500 *InternalError
+	JSON200      *GetCurrentUserMemberships200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -13902,10 +13809,7 @@ func ParseListAddonsResponse(rsp *http.Response) (*ListAddonsResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []ListAddon  `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListAddons200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -14161,10 +14065,7 @@ func ParseListAddonVersionsResponse(rsp *http.Response) (*ListAddonVersionsRespo
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []AddonVersion `json:"items"`
-			Metadata ListMetadata   `json:"metadata"`
-		}
+		var dest ListAddonVersions200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -14509,10 +14410,7 @@ func ParseListPluginNotificationRequestsResponse(rsp *http.Response) (*ListPlugi
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []PluginNotificationRequest `json:"items"`
-			Metadata ListMetadata                `json:"metadata"`
-		}
+		var dest ListPluginNotificationRequests200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -14660,10 +14558,7 @@ func ParseGetPluginNotificationRequestResponse(rsp *http.Response) (*GetPluginNo
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []PluginNotificationRequest `json:"items"`
-			Metadata ListMetadata                `json:"metadata"`
-		}
+		var dest ListPluginNotificationRequests200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -14710,10 +14605,7 @@ func ParseListPluginsResponse(rsp *http.Response) (*ListPluginsResponse, error) 
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []ListPlugin `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListPlugins200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15016,10 +14908,7 @@ func ParseListPluginUpcomingPriceChangesResponse(rsp *http.Response) (*ListPlugi
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []PluginPrice `json:"items"`
-			Metadata ListMetadata  `json:"metadata"`
-		}
+		var dest ListPluginUpcomingPriceChanges200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15134,10 +15023,7 @@ func ParseListPluginVersionsResponse(rsp *http.Response) (*ListPluginVersionsRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []PluginVersionList `json:"items"`
-			Metadata ListMetadata        `json:"metadata"`
-		}
+		var dest ListPluginVersions200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15522,10 +15408,7 @@ func ParseListPluginVersionDocsResponse(rsp *http.Response) (*ListPluginVersionD
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []PluginDocsPage `json:"items"`
-			Metadata ListMetadata     `json:"metadata"`
-		}
+		var dest ListPluginVersionDocs200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15572,9 +15455,7 @@ func ParseReplacePluginVersionDocsResponse(rsp *http.Response) (*ReplacePluginVe
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest struct {
-			Names *[]PluginDocsPageName `json:"names,omitempty"`
-		}
+		var dest CreatePluginVersionDocs201Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15642,9 +15523,7 @@ func ParseCreatePluginVersionDocsResponse(rsp *http.Response) (*CreatePluginVers
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest struct {
-			Names *[]PluginDocsPageName `json:"names,omitempty"`
-		}
+		var dest CreatePluginVersionDocs201Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15773,10 +15652,7 @@ func ParseListPluginVersionTablesResponse(rsp *http.Response) (*ListPluginVersio
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []PluginTable `json:"items"`
-			Metadata ListMetadata  `json:"metadata"`
-		}
+		var dest ListPluginVersionTables200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -15823,9 +15699,7 @@ func ParseCreatePluginVersionTablesResponse(rsp *http.Response) (*CreatePluginVe
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest struct {
-			Names *[]PluginTableName `json:"names,omitempty"`
-		}
+		var dest CreatePluginVersionTables201Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -16001,10 +15875,7 @@ func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []Team       `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListTeams200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -16302,10 +16173,7 @@ func ParseListAddonOrdersByTeamResponse(rsp *http.Response) (*ListAddonOrdersByT
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []AddonOrder `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListAddonOrdersByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -16521,10 +16389,7 @@ func ParseListAddonsByTeamResponse(rsp *http.Response) (*ListAddonsByTeamRespons
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []Addon      `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListAddonsByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -16639,10 +16504,7 @@ func ParseListTeamAPIKeysResponse(rsp *http.Response) (*ListTeamAPIKeysResponse,
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []APIKey     `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListTeamAPIKeys200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -16790,10 +16652,7 @@ func ParseCreateTeamImagesResponse(rsp *http.Response) (*CreateTeamImagesRespons
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest struct {
-			Items    []TeamImage  `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest CreateTeamImages201Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -16847,10 +16706,7 @@ func ParseListTeamInvitationsResponse(rsp *http.Response) (*ListTeamInvitationsR
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []Invitation `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListTeamInvitations200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -17052,10 +16908,7 @@ func ParseListInvoicesByTeamResponse(rsp *http.Response) (*ListInvoicesByTeamRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []Invoice    `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListInvoicesByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -17109,10 +16962,7 @@ func ParseGetTeamMembershipsResponse(rsp *http.Response) (*GetTeamMembershipsRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []MembershipWithUser `json:"items"`
-			Metadata ListMetadata         `json:"metadata"`
-		}
+		var dest GetTeamMemberships200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -17227,10 +17077,7 @@ func ParseListMonthlyLimitsByTeamResponse(rsp *http.Response) (*ListMonthlyLimit
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []MonthlyLimit `json:"items"`
-			Metadata ListMetadata   `json:"metadata"`
-		}
+		var dest ListMonthlyLimitsByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -17561,10 +17408,7 @@ func ParseListPluginsByTeamResponse(rsp *http.Response) (*ListPluginsByTeamRespo
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []Plugin     `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListPluginsByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -17956,10 +17800,7 @@ func ParseListSubscriptionOrdersByTeamResponse(rsp *http.Response) (*ListSubscri
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []TeamSubscriptionOrder `json:"items"`
-			Metadata ListMetadata            `json:"metadata"`
-		}
+		var dest ListSubscriptionOrdersByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -18135,10 +17976,7 @@ func ParseListSyncDestinationsResponse(rsp *http.Response) (*ListSyncDestination
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []SyncDestination `json:"items"`
-			Metadata ListMetadata      `json:"metadata"`
-		}
+		var dest ListSyncDestinations200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -18462,10 +18300,7 @@ func ParseListSyncSourcesResponse(rsp *http.Response) (*ListSyncSourcesResponse,
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []SyncSource `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListSyncSources200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -18789,10 +18624,7 @@ func ParseListSyncsResponse(rsp *http.Response) (*ListSyncsResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []Sync       `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListSyncs200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -19163,10 +18995,7 @@ func ParseListSyncRunsResponse(rsp *http.Response) (*ListSyncRunsResponse, error
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []SyncRun    `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListSyncRuns200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -19375,10 +19204,7 @@ func ParseGetSyncRunLogsResponse(rsp *http.Response) (*GetSyncRunLogsResponse, e
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			// Location The location to download the sync run logs from
-			Location string `json:"location"`
-		}
+		var dest SyncRunLogs
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -19496,10 +19322,7 @@ func ParseListTeamPluginUsageResponse(rsp *http.Response) (*ListTeamPluginUsageR
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []UsageCurrent `json:"items"`
-			Metadata ListMetadata   `json:"metadata"`
-		}
+		var dest ListTeamPluginUsage200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -19804,10 +19627,7 @@ func ParseListUsersByTeamResponse(rsp *http.Response) (*ListUsersByTeamResponse,
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []User       `json:"items"`
-			Metadata ListMetadata `json:"metadata"`
-		}
+		var dest ListUsersByTeam200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -20009,10 +19829,7 @@ func ParseListCurrentUserInvitationsResponse(rsp *http.Response) (*ListCurrentUs
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []InvitationWithToken `json:"items"`
-			Metadata ListMetadata          `json:"metadata"`
-		}
+		var dest ListCurrentUserInvitations200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -20045,10 +19862,7 @@ func ParseGetCurrentUserMembershipsResponse(rsp *http.Response) (*GetCurrentUser
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items    []MembershipWithTeam `json:"items"`
-			Metadata ListMetadata         `json:"metadata"`
-		}
+		var dest GetCurrentUserMemberships200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
