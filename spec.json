@@ -2692,7 +2692,36 @@
         },
         "responses" : {
           "204" : {
-            "description" : "Success (the plugin usage was increased). It may take some time to reflect in the usage list."
+            "description" : "Success (the plugin usage was increased). It may take some time to reflect in the usage list.",
+            "headers" : {
+              "x-cq-minimum-update-interval" : {
+                "explode" : false,
+                "schema" : {
+                  "description" : "The minimum interval in seconds between usage updates.",
+                  "format" : "int32",
+                  "type" : "integer"
+                },
+                "style" : "simple"
+              },
+              "x-cq-maximum-update-interval" : {
+                "explode" : false,
+                "schema" : {
+                  "description" : "The maximum interval in seconds before a usage update is forced.",
+                  "format" : "int32",
+                  "type" : "integer"
+                },
+                "style" : "simple"
+              },
+              "x-cq-batch-limit" : {
+                "explode" : false,
+                "schema" : {
+                  "description" : "The number of rows to batch before sending a usage update.",
+                  "format" : "int32",
+                  "type" : "integer"
+                },
+                "style" : "simple"
+              }
+            }
           },
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
@@ -6967,11 +6996,34 @@
         "title" : "CloudQuery Usage Summary Value"
       },
       "UsageSummary" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "description" : "A usage summary for a team, summarizing the paid rows synced and/or cloud resource usage over a given time range.\nNote that empty or all-zero values are not included in the response.\n",
         "properties" : {
-          "groups" : { },
-          "values" : { },
+          "groups" : {
+            "description" : "The groups of the usage summary. Every group will have a corresponding value at the same index in the values array.",
+            "example" : [ {
+              "name" : "plugin",
+              "value" : "cloudquery/source/aws"
+            }, {
+              "name" : "plugin",
+              "value" : "cloudquery/source/gcp"
+            } ],
+            "items" : {
+              "$ref" : "#/components/schemas/UsageSummaryGroup"
+            }
+          },
+          "values" : {
+            "example" : [ {
+              "timestamp" : "2021-01-01T00:00:00Z",
+              "paid_rows" : [ 100, 200 ]
+            }, {
+              "timestamp" : "2021-01-02T00:00:00Z",
+              "paid_rows" : [ 150, 300 ]
+            } ],
+            "items" : {
+              "$ref" : "#/components/schemas/UsageSummaryValue"
+            }
+          },
           "metadata" : {
             "$ref" : "#/components/schemas/UsageSummary_metadata"
           }
@@ -7017,10 +7069,14 @@
         "title" : "CloudQuery Spend Summary Value"
       },
       "SpendSummary" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "description" : "A spend summary for a team, summarizing the spend by each price category over a given time range.\nNote that empty or all-zero values are not included in the response.\n",
         "properties" : {
-          "values" : { },
+          "values" : {
+            "items" : {
+              "$ref" : "#/components/schemas/SpendSummaryValue"
+            }
+          },
           "metadata" : {
             "$ref" : "#/components/schemas/SpendSummary_metadata"
           }
@@ -8079,19 +8135,25 @@
         "required" : [ "items", "metadata" ]
       },
       "CreateTeam_request" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "properties" : {
           "name" : {
             "$ref" : "#/components/schemas/TeamName"
           },
-          "display_name" : { }
+          "display_name" : {
+            "description" : "The team's display name",
+            "maxLength" : 255,
+            "minLength" : 1
+          }
         },
         "required" : [ "display_name", "name" ]
       },
       "UpdateTeam_request" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "properties" : {
-          "display_name" : { }
+          "display_name" : {
+            "description" : "The team's display name"
+          }
         }
       },
       "CreateTeamImages_request" : {
@@ -8328,9 +8390,13 @@
         "required" : [ "items", "metadata" ]
       },
       "UpdateCurrentUser_request" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "properties" : {
-          "name" : { }
+          "name" : {
+            "description" : "The user's name",
+            "maxLength" : 255,
+            "minLength" : 1
+          }
         }
       },
       "ListCurrentUserInvitations_200_response" : {
@@ -8487,9 +8553,12 @@
         "required" : [ "errors", "rows", "warnings" ]
       },
       "Sync_Run_Logs" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "properties" : {
-          "location" : { }
+          "location" : {
+            "description" : "The location to download the sync run logs from",
+            "format" : "uri"
+          }
         },
         "required" : [ "location" ],
         "title" : "Sync Run Logs"
@@ -8522,14 +8591,25 @@
         "additionalProperties" : false,
         "description" : "Additional metadata about the usage summary. This may include information about the time range, the aggregation period, or other details.",
         "properties" : {
-          "start" : { },
-          "end" : { },
+          "start" : {
+            "description" : "The inclusive start of the query time range.",
+            "format" : "date-time"
+          },
+          "end" : {
+            "description" : "The exclusive end of the query time range.",
+            "format" : "date-time"
+          },
           "aggregation_period" : {
             "description" : "The aggregation period to sum data over. In other words, data will be returned at this granularity.",
-            "enum" : [ "day", "month" ],
-            "type" : "string"
+            "enum" : [ "day", "month" ]
           },
-          "metrics" : { }
+          "metrics" : {
+            "default" : [ "paid_rows" ],
+            "description" : "List of metrics included in the response.",
+            "items" : {
+              "enum" : [ "paid_rows", "cloud_egress_bytes", "cloud_vcpu_seconds", "cloud_vram_byte_seconds" ]
+            }
+          }
         },
         "required" : [ "aggregation_period", "end", "metrics", "start" ]
       },
@@ -8537,8 +8617,14 @@
         "additionalProperties" : false,
         "description" : "Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.",
         "properties" : {
-          "start" : { },
-          "end" : { }
+          "start" : {
+            "description" : "The inclusive start of the query time range.",
+            "format" : "date-time"
+          },
+          "end" : {
+            "description" : "The exclusive end of the query time range.",
+            "format" : "date-time"
+          }
         },
         "required" : [ "end", "start" ]
       }
