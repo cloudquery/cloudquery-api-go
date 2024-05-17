@@ -37,6 +37,8 @@
     "name" : "registry"
   }, {
     "name" : "syncs"
+  }, {
+    "name" : "managed-databases"
   } ],
   "paths" : {
     "/" : {
@@ -2246,90 +2248,6 @@
         "tags" : [ "teams" ]
       }
     },
-    "/teams/{team_name}/monthly-limits" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "This endpoint is deprecated. Use the /teams/{team_name}/spending-limits endpoint instead.\nList all monthly limits for the team.\n",
-        "operationId" : "ListMonthlyLimitsByTeam",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "$ref" : "#/components/parameters/page"
-        }, {
-          "$ref" : "#/components/parameters/per_page"
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ListMonthlyLimitsByTeam_200_response"
-                }
-              }
-            },
-            "description" : "List of monthly limits for the team."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      },
-      "post" : {
-        "deprecated" : true,
-        "description" : "This endpoint is deprecated. Use the /teams/{team_name}/spending-limits endpoint instead.\nCreate a monthly limit for a plugin\n",
-        "operationId" : "CreateMonthlyLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/MonthlyLimitCreate"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/MonthlyLimit"
-                }
-              }
-            },
-            "description" : "New monthly limit created."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/UnprocessableEntity"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      }
-    },
     "/teams/{team_name}/spending-limits" : {
       "delete" : {
         "description" : "Delete a spending limit for a team",
@@ -2457,129 +2375,6 @@
               }
             },
             "description" : "Spending limit updated."
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      }
-    },
-    "/teams/{team_name}/monthly-limits/{plugin_team}/{plugin_kind}/{plugin_name}" : {
-      "delete" : {
-        "description" : "Delete a monthly limit for a plugin",
-        "operationId" : "DeleteMonthlyLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "$ref" : "#/components/parameters/plugin_team"
-        }, {
-          "$ref" : "#/components/parameters/plugin_kind"
-        }, {
-          "$ref" : "#/components/parameters/plugin_name"
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Monthly limit deleted."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      },
-      "get" : {
-        "deprecated" : true,
-        "description" : "This endpoint is deprecated. Use the /teams/{team_name}/spending-limits endpoint instead.\nGet a monthly limit for a plugin\n",
-        "operationId" : "GetMonthlyLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "$ref" : "#/components/parameters/plugin_team"
-        }, {
-          "$ref" : "#/components/parameters/plugin_kind"
-        }, {
-          "$ref" : "#/components/parameters/plugin_name"
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/MonthlyLimit"
-                }
-              }
-            },
-            "description" : "Monthly limit retrieved."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      },
-      "put" : {
-        "deprecated" : true,
-        "description" : "This endpoint is deprecated. Use the /teams/{team_name}/spending-limits endpoint instead.\nUpdate a monthly limit for a plugin\n",
-        "operationId" : "UpdateMonthlyLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "$ref" : "#/components/parameters/plugin_team"
-        }, {
-          "$ref" : "#/components/parameters/plugin_kind"
-        }, {
-          "$ref" : "#/components/parameters/plugin_name"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/MonthlyLimitUpdate"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/MonthlyLimit"
-                }
-              }
-            },
-            "description" : "Monthly limit updated."
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -4849,6 +4644,162 @@
         },
         "tags" : [ "syncs" ]
       }
+    },
+    "/teams/{team_name}/managed-databases" : {
+      "get" : {
+        "description" : "Get a paginated list of managed databases",
+        "operationId" : "GetManagedDatabases",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/per_page"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetManagedDatabases_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "managed-databases" ],
+        "x-internal" : true
+      },
+      "post" : {
+        "description" : "Create a new managed database",
+        "operationId" : "CreateManagedDatabase",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ManagedDatabaseCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ManagedDatabase"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Conflict"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "managed-databases" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/managed-databases/{managed_database_id}" : {
+      "delete" : {
+        "description" : "Delete this managed database. Any syncs relying on this database must be deleted first.",
+        "operationId" : "DeleteManagedDatabase",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/managed_database_id"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Deleted"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "managed-databases" ],
+        "x-internal" : true
+      },
+      "get" : {
+        "description" : "Get a single managed database.",
+        "operationId" : "GetManagedDatabase",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/managed_database_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ManagedDatabase"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "managed-databases" ],
+        "x-internal" : true
+      }
     }
   },
   "components" : {
@@ -5153,6 +5104,17 @@
           "$ref" : "#/components/schemas/SyncTestConnectionID"
         },
         "style" : "simple"
+      },
+      "managed_database_id" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "managed_database_id",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/ManagedDatabaseID"
+        },
+        "style" : "simple",
+        "x-go-name" : "ManagedDatabaseID"
       }
     },
     "responses" : {
@@ -5255,6 +5217,16 @@
           }
         },
         "description" : "Error Returned from the Docker Authorization Handler to the Docker Registry"
+      },
+      "Conflict" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description" : "Conflict"
       }
     },
     "schemas" : {
@@ -6682,68 +6654,6 @@
         "required" : [ "role" ],
         "title" : "CloudQuery User Membership"
       },
-      "MonthlyLimit" : {
-        "additionalProperties" : false,
-        "description" : "A configurable monthly limit for plugin usage.",
-        "properties" : {
-          "created_at" : {
-            "description" : "The date and time the plugin limit was created.",
-            "example" : "2017-07-14T16:53:42Z",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "updated_at" : {
-            "description" : "The date and time the plugin limit was last updated.",
-            "example" : "2017-07-14T16:53:42Z",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "plugin_team" : {
-            "$ref" : "#/components/schemas/TeamName"
-          },
-          "plugin_kind" : {
-            "$ref" : "#/components/schemas/PluginKind"
-          },
-          "plugin_name" : {
-            "$ref" : "#/components/schemas/PluginName"
-          },
-          "usd" : {
-            "description" : "The maximum USD amount the plugin is allowed to use within a calendar month.",
-            "example" : 1000,
-            "maximum" : 1000000000,
-            "minimum" : 0,
-            "type" : "integer",
-            "x-go-name" : "USD"
-          }
-        },
-        "required" : [ "created_at", "plugin_kind", "plugin_name", "plugin_team", "updated_at", "usd" ],
-        "title" : "CloudQuery Plugin Monthly Limit"
-      },
-      "MonthlyLimitCreate" : {
-        "additionalProperties" : false,
-        "description" : "A configurable monthly limit for plugin usage.",
-        "properties" : {
-          "plugin_team" : {
-            "$ref" : "#/components/schemas/TeamName"
-          },
-          "plugin_kind" : {
-            "$ref" : "#/components/schemas/PluginKind"
-          },
-          "plugin_name" : {
-            "$ref" : "#/components/schemas/PluginName"
-          },
-          "usd" : {
-            "description" : "The maximum USD amount the plugin is allowed to use within a calendar month.",
-            "example" : 1000,
-            "maximum" : 1000000000,
-            "minimum" : 0,
-            "type" : "integer",
-            "x-go-name" : "USD"
-          }
-        },
-        "required" : [ "plugin_kind", "plugin_name", "plugin_team", "usd" ],
-        "title" : "CloudQuery Plugin Monthly Limit"
-      },
       "SpendingLimit" : {
         "additionalProperties" : false,
         "description" : "A configurable spending limit for the team. Empty values indicate no limit.",
@@ -6802,22 +6712,6 @@
         },
         "required" : [ "usd" ],
         "title" : "Team Spending Limit"
-      },
-      "MonthlyLimitUpdate" : {
-        "additionalProperties" : false,
-        "description" : "A configurable monthly limit for plugin usage.",
-        "properties" : {
-          "usd" : {
-            "description" : "The maximum USD amount the plugin is allowed to use within a calendar month.",
-            "example" : 1000,
-            "maximum" : 1000000000,
-            "minimum" : 0,
-            "type" : "integer",
-            "x-go-name" : "USD"
-          }
-        },
-        "required" : [ "usd" ],
-        "title" : "CloudQuery Plugin Monthly Limit"
       },
       "Invoice" : {
         "additionalProperties" : false,
@@ -7429,6 +7323,16 @@
           "status" : {
             "$ref" : "#/components/schemas/SyncTestConnectionStatus"
           },
+          "failure_reason" : {
+            "description" : "Reason for failure",
+            "example" : "password authentication failed for user \"exampleuser\"",
+            "type" : "string"
+          },
+          "failure_code" : {
+            "description" : "Code for failure",
+            "example" : "INVALID_CREDENTIALS",
+            "type" : "string"
+          },
           "created_at" : {
             "description" : "Whether the sync is disabled",
             "example" : "2017-07-14T16:53:42Z",
@@ -7840,6 +7744,50 @@
             }
           }
         } ]
+      },
+      "ManagedDatabaseID" : {
+        "description" : "The identifier for the managed database",
+        "example" : "12345678-1234-1234-1234-1234567890ab",
+        "format" : "uuid",
+        "type" : "string",
+        "x-go-name" : "ManagedDatabaseID"
+      },
+      "ManagedDatabaseStatus" : {
+        "description" : "The status of the managed database",
+        "enum" : [ "pending", "processing", "ready", "failed", "expired" ],
+        "type" : "string"
+      },
+      "ManagedDatabase" : {
+        "description" : "Managed Database definition",
+        "properties" : {
+          "created_at" : {
+            "description" : "Time the managed database was created",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "connection_string" : {
+            "description" : "The connection string to the database",
+            "type" : "string"
+          },
+          "expiration" : {
+            "description" : "Time the managed database should expire",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "$ref" : "#/components/schemas/ManagedDatabaseID"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ManagedDatabaseStatus"
+          }
+        },
+        "required" : [ "created_at", "id", "status" ]
+      },
+      "ManagedDatabaseCreate" : {
+        "description" : "Managed Database creation",
+        "type" : "object"
       },
       "ListPluginNotificationRequests_200_response" : {
         "properties" : {
@@ -8283,20 +8231,6 @@
         },
         "required" : [ "items", "metadata" ]
       },
-      "ListMonthlyLimitsByTeam_200_response" : {
-        "properties" : {
-          "items" : {
-            "items" : {
-              "$ref" : "#/components/schemas/MonthlyLimit"
-            },
-            "type" : "array"
-          },
-          "metadata" : {
-            "$ref" : "#/components/schemas/ListMetadata"
-          }
-        },
-        "required" : [ "items", "metadata" ]
-      },
       "ListInvoicesByTeam_200_response" : {
         "properties" : {
           "items" : {
@@ -8567,9 +8501,33 @@
         "properties" : {
           "status" : {
             "$ref" : "#/components/schemas/SyncTestConnectionStatus"
+          },
+          "failure_reason" : {
+            "description" : "Reason for failure",
+            "example" : "password authentication failed for user \"exampleuser\"",
+            "type" : "string"
+          },
+          "failure_code" : {
+            "description" : "Code for failure",
+            "example" : "INVALID_CREDENTIALS",
+            "type" : "string"
           }
         },
         "required" : [ "status" ]
+      },
+      "GetManagedDatabases_200_response" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ManagedDatabase"
+            },
+            "type" : "array"
+          },
+          "metadata" : {
+            "$ref" : "#/components/schemas/ListMetadata"
+          }
+        },
+        "required" : [ "items", "metadata" ]
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {

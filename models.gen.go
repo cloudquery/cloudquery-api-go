@@ -60,6 +60,15 @@ const (
 	EmailTeamInvitationRequestRoleMember EmailTeamInvitationRequestRole = "member"
 )
 
+// Defines values for ManagedDatabaseStatus.
+const (
+	ManagedDatabaseStatusExpired    ManagedDatabaseStatus = "expired"
+	ManagedDatabaseStatusFailed     ManagedDatabaseStatus = "failed"
+	ManagedDatabaseStatusPending    ManagedDatabaseStatus = "pending"
+	ManagedDatabaseStatusProcessing ManagedDatabaseStatus = "processing"
+	ManagedDatabaseStatusReady      ManagedDatabaseStatus = "ready"
+)
+
 // Defines values for PluginCategory.
 const (
 	PluginCategoryCloudFinops          PluginCategory = "cloud-finops"
@@ -691,6 +700,12 @@ type GetCurrentUserMemberships200Response struct {
 	Metadata ListMetadata         `json:"metadata"`
 }
 
+// GetManagedDatabases200Response defines model for GetManagedDatabases_200_response.
+type GetManagedDatabases200Response struct {
+	Items    []ManagedDatabase `json:"items"`
+	Metadata ListMetadata      `json:"metadata"`
+}
+
 // GetTeamMemberships200Response defines model for GetTeamMemberships_200_response.
 type GetTeamMemberships200Response struct {
 	Items    []MembershipWithUser `json:"items"`
@@ -822,12 +837,6 @@ type ListInvoicesByTeam200Response struct {
 type ListMetadata struct {
 	LastPage   *int `json:"last_page,omitempty"`
 	TotalCount *int `json:"total_count,omitempty"`
-}
-
-// ListMonthlyLimitsByTeam200Response defines model for ListMonthlyLimitsByTeam_200_response.
-type ListMonthlyLimitsByTeam200Response struct {
-	Items    []MonthlyLimit `json:"items"`
-	Metadata ListMetadata   `json:"metadata"`
 }
 
 // ListPlugin defines model for ListPlugin.
@@ -994,6 +1003,33 @@ type ListUsersByTeam200Response struct {
 	Metadata ListMetadata `json:"metadata"`
 }
 
+// ManagedDatabase Managed Database definition
+type ManagedDatabase struct {
+	// ConnectionString The connection string to the database
+	ConnectionString *string `json:"connection_string,omitempty"`
+
+	// CreatedAt Time the managed database was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Expiration Time the managed database should expire
+	Expiration *time.Time `json:"expiration,omitempty"`
+
+	// Id The identifier for the managed database
+	ManagedDatabaseID ManagedDatabaseID `json:"id"`
+
+	// Status The status of the managed database
+	Status ManagedDatabaseStatus `json:"status"`
+}
+
+// ManagedDatabaseCreate Managed Database creation
+type ManagedDatabaseCreate = map[string]interface{}
+
+// ManagedDatabaseID The identifier for the managed database
+type ManagedDatabaseID = openapi_types.UUID
+
+// ManagedDatabaseStatus The status of the managed database
+type ManagedDatabaseStatus string
+
 // MembershipWithTeam defines model for MembershipWithTeam.
 type MembershipWithTeam struct {
 	Role string `json:"role"`
@@ -1008,48 +1044,6 @@ type MembershipWithUser struct {
 
 	// User CloudQuery User
 	User *User `json:"user,omitempty"`
-}
-
-// MonthlyLimit A configurable monthly limit for plugin usage.
-type MonthlyLimit struct {
-	// CreatedAt The date and time the plugin limit was created.
-	CreatedAt time.Time `json:"created_at"`
-
-	// PluginKind The kind of plugin, ie. source or destination.
-	PluginKind PluginKind `json:"plugin_kind"`
-
-	// PluginName The unique name for the plugin.
-	PluginName PluginName `json:"plugin_name"`
-
-	// PluginTeam The unique name for the team.
-	PluginTeam TeamName `json:"plugin_team"`
-
-	// UpdatedAt The date and time the plugin limit was last updated.
-	UpdatedAt time.Time `json:"updated_at"`
-
-	// Usd The maximum USD amount the plugin is allowed to use within a calendar month.
-	USD int `json:"usd"`
-}
-
-// MonthlyLimitCreate A configurable monthly limit for plugin usage.
-type MonthlyLimitCreate struct {
-	// PluginKind The kind of plugin, ie. source or destination.
-	PluginKind PluginKind `json:"plugin_kind"`
-
-	// PluginName The unique name for the plugin.
-	PluginName PluginName `json:"plugin_name"`
-
-	// PluginTeam The unique name for the team.
-	PluginTeam TeamName `json:"plugin_team"`
-
-	// Usd The maximum USD amount the plugin is allowed to use within a calendar month.
-	USD int `json:"usd"`
-}
-
-// MonthlyLimitUpdate A configurable monthly limit for plugin usage.
-type MonthlyLimitUpdate struct {
-	// Usd The maximum USD amount the plugin is allowed to use within a calendar month.
-	USD int `json:"usd"`
 }
 
 // Plugin CloudQuery Plugin
@@ -1982,6 +1976,12 @@ type SyncTestConnection struct {
 	// CreatedAt Whether the sync is disabled
 	CreatedAt time.Time `json:"created_at"`
 
+	// FailureCode Code for failure
+	FailureCode *string `json:"failure_code,omitempty"`
+
+	// FailureReason Reason for failure
+	FailureReason *string `json:"failure_reason,omitempty"`
+
 	// Id unique ID of the test connection
 	ID ID `json:"id"`
 
@@ -2127,6 +2127,12 @@ type UpdateSyncRunRequest struct {
 
 // UpdateSyncTestConnectionRequest defines model for UpdateSyncTestConnection_request.
 type UpdateSyncTestConnectionRequest struct {
+	// FailureCode Code for failure
+	FailureCode *string `json:"failure_code,omitempty"`
+
+	// FailureReason Reason for failure
+	FailureReason *string `json:"failure_reason,omitempty"`
+
 	// Status The status of the sync run
 	Status SyncTestConnectionStatus `json:"status"`
 }
@@ -2319,6 +2325,9 @@ type VersionSortBy string
 
 // BadRequest defines model for BadRequest.
 type BadRequest = FieldError
+
+// Conflict Basic Error
+type Conflict = BasicError
 
 // Forbidden defines model for Forbidden.
 type Forbidden = FieldError
@@ -2530,8 +2539,8 @@ type ListInvoicesByTeamParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
-// GetTeamMembershipsParams defines parameters for GetTeamMemberships.
-type GetTeamMembershipsParams struct {
+// GetManagedDatabasesParams defines parameters for GetManagedDatabases.
+type GetManagedDatabasesParams struct {
 	// Page Page number of the results to fetch
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 
@@ -2539,8 +2548,8 @@ type GetTeamMembershipsParams struct {
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
-// ListMonthlyLimitsByTeamParams defines parameters for ListMonthlyLimitsByTeam.
-type ListMonthlyLimitsByTeamParams struct {
+// GetTeamMembershipsParams defines parameters for GetTeamMemberships.
+type GetTeamMembershipsParams struct {
 	// Page Page number of the results to fetch
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 
@@ -2761,11 +2770,8 @@ type EmailTeamInvitationJSONRequestBody = EmailTeamInvitationRequest
 // AcceptTeamInvitationJSONRequestBody defines body for AcceptTeamInvitation for application/json ContentType.
 type AcceptTeamInvitationJSONRequestBody = AcceptTeamInvitationRequest
 
-// CreateMonthlyLimitJSONRequestBody defines body for CreateMonthlyLimit for application/json ContentType.
-type CreateMonthlyLimitJSONRequestBody = MonthlyLimitCreate
-
-// UpdateMonthlyLimitJSONRequestBody defines body for UpdateMonthlyLimit for application/json ContentType.
-type UpdateMonthlyLimitJSONRequestBody = MonthlyLimitUpdate
+// CreateManagedDatabaseJSONRequestBody defines body for CreateManagedDatabase for application/json ContentType.
+type CreateManagedDatabaseJSONRequestBody = ManagedDatabaseCreate
 
 // CreateSpendingLimitJSONRequestBody defines body for CreateSpendingLimit for application/json ContentType.
 type CreateSpendingLimitJSONRequestBody = SpendingLimitCreate
