@@ -314,30 +314,25 @@ type ClientInterface interface {
 	// ListInvoicesByTeam request
 	ListInvoicesByTeam(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetManagedDatabases request
+	GetManagedDatabases(ctx context.Context, teamName TeamName, params *GetManagedDatabasesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateManagedDatabaseWithBody request with any body
+	CreateManagedDatabaseWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateManagedDatabase(ctx context.Context, teamName TeamName, body CreateManagedDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteManagedDatabase request
+	DeleteManagedDatabase(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetManagedDatabase request
+	GetManagedDatabase(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetTeamMemberships request
 	GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteTeamMembership request
 	DeleteTeamMembership(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ListMonthlyLimitsByTeam request
-	ListMonthlyLimitsByTeam(ctx context.Context, teamName TeamName, params *ListMonthlyLimitsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CreateMonthlyLimitWithBody request with any body
-	CreateMonthlyLimitWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateMonthlyLimit(ctx context.Context, teamName TeamName, body CreateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// DeleteMonthlyLimit request
-	DeleteMonthlyLimit(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// GetMonthlyLimit request
-	GetMonthlyLimit(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// UpdateMonthlyLimitWithBody request with any body
-	UpdateMonthlyLimitWithBody(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	UpdateMonthlyLimit(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, body UpdateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePluginsByTeam request
 	DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1488,6 +1483,66 @@ func (c *Client) ListInvoicesByTeam(ctx context.Context, teamName TeamName, para
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetManagedDatabases(ctx context.Context, teamName TeamName, params *GetManagedDatabasesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetManagedDatabasesRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateManagedDatabaseWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateManagedDatabaseRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateManagedDatabase(ctx context.Context, teamName TeamName, body CreateManagedDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateManagedDatabaseRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteManagedDatabase(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteManagedDatabaseRequest(c.Server, teamName, managedDatabaseID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetManagedDatabase(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetManagedDatabaseRequest(c.Server, teamName, managedDatabaseID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTeamMembershipsRequest(c.Server, teamName, params)
 	if err != nil {
@@ -1502,90 +1557,6 @@ func (c *Client) GetTeamMemberships(ctx context.Context, teamName TeamName, para
 
 func (c *Client) DeleteTeamMembership(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteTeamMembershipRequest(c.Server, teamName, email)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ListMonthlyLimitsByTeam(ctx context.Context, teamName TeamName, params *ListMonthlyLimitsByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListMonthlyLimitsByTeamRequest(c.Server, teamName, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateMonthlyLimitWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateMonthlyLimitRequestWithBody(c.Server, teamName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateMonthlyLimit(ctx context.Context, teamName TeamName, body CreateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateMonthlyLimitRequest(c.Server, teamName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeleteMonthlyLimit(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteMonthlyLimitRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) GetMonthlyLimit(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetMonthlyLimitRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateMonthlyLimitWithBody(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateMonthlyLimitRequestWithBody(c.Server, teamName, pluginTeam, pluginKind, pluginName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateMonthlyLimit(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, body UpdateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateMonthlyLimitRequest(c.Server, teamName, pluginTeam, pluginKind, pluginName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5963,6 +5934,207 @@ func NewListInvoicesByTeamRequest(server string, teamName TeamName, params *List
 	return req, nil
 }
 
+// NewGetManagedDatabasesRequest generates requests for GetManagedDatabases
+func NewGetManagedDatabasesRequest(server string, teamName TeamName, params *GetManagedDatabasesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/managed-databases", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateManagedDatabaseRequest calls the generic CreateManagedDatabase builder with application/json body
+func NewCreateManagedDatabaseRequest(server string, teamName TeamName, body CreateManagedDatabaseJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateManagedDatabaseRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateManagedDatabaseRequestWithBody generates requests for CreateManagedDatabase with any type of body
+func NewCreateManagedDatabaseRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/managed-databases", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteManagedDatabaseRequest generates requests for DeleteManagedDatabase
+func NewDeleteManagedDatabaseRequest(server string, teamName TeamName, managedDatabaseID ManagedDatabaseID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "managed_database_id", runtime.ParamLocationPath, managedDatabaseID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/managed-databases/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetManagedDatabaseRequest generates requests for GetManagedDatabase
+func NewGetManagedDatabaseRequest(server string, teamName TeamName, managedDatabaseID ManagedDatabaseID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "managed_database_id", runtime.ParamLocationPath, managedDatabaseID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/managed-databases/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetTeamMembershipsRequest generates requests for GetTeamMemberships
 func NewGetTeamMembershipsRequest(server string, teamName TeamName, params *GetTeamMembershipsParams) (*http.Request, error) {
 	var err error
@@ -6072,303 +6244,6 @@ func NewDeleteTeamMembershipRequest(server string, teamName TeamName, email Emai
 	if err != nil {
 		return nil, err
 	}
-
-	return req, nil
-}
-
-// NewListMonthlyLimitsByTeamRequest generates requests for ListMonthlyLimitsByTeam
-func NewListMonthlyLimitsByTeamRequest(server string, teamName TeamName, params *ListMonthlyLimitsByTeamParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/monthly-limits", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Page != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.PerPage != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewCreateMonthlyLimitRequest calls the generic CreateMonthlyLimit builder with application/json body
-func NewCreateMonthlyLimitRequest(server string, teamName TeamName, body CreateMonthlyLimitJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateMonthlyLimitRequestWithBody(server, teamName, "application/json", bodyReader)
-}
-
-// NewCreateMonthlyLimitRequestWithBody generates requests for CreateMonthlyLimit with any type of body
-func NewCreateMonthlyLimitRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/monthly-limits", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewDeleteMonthlyLimitRequest generates requests for DeleteMonthlyLimit
-func NewDeleteMonthlyLimitRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam3 string
-
-	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/monthly-limits/%s/%s/%s", pathParam0, pathParam1, pathParam2, pathParam3)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewGetMonthlyLimitRequest generates requests for GetMonthlyLimit
-func NewGetMonthlyLimitRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam3 string
-
-	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/monthly-limits/%s/%s/%s", pathParam0, pathParam1, pathParam2, pathParam3)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewUpdateMonthlyLimitRequest calls the generic UpdateMonthlyLimit builder with application/json body
-func NewUpdateMonthlyLimitRequest(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, body UpdateMonthlyLimitJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewUpdateMonthlyLimitRequestWithBody(server, teamName, pluginTeam, pluginKind, pluginName, "application/json", bodyReader)
-}
-
-// NewUpdateMonthlyLimitRequestWithBody generates requests for UpdateMonthlyLimit with any type of body
-func NewUpdateMonthlyLimitRequestWithBody(server string, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_team", runtime.ParamLocationPath, pluginTeam)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam3 string
-
-	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/monthly-limits/%s/%s/%s", pathParam0, pathParam1, pathParam2, pathParam3)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -9263,30 +9138,25 @@ type ClientWithResponsesInterface interface {
 	// ListInvoicesByTeamWithResponse request
 	ListInvoicesByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*ListInvoicesByTeamResponse, error)
 
+	// GetManagedDatabasesWithResponse request
+	GetManagedDatabasesWithResponse(ctx context.Context, teamName TeamName, params *GetManagedDatabasesParams, reqEditors ...RequestEditorFn) (*GetManagedDatabasesResponse, error)
+
+	// CreateManagedDatabaseWithBodyWithResponse request with any body
+	CreateManagedDatabaseWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateManagedDatabaseResponse, error)
+
+	CreateManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, body CreateManagedDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateManagedDatabaseResponse, error)
+
+	// DeleteManagedDatabaseWithResponse request
+	DeleteManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*DeleteManagedDatabaseResponse, error)
+
+	// GetManagedDatabaseWithResponse request
+	GetManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*GetManagedDatabaseResponse, error)
+
 	// GetTeamMembershipsWithResponse request
 	GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error)
 
 	// DeleteTeamMembershipWithResponse request
 	DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error)
-
-	// ListMonthlyLimitsByTeamWithResponse request
-	ListMonthlyLimitsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListMonthlyLimitsByTeamParams, reqEditors ...RequestEditorFn) (*ListMonthlyLimitsByTeamResponse, error)
-
-	// CreateMonthlyLimitWithBodyWithResponse request with any body
-	CreateMonthlyLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateMonthlyLimitResponse, error)
-
-	CreateMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, body CreateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateMonthlyLimitResponse, error)
-
-	// DeleteMonthlyLimitWithResponse request
-	DeleteMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeleteMonthlyLimitResponse, error)
-
-	// GetMonthlyLimitWithResponse request
-	GetMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetMonthlyLimitResponse, error)
-
-	// UpdateMonthlyLimitWithBodyWithResponse request with any body
-	UpdateMonthlyLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMonthlyLimitResponse, error)
-
-	UpdateMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, body UpdateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMonthlyLimitResponse, error)
 
 	// DeletePluginsByTeamWithResponse request
 	DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error)
@@ -10997,6 +10867,112 @@ func (r ListInvoicesByTeamResponse) StatusCode() int {
 	return 0
 }
 
+type GetManagedDatabasesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetManagedDatabases200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetManagedDatabasesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetManagedDatabasesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateManagedDatabaseResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *ManagedDatabase
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON409      *Conflict
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateManagedDatabaseResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateManagedDatabaseResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteManagedDatabaseResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteManagedDatabaseResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteManagedDatabaseResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetManagedDatabaseResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ManagedDatabase
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetManagedDatabaseResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetManagedDatabaseResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetTeamMembershipsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -11044,137 +11020,6 @@ func (r DeleteTeamMembershipResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DeleteTeamMembershipResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ListMonthlyLimitsByTeamResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ListMonthlyLimitsByTeam200Response
-	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r ListMonthlyLimitsByTeamResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListMonthlyLimitsByTeamResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CreateMonthlyLimitResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *MonthlyLimit
-	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateMonthlyLimitResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateMonthlyLimitResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type DeleteMonthlyLimitResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r DeleteMonthlyLimitResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r DeleteMonthlyLimitResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type GetMonthlyLimitResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *MonthlyLimit
-	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r GetMonthlyLimitResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r GetMonthlyLimitResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateMonthlyLimitResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *MonthlyLimit
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateMonthlyLimitResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateMonthlyLimitResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -13139,6 +12984,50 @@ func (c *ClientWithResponses) ListInvoicesByTeamWithResponse(ctx context.Context
 	return ParseListInvoicesByTeamResponse(rsp)
 }
 
+// GetManagedDatabasesWithResponse request returning *GetManagedDatabasesResponse
+func (c *ClientWithResponses) GetManagedDatabasesWithResponse(ctx context.Context, teamName TeamName, params *GetManagedDatabasesParams, reqEditors ...RequestEditorFn) (*GetManagedDatabasesResponse, error) {
+	rsp, err := c.GetManagedDatabases(ctx, teamName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetManagedDatabasesResponse(rsp)
+}
+
+// CreateManagedDatabaseWithBodyWithResponse request with arbitrary body returning *CreateManagedDatabaseResponse
+func (c *ClientWithResponses) CreateManagedDatabaseWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateManagedDatabaseResponse, error) {
+	rsp, err := c.CreateManagedDatabaseWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateManagedDatabaseResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, body CreateManagedDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateManagedDatabaseResponse, error) {
+	rsp, err := c.CreateManagedDatabase(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateManagedDatabaseResponse(rsp)
+}
+
+// DeleteManagedDatabaseWithResponse request returning *DeleteManagedDatabaseResponse
+func (c *ClientWithResponses) DeleteManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*DeleteManagedDatabaseResponse, error) {
+	rsp, err := c.DeleteManagedDatabase(ctx, teamName, managedDatabaseID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteManagedDatabaseResponse(rsp)
+}
+
+// GetManagedDatabaseWithResponse request returning *GetManagedDatabaseResponse
+func (c *ClientWithResponses) GetManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*GetManagedDatabaseResponse, error) {
+	rsp, err := c.GetManagedDatabase(ctx, teamName, managedDatabaseID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetManagedDatabaseResponse(rsp)
+}
+
 // GetTeamMembershipsWithResponse request returning *GetTeamMembershipsResponse
 func (c *ClientWithResponses) GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error) {
 	rsp, err := c.GetTeamMemberships(ctx, teamName, params, reqEditors...)
@@ -13155,67 +13044,6 @@ func (c *ClientWithResponses) DeleteTeamMembershipWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseDeleteTeamMembershipResponse(rsp)
-}
-
-// ListMonthlyLimitsByTeamWithResponse request returning *ListMonthlyLimitsByTeamResponse
-func (c *ClientWithResponses) ListMonthlyLimitsByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListMonthlyLimitsByTeamParams, reqEditors ...RequestEditorFn) (*ListMonthlyLimitsByTeamResponse, error) {
-	rsp, err := c.ListMonthlyLimitsByTeam(ctx, teamName, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListMonthlyLimitsByTeamResponse(rsp)
-}
-
-// CreateMonthlyLimitWithBodyWithResponse request with arbitrary body returning *CreateMonthlyLimitResponse
-func (c *ClientWithResponses) CreateMonthlyLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateMonthlyLimitResponse, error) {
-	rsp, err := c.CreateMonthlyLimitWithBody(ctx, teamName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateMonthlyLimitResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, body CreateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateMonthlyLimitResponse, error) {
-	rsp, err := c.CreateMonthlyLimit(ctx, teamName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateMonthlyLimitResponse(rsp)
-}
-
-// DeleteMonthlyLimitWithResponse request returning *DeleteMonthlyLimitResponse
-func (c *ClientWithResponses) DeleteMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*DeleteMonthlyLimitResponse, error) {
-	rsp, err := c.DeleteMonthlyLimit(ctx, teamName, pluginTeam, pluginKind, pluginName, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteMonthlyLimitResponse(rsp)
-}
-
-// GetMonthlyLimitWithResponse request returning *GetMonthlyLimitResponse
-func (c *ClientWithResponses) GetMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, reqEditors ...RequestEditorFn) (*GetMonthlyLimitResponse, error) {
-	rsp, err := c.GetMonthlyLimit(ctx, teamName, pluginTeam, pluginKind, pluginName, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetMonthlyLimitResponse(rsp)
-}
-
-// UpdateMonthlyLimitWithBodyWithResponse request with arbitrary body returning *UpdateMonthlyLimitResponse
-func (c *ClientWithResponses) UpdateMonthlyLimitWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMonthlyLimitResponse, error) {
-	rsp, err := c.UpdateMonthlyLimitWithBody(ctx, teamName, pluginTeam, pluginKind, pluginName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateMonthlyLimitResponse(rsp)
-}
-
-func (c *ClientWithResponses) UpdateMonthlyLimitWithResponse(ctx context.Context, teamName TeamName, pluginTeam PluginTeam, pluginKind PluginKind, pluginName PluginName, body UpdateMonthlyLimitJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMonthlyLimitResponse, error) {
-	rsp, err := c.UpdateMonthlyLimit(ctx, teamName, pluginTeam, pluginKind, pluginName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateMonthlyLimitResponse(rsp)
 }
 
 // DeletePluginsByTeamWithResponse request returning *DeletePluginsByTeamResponse
@@ -16947,6 +16775,236 @@ func ParseListInvoicesByTeamResponse(rsp *http.Response) (*ListInvoicesByTeamRes
 	return response, nil
 }
 
+// ParseGetManagedDatabasesResponse parses an HTTP response from a GetManagedDatabasesWithResponse call
+func ParseGetManagedDatabasesResponse(rsp *http.Response) (*GetManagedDatabasesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetManagedDatabasesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetManagedDatabases200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateManagedDatabaseResponse parses an HTTP response from a CreateManagedDatabaseWithResponse call
+func ParseCreateManagedDatabaseResponse(rsp *http.Response) (*CreateManagedDatabaseResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateManagedDatabaseResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest ManagedDatabase
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Conflict
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteManagedDatabaseResponse parses an HTTP response from a DeleteManagedDatabaseWithResponse call
+func ParseDeleteManagedDatabaseResponse(rsp *http.Response) (*DeleteManagedDatabaseResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteManagedDatabaseResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetManagedDatabaseResponse parses an HTTP response from a GetManagedDatabaseWithResponse call
+func ParseGetManagedDatabaseResponse(rsp *http.Response) (*GetManagedDatabaseResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetManagedDatabaseResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ManagedDatabase
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetTeamMembershipsResponse parses an HTTP response from a GetTeamMembershipsWithResponse call
 func ParseGetTeamMembershipsResponse(rsp *http.Response) (*GetTeamMembershipsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -17022,283 +17080,6 @@ func ParseDeleteTeamMembershipResponse(rsp *http.Response) (*DeleteTeamMembershi
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseListMonthlyLimitsByTeamResponse parses an HTTP response from a ListMonthlyLimitsByTeamWithResponse call
-func ParseListMonthlyLimitsByTeamResponse(rsp *http.Response) (*ListMonthlyLimitsByTeamResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListMonthlyLimitsByTeamResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ListMonthlyLimitsByTeam200Response
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCreateMonthlyLimitResponse parses an HTTP response from a CreateMonthlyLimitWithResponse call
-func ParseCreateMonthlyLimitResponse(rsp *http.Response) (*CreateMonthlyLimitResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateMonthlyLimitResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest MonthlyLimit
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseDeleteMonthlyLimitResponse parses an HTTP response from a DeleteMonthlyLimitWithResponse call
-func ParseDeleteMonthlyLimitResponse(rsp *http.Response) (*DeleteMonthlyLimitResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteMonthlyLimitResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseGetMonthlyLimitResponse parses an HTTP response from a GetMonthlyLimitWithResponse call
-func ParseGetMonthlyLimitResponse(rsp *http.Response) (*GetMonthlyLimitResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetMonthlyLimitResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest MonthlyLimit
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateMonthlyLimitResponse parses an HTTP response from a UpdateMonthlyLimitWithResponse call
-func ParseUpdateMonthlyLimitResponse(rsp *http.Response) (*UpdateMonthlyLimitResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateMonthlyLimitResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest MonthlyLimit
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
