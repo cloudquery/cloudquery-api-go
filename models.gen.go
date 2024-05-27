@@ -62,11 +62,10 @@ const (
 
 // Defines values for ManagedDatabaseStatus.
 const (
-	ManagedDatabaseStatusExpired    ManagedDatabaseStatus = "expired"
-	ManagedDatabaseStatusFailed     ManagedDatabaseStatus = "failed"
-	ManagedDatabaseStatusPending    ManagedDatabaseStatus = "pending"
-	ManagedDatabaseStatusProcessing ManagedDatabaseStatus = "processing"
-	ManagedDatabaseStatusReady      ManagedDatabaseStatus = "ready"
+	ManagedDatabaseStatusExpired ManagedDatabaseStatus = "expired"
+	ManagedDatabaseStatusFailed  ManagedDatabaseStatus = "failed"
+	ManagedDatabaseStatusPending ManagedDatabaseStatus = "pending"
+	ManagedDatabaseStatusReady   ManagedDatabaseStatus = "ready"
 )
 
 // Defines values for PluginCategory.

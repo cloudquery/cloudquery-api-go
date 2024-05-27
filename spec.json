@@ -7754,7 +7754,7 @@
       },
       "ManagedDatabaseStatus" : {
         "description" : "The status of the managed database",
-        "enum" : [ "pending", "processing", "ready", "failed", "expired" ],
+        "enum" : [ "pending", "ready", "failed", "expired" ],
         "type" : "string"
       },
       "ManagedDatabase" : {
