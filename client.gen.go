@@ -295,6 +295,11 @@ type ClientInterface interface {
 
 	CreateTeamImages(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteTeamInvitationWithBody request with any body
+	DeleteTeamInvitationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeleteTeamInvitation(ctx context.Context, teamName TeamName, body DeleteTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamInvitations request
 	ListTeamInvitations(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1389,6 +1394,30 @@ func (c *Client) CreateTeamImagesWithBody(ctx context.Context, teamName TeamName
 
 func (c *Client) CreateTeamImages(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateTeamImagesRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteTeamInvitationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamInvitationRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteTeamInvitation(ctx context.Context, teamName TeamName, body DeleteTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteTeamInvitationRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5655,6 +5684,53 @@ func NewCreateTeamImagesRequestWithBody(server string, teamName TeamName, conten
 	return req, nil
 }
 
+// NewDeleteTeamInvitationRequest calls the generic DeleteTeamInvitation builder with application/json body
+func NewDeleteTeamInvitationRequest(server string, teamName TeamName, body DeleteTeamInvitationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeleteTeamInvitationRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewDeleteTeamInvitationRequestWithBody generates requests for DeleteTeamInvitation with any type of body
+func NewDeleteTeamInvitationRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/invitations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListTeamInvitationsRequest generates requests for ListTeamInvitations
 func NewListTeamInvitationsRequest(server string, teamName TeamName, params *ListTeamInvitationsParams) (*http.Request, error) {
 	var err error
@@ -9119,6 +9195,11 @@ type ClientWithResponsesInterface interface {
 
 	CreateTeamImagesWithResponse(ctx context.Context, teamName TeamName, body CreateTeamImagesJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error)
 
+	// DeleteTeamInvitationWithBodyWithResponse request with any body
+	DeleteTeamInvitationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteTeamInvitationResponse, error)
+
+	DeleteTeamInvitationWithResponse(ctx context.Context, teamName TeamName, body DeleteTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteTeamInvitationResponse, error)
+
 	// ListTeamInvitationsWithResponse request
 	ListTeamInvitationsWithResponse(ctx context.Context, teamName TeamName, params *ListTeamInvitationsParams, reqEditors ...RequestEditorFn) (*ListTeamInvitationsResponse, error)
 
@@ -10733,6 +10814,32 @@ func (r CreateTeamImagesResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateTeamImagesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteTeamInvitationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteTeamInvitationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteTeamInvitationResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12921,6 +13028,23 @@ func (c *ClientWithResponses) CreateTeamImagesWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseCreateTeamImagesResponse(rsp)
+}
+
+// DeleteTeamInvitationWithBodyWithResponse request with arbitrary body returning *DeleteTeamInvitationResponse
+func (c *ClientWithResponses) DeleteTeamInvitationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeleteTeamInvitationResponse, error) {
+	rsp, err := c.DeleteTeamInvitationWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTeamInvitationResponse(rsp)
+}
+
+func (c *ClientWithResponses) DeleteTeamInvitationWithResponse(ctx context.Context, teamName TeamName, body DeleteTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*DeleteTeamInvitationResponse, error) {
+	rsp, err := c.DeleteTeamInvitation(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteTeamInvitationResponse(rsp)
 }
 
 // ListTeamInvitationsWithResponse request returning *ListTeamInvitationsResponse
@@ -16485,6 +16609,60 @@ func ParseCreateTeamImagesResponse(rsp *http.Response) (*CreateTeamImagesRespons
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteTeamInvitationResponse parses an HTTP response from a DeleteTeamInvitationWithResponse call
+func ParseDeleteTeamInvitationResponse(rsp *http.Response) (*DeleteTeamInvitationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteTeamInvitationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
