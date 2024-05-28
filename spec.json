@@ -2960,6 +2960,43 @@
       }
     },
     "/teams/{team_name}/invitations" : {
+      "delete" : {
+        "description" : "Delete an invitation to the team, preventing the user becoming a team member",
+        "operationId" : "DeleteTeamInvitation",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeleteTeamInvitation_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "teams" ]
+      },
       "get" : {
         "description" : "List of open invitations to the team",
         "operationId" : "ListTeamInvitations",
@@ -3092,6 +3129,7 @@
     },
     "/teams/{team_name}/invitations/{email}" : {
       "delete" : {
+        "deprecated" : true,
         "description" : "Cancel an invitation to the team, preventing the user becoming a team member",
         "operationId" : "CancelTeamInvitation",
         "parameters" : [ {
@@ -8285,6 +8323,15 @@
           }
         },
         "required" : [ "email", "role" ]
+      },
+      "DeleteTeamInvitation_request" : {
+        "properties" : {
+          "email" : {
+            "format" : "email",
+            "type" : "string"
+          }
+        },
+        "required" : [ "email" ]
       },
       "AcceptTeamInvitation_request" : {
         "properties" : {

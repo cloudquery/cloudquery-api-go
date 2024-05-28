@@ -668,6 +668,11 @@ type DeletePluginVersionTablesRequest struct {
 	Names []PluginTableName `json:"names"`
 }
 
+// DeleteTeamInvitationRequest defines model for DeleteTeamInvitation_request.
+type DeleteTeamInvitationRequest struct {
+	Email openapi_types.Email `json:"email"`
+}
+
 // DockerError Error Returned from the Docker Authorization Handler to the Docker Registry
 type DockerError struct {
 	Details string `json:"details"`
@@ -2762,6 +2767,9 @@ type CreateTeamAPIKeyJSONRequestBody = CreateTeamAPIKeyRequest
 
 // CreateTeamImagesJSONRequestBody defines body for CreateTeamImages for application/json ContentType.
 type CreateTeamImagesJSONRequestBody = CreateTeamImagesRequest
+
+// DeleteTeamInvitationJSONRequestBody defines body for DeleteTeamInvitation for application/json ContentType.
+type DeleteTeamInvitationJSONRequestBody = DeleteTeamInvitationRequest
 
 // EmailTeamInvitationJSONRequestBody defines body for EmailTeamInvitation for application/json ContentType.
 type EmailTeamInvitationJSONRequestBody = EmailTeamInvitationRequest
