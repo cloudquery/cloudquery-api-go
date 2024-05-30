@@ -54,6 +54,20 @@
         "tags" : [ "healthcheck" ]
       }
     },
+    "/cq-healthcheck" : {
+      "get" : {
+        "description" : "Health check endpoint, returns 200",
+        "operationId" : "CQHealthCheck",
+        "responses" : {
+          "200" : {
+            "description" : "Response"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "healthcheck" ],
+        "x-internal" : true
+      }
+    },
     "/upload/image" : {
       "post" : {
         "description" : "Get a URL to upload image that will be publicly accessible",

@@ -137,6 +137,9 @@ type ClientInterface interface {
 	// UploadAddonAsset request
 	UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CQHealthCheck request
+	CQHealthCheck(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPluginNotificationRequests request
 	ListPluginNotificationRequests(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -698,6 +701,18 @@ func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addo
 
 func (c *Client) UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CQHealthCheck(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCQHealthCheckRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -3096,6 +3111,33 @@ func NewUploadAddonAssetRequest(server string, teamName TeamName, addonType Addo
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCQHealthCheckRequest generates requests for CQHealthCheck
+func NewCQHealthCheckRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/cq-healthcheck")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -9037,6 +9079,9 @@ type ClientWithResponsesInterface interface {
 	// UploadAddonAssetWithResponse request
 	UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error)
 
+	// CQHealthCheckWithResponse request
+	CQHealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CQHealthCheckResponse, error)
+
 	// ListPluginNotificationRequestsWithResponse request
 	ListPluginNotificationRequestsWithResponse(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*ListPluginNotificationRequestsResponse, error)
 
@@ -9718,6 +9763,27 @@ func (r UploadAddonAssetResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UploadAddonAssetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CQHealthCheckResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r CQHealthCheckResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CQHealthCheckResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12524,6 +12590,15 @@ func (c *ClientWithResponses) UploadAddonAssetWithResponse(ctx context.Context, 
 	return ParseUploadAddonAssetResponse(rsp)
 }
 
+// CQHealthCheckWithResponse request returning *CQHealthCheckResponse
+func (c *ClientWithResponses) CQHealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CQHealthCheckResponse, error) {
+	rsp, err := c.CQHealthCheck(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCQHealthCheckResponse(rsp)
+}
+
 // ListPluginNotificationRequestsWithResponse request returning *ListPluginNotificationRequestsResponse
 func (c *ClientWithResponses) ListPluginNotificationRequestsWithResponse(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*ListPluginNotificationRequestsResponse, error) {
 	rsp, err := c.ListPluginNotificationRequests(ctx, params, reqEditors...)
@@ -14342,6 +14417,22 @@ func ParseUploadAddonAssetResponse(rsp *http.Response) (*UploadAddonAssetRespons
 		}
 		response.JSON500 = &dest
 
+	}
+
+	return response, nil
+}
+
+// ParseCQHealthCheckResponse parses an HTTP response from a CQHealthCheckWithResponse call
+func ParseCQHealthCheckResponse(rsp *http.Response) (*CQHealthCheckResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CQHealthCheckResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
 	}
 
 	return response, nil
