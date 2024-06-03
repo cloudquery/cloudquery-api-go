@@ -4852,6 +4852,292 @@
         "tags" : [ "managed-databases" ],
         "x-internal" : true
       }
+    },
+    "/teams/{team_name}/connectors" : {
+      "get" : {
+        "description" : "List all configured connectors",
+        "operationId" : "ListConnectors",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/per_page"
+        }, {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "description" : "Filter connectors by a given type.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "type",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ListConnectors_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      },
+      "post" : {
+        "description" : "Create new connector",
+        "operationId" : "CreateConnector",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Connector"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/connectors/{connector_id}" : {
+      "get" : {
+        "description" : "Get a configured connector",
+        "operationId" : "GetConnector",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Connector"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      },
+      "patch" : {
+        "description" : "Update a connector",
+        "operationId" : "UpdateConnector",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorUpdate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Connector"
+                }
+              }
+            },
+            "description" : "Update response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/connectors/{connector_id}/authenticate" : {
+      "delete" : {
+        "description" : "Revoke authentication for a given connector. Any syncs relying on this connector will stop running until the connector is reauthenticated or sync references are updated.",
+        "operationId" : "RevokeConnector",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Deleted"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      },
+      "patch" : {
+        "description" : "Complete authentication for a given connector",
+        "operationId" : "AuthenticateConnectorFinish",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthenticateConnectorFinish_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Authentication is complete."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      },
+      "post" : {
+        "description" : "Authenticate or reauthenticate the given connector",
+        "operationId" : "AuthenticateConnector",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthenticateConnector_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthenticateConnector_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
     }
   },
   "components" : {
@@ -5167,6 +5453,17 @@
         },
         "style" : "simple",
         "x-go-name" : "ManagedDatabaseID"
+      },
+      "connector_id" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "connector_id",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/ConnectorID"
+        },
+        "style" : "simple",
+        "x-go-name" : "ConnectorID"
       }
     },
     "responses" : {
@@ -5832,6 +6129,17 @@
           "properties" : {
             "spec_json_schema" : {
               "$ref" : "#/components/schemas/PluginSpecJSONSchema"
+            },
+            "connector_required" : {
+              "description" : "Whether a connector is required for this plugin version",
+              "type" : "boolean"
+            },
+            "connector_types" : {
+              "description" : "List of connector types available for this plugin version",
+              "items" : {
+                "type" : "string"
+              },
+              "type" : "array"
             }
           }
         } ]
@@ -7267,6 +7575,13 @@
         "enum" : [ "yaml", "ui" ],
         "type" : "string"
       },
+      "ConnectorID" : {
+        "description" : "ID of the Connector",
+        "example" : "12345678-1234-1234-1234-1234567890ab",
+        "format" : "uuid",
+        "type" : "string",
+        "x-go-name" : "ConnectorID"
+      },
       "SyncSourceCreate" : {
         "description" : "Sync Source Definition",
         "properties" : {
@@ -7312,6 +7627,9 @@
           },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
           }
         },
         "required" : [ "name", "path", "tables", "version" ],
@@ -7439,6 +7757,9 @@
           },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
           }
         },
         "title" : "Sync Source definition for creating a new source"
@@ -7492,6 +7813,9 @@
           },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
           }
         },
         "required" : [ "name", "path", "version" ],
@@ -7556,6 +7880,9 @@
           },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
           }
         },
         "title" : "Sync Destination definition for creating a new destination"
@@ -7840,6 +8167,142 @@
       "ManagedDatabaseCreate" : {
         "description" : "Managed Database creation",
         "type" : "object"
+      },
+      "ConnectorStatus" : {
+        "description" : "The status of the connector",
+        "enum" : [ "created", "authenticated", "failed", "revoked" ],
+        "type" : "string"
+      },
+      "Connector" : {
+        "description" : "Connector definition",
+        "properties" : {
+          "id" : {
+            "description" : "unique ID of the connector",
+            "example" : "12345678-1234-1234-1234-1234567890ab",
+            "format" : "uuid",
+            "type" : "string",
+            "x-go-name" : "ID"
+          },
+          "type" : {
+            "description" : "Type of the connector",
+            "type" : "string"
+          },
+          "name" : {
+            "description" : "Name of the connector",
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ConnectorStatus"
+          },
+          "created_at" : {
+            "description" : "Time the connector was created",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "required" : [ "created_at", "id", "name", "status", "type" ]
+      },
+      "ConnectorCreate" : {
+        "description" : "Connector creation request",
+        "properties" : {
+          "type" : {
+            "description" : "Type of the connector",
+            "type" : "string"
+          },
+          "name" : {
+            "description" : "Name of the connector",
+            "type" : "string"
+          }
+        },
+        "required" : [ "name", "type" ]
+      },
+      "ConnectorUpdate" : {
+        "additionalProperties" : false,
+        "properties" : {
+          "name" : {
+            "description" : "Name of the connector",
+            "type" : "string"
+          }
+        }
+      },
+      "ConnectorAuthRequestAWS" : {
+        "additionalProperties" : false,
+        "description" : "AWS connector authentication request to start the authentication process",
+        "properties" : {
+          "plugin_team" : {
+            "description" : "Team that owns the plugin we are authenticating the connector for",
+            "example" : "cloudquery",
+            "type" : "string"
+          },
+          "plugin_kind" : {
+            "description" : "Kind of the plugin",
+            "example" : "source",
+            "type" : "string"
+          },
+          "plugin_name" : {
+            "description" : "Name of the plugin",
+            "example" : "aws",
+            "type" : "string"
+          },
+          "account_ids" : {
+            "description" : "List of AWS account IDs to authenticate",
+            "example" : [ "123456789012" ],
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array",
+            "x-go-name" : "AccountIDs"
+          }
+        },
+        "required" : [ "plugin_kind", "plugin_name", "plugin_team" ]
+      },
+      "ConnectorAuthResponseAWS" : {
+        "additionalProperties" : false,
+        "description" : "AWS connector authentication response to start the authentication process",
+        "properties" : {
+          "redirect_url" : {
+            "description" : "URL to redirect the user to, to authenticate",
+            "type" : "string",
+            "x-go-name" : "RedirectURL"
+          },
+          "role_template_url" : {
+            "description" : "URL to the role template, to present to the user",
+            "type" : "string",
+            "x-go-name" : "RoleTemplateURL"
+          },
+          "suggested_external_id" : {
+            "description" : "External ID suggested to enter into the role definition",
+            "type" : "string",
+            "x-go-name" : "SuggestedExternalID"
+          },
+          "suggested_policy_arns" : {
+            "description" : "List of AWS policy ARNs suggested to grant inside the role definition",
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array",
+            "x-go-name" : "SuggestedPolicyARNs"
+          }
+        },
+        "required" : [ "redirect_url", "role_template_url", "suggested_external_id", "suggested_policy_arns" ]
+      },
+      "ConnectorAuthFinishRequestAWS" : {
+        "additionalProperties" : false,
+        "description" : "AWS connector authentication request, filled in after the user has authenticated through AWS",
+        "properties" : {
+          "role_arn" : {
+            "description" : "ARN of role created by the user",
+            "type" : "string",
+            "x-go-name" : "RoleARN"
+          },
+          "external_id" : {
+            "description" : "External ID in the role definition. Optional. If not provided the previously suggested external ID will be used. Empty string will remove the external ID.",
+            "type" : "string",
+            "x-go-name" : "ExternalID"
+          }
+        },
+        "required" : [ "role_arn" ]
       },
       "ListPluginNotificationRequests_200_response" : {
         "properties" : {
@@ -8589,6 +9052,41 @@
           }
         },
         "required" : [ "items", "metadata" ]
+      },
+      "ListConnectors_200_response" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Connector"
+            },
+            "type" : "array"
+          },
+          "metadata" : {
+            "$ref" : "#/components/schemas/ListMetadata"
+          }
+        },
+        "required" : [ "items", "metadata" ]
+      },
+      "AuthenticateConnector_request" : {
+        "properties" : {
+          "aws" : {
+            "$ref" : "#/components/schemas/ConnectorAuthRequestAWS"
+          }
+        }
+      },
+      "AuthenticateConnector_200_response" : {
+        "properties" : {
+          "aws" : {
+            "$ref" : "#/components/schemas/ConnectorAuthResponseAWS"
+          }
+        }
+      },
+      "AuthenticateConnectorFinish_request" : {
+        "properties" : {
+          "aws" : {
+            "$ref" : "#/components/schemas/ConnectorAuthFinishRequestAWS"
+          }
+        }
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {
