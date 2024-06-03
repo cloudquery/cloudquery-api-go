@@ -293,6 +293,35 @@ type ClientInterface interface {
 	// DeleteTeamAPIKey request
 	DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListConnectors request
+	ListConnectors(ctx context.Context, teamName TeamName, params *ListConnectorsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateConnectorWithBody request with any body
+	CreateConnectorWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateConnector(ctx context.Context, teamName TeamName, body CreateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetConnector request
+	GetConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateConnectorWithBody request with any body
+	UpdateConnectorWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, body UpdateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokeConnector request
+	RevokeConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthenticateConnectorFinishWithBody request with any body
+	AuthenticateConnectorFinishWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthenticateConnectorFinish(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthenticateConnectorWithBody request with any body
+	AuthenticateConnectorWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthenticateConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateTeamImagesWithBody request with any body
 	CreateTeamImagesWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1385,6 +1414,138 @@ func (c *Client) CreateTeamAPIKey(ctx context.Context, teamName TeamName, body C
 
 func (c *Client) DeleteTeamAPIKey(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteTeamAPIKeyRequest(c.Server, teamName, aPIKeyID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListConnectors(ctx context.Context, teamName TeamName, params *ListConnectorsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListConnectorsRequest(c.Server, teamName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateConnectorWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateConnectorRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateConnector(ctx context.Context, teamName TeamName, body CreateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateConnectorRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetConnectorRequest(c.Server, teamName, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateConnectorWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConnectorRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, body UpdateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConnectorRequest(c.Server, teamName, connectorID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RevokeConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeConnectorRequest(c.Server, teamName, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorFinishWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorFinish(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishRequest(c.Server, teamName, connectorID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorRequest(c.Server, teamName, connectorID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5679,6 +5840,385 @@ func NewDeleteTeamAPIKeyRequest(server string, teamName TeamName, aPIKeyID APIKe
 	return req, nil
 }
 
+// NewListConnectorsRequest generates requests for ListConnectors
+func NewListConnectorsRequest(server string, teamName TeamName, params *ListConnectorsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "type", runtime.ParamLocationQuery, *params.Type); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateConnectorRequest calls the generic CreateConnector builder with application/json body
+func NewCreateConnectorRequest(server string, teamName TeamName, body CreateConnectorJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateConnectorRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewCreateConnectorRequestWithBody generates requests for CreateConnector with any type of body
+func NewCreateConnectorRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetConnectorRequest generates requests for GetConnector
+func NewGetConnectorRequest(server string, teamName TeamName, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateConnectorRequest calls the generic UpdateConnector builder with application/json body
+func NewUpdateConnectorRequest(server string, teamName TeamName, connectorID ConnectorID, body UpdateConnectorJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateConnectorRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+}
+
+// NewUpdateConnectorRequestWithBody generates requests for UpdateConnector with any type of body
+func NewUpdateConnectorRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRevokeConnectorRequest generates requests for RevokeConnector
+func NewRevokeConnectorRequest(server string, teamName TeamName, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAuthenticateConnectorFinishRequest calls the generic AuthenticateConnectorFinish builder with application/json body
+func NewAuthenticateConnectorFinishRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthenticateConnectorFinishRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+}
+
+// NewAuthenticateConnectorFinishRequestWithBody generates requests for AuthenticateConnectorFinish with any type of body
+func NewAuthenticateConnectorFinishRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAuthenticateConnectorRequest calls the generic AuthenticateConnector builder with application/json body
+func NewAuthenticateConnectorRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthenticateConnectorRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+}
+
+// NewAuthenticateConnectorRequestWithBody generates requests for AuthenticateConnector with any type of body
+func NewAuthenticateConnectorRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCreateTeamImagesRequest calls the generic CreateTeamImages builder with application/json body
 func NewCreateTeamImagesRequest(server string, teamName TeamName, body CreateTeamImagesJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -9235,6 +9775,35 @@ type ClientWithResponsesInterface interface {
 	// DeleteTeamAPIKeyWithResponse request
 	DeleteTeamAPIKeyWithResponse(ctx context.Context, teamName TeamName, aPIKeyID APIKeyID, reqEditors ...RequestEditorFn) (*DeleteTeamAPIKeyResponse, error)
 
+	// ListConnectorsWithResponse request
+	ListConnectorsWithResponse(ctx context.Context, teamName TeamName, params *ListConnectorsParams, reqEditors ...RequestEditorFn) (*ListConnectorsResponse, error)
+
+	// CreateConnectorWithBodyWithResponse request with any body
+	CreateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateConnectorResponse, error)
+
+	CreateConnectorWithResponse(ctx context.Context, teamName TeamName, body CreateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateConnectorResponse, error)
+
+	// GetConnectorWithResponse request
+	GetConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetConnectorResponse, error)
+
+	// UpdateConnectorWithBodyWithResponse request with any body
+	UpdateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConnectorResponse, error)
+
+	UpdateConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body UpdateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConnectorResponse, error)
+
+	// RevokeConnectorWithResponse request
+	RevokeConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*RevokeConnectorResponse, error)
+
+	// AuthenticateConnectorFinishWithBodyWithResponse request with any body
+	AuthenticateConnectorFinishWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error)
+
+	AuthenticateConnectorFinishWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error)
+
+	// AuthenticateConnectorWithBodyWithResponse request with any body
+	AuthenticateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error)
+
+	AuthenticateConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error)
+
 	// CreateTeamImagesWithBodyWithResponse request with any body
 	CreateTeamImagesWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error)
 
@@ -10854,6 +11423,186 @@ func (r DeleteTeamAPIKeyResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DeleteTeamAPIKeyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListConnectorsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ListConnectors200Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListConnectorsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListConnectorsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateConnectorResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *Connector
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateConnectorResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateConnectorResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetConnectorResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Connector
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetConnectorResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetConnectorResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateConnectorResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Connector
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateConnectorResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateConnectorResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RevokeConnectorResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeConnectorResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeConnectorResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthenticateConnectorFinishResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthenticateConnectorFinishResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthenticateConnectorFinishResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthenticateConnectorResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AuthenticateConnector200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthenticateConnectorResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthenticateConnectorResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -13086,6 +13835,101 @@ func (c *ClientWithResponses) DeleteTeamAPIKeyWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseDeleteTeamAPIKeyResponse(rsp)
+}
+
+// ListConnectorsWithResponse request returning *ListConnectorsResponse
+func (c *ClientWithResponses) ListConnectorsWithResponse(ctx context.Context, teamName TeamName, params *ListConnectorsParams, reqEditors ...RequestEditorFn) (*ListConnectorsResponse, error) {
+	rsp, err := c.ListConnectors(ctx, teamName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListConnectorsResponse(rsp)
+}
+
+// CreateConnectorWithBodyWithResponse request with arbitrary body returning *CreateConnectorResponse
+func (c *ClientWithResponses) CreateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateConnectorResponse, error) {
+	rsp, err := c.CreateConnectorWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateConnectorResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateConnectorWithResponse(ctx context.Context, teamName TeamName, body CreateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateConnectorResponse, error) {
+	rsp, err := c.CreateConnector(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateConnectorResponse(rsp)
+}
+
+// GetConnectorWithResponse request returning *GetConnectorResponse
+func (c *ClientWithResponses) GetConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetConnectorResponse, error) {
+	rsp, err := c.GetConnector(ctx, teamName, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetConnectorResponse(rsp)
+}
+
+// UpdateConnectorWithBodyWithResponse request with arbitrary body returning *UpdateConnectorResponse
+func (c *ClientWithResponses) UpdateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConnectorResponse, error) {
+	rsp, err := c.UpdateConnectorWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateConnectorResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body UpdateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConnectorResponse, error) {
+	rsp, err := c.UpdateConnector(ctx, teamName, connectorID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateConnectorResponse(rsp)
+}
+
+// RevokeConnectorWithResponse request returning *RevokeConnectorResponse
+func (c *ClientWithResponses) RevokeConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*RevokeConnectorResponse, error) {
+	rsp, err := c.RevokeConnector(ctx, teamName, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeConnectorResponse(rsp)
+}
+
+// AuthenticateConnectorFinishWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorFinishResponse
+func (c *ClientWithResponses) AuthenticateConnectorFinishWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinishWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorFinishResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthenticateConnectorFinishWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinish(ctx, teamName, connectorID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorFinishResponse(rsp)
+}
+
+// AuthenticateConnectorWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorResponse
+func (c *ClientWithResponses) AuthenticateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error) {
+	rsp, err := c.AuthenticateConnectorWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthenticateConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error) {
+	rsp, err := c.AuthenticateConnector(ctx, teamName, connectorID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorResponse(rsp)
 }
 
 // CreateTeamImagesWithBodyWithResponse request with arbitrary body returning *CreateTeamImagesResponse
@@ -16667,6 +17511,370 @@ func ParseDeleteTeamAPIKeyResponse(rsp *http.Response) (*DeleteTeamAPIKeyRespons
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListConnectorsResponse parses an HTTP response from a ListConnectorsWithResponse call
+func ParseListConnectorsResponse(rsp *http.Response) (*ListConnectorsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListConnectorsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListConnectors200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateConnectorResponse parses an HTTP response from a CreateConnectorWithResponse call
+func ParseCreateConnectorResponse(rsp *http.Response) (*CreateConnectorResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateConnectorResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest Connector
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetConnectorResponse parses an HTTP response from a GetConnectorWithResponse call
+func ParseGetConnectorResponse(rsp *http.Response) (*GetConnectorResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetConnectorResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Connector
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateConnectorResponse parses an HTTP response from a UpdateConnectorWithResponse call
+func ParseUpdateConnectorResponse(rsp *http.Response) (*UpdateConnectorResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateConnectorResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Connector
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeConnectorResponse parses an HTTP response from a RevokeConnectorWithResponse call
+func ParseRevokeConnectorResponse(rsp *http.Response) (*RevokeConnectorResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeConnectorResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthenticateConnectorFinishResponse parses an HTTP response from a AuthenticateConnectorFinishWithResponse call
+func ParseAuthenticateConnectorFinishResponse(rsp *http.Response) (*AuthenticateConnectorFinishResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthenticateConnectorFinishResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthenticateConnectorResponse parses an HTTP response from a AuthenticateConnectorWithResponse call
+func ParseAuthenticateConnectorResponse(rsp *http.Response) (*AuthenticateConnectorResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthenticateConnectorResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AuthenticateConnector200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

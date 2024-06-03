@@ -54,6 +54,14 @@ const (
 	AddonTypeVisualization  AddonType = "visualization"
 )
 
+// Defines values for ConnectorStatus.
+const (
+	ConnectorStatusAuthenticated ConnectorStatus = "authenticated"
+	ConnectorStatusCreated       ConnectorStatus = "created"
+	ConnectorStatusFailed        ConnectorStatus = "failed"
+	ConnectorStatusRevoked       ConnectorStatus = "revoked"
+)
+
 // Defines values for EmailTeamInvitationRequestRole.
 const (
 	EmailTeamInvitationRequestRoleAdmin  EmailTeamInvitationRequestRole = "admin"
@@ -545,10 +553,106 @@ type AddonVersionUpdate struct {
 	Retracted *bool `json:"retracted,omitempty"`
 }
 
+// AuthenticateConnectorFinishRequest defines model for AuthenticateConnectorFinish_request.
+type AuthenticateConnectorFinishRequest struct {
+	// Aws AWS connector authentication request, filled in after the user has authenticated through AWS
+	Aws *ConnectorAuthFinishRequestAWS `json:"aws,omitempty"`
+}
+
+// AuthenticateConnector200Response defines model for AuthenticateConnector_200_response.
+type AuthenticateConnector200Response struct {
+	// Aws AWS connector authentication response to start the authentication process
+	Aws *ConnectorAuthResponseAWS `json:"aws,omitempty"`
+}
+
+// AuthenticateConnectorRequest defines model for AuthenticateConnector_request.
+type AuthenticateConnectorRequest struct {
+	// Aws AWS connector authentication request to start the authentication process
+	Aws *ConnectorAuthRequestAWS `json:"aws,omitempty"`
+}
+
 // BasicError Basic Error
 type BasicError struct {
 	Message string `json:"message"`
 	Status  int    `json:"status"`
+}
+
+// Connector Connector definition
+type Connector struct {
+	// CreatedAt Time the connector was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id unique ID of the connector
+	ID openapi_types.UUID `json:"id"`
+
+	// Name Name of the connector
+	Name string `json:"name"`
+
+	// Status The status of the connector
+	Status ConnectorStatus `json:"status"`
+
+	// Type Type of the connector
+	Type string `json:"type"`
+}
+
+// ConnectorAuthFinishRequestAWS AWS connector authentication request, filled in after the user has authenticated through AWS
+type ConnectorAuthFinishRequestAWS struct {
+	// ExternalId External ID in the role definition. Optional. If not provided the previously suggested external ID will be used. Empty string will remove the external ID.
+	ExternalID *string `json:"external_id,omitempty"`
+
+	// RoleArn ARN of role created by the user
+	RoleARN string `json:"role_arn"`
+}
+
+// ConnectorAuthRequestAWS AWS connector authentication request to start the authentication process
+type ConnectorAuthRequestAWS struct {
+	// AccountIds List of AWS account IDs to authenticate
+	AccountIDs *[]string `json:"account_ids,omitempty"`
+
+	// PluginKind Kind of the plugin
+	PluginKind string `json:"plugin_kind"`
+
+	// PluginName Name of the plugin
+	PluginName string `json:"plugin_name"`
+
+	// PluginTeam Team that owns the plugin we are authenticating the connector for
+	PluginTeam string `json:"plugin_team"`
+}
+
+// ConnectorAuthResponseAWS AWS connector authentication response to start the authentication process
+type ConnectorAuthResponseAWS struct {
+	// RedirectUrl URL to redirect the user to, to authenticate
+	RedirectURL string `json:"redirect_url"`
+
+	// RoleTemplateUrl URL to the role template, to present to the user
+	RoleTemplateURL string `json:"role_template_url"`
+
+	// SuggestedExternalId External ID suggested to enter into the role definition
+	SuggestedExternalID string `json:"suggested_external_id"`
+
+	// SuggestedPolicyArns List of AWS policy ARNs suggested to grant inside the role definition
+	SuggestedPolicyARNs []string `json:"suggested_policy_arns"`
+}
+
+// ConnectorCreate Connector creation request
+type ConnectorCreate struct {
+	// Name Name of the connector
+	Name string `json:"name"`
+
+	// Type Type of the connector
+	Type string `json:"type"`
+}
+
+// ConnectorID ID of the Connector
+type ConnectorID = openapi_types.UUID
+
+// ConnectorStatus The status of the connector
+type ConnectorStatus string
+
+// ConnectorUpdate defines model for ConnectorUpdate.
+type ConnectorUpdate struct {
+	// Name Name of the connector
+	Name *string `json:"name,omitempty"`
 }
 
 // CreateAddonVersionRequest defines model for CreateAddonVersion_request.
@@ -822,6 +926,12 @@ type ListAddonsByTeam200Response struct {
 // ListAddons200Response defines model for ListAddons_200_response.
 type ListAddons200Response struct {
 	Items    []ListAddon  `json:"items"`
+	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListConnectors200Response defines model for ListConnectors_200_response.
+type ListConnectors200Response struct {
+	Items    []Connector  `json:"items"`
 	Metadata ListMetadata `json:"metadata"`
 }
 
@@ -1456,6 +1566,12 @@ type PluginVersion struct {
 	// Checksums The checksums of the plugin assets
 	Checksums []string `json:"checksums"`
 
+	// ConnectorRequired Whether a connector is required for this plugin version
+	ConnectorRequired *bool `json:"connector_required,omitempty"`
+
+	// ConnectorTypes List of connector types available for this plugin version
+	ConnectorTypes *[]string `json:"connector_types,omitempty"`
+
 	// CreatedAt The date and time the plugin version was created.
 	CreatedAt time.Time `json:"created_at"`
 
@@ -1524,6 +1640,12 @@ type PluginVersionBase struct {
 type PluginVersionDetails struct {
 	// Checksums The checksums of the plugin assets
 	Checksums []string `json:"checksums"`
+
+	// ConnectorRequired Whether a connector is required for this plugin version
+	ConnectorRequired *bool `json:"connector_required,omitempty"`
+
+	// ConnectorTypes List of connector types available for this plugin version
+	ConnectorTypes *[]string `json:"connector_types,omitempty"`
 
 	// CreatedAt The date and time the plugin version was created.
 	CreatedAt time.Time `json:"created_at"`
@@ -1713,6 +1835,9 @@ type SyncCreate struct {
 
 // SyncDestination defines model for SyncDestination.
 type SyncDestination struct {
+	// ConnectorId ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
@@ -1744,6 +1869,9 @@ type SyncDestination struct {
 
 // SyncDestinationCreate Sync Destination Definition
 type SyncDestinationCreate struct {
+	// ConnectorId ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
@@ -1772,6 +1900,9 @@ type SyncDestinationMigrateMode string
 
 // SyncDestinationUpdate Sync Destination Definition
 type SyncDestinationUpdate struct {
+	// ConnectorId ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
@@ -1896,6 +2027,9 @@ type SyncRunStatusReason string
 
 // SyncSource defines model for SyncSource.
 type SyncSource struct {
+	// ConnectorId ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
@@ -1927,6 +2061,9 @@ type SyncSource struct {
 
 // SyncSourceCreate Sync Source Definition
 type SyncSourceCreate struct {
+	// ConnectorId ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
@@ -1952,6 +2089,9 @@ type SyncSourceCreate struct {
 
 // SyncSourceUpdate Sync Source Update Definition
 type SyncSourceUpdate struct {
+	// ConnectorId ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
 
@@ -2525,6 +2665,18 @@ type ListTeamAPIKeysParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
+// ListConnectorsParams defines parameters for ListConnectors.
+type ListConnectorsParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+
+	// Type Filter connectors by a given type.
+	Type *string `form:"type,omitempty" json:"type,omitempty"`
+}
+
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
 type ListTeamInvitationsParams struct {
 	// Page Page number of the results to fetch
@@ -2764,6 +2916,18 @@ type CreateAddonOrderForTeamJSONRequestBody = AddonOrderCreate
 
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
 type CreateTeamAPIKeyJSONRequestBody = CreateTeamAPIKeyRequest
+
+// CreateConnectorJSONRequestBody defines body for CreateConnector for application/json ContentType.
+type CreateConnectorJSONRequestBody = ConnectorCreate
+
+// UpdateConnectorJSONRequestBody defines body for UpdateConnector for application/json ContentType.
+type UpdateConnectorJSONRequestBody = ConnectorUpdate
+
+// AuthenticateConnectorFinishJSONRequestBody defines body for AuthenticateConnectorFinish for application/json ContentType.
+type AuthenticateConnectorFinishJSONRequestBody = AuthenticateConnectorFinishRequest
+
+// AuthenticateConnectorJSONRequestBody defines body for AuthenticateConnector for application/json ContentType.
+type AuthenticateConnectorJSONRequestBody = AuthenticateConnectorRequest
 
 // CreateTeamImagesJSONRequestBody defines body for CreateTeamImages for application/json ContentType.
 type CreateTeamImagesJSONRequestBody = CreateTeamImagesRequest
