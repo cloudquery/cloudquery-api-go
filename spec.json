@@ -4618,6 +4618,94 @@
         "tags" : [ "syncs" ]
       }
     },
+    "/teams/{team_name}/syncs/{sync_name}/runs/{sync_run_id}/connector/{connector_id}/identity" : {
+      "get" : {
+        "description" : "Get connector identity for a sync run.",
+        "operationId" : "GetSyncRunConnectorIdentity",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_run_id"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSyncRunConnectorIdentity_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/syncs/{sync_name}/runs/{sync_run_id}/connector/{connector_id}/credentials" : {
+      "get" : {
+        "description" : "Get connector credentials for a sync run.",
+        "operationId" : "GetSyncRunConnectorCredentials",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_run_id"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSyncRunConnectorCredentials_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
+    },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}" : {
       "get" : {
         "description" : "Get a Sync Test Connection",
@@ -4695,6 +4783,90 @@
           }
         },
         "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/connector/{connector_id}/identity" : {
+      "get" : {
+        "description" : "Get connector identity for a test connection.",
+        "operationId" : "GetTestConnectionConnectorIdentity",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_test_connection_id"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSyncRunConnectorIdentity_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/connector/{connector_id}/credentials" : {
+      "get" : {
+        "description" : "Get connector credentials for a test connection",
+        "operationId" : "GetTestConnectionConnectorCredentials",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_test_connection_id"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetSyncRunConnectorCredentials_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
       }
     },
     "/teams/{team_name}/managed-databases" : {
@@ -5433,6 +5605,17 @@
         },
         "style" : "simple"
       },
+      "connector_id" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "connector_id",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/ConnectorID"
+        },
+        "style" : "simple",
+        "x-go-name" : "ConnectorID"
+      },
       "sync_test_connection_id" : {
         "explode" : false,
         "in" : "path",
@@ -5453,17 +5636,6 @@
         },
         "style" : "simple",
         "x-go-name" : "ManagedDatabaseID"
-      },
-      "connector_id" : {
-        "explode" : false,
-        "in" : "path",
-        "name" : "connector_id",
-        "required" : true,
-        "schema" : {
-          "$ref" : "#/components/schemas/ConnectorID"
-        },
-        "style" : "simple",
-        "x-go-name" : "ConnectorID"
       }
     },
     "responses" : {
@@ -8124,6 +8296,52 @@
           }
         } ]
       },
+      "ConnectorIdentityResponseAWS" : {
+        "additionalProperties" : false,
+        "description" : "AWS connector identity response",
+        "properties" : {
+          "role_arn" : {
+            "description" : "Role ARN to assume",
+            "type" : "string",
+            "x-go-name" : "RoleARN"
+          },
+          "account_ids" : {
+            "description" : "List of AWS account IDs",
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array",
+            "x-go-name" : "AccountIDs"
+          }
+        },
+        "required" : [ "account_ids", "role_arn" ]
+      },
+      "ConnectorCredentialsResponseAWS" : {
+        "additionalProperties" : false,
+        "description" : "AWS connector credentials response",
+        "properties" : {
+          "access_key_id" : {
+            "type" : "string"
+          },
+          "secret_access_key" : {
+            "type" : "string"
+          },
+          "session_token" : {
+            "type" : "string"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "can_expire" : {
+            "type" : "boolean"
+          },
+          "expires" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "required" : [ "access_key_id", "can_expire", "expires", "secret_access_key", "session_token", "source" ]
+      },
       "ManagedDatabaseID" : {
         "description" : "The identifier for the managed database",
         "example" : "12345678-1234-1234-1234-1234567890ab",
@@ -9020,6 +9238,20 @@
         },
         "required" : [ "location" ],
         "title" : "Sync Run Logs"
+      },
+      "GetSyncRunConnectorIdentity_200_response" : {
+        "properties" : {
+          "aws" : {
+            "$ref" : "#/components/schemas/ConnectorIdentityResponseAWS"
+          }
+        }
+      },
+      "GetSyncRunConnectorCredentials_200_response" : {
+        "properties" : {
+          "aws" : {
+            "$ref" : "#/components/schemas/ConnectorCredentialsResponseAWS"
+          }
+        }
       },
       "UpdateSyncTestConnection_request" : {
         "properties" : {

@@ -474,6 +474,12 @@ type ClientInterface interface {
 
 	UpdateSyncTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetTestConnectionConnectorCredentials request
+	GetTestConnectionConnectorCredentials(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTestConnectionConnectorIdentity request
+	GetTestConnectionConnectorIdentity(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteSync request
 	DeleteSync(ctx context.Context, teamName TeamName, syncName SyncName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -498,6 +504,12 @@ type ClientInterface interface {
 	UpdateSyncRunWithBody(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateSyncRun(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSyncRunConnectorCredentials request
+	GetSyncRunConnectorCredentials(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSyncRunConnectorIdentity request
+	GetSyncRunConnectorIdentity(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetSyncRunLogs request
 	GetSyncRunLogs(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2228,6 +2240,30 @@ func (c *Client) UpdateSyncTestConnection(ctx context.Context, teamName TeamName
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetTestConnectionConnectorCredentials(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTestConnectionConnectorCredentialsRequest(c.Server, teamName, syncTestConnectionId, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTestConnectionConnectorIdentity(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTestConnectionConnectorIdentityRequest(c.Server, teamName, syncTestConnectionId, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DeleteSync(ctx context.Context, teamName TeamName, syncName SyncName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteSyncRequest(c.Server, teamName, syncName)
 	if err != nil {
@@ -2326,6 +2362,30 @@ func (c *Client) UpdateSyncRunWithBody(ctx context.Context, teamName TeamName, s
 
 func (c *Client) UpdateSyncRun(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateSyncRunRequest(c.Server, teamName, syncName, syncRunId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSyncRunConnectorCredentials(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSyncRunConnectorCredentialsRequest(c.Server, teamName, syncName, syncRunId, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSyncRunConnectorIdentity(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSyncRunConnectorIdentityRequest(c.Server, teamName, syncName, syncRunId, connectorID)
 	if err != nil {
 		return nil, err
 	}
@@ -8324,6 +8384,102 @@ func NewUpdateSyncTestConnectionRequestWithBody(server string, teamName TeamName
 	return req, nil
 }
 
+// NewGetTestConnectionConnectorCredentialsRequest generates requests for GetTestConnectionConnectorCredentials
+func NewGetTestConnectionConnectorCredentialsRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s/connector/%s/credentials", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTestConnectionConnectorIdentityRequest generates requests for GetTestConnectionConnectorIdentity
+func NewGetTestConnectionConnectorIdentityRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s/connector/%s/identity", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeleteSyncRequest generates requests for DeleteSync
 func NewDeleteSyncRequest(server string, teamName TeamName, syncName SyncName) (*http.Request, error) {
 	var err error
@@ -8685,6 +8841,116 @@ func NewUpdateSyncRunRequestWithBody(server string, teamName TeamName, syncName 
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetSyncRunConnectorCredentialsRequest generates requests for GetSyncRunConnectorCredentials
+func NewGetSyncRunConnectorCredentialsRequest(server string, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_name", runtime.ParamLocationPath, syncName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_run_id", runtime.ParamLocationPath, syncRunId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/syncs/%s/runs/%s/connector/%s/credentials", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSyncRunConnectorIdentityRequest generates requests for GetSyncRunConnectorIdentity
+func NewGetSyncRunConnectorIdentityRequest(server string, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_name", runtime.ParamLocationPath, syncName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_run_id", runtime.ParamLocationPath, syncRunId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/syncs/%s/runs/%s/connector/%s/identity", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -9956,6 +10222,12 @@ type ClientWithResponsesInterface interface {
 
 	UpdateSyncTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncTestConnectionResponse, error)
 
+	// GetTestConnectionConnectorCredentialsWithResponse request
+	GetTestConnectionConnectorCredentialsWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetTestConnectionConnectorCredentialsResponse, error)
+
+	// GetTestConnectionConnectorIdentityWithResponse request
+	GetTestConnectionConnectorIdentityWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetTestConnectionConnectorIdentityResponse, error)
+
 	// DeleteSyncWithResponse request
 	DeleteSyncWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, reqEditors ...RequestEditorFn) (*DeleteSyncResponse, error)
 
@@ -9980,6 +10252,12 @@ type ClientWithResponsesInterface interface {
 	UpdateSyncRunWithBodyWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncRunResponse, error)
 
 	UpdateSyncRunWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, body UpdateSyncRunJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncRunResponse, error)
+
+	// GetSyncRunConnectorCredentialsWithResponse request
+	GetSyncRunConnectorCredentialsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetSyncRunConnectorCredentialsResponse, error)
+
+	// GetSyncRunConnectorIdentityWithResponse request
+	GetSyncRunConnectorIdentityWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetSyncRunConnectorIdentityResponse, error)
 
 	// GetSyncRunLogsWithResponse request
 	GetSyncRunLogsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, params *GetSyncRunLogsParams, reqEditors ...RequestEditorFn) (*GetSyncRunLogsResponse, error)
@@ -12653,6 +12931,60 @@ func (r UpdateSyncTestConnectionResponse) StatusCode() int {
 	return 0
 }
 
+type GetTestConnectionConnectorCredentialsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetSyncRunConnectorCredentials200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTestConnectionConnectorCredentialsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTestConnectionConnectorCredentialsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTestConnectionConnectorIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetSyncRunConnectorIdentity200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTestConnectionConnectorIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTestConnectionConnectorIdentityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeleteSyncResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -12828,6 +13160,60 @@ func (r UpdateSyncRunResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateSyncRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSyncRunConnectorCredentialsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetSyncRunConnectorCredentials200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSyncRunConnectorCredentialsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSyncRunConnectorCredentialsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSyncRunConnectorIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetSyncRunConnectorIdentity200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSyncRunConnectorIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSyncRunConnectorIdentityResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -14420,6 +14806,24 @@ func (c *ClientWithResponses) UpdateSyncTestConnectionWithResponse(ctx context.C
 	return ParseUpdateSyncTestConnectionResponse(rsp)
 }
 
+// GetTestConnectionConnectorCredentialsWithResponse request returning *GetTestConnectionConnectorCredentialsResponse
+func (c *ClientWithResponses) GetTestConnectionConnectorCredentialsWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetTestConnectionConnectorCredentialsResponse, error) {
+	rsp, err := c.GetTestConnectionConnectorCredentials(ctx, teamName, syncTestConnectionId, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTestConnectionConnectorCredentialsResponse(rsp)
+}
+
+// GetTestConnectionConnectorIdentityWithResponse request returning *GetTestConnectionConnectorIdentityResponse
+func (c *ClientWithResponses) GetTestConnectionConnectorIdentityWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetTestConnectionConnectorIdentityResponse, error) {
+	rsp, err := c.GetTestConnectionConnectorIdentity(ctx, teamName, syncTestConnectionId, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTestConnectionConnectorIdentityResponse(rsp)
+}
+
 // DeleteSyncWithResponse request returning *DeleteSyncResponse
 func (c *ClientWithResponses) DeleteSyncWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, reqEditors ...RequestEditorFn) (*DeleteSyncResponse, error) {
 	rsp, err := c.DeleteSync(ctx, teamName, syncName, reqEditors...)
@@ -14497,6 +14901,24 @@ func (c *ClientWithResponses) UpdateSyncRunWithResponse(ctx context.Context, tea
 		return nil, err
 	}
 	return ParseUpdateSyncRunResponse(rsp)
+}
+
+// GetSyncRunConnectorCredentialsWithResponse request returning *GetSyncRunConnectorCredentialsResponse
+func (c *ClientWithResponses) GetSyncRunConnectorCredentialsWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetSyncRunConnectorCredentialsResponse, error) {
+	rsp, err := c.GetSyncRunConnectorCredentials(ctx, teamName, syncName, syncRunId, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSyncRunConnectorCredentialsResponse(rsp)
+}
+
+// GetSyncRunConnectorIdentityWithResponse request returning *GetSyncRunConnectorIdentityResponse
+func (c *ClientWithResponses) GetSyncRunConnectorIdentityWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, syncRunId SyncRunId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetSyncRunConnectorIdentityResponse, error) {
+	rsp, err := c.GetSyncRunConnectorIdentity(ctx, teamName, syncName, syncRunId, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSyncRunConnectorIdentityResponse(rsp)
 }
 
 // GetSyncRunLogsWithResponse request returning *GetSyncRunLogsResponse
@@ -20076,6 +20498,128 @@ func ParseUpdateSyncTestConnectionResponse(rsp *http.Response) (*UpdateSyncTestC
 	return response, nil
 }
 
+// ParseGetTestConnectionConnectorCredentialsResponse parses an HTTP response from a GetTestConnectionConnectorCredentialsWithResponse call
+func ParseGetTestConnectionConnectorCredentialsResponse(rsp *http.Response) (*GetTestConnectionConnectorCredentialsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTestConnectionConnectorCredentialsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetSyncRunConnectorCredentials200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTestConnectionConnectorIdentityResponse parses an HTTP response from a GetTestConnectionConnectorIdentityWithResponse call
+func ParseGetTestConnectionConnectorIdentityResponse(rsp *http.Response) (*GetTestConnectionConnectorIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTestConnectionConnectorIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetSyncRunConnectorIdentity200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteSyncResponse parses an HTTP response from a DeleteSyncWithResponse call
 func ParseDeleteSyncResponse(rsp *http.Response) (*DeleteSyncResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -20420,6 +20964,128 @@ func ParseUpdateSyncRunResponse(rsp *http.Response) (*UpdateSyncRunResponse, err
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSyncRunConnectorCredentialsResponse parses an HTTP response from a GetSyncRunConnectorCredentialsWithResponse call
+func ParseGetSyncRunConnectorCredentialsResponse(rsp *http.Response) (*GetSyncRunConnectorCredentialsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSyncRunConnectorCredentialsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetSyncRunConnectorCredentials200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSyncRunConnectorIdentityResponse parses an HTTP response from a GetSyncRunConnectorIdentityWithResponse call
+func ParseGetSyncRunConnectorIdentityResponse(rsp *http.Response) (*GetSyncRunConnectorIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSyncRunConnectorIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetSyncRunConnectorIdentity200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound

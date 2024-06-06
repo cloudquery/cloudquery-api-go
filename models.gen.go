@@ -643,8 +643,27 @@ type ConnectorCreate struct {
 	Type string `json:"type"`
 }
 
+// ConnectorCredentialsResponseAWS AWS connector credentials response
+type ConnectorCredentialsResponseAWS struct {
+	AccessKeyId     string    `json:"access_key_id"`
+	CanExpire       bool      `json:"can_expire"`
+	Expires         time.Time `json:"expires"`
+	SecretAccessKey string    `json:"secret_access_key"`
+	SessionToken    string    `json:"session_token"`
+	Source          string    `json:"source"`
+}
+
 // ConnectorID ID of the Connector
 type ConnectorID = openapi_types.UUID
+
+// ConnectorIdentityResponseAWS AWS connector identity response
+type ConnectorIdentityResponseAWS struct {
+	// AccountIds List of AWS account IDs
+	AccountIDs []string `json:"account_ids"`
+
+	// RoleArn Role ARN to assume
+	RoleARN string `json:"role_arn"`
+}
 
 // ConnectorStatus The status of the connector
 type ConnectorStatus string
@@ -812,6 +831,18 @@ type GetCurrentUserMemberships200Response struct {
 type GetManagedDatabases200Response struct {
 	Items    []ManagedDatabase `json:"items"`
 	Metadata ListMetadata      `json:"metadata"`
+}
+
+// GetSyncRunConnectorCredentials200Response defines model for GetSyncRunConnectorCredentials_200_response.
+type GetSyncRunConnectorCredentials200Response struct {
+	// Aws AWS connector credentials response
+	Aws *ConnectorCredentialsResponseAWS `json:"aws,omitempty"`
+}
+
+// GetSyncRunConnectorIdentity200Response defines model for GetSyncRunConnectorIdentity_200_response.
+type GetSyncRunConnectorIdentity200Response struct {
+	// Aws AWS connector identity response
+	Aws *ConnectorIdentityResponseAWS `json:"aws,omitempty"`
 }
 
 // GetTeamMemberships200Response defines model for GetTeamMemberships_200_response.
