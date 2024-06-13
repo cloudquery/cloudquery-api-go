@@ -6959,7 +6959,7 @@
         "title" : "CloudQuery Addon Asset"
       },
       "TeamPlan" : {
-        "description" : "The plan the team is on",
+        "description" : "The plan the team is on (trial is deprecated)",
         "enum" : [ "free", "paid", "enterprise", "trial" ],
         "type" : "string"
       },
