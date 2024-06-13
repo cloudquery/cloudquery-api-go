@@ -2210,7 +2210,7 @@ type Team struct {
 	// Name The unique name for the team.
 	Name TeamName `json:"name"`
 
-	// Plan The plan the team is on
+	// Plan The plan the team is on (trial is deprecated)
 	Plan         TeamPlan   `json:"plan"`
 	PlanEndTime  *time.Time `json:"plan_end_time,omitempty"`
 	TrialEndTime *time.Time `json:"trial_end_time,omitempty"`
@@ -2243,7 +2243,7 @@ type TeamImageCreate struct {
 // TeamName The unique name for the team.
 type TeamName = string
 
-// TeamPlan The plan the team is on
+// TeamPlan The plan the team is on (trial is deprecated)
 type TeamPlan string
 
 // TeamSubscriptionOrder Team subscription order
@@ -2257,7 +2257,7 @@ type TeamSubscriptionOrder struct {
 	// Id ID of the team subscription order
 	TeamSubscriptionOrderID TeamSubscriptionOrderID `json:"id"`
 
-	// Plan The plan the team is on
+	// Plan The plan the team is on (trial is deprecated)
 	Plan   TeamPlan                    `json:"plan"`
 	Status TeamSubscriptionOrderStatus `json:"status"`
 
@@ -2271,7 +2271,7 @@ type TeamSubscriptionOrderCreate struct {
 	// CancelUrl URL to redirect to after order cancellation
 	CancelUrl string `json:"cancel_url"`
 
-	// Plan The plan the team is on
+	// Plan The plan the team is on (trial is deprecated)
 	Plan TeamPlan `json:"plan"`
 
 	// SuccessUrl URL to redirect to after successful order completion
