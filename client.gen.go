@@ -346,7 +346,7 @@ type ClientInterface interface {
 	AcceptTeamInvitation(ctx context.Context, teamName TeamName, body AcceptTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CancelTeamInvitation request
-	CancelTeamInvitation(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CancelTeamInvitation(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListInvoicesByTeam request
 	ListInvoicesByTeam(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -369,7 +369,7 @@ type ClientInterface interface {
 	GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteTeamMembership request
-	DeleteTeamMembership(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteTeamMembership(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePluginsByTeam request
 	DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1676,7 +1676,7 @@ func (c *Client) AcceptTeamInvitation(ctx context.Context, teamName TeamName, bo
 	return c.Client.Do(req)
 }
 
-func (c *Client) CancelTeamInvitation(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) CancelTeamInvitation(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCancelTeamInvitationRequest(c.Server, teamName, email)
 	if err != nil {
 		return nil, err
@@ -1772,7 +1772,7 @@ func (c *Client) GetTeamMemberships(ctx context.Context, teamName TeamName, para
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteTeamMembership(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) DeleteTeamMembership(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteTeamMembershipRequest(c.Server, teamName, email)
 	if err != nil {
 		return nil, err
@@ -6540,7 +6540,7 @@ func NewAcceptTeamInvitationRequestWithBody(server string, teamName TeamName, co
 }
 
 // NewCancelTeamInvitationRequest generates requests for CancelTeamInvitation
-func NewCancelTeamInvitationRequest(server string, teamName TeamName, email Email) (*http.Request, error) {
+func NewCancelTeamInvitationRequest(server string, teamName TeamName, email EmailBasic) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -6926,7 +6926,7 @@ func NewGetTeamMembershipsRequest(server string, teamName TeamName, params *GetT
 }
 
 // NewDeleteTeamMembershipRequest generates requests for DeleteTeamMembership
-func NewDeleteTeamMembershipRequest(server string, teamName TeamName, email Email) (*http.Request, error) {
+func NewDeleteTeamMembershipRequest(server string, teamName TeamName, email EmailBasic) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -10094,7 +10094,7 @@ type ClientWithResponsesInterface interface {
 	AcceptTeamInvitationWithResponse(ctx context.Context, teamName TeamName, body AcceptTeamInvitationJSONRequestBody, reqEditors ...RequestEditorFn) (*AcceptTeamInvitationResponse, error)
 
 	// CancelTeamInvitationWithResponse request
-	CancelTeamInvitationWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*CancelTeamInvitationResponse, error)
+	CancelTeamInvitationWithResponse(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*CancelTeamInvitationResponse, error)
 
 	// ListInvoicesByTeamWithResponse request
 	ListInvoicesByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListInvoicesByTeamParams, reqEditors ...RequestEditorFn) (*ListInvoicesByTeamResponse, error)
@@ -10117,7 +10117,7 @@ type ClientWithResponsesInterface interface {
 	GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error)
 
 	// DeleteTeamMembershipWithResponse request
-	DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error)
+	DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error)
 
 	// DeletePluginsByTeamWithResponse request
 	DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error)
@@ -14396,7 +14396,7 @@ func (c *ClientWithResponses) AcceptTeamInvitationWithResponse(ctx context.Conte
 }
 
 // CancelTeamInvitationWithResponse request returning *CancelTeamInvitationResponse
-func (c *ClientWithResponses) CancelTeamInvitationWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*CancelTeamInvitationResponse, error) {
+func (c *ClientWithResponses) CancelTeamInvitationWithResponse(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*CancelTeamInvitationResponse, error) {
 	rsp, err := c.CancelTeamInvitation(ctx, teamName, email, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -14467,7 +14467,7 @@ func (c *ClientWithResponses) GetTeamMembershipsWithResponse(ctx context.Context
 }
 
 // DeleteTeamMembershipWithResponse request returning *DeleteTeamMembershipResponse
-func (c *ClientWithResponses) DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email Email, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error) {
+func (c *ClientWithResponses) DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error) {
 	rsp, err := c.DeleteTeamMembership(ctx, teamName, email, reqEditors...)
 	if err != nil {
 		return nil, err

@@ -289,7 +289,9 @@ const (
 // APIKey API Key to interact with CloudQuery Cloud under specific team
 type APIKey struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	CreatedBy *Email     `json:"created_by,omitempty"`
+
+	// CreatedBy email of the user that created the API key
+	CreatedBy *string `json:"created_by,omitempty"`
 
 	// Expired Whether the API key has expired or not
 	Expired bool `json:"expired"`
@@ -2431,7 +2433,7 @@ type UsageSummaryMetadata struct {
 // User CloudQuery User
 type User struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	Email     Email      `json:"email"`
+	Email     string     `json:"email"`
 
 	// Id ID of the User
 	ID openapi_types.UUID `json:"id"`
@@ -2455,6 +2457,9 @@ type AddonSortBy string
 
 // AddonTeam The unique name for the team.
 type AddonTeam = TeamName
+
+// EmailBasic defines model for email_basic.
+type EmailBasic = string
 
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool

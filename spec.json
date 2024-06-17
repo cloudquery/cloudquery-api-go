@@ -2237,7 +2237,7 @@
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
         }, {
-          "$ref" : "#/components/parameters/email"
+          "$ref" : "#/components/parameters/email_basic"
         } ],
         "responses" : {
           "204" : {
@@ -3149,7 +3149,7 @@
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
         }, {
-          "$ref" : "#/components/parameters/email"
+          "$ref" : "#/components/parameters/email_basic"
         } ],
         "responses" : {
           "204" : {
@@ -4586,6 +4586,9 @@
             },
             "description" : "Response"
           },
+          "204" : {
+            "description" : "No logs available for a sync run that has not started."
+          },
           "302" : {
             "description" : "Redirect to the logs download URL for a sync run that has completed.",
             "headers" : {
@@ -5503,13 +5506,14 @@
         "style" : "simple",
         "x-go-name" : "AddonOrderID"
       },
-      "email" : {
+      "email_basic" : {
         "explode" : false,
         "in" : "path",
         "name" : "email",
         "required" : true,
         "schema" : {
-          "$ref" : "#/components/schemas/Email"
+          "example" : "user@example.com",
+          "type" : "string"
         },
         "style" : "simple"
       },
@@ -7130,11 +7134,6 @@
         "required" : [ "addon_name", "addon_team", "addon_type", "cancel_url", "success_url" ],
         "title" : "Create CloudQuery Addon Order"
       },
-      "Email" : {
-        "example" : "user@cloudquery.io",
-        "format" : "email",
-        "type" : "string"
-      },
       "UserName" : {
         "description" : "The unique name for the user.",
         "example" : "user",
@@ -7159,7 +7158,8 @@
             "x-go-name" : "ID"
           },
           "email" : {
-            "$ref" : "#/components/schemas/Email"
+            "example" : "user@example.com",
+            "type" : "string"
           },
           "name" : {
             "$ref" : "#/components/schemas/UserName"
@@ -7511,6 +7511,11 @@
         "required" : [ "metadata", "values" ],
         "title" : "CloudQuery Spend Summary"
       },
+      "Email" : {
+        "example" : "user@example.com",
+        "format" : "email",
+        "type" : "string"
+      },
       "Invitation" : {
         "additionalProperties" : false,
         "properties" : {
@@ -7668,7 +7673,9 @@
             "$ref" : "#/components/schemas/APIKeyName"
           },
           "created_by" : {
-            "$ref" : "#/components/schemas/Email"
+            "description" : "email of the user that created the API key",
+            "example" : "user@example.com",
+            "type" : "string"
           },
           "id" : {
             "$ref" : "#/components/schemas/APIKeyID"
@@ -8948,7 +8955,7 @@
               "role" : "admin",
               "user" : {
                 "created_at" : "2017-07-14T16:53:42Z",
-                "email" : "user@clouduery.io",
+                "email" : "user@example.com",
                 "id" : "12345678-1234-1234-1234-1234567890ab",
                 "name" : "user",
                 "updated_at" : "2017-07-14T16:53:42Z"
