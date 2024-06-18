@@ -1971,7 +1971,7 @@ type SyncEnvCreate struct {
 	Name string `json:"name"`
 
 	// Value Value of the environment variable
-	Value string `json:"value"`
+	Value *string `json:"value,omitempty"`
 }
 
 // SyncLastUpdateSource How was the source or destination been created or updated last

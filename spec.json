@@ -7748,7 +7748,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "name", "value" ]
+        "required" : [ "name" ]
       },
       "SyncLastUpdateSource" : {
         "description" : "How was the source or destination been created or updated last",
