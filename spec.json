@@ -5080,7 +5080,18 @@
           "description" : "Filter connectors by a given type.",
           "explode" : true,
           "in" : "query",
-          "name" : "type",
+          "name" : "filter_type",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "Filter connectors by a given plugin reference. Mutually exclusive with `type`.",
+          "example" : "cloudquery/source/googleanalytics",
+          "explode" : true,
+          "in" : "query",
+          "name" : "filter_plugin",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -5097,6 +5108,9 @@
               }
             },
             "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
           },
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
@@ -5289,6 +5303,9 @@
           },
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
@@ -8388,6 +8405,20 @@
         },
         "required" : [ "access_key_id", "can_expire", "expires", "secret_access_key", "session_token", "source" ]
       },
+      "ConnectorCredentialsResponseOAuth" : {
+        "additionalProperties" : false,
+        "description" : "OAuth connector credentials response",
+        "properties" : {
+          "access_token" : {
+            "type" : "string"
+          },
+          "expires" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "required" : [ "access_token" ]
+      },
       "ManagedDatabaseID" : {
         "description" : "The identifier for the managed database",
         "example" : "12345678-1234-1234-1234-1234567890ab",
@@ -8521,6 +8552,34 @@
         },
         "required" : [ "plugin_kind", "plugin_name", "plugin_team" ]
       },
+      "ConnectorAuthRequestOAuth" : {
+        "additionalProperties" : false,
+        "description" : "OAuth connector authentication request to start the authentication process",
+        "properties" : {
+          "plugin_team" : {
+            "description" : "Team that owns the plugin we are authenticating the connector for",
+            "example" : "cloudquery",
+            "type" : "string"
+          },
+          "plugin_kind" : {
+            "description" : "Kind of the plugin",
+            "example" : "source",
+            "type" : "string"
+          },
+          "plugin_name" : {
+            "description" : "Name of the plugin",
+            "example" : "googleanalytics",
+            "type" : "string"
+          },
+          "base_url" : {
+            "description" : "Base of the URL the callback url will be constructed from",
+            "example" : "https://cloud.cloudquery.io/oauth",
+            "type" : "string",
+            "x-go-name" : "BaseURL"
+          }
+        },
+        "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]
+      },
       "ConnectorAuthResponseAWS" : {
         "additionalProperties" : false,
         "description" : "AWS connector authentication response to start the authentication process",
@@ -8551,6 +8610,18 @@
         },
         "required" : [ "redirect_url", "role_template_url", "suggested_external_id", "suggested_policy_arns" ]
       },
+      "ConnectorAuthResponseOAuth" : {
+        "additionalProperties" : false,
+        "description" : "OAuth connector authentication response to start the authentication process",
+        "properties" : {
+          "redirect_url" : {
+            "description" : "URL to redirect the user to, to authenticate",
+            "type" : "string",
+            "x-go-name" : "RedirectURL"
+          }
+        },
+        "required" : [ "redirect_url" ]
+      },
       "ConnectorAuthFinishRequestAWS" : {
         "additionalProperties" : false,
         "description" : "AWS connector authentication request, filled in after the user has authenticated through AWS",
@@ -8567,6 +8638,21 @@
           }
         },
         "required" : [ "role_arn" ]
+      },
+      "ConnectorAuthFinishRequestOAuth" : {
+        "additionalProperties" : false,
+        "description" : "OAuth connector authentication request, filled in after the user has authenticated through OAuth",
+        "properties" : {
+          "auth_code" : {
+            "description" : "Auth code received from the OAuth provider",
+            "type" : "string"
+          },
+          "state" : {
+            "description" : "State value received from the OAuth provider",
+            "type" : "string"
+          }
+        },
+        "required" : [ "auth_code" ]
       },
       "ListPluginNotificationRequests_200_response" : {
         "properties" : {
@@ -9304,6 +9390,9 @@
         "properties" : {
           "aws" : {
             "$ref" : "#/components/schemas/ConnectorCredentialsResponseAWS"
+          },
+          "oauth" : {
+            "$ref" : "#/components/schemas/ConnectorCredentialsResponseOAuth"
           }
         }
       },
@@ -9357,6 +9446,9 @@
         "properties" : {
           "aws" : {
             "$ref" : "#/components/schemas/ConnectorAuthRequestAWS"
+          },
+          "oauth" : {
+            "$ref" : "#/components/schemas/ConnectorAuthRequestOAuth"
           }
         }
       },
@@ -9364,6 +9456,9 @@
         "properties" : {
           "aws" : {
             "$ref" : "#/components/schemas/ConnectorAuthResponseAWS"
+          },
+          "oauth" : {
+            "$ref" : "#/components/schemas/ConnectorAuthResponseOAuth"
           }
         }
       },
@@ -9371,6 +9466,9 @@
         "properties" : {
           "aws" : {
             "$ref" : "#/components/schemas/ConnectorAuthFinishRequestAWS"
+          },
+          "oauth" : {
+            "$ref" : "#/components/schemas/ConnectorAuthFinishRequestOAuth"
           }
         }
       },

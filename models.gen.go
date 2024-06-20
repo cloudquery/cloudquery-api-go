@@ -559,18 +559,27 @@ type AddonVersionUpdate struct {
 type AuthenticateConnectorFinishRequest struct {
 	// Aws AWS connector authentication request, filled in after the user has authenticated through AWS
 	Aws *ConnectorAuthFinishRequestAWS `json:"aws,omitempty"`
+
+	// Oauth OAuth connector authentication request, filled in after the user has authenticated through OAuth
+	Oauth *ConnectorAuthFinishRequestOAuth `json:"oauth,omitempty"`
 }
 
 // AuthenticateConnector200Response defines model for AuthenticateConnector_200_response.
 type AuthenticateConnector200Response struct {
 	// Aws AWS connector authentication response to start the authentication process
 	Aws *ConnectorAuthResponseAWS `json:"aws,omitempty"`
+
+	// Oauth OAuth connector authentication response to start the authentication process
+	Oauth *ConnectorAuthResponseOAuth `json:"oauth,omitempty"`
 }
 
 // AuthenticateConnectorRequest defines model for AuthenticateConnector_request.
 type AuthenticateConnectorRequest struct {
 	// Aws AWS connector authentication request to start the authentication process
 	Aws *ConnectorAuthRequestAWS `json:"aws,omitempty"`
+
+	// Oauth OAuth connector authentication request to start the authentication process
+	Oauth *ConnectorAuthRequestOAuth `json:"oauth,omitempty"`
 }
 
 // BasicError Basic Error
@@ -606,10 +615,34 @@ type ConnectorAuthFinishRequestAWS struct {
 	RoleARN string `json:"role_arn"`
 }
 
+// ConnectorAuthFinishRequestOAuth OAuth connector authentication request, filled in after the user has authenticated through OAuth
+type ConnectorAuthFinishRequestOAuth struct {
+	// AuthCode Auth code received from the OAuth provider
+	AuthCode string `json:"auth_code"`
+
+	// State State value received from the OAuth provider
+	State *string `json:"state,omitempty"`
+}
+
 // ConnectorAuthRequestAWS AWS connector authentication request to start the authentication process
 type ConnectorAuthRequestAWS struct {
 	// AccountIds List of AWS account IDs to authenticate
 	AccountIDs *[]string `json:"account_ids,omitempty"`
+
+	// PluginKind Kind of the plugin
+	PluginKind string `json:"plugin_kind"`
+
+	// PluginName Name of the plugin
+	PluginName string `json:"plugin_name"`
+
+	// PluginTeam Team that owns the plugin we are authenticating the connector for
+	PluginTeam string `json:"plugin_team"`
+}
+
+// ConnectorAuthRequestOAuth OAuth connector authentication request to start the authentication process
+type ConnectorAuthRequestOAuth struct {
+	// BaseUrl Base of the URL the callback url will be constructed from
+	BaseURL string `json:"base_url"`
 
 	// PluginKind Kind of the plugin
 	PluginKind string `json:"plugin_kind"`
@@ -636,6 +669,12 @@ type ConnectorAuthResponseAWS struct {
 	SuggestedPolicyARNs []string `json:"suggested_policy_arns"`
 }
 
+// ConnectorAuthResponseOAuth OAuth connector authentication response to start the authentication process
+type ConnectorAuthResponseOAuth struct {
+	// RedirectUrl URL to redirect the user to, to authenticate
+	RedirectURL string `json:"redirect_url"`
+}
+
 // ConnectorCreate Connector creation request
 type ConnectorCreate struct {
 	// Name Name of the connector
@@ -653,6 +692,12 @@ type ConnectorCredentialsResponseAWS struct {
 	SecretAccessKey string    `json:"secret_access_key"`
 	SessionToken    string    `json:"session_token"`
 	Source          string    `json:"source"`
+}
+
+// ConnectorCredentialsResponseOAuth OAuth connector credentials response
+type ConnectorCredentialsResponseOAuth struct {
+	AccessToken string     `json:"access_token"`
+	Expires     *time.Time `json:"expires,omitempty"`
 }
 
 // ConnectorID ID of the Connector
@@ -839,6 +884,9 @@ type GetManagedDatabases200Response struct {
 type GetSyncRunConnectorCredentials200Response struct {
 	// Aws AWS connector credentials response
 	Aws *ConnectorCredentialsResponseAWS `json:"aws,omitempty"`
+
+	// Oauth OAuth connector credentials response
+	Oauth *ConnectorCredentialsResponseOAuth `json:"oauth,omitempty"`
 }
 
 // GetSyncRunConnectorIdentity200Response defines model for GetSyncRunConnectorIdentity_200_response.
@@ -2714,8 +2762,11 @@ type ListConnectorsParams struct {
 	// Page Page number of the results to fetch
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 
-	// Type Filter connectors by a given type.
-	Type *string `form:"type,omitempty" json:"type,omitempty"`
+	// FilterType Filter connectors by a given type.
+	FilterType *string `form:"filter_type,omitempty" json:"filter_type,omitempty"`
+
+	// FilterPlugin Filter connectors by a given plugin reference. Mutually exclusive with `type`.
+	FilterPlugin *string `form:"filter_plugin,omitempty" json:"filter_plugin,omitempty"`
 }
 
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.

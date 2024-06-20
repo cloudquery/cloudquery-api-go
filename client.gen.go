@@ -5990,9 +5990,25 @@ func NewListConnectorsRequest(server string, teamName TeamName, params *ListConn
 
 		}
 
-		if params.Type != nil {
+		if params.FilterType != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "type", runtime.ParamLocationQuery, *params.Type); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "filter_type", runtime.ParamLocationQuery, *params.FilterType); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.FilterPlugin != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "filter_plugin", runtime.ParamLocationQuery, *params.FilterPlugin); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -11792,6 +11808,7 @@ type ListConnectorsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *ListConnectors200Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON500      *InternalError
@@ -11920,6 +11937,7 @@ type AuthenticateConnectorFinishResponse struct {
 	HTTPResponse *http.Response
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
@@ -18091,6 +18109,13 @@ func ParseListConnectorsResponse(rsp *http.Response) (*ListConnectorsResponse, e
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -18346,6 +18371,13 @@ func ParseAuthenticateConnectorFinishResponse(rsp *http.Response) (*Authenticate
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
