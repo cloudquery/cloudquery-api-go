@@ -1760,6 +1760,11 @@ type ReleaseURL struct {
 	Url string `json:"url"`
 }
 
+// RemoveTeamMembershipRequest defines model for RemoveTeamMembership_request.
+type RemoveTeamMembershipRequest struct {
+	Email string `json:"email"`
+}
+
 // SpendSummary A spend summary for a team, summarizing the spend by each price category over a given time range.
 // Note that empty or all-zero values are not included in the response.
 type SpendSummary struct {
@@ -2979,6 +2984,9 @@ type AcceptTeamInvitationJSONRequestBody = AcceptTeamInvitationRequest
 
 // CreateManagedDatabaseJSONRequestBody defines body for CreateManagedDatabase for application/json ContentType.
 type CreateManagedDatabaseJSONRequestBody = ManagedDatabaseCreate
+
+// RemoveTeamMembershipJSONRequestBody defines body for RemoveTeamMembership for application/json ContentType.
+type RemoveTeamMembershipJSONRequestBody = RemoveTeamMembershipRequest
 
 // CreateSpendingLimitJSONRequestBody defines body for CreateSpendingLimit for application/json ContentType.
 type CreateSpendingLimitJSONRequestBody = SpendingLimitCreate

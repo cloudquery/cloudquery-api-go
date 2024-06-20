@@ -2190,6 +2190,43 @@
       }
     },
     "/teams/{team_name}/memberships" : {
+      "delete" : {
+        "description" : "Remove a user from the team",
+        "operationId" : "RemoveTeamMembership",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RemoveTeamMembership_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "teams" ]
+      },
       "get" : {
         "description" : "Get memberships to the team.",
         "operationId" : "GetTeamMemberships",
@@ -2232,6 +2269,7 @@
     },
     "/teams/{team_name}/memberships/{email}" : {
       "delete" : {
+        "deprecated" : true,
         "description" : "Remove a user from the team",
         "operationId" : "DeleteTeamMembership",
         "parameters" : [ {
@@ -8971,6 +9009,14 @@
           }
         },
         "required" : [ "items", "metadata" ]
+      },
+      "RemoveTeamMembership_request" : {
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "email" ]
       },
       "ListInvoicesByTeam_200_response" : {
         "properties" : {
