@@ -365,6 +365,11 @@ type ClientInterface interface {
 	// GetManagedDatabase request
 	GetManagedDatabase(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RemoveTeamMembershipWithBody request with any body
+	RemoveTeamMembershipWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RemoveTeamMembership(ctx context.Context, teamName TeamName, body RemoveTeamMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetTeamMemberships request
 	GetTeamMemberships(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1750,6 +1755,30 @@ func (c *Client) DeleteManagedDatabase(ctx context.Context, teamName TeamName, m
 
 func (c *Client) GetManagedDatabase(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetManagedDatabaseRequest(c.Server, teamName, managedDatabaseID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveTeamMembershipWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveTeamMembershipRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveTeamMembership(ctx context.Context, teamName TeamName, body RemoveTeamMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveTeamMembershipRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6853,6 +6882,53 @@ func NewGetManagedDatabaseRequest(server string, teamName TeamName, managedDatab
 	return req, nil
 }
 
+// NewRemoveTeamMembershipRequest calls the generic RemoveTeamMembership builder with application/json body
+func NewRemoveTeamMembershipRequest(server string, teamName TeamName, body RemoveTeamMembershipJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRemoveTeamMembershipRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewRemoveTeamMembershipRequestWithBody generates requests for RemoveTeamMembership with any type of body
+func NewRemoveTeamMembershipRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/memberships", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetTeamMembershipsRequest generates requests for GetTeamMemberships
 func NewGetTeamMembershipsRequest(server string, teamName TeamName, params *GetTeamMembershipsParams) (*http.Request, error) {
 	var err error
@@ -10113,6 +10189,11 @@ type ClientWithResponsesInterface interface {
 	// GetManagedDatabaseWithResponse request
 	GetManagedDatabaseWithResponse(ctx context.Context, teamName TeamName, managedDatabaseID ManagedDatabaseID, reqEditors ...RequestEditorFn) (*GetManagedDatabaseResponse, error)
 
+	// RemoveTeamMembershipWithBodyWithResponse request with any body
+	RemoveTeamMembershipWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveTeamMembershipResponse, error)
+
+	RemoveTeamMembershipWithResponse(ctx context.Context, teamName TeamName, body RemoveTeamMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveTeamMembershipResponse, error)
+
 	// GetTeamMembershipsWithResponse request
 	GetTeamMembershipsWithResponse(ctx context.Context, teamName TeamName, params *GetTeamMembershipsParams, reqEditors ...RequestEditorFn) (*GetTeamMembershipsResponse, error)
 
@@ -12167,6 +12248,32 @@ func (r GetManagedDatabaseResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetManagedDatabaseResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveTeamMembershipResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveTeamMembershipResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveTeamMembershipResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -14455,6 +14562,23 @@ func (c *ClientWithResponses) GetManagedDatabaseWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseGetManagedDatabaseResponse(rsp)
+}
+
+// RemoveTeamMembershipWithBodyWithResponse request with arbitrary body returning *RemoveTeamMembershipResponse
+func (c *ClientWithResponses) RemoveTeamMembershipWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RemoveTeamMembershipResponse, error) {
+	rsp, err := c.RemoveTeamMembershipWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveTeamMembershipResponse(rsp)
+}
+
+func (c *ClientWithResponses) RemoveTeamMembershipWithResponse(ctx context.Context, teamName TeamName, body RemoveTeamMembershipJSONRequestBody, reqEditors ...RequestEditorFn) (*RemoveTeamMembershipResponse, error) {
+	rsp, err := c.RemoveTeamMembership(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveTeamMembershipResponse(rsp)
 }
 
 // GetTeamMembershipsWithResponse request returning *GetTeamMembershipsResponse
@@ -18884,6 +19008,60 @@ func ParseGetManagedDatabaseResponse(rsp *http.Response) (*GetManagedDatabaseRes
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveTeamMembershipResponse parses an HTTP response from a RemoveTeamMembershipWithResponse call
+func ParseRemoveTeamMembershipResponse(rsp *http.Response) (*RemoveTeamMembershipResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveTeamMembershipResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
