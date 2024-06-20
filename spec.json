@@ -8647,12 +8647,18 @@
             "description" : "Auth code received from the OAuth provider",
             "type" : "string"
           },
+          "base_url" : {
+            "description" : "Base of the URL the callback url was constructed from",
+            "example" : "https://cloud.cloudquery.io/oauth",
+            "type" : "string",
+            "x-go-name" : "BaseURL"
+          },
           "state" : {
             "description" : "State value received from the OAuth provider",
             "type" : "string"
           }
         },
-        "required" : [ "auth_code" ]
+        "required" : [ "auth_code", "base_url" ]
       },
       "ListPluginNotificationRequests_200_response" : {
         "properties" : {

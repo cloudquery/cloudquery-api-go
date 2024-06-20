@@ -620,6 +620,9 @@ type ConnectorAuthFinishRequestOAuth struct {
 	// AuthCode Auth code received from the OAuth provider
 	AuthCode string `json:"auth_code"`
 
+	// BaseUrl Base of the URL the callback url was constructed from
+	BaseURL string `json:"base_url"`
+
 	// State State value received from the OAuth provider
 	State *string `json:"state,omitempty"`
 }
