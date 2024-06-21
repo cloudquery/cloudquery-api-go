@@ -5275,10 +5275,12 @@
         },
         "tags" : [ "syncs" ],
         "x-internal" : true
-      },
+      }
+    },
+    "/teams/{team_name}/connectors/{connector_id}/authenticate/aws" : {
       "patch" : {
-        "description" : "Complete authentication for a given connector",
-        "operationId" : "AuthenticateConnectorFinish",
+        "description" : "Complete authentication for the given AWS connector",
+        "operationId" : "AuthenticateConnectorFinishAWS",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
         }, {
@@ -5288,7 +5290,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/AuthenticateConnectorFinish_request"
+                "$ref" : "#/components/schemas/ConnectorAuthFinishRequestAWS"
               }
             }
           },
@@ -5321,8 +5323,8 @@
         "x-internal" : true
       },
       "post" : {
-        "description" : "Authenticate or reauthenticate the given connector",
-        "operationId" : "AuthenticateConnector",
+        "description" : "Authenticate or reauthenticate the given AWS connector",
+        "operationId" : "AuthenticateConnectorAWS",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
         }, {
@@ -5332,7 +5334,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/AuthenticateConnector_request"
+                "$ref" : "#/components/schemas/ConnectorAuthRequestAWS"
               }
             }
           },
@@ -5343,7 +5345,101 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/AuthenticateConnector_200_response"
+                  "$ref" : "#/components/schemas/ConnectorAuthResponseAWS"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/connectors/{connector_id}/authenticate/oauth" : {
+      "patch" : {
+        "description" : "Complete authentication for the given OAuth connector",
+        "operationId" : "AuthenticateConnectorFinishOAuth",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorAuthFinishRequestOAuth"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Authentication is complete."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ],
+        "x-internal" : true
+      },
+      "post" : {
+        "description" : "Authenticate or reauthenticate the given OAuth connector",
+        "operationId" : "AuthenticateConnectorOAuth",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorAuthRequestOAuth"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConnectorAuthResponseOAuth"
                 }
               }
             },
@@ -8552,34 +8648,6 @@
         },
         "required" : [ "plugin_kind", "plugin_name", "plugin_team" ]
       },
-      "ConnectorAuthRequestOAuth" : {
-        "additionalProperties" : false,
-        "description" : "OAuth connector authentication request to start the authentication process",
-        "properties" : {
-          "plugin_team" : {
-            "description" : "Team that owns the plugin we are authenticating the connector for",
-            "example" : "cloudquery",
-            "type" : "string"
-          },
-          "plugin_kind" : {
-            "description" : "Kind of the plugin",
-            "example" : "source",
-            "type" : "string"
-          },
-          "plugin_name" : {
-            "description" : "Name of the plugin",
-            "example" : "googleanalytics",
-            "type" : "string"
-          },
-          "base_url" : {
-            "description" : "Base of the URL the callback url will be constructed from",
-            "example" : "https://cloud.cloudquery.io/oauth",
-            "type" : "string",
-            "x-go-name" : "BaseURL"
-          }
-        },
-        "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]
-      },
       "ConnectorAuthResponseAWS" : {
         "additionalProperties" : false,
         "description" : "AWS connector authentication response to start the authentication process",
@@ -8610,18 +8678,6 @@
         },
         "required" : [ "redirect_url", "role_template_url", "suggested_external_id", "suggested_policy_arns" ]
       },
-      "ConnectorAuthResponseOAuth" : {
-        "additionalProperties" : false,
-        "description" : "OAuth connector authentication response to start the authentication process",
-        "properties" : {
-          "redirect_url" : {
-            "description" : "URL to redirect the user to, to authenticate",
-            "type" : "string",
-            "x-go-name" : "RedirectURL"
-          }
-        },
-        "required" : [ "redirect_url" ]
-      },
       "ConnectorAuthFinishRequestAWS" : {
         "additionalProperties" : false,
         "description" : "AWS connector authentication request, filled in after the user has authenticated through AWS",
@@ -8638,6 +8694,46 @@
           }
         },
         "required" : [ "role_arn" ]
+      },
+      "ConnectorAuthRequestOAuth" : {
+        "additionalProperties" : false,
+        "description" : "OAuth connector authentication request to start the authentication process",
+        "properties" : {
+          "plugin_team" : {
+            "description" : "Team that owns the plugin we are authenticating the connector for",
+            "example" : "cloudquery",
+            "type" : "string"
+          },
+          "plugin_kind" : {
+            "description" : "Kind of the plugin",
+            "example" : "source",
+            "type" : "string"
+          },
+          "plugin_name" : {
+            "description" : "Name of the plugin",
+            "example" : "googleanalytics",
+            "type" : "string"
+          },
+          "base_url" : {
+            "description" : "Base of the URL the callback url will be constructed from",
+            "example" : "https://cloud.cloudquery.io/oauth",
+            "type" : "string",
+            "x-go-name" : "BaseURL"
+          }
+        },
+        "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]
+      },
+      "ConnectorAuthResponseOAuth" : {
+        "additionalProperties" : false,
+        "description" : "OAuth connector authentication response to start the authentication process",
+        "properties" : {
+          "redirect_url" : {
+            "description" : "URL to redirect the user to, to authenticate",
+            "type" : "string",
+            "x-go-name" : "RedirectURL"
+          }
+        },
+        "required" : [ "redirect_url" ]
       },
       "ConnectorAuthFinishRequestOAuth" : {
         "additionalProperties" : false,
@@ -9447,36 +9543,6 @@
           }
         },
         "required" : [ "items", "metadata" ]
-      },
-      "AuthenticateConnector_request" : {
-        "properties" : {
-          "aws" : {
-            "$ref" : "#/components/schemas/ConnectorAuthRequestAWS"
-          },
-          "oauth" : {
-            "$ref" : "#/components/schemas/ConnectorAuthRequestOAuth"
-          }
-        }
-      },
-      "AuthenticateConnector_200_response" : {
-        "properties" : {
-          "aws" : {
-            "$ref" : "#/components/schemas/ConnectorAuthResponseAWS"
-          },
-          "oauth" : {
-            "$ref" : "#/components/schemas/ConnectorAuthResponseOAuth"
-          }
-        }
-      },
-      "AuthenticateConnectorFinish_request" : {
-        "properties" : {
-          "aws" : {
-            "$ref" : "#/components/schemas/ConnectorAuthFinishRequestAWS"
-          },
-          "oauth" : {
-            "$ref" : "#/components/schemas/ConnectorAuthFinishRequestOAuth"
-          }
-        }
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {

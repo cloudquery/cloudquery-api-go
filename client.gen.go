@@ -312,15 +312,25 @@ type ClientInterface interface {
 	// RevokeConnector request
 	RevokeConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// AuthenticateConnectorFinishWithBody request with any body
-	AuthenticateConnectorFinishWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// AuthenticateConnectorFinishAWSWithBody request with any body
+	AuthenticateConnectorFinishAWSWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	AuthenticateConnectorFinish(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AuthenticateConnectorFinishAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// AuthenticateConnectorWithBody request with any body
-	AuthenticateConnectorWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// AuthenticateConnectorAWSWithBody request with any body
+	AuthenticateConnectorAWSWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	AuthenticateConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	AuthenticateConnectorAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthenticateConnectorFinishOAuthWithBody request with any body
+	AuthenticateConnectorFinishOAuthWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthenticateConnectorFinishOAuth(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthenticateConnectorOAuthWithBody request with any body
+	AuthenticateConnectorOAuthWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthenticateConnectorOAuth(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateTeamImagesWithBody request with any body
 	CreateTeamImagesWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1525,8 +1535,8 @@ func (c *Client) RevokeConnector(ctx context.Context, teamName TeamName, connect
 	return c.Client.Do(req)
 }
 
-func (c *Client) AuthenticateConnectorFinishWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAuthenticateConnectorFinishRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+func (c *Client) AuthenticateConnectorFinishAWSWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishAWSRequestWithBody(c.Server, teamName, connectorID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1537,8 +1547,8 @@ func (c *Client) AuthenticateConnectorFinishWithBody(ctx context.Context, teamNa
 	return c.Client.Do(req)
 }
 
-func (c *Client) AuthenticateConnectorFinish(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAuthenticateConnectorFinishRequest(c.Server, teamName, connectorID, body)
+func (c *Client) AuthenticateConnectorFinishAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishAWSRequest(c.Server, teamName, connectorID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1549,8 +1559,8 @@ func (c *Client) AuthenticateConnectorFinish(ctx context.Context, teamName TeamN
 	return c.Client.Do(req)
 }
 
-func (c *Client) AuthenticateConnectorWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAuthenticateConnectorRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+func (c *Client) AuthenticateConnectorAWSWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorAWSRequestWithBody(c.Server, teamName, connectorID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1561,8 +1571,56 @@ func (c *Client) AuthenticateConnectorWithBody(ctx context.Context, teamName Tea
 	return c.Client.Do(req)
 }
 
-func (c *Client) AuthenticateConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAuthenticateConnectorRequest(c.Server, teamName, connectorID, body)
+func (c *Client) AuthenticateConnectorAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorAWSRequest(c.Server, teamName, connectorID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorFinishOAuthWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishOAuthRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorFinishOAuth(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishOAuthRequest(c.Server, teamName, connectorID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorOAuthWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorOAuthRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorOAuth(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorOAuthRequest(c.Server, teamName, connectorID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6216,19 +6274,19 @@ func NewRevokeConnectorRequest(server string, teamName TeamName, connectorID Con
 	return req, nil
 }
 
-// NewAuthenticateConnectorFinishRequest calls the generic AuthenticateConnectorFinish builder with application/json body
-func NewAuthenticateConnectorFinishRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody) (*http.Request, error) {
+// NewAuthenticateConnectorFinishAWSRequest calls the generic AuthenticateConnectorFinishAWS builder with application/json body
+func NewAuthenticateConnectorFinishAWSRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishAWSJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewAuthenticateConnectorFinishRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+	return NewAuthenticateConnectorFinishAWSRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
 }
 
-// NewAuthenticateConnectorFinishRequestWithBody generates requests for AuthenticateConnectorFinish with any type of body
-func NewAuthenticateConnectorFinishRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+// NewAuthenticateConnectorFinishAWSRequestWithBody generates requests for AuthenticateConnectorFinishAWS with any type of body
+func NewAuthenticateConnectorFinishAWSRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -6250,7 +6308,7 @@ func NewAuthenticateConnectorFinishRequestWithBody(server string, teamName TeamN
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/aws", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -6270,19 +6328,19 @@ func NewAuthenticateConnectorFinishRequestWithBody(server string, teamName TeamN
 	return req, nil
 }
 
-// NewAuthenticateConnectorRequest calls the generic AuthenticateConnector builder with application/json body
-func NewAuthenticateConnectorRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody) (*http.Request, error) {
+// NewAuthenticateConnectorAWSRequest calls the generic AuthenticateConnectorAWS builder with application/json body
+func NewAuthenticateConnectorAWSRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewAuthenticateConnectorRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+	return NewAuthenticateConnectorAWSRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
 }
 
-// NewAuthenticateConnectorRequestWithBody generates requests for AuthenticateConnector with any type of body
-func NewAuthenticateConnectorRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+// NewAuthenticateConnectorAWSRequestWithBody generates requests for AuthenticateConnectorAWS with any type of body
+func NewAuthenticateConnectorAWSRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -6304,7 +6362,115 @@ func NewAuthenticateConnectorRequestWithBody(server string, teamName TeamName, c
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/aws", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAuthenticateConnectorFinishOAuthRequest calls the generic AuthenticateConnectorFinishOAuth builder with application/json body
+func NewAuthenticateConnectorFinishOAuthRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishOAuthJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthenticateConnectorFinishOAuthRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+}
+
+// NewAuthenticateConnectorFinishOAuthRequestWithBody generates requests for AuthenticateConnectorFinishOAuth with any type of body
+func NewAuthenticateConnectorFinishOAuthRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/oauth", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAuthenticateConnectorOAuthRequest calls the generic AuthenticateConnectorOAuth builder with application/json body
+func NewAuthenticateConnectorOAuthRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorOAuthJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthenticateConnectorOAuthRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+}
+
+// NewAuthenticateConnectorOAuthRequestWithBody generates requests for AuthenticateConnectorOAuth with any type of body
+func NewAuthenticateConnectorOAuthRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/oauth", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -10152,15 +10318,25 @@ type ClientWithResponsesInterface interface {
 	// RevokeConnectorWithResponse request
 	RevokeConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*RevokeConnectorResponse, error)
 
-	// AuthenticateConnectorFinishWithBodyWithResponse request with any body
-	AuthenticateConnectorFinishWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error)
+	// AuthenticateConnectorFinishAWSWithBodyWithResponse request with any body
+	AuthenticateConnectorFinishAWSWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishAWSResponse, error)
 
-	AuthenticateConnectorFinishWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error)
+	AuthenticateConnectorFinishAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishAWSResponse, error)
 
-	// AuthenticateConnectorWithBodyWithResponse request with any body
-	AuthenticateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error)
+	// AuthenticateConnectorAWSWithBodyWithResponse request with any body
+	AuthenticateConnectorAWSWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorAWSResponse, error)
 
-	AuthenticateConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error)
+	AuthenticateConnectorAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorAWSResponse, error)
+
+	// AuthenticateConnectorFinishOAuthWithBodyWithResponse request with any body
+	AuthenticateConnectorFinishOAuthWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishOAuthResponse, error)
+
+	AuthenticateConnectorFinishOAuthWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishOAuthResponse, error)
+
+	// AuthenticateConnectorOAuthWithBodyWithResponse request with any body
+	AuthenticateConnectorOAuthWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorOAuthResponse, error)
+
+	AuthenticateConnectorOAuthWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorOAuthResponse, error)
 
 	// CreateTeamImagesWithBodyWithResponse request with any body
 	CreateTeamImagesWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTeamImagesResponse, error)
@@ -11932,7 +12108,7 @@ func (r RevokeConnectorResponse) StatusCode() int {
 	return 0
 }
 
-type AuthenticateConnectorFinishResponse struct {
+type AuthenticateConnectorFinishAWSResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON400      *BadRequest
@@ -11944,7 +12120,7 @@ type AuthenticateConnectorFinishResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r AuthenticateConnectorFinishResponse) Status() string {
+func (r AuthenticateConnectorFinishAWSResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -11952,17 +12128,17 @@ func (r AuthenticateConnectorFinishResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r AuthenticateConnectorFinishResponse) StatusCode() int {
+func (r AuthenticateConnectorFinishAWSResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type AuthenticateConnectorResponse struct {
+type AuthenticateConnectorAWSResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *AuthenticateConnector200Response
+	JSON200      *ConnectorAuthResponseAWS
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
@@ -11971,7 +12147,7 @@ type AuthenticateConnectorResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r AuthenticateConnectorResponse) Status() string {
+func (r AuthenticateConnectorAWSResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -11979,7 +12155,61 @@ func (r AuthenticateConnectorResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r AuthenticateConnectorResponse) StatusCode() int {
+func (r AuthenticateConnectorAWSResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthenticateConnectorFinishOAuthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthenticateConnectorFinishOAuthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthenticateConnectorFinishOAuthResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthenticateConnectorOAuthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ConnectorAuthResponseOAuth
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthenticateConnectorOAuthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthenticateConnectorOAuthResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -14409,38 +14639,72 @@ func (c *ClientWithResponses) RevokeConnectorWithResponse(ctx context.Context, t
 	return ParseRevokeConnectorResponse(rsp)
 }
 
-// AuthenticateConnectorFinishWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorFinishResponse
-func (c *ClientWithResponses) AuthenticateConnectorFinishWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error) {
-	rsp, err := c.AuthenticateConnectorFinishWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+// AuthenticateConnectorFinishAWSWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorFinishAWSResponse
+func (c *ClientWithResponses) AuthenticateConnectorFinishAWSWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishAWSResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinishAWSWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAuthenticateConnectorFinishResponse(rsp)
+	return ParseAuthenticateConnectorFinishAWSResponse(rsp)
 }
 
-func (c *ClientWithResponses) AuthenticateConnectorFinishWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishResponse, error) {
-	rsp, err := c.AuthenticateConnectorFinish(ctx, teamName, connectorID, body, reqEditors...)
+func (c *ClientWithResponses) AuthenticateConnectorFinishAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishAWSResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinishAWS(ctx, teamName, connectorID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAuthenticateConnectorFinishResponse(rsp)
+	return ParseAuthenticateConnectorFinishAWSResponse(rsp)
 }
 
-// AuthenticateConnectorWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorResponse
-func (c *ClientWithResponses) AuthenticateConnectorWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error) {
-	rsp, err := c.AuthenticateConnectorWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+// AuthenticateConnectorAWSWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorAWSResponse
+func (c *ClientWithResponses) AuthenticateConnectorAWSWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorAWSResponse, error) {
+	rsp, err := c.AuthenticateConnectorAWSWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAuthenticateConnectorResponse(rsp)
+	return ParseAuthenticateConnectorAWSResponse(rsp)
 }
 
-func (c *ClientWithResponses) AuthenticateConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorResponse, error) {
-	rsp, err := c.AuthenticateConnector(ctx, teamName, connectorID, body, reqEditors...)
+func (c *ClientWithResponses) AuthenticateConnectorAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorAWSResponse, error) {
+	rsp, err := c.AuthenticateConnectorAWS(ctx, teamName, connectorID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAuthenticateConnectorResponse(rsp)
+	return ParseAuthenticateConnectorAWSResponse(rsp)
+}
+
+// AuthenticateConnectorFinishOAuthWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorFinishOAuthResponse
+func (c *ClientWithResponses) AuthenticateConnectorFinishOAuthWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishOAuthResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinishOAuthWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorFinishOAuthResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthenticateConnectorFinishOAuthWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishOAuthResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinishOAuth(ctx, teamName, connectorID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorFinishOAuthResponse(rsp)
+}
+
+// AuthenticateConnectorOAuthWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorOAuthResponse
+func (c *ClientWithResponses) AuthenticateConnectorOAuthWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorOAuthResponse, error) {
+	rsp, err := c.AuthenticateConnectorOAuthWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorOAuthResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthenticateConnectorOAuthWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorOAuthJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorOAuthResponse, error) {
+	rsp, err := c.AuthenticateConnectorOAuth(ctx, teamName, connectorID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorOAuthResponse(rsp)
 }
 
 // CreateTeamImagesWithBodyWithResponse request with arbitrary body returning *CreateTeamImagesResponse
@@ -18344,15 +18608,15 @@ func ParseRevokeConnectorResponse(rsp *http.Response) (*RevokeConnectorResponse,
 	return response, nil
 }
 
-// ParseAuthenticateConnectorFinishResponse parses an HTTP response from a AuthenticateConnectorFinishWithResponse call
-func ParseAuthenticateConnectorFinishResponse(rsp *http.Response) (*AuthenticateConnectorFinishResponse, error) {
+// ParseAuthenticateConnectorFinishAWSResponse parses an HTTP response from a AuthenticateConnectorFinishAWSWithResponse call
+func ParseAuthenticateConnectorFinishAWSResponse(rsp *http.Response) (*AuthenticateConnectorFinishAWSResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &AuthenticateConnectorFinishResponse{
+	response := &AuthenticateConnectorFinishAWSResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -18405,22 +18669,144 @@ func ParseAuthenticateConnectorFinishResponse(rsp *http.Response) (*Authenticate
 	return response, nil
 }
 
-// ParseAuthenticateConnectorResponse parses an HTTP response from a AuthenticateConnectorWithResponse call
-func ParseAuthenticateConnectorResponse(rsp *http.Response) (*AuthenticateConnectorResponse, error) {
+// ParseAuthenticateConnectorAWSResponse parses an HTTP response from a AuthenticateConnectorAWSWithResponse call
+func ParseAuthenticateConnectorAWSResponse(rsp *http.Response) (*AuthenticateConnectorAWSResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &AuthenticateConnectorResponse{
+	response := &AuthenticateConnectorAWSResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest AuthenticateConnector200Response
+		var dest ConnectorAuthResponseAWS
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthenticateConnectorFinishOAuthResponse parses an HTTP response from a AuthenticateConnectorFinishOAuthWithResponse call
+func ParseAuthenticateConnectorFinishOAuthResponse(rsp *http.Response) (*AuthenticateConnectorFinishOAuthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthenticateConnectorFinishOAuthResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthenticateConnectorOAuthResponse parses an HTTP response from a AuthenticateConnectorOAuthWithResponse call
+func ParseAuthenticateConnectorOAuthResponse(rsp *http.Response) (*AuthenticateConnectorOAuthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthenticateConnectorOAuthResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConnectorAuthResponseOAuth
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

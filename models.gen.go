@@ -555,33 +555,6 @@ type AddonVersionUpdate struct {
 	Retracted *bool `json:"retracted,omitempty"`
 }
 
-// AuthenticateConnectorFinishRequest defines model for AuthenticateConnectorFinish_request.
-type AuthenticateConnectorFinishRequest struct {
-	// Aws AWS connector authentication request, filled in after the user has authenticated through AWS
-	Aws *ConnectorAuthFinishRequestAWS `json:"aws,omitempty"`
-
-	// Oauth OAuth connector authentication request, filled in after the user has authenticated through OAuth
-	Oauth *ConnectorAuthFinishRequestOAuth `json:"oauth,omitempty"`
-}
-
-// AuthenticateConnector200Response defines model for AuthenticateConnector_200_response.
-type AuthenticateConnector200Response struct {
-	// Aws AWS connector authentication response to start the authentication process
-	Aws *ConnectorAuthResponseAWS `json:"aws,omitempty"`
-
-	// Oauth OAuth connector authentication response to start the authentication process
-	Oauth *ConnectorAuthResponseOAuth `json:"oauth,omitempty"`
-}
-
-// AuthenticateConnectorRequest defines model for AuthenticateConnector_request.
-type AuthenticateConnectorRequest struct {
-	// Aws AWS connector authentication request to start the authentication process
-	Aws *ConnectorAuthRequestAWS `json:"aws,omitempty"`
-
-	// Oauth OAuth connector authentication request to start the authentication process
-	Oauth *ConnectorAuthRequestOAuth `json:"oauth,omitempty"`
-}
-
 // BasicError Basic Error
 type BasicError struct {
 	Message string `json:"message"`
@@ -3018,11 +2991,17 @@ type CreateConnectorJSONRequestBody = ConnectorCreate
 // UpdateConnectorJSONRequestBody defines body for UpdateConnector for application/json ContentType.
 type UpdateConnectorJSONRequestBody = ConnectorUpdate
 
-// AuthenticateConnectorFinishJSONRequestBody defines body for AuthenticateConnectorFinish for application/json ContentType.
-type AuthenticateConnectorFinishJSONRequestBody = AuthenticateConnectorFinishRequest
+// AuthenticateConnectorFinishAWSJSONRequestBody defines body for AuthenticateConnectorFinishAWS for application/json ContentType.
+type AuthenticateConnectorFinishAWSJSONRequestBody = ConnectorAuthFinishRequestAWS
 
-// AuthenticateConnectorJSONRequestBody defines body for AuthenticateConnector for application/json ContentType.
-type AuthenticateConnectorJSONRequestBody = AuthenticateConnectorRequest
+// AuthenticateConnectorAWSJSONRequestBody defines body for AuthenticateConnectorAWS for application/json ContentType.
+type AuthenticateConnectorAWSJSONRequestBody = ConnectorAuthRequestAWS
+
+// AuthenticateConnectorFinishOAuthJSONRequestBody defines body for AuthenticateConnectorFinishOAuth for application/json ContentType.
+type AuthenticateConnectorFinishOAuthJSONRequestBody = ConnectorAuthFinishRequestOAuth
+
+// AuthenticateConnectorOAuthJSONRequestBody defines body for AuthenticateConnectorOAuth for application/json ContentType.
+type AuthenticateConnectorOAuthJSONRequestBody = ConnectorAuthRequestOAuth
 
 // CreateTeamImagesJSONRequestBody defines body for CreateTeamImages for application/json ContentType.
 type CreateTeamImagesJSONRequestBody = CreateTeamImagesRequest
