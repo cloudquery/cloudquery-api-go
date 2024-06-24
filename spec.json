@@ -8696,29 +8696,30 @@
         "required" : [ "role_arn" ]
       },
       "ConnectorAuthRequestOAuth" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "description" : "OAuth connector authentication request to start the authentication process",
         "properties" : {
           "plugin_team" : {
             "description" : "Team that owns the plugin we are authenticating the connector for",
-            "example" : "cloudquery",
-            "type" : "string"
+            "example" : "cloudquery"
           },
           "plugin_kind" : {
             "description" : "Kind of the plugin",
-            "example" : "source",
-            "type" : "string"
+            "example" : "source"
           },
           "plugin_name" : {
             "description" : "Name of the plugin",
-            "example" : "googleanalytics",
-            "type" : "string"
+            "example" : "googleanalytics"
           },
           "base_url" : {
             "description" : "Base of the URL the callback url will be constructed from",
             "example" : "https://cloud.cloudquery.io/oauth",
-            "type" : "string",
             "x-go-name" : "BaseURL"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
           }
         },
         "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]
@@ -8736,22 +8737,24 @@
         "required" : [ "redirect_url" ]
       },
       "ConnectorAuthFinishRequestOAuth" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "description" : "OAuth connector authentication request, filled in after the user has authenticated through OAuth",
         "properties" : {
           "auth_code" : {
-            "description" : "Auth code received from the OAuth provider",
-            "type" : "string"
+            "description" : "Auth code received from the OAuth provider"
           },
           "base_url" : {
             "description" : "Base of the URL the callback url was constructed from",
             "example" : "https://cloud.cloudquery.io/oauth",
-            "type" : "string",
             "x-go-name" : "BaseURL"
           },
           "state" : {
-            "description" : "State value received from the OAuth provider",
-            "type" : "string"
+            "description" : "State value received from the OAuth provider"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
           }
         },
         "required" : [ "auth_code", "base_url" ]
