@@ -1308,7 +1308,7 @@ type PluginCreate struct {
 	// Kind The kind of plugin, ie. source or destination.
 	Kind PluginKind `json:"kind"`
 
-	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...
+	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub.
 	Logo string `json:"logo"`
 
 	// Name The unique name for the plugin.
@@ -1589,7 +1589,7 @@ type PluginUpdate struct {
 	FreeRowsPerMonth *int64  `json:"free_rows_per_month,omitempty"`
 	Homepage         *string `json:"homepage,omitempty"`
 
-	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...
+	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub.
 	Logo *string `json:"logo,omitempty"`
 
 	// PriceCategory Supported price categories for billing
