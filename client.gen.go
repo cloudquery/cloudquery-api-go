@@ -13297,6 +13297,7 @@ type TestSyncDestinationResponse struct {
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
 
@@ -13453,6 +13454,7 @@ type TestSyncSourceResponse struct {
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
 	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
 
@@ -20936,6 +20938,13 @@ func ParseTestSyncDestinationResponse(rsp *http.Response) (*TestSyncDestinationR
 		}
 		response.JSON422 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -21259,6 +21268,13 @@ func ParseTestSyncSourceResponse(rsp *http.Response) (*TestSyncSourceResponse, e
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
