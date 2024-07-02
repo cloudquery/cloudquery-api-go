@@ -9023,6 +9023,12 @@
             "additionalProperties" : false,
             "format" : "Plugin parameters, specific to each plugin",
             "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables used in the spec.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            }
           }
         },
         "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]
@@ -9058,6 +9064,12 @@
             "additionalProperties" : false,
             "format" : "Plugin parameters, specific to each plugin",
             "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables used in the spec.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            }
           }
         },
         "required" : [ "auth_code", "base_url" ]

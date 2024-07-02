@@ -594,8 +594,11 @@ type ConnectorAuthFinishRequestOAuth struct {
 	AuthCode interface{} `json:"auth_code"`
 
 	// BaseUrl Base of the URL the callback url was constructed from
-	BaseURL interface{}             `json:"base_url"`
-	Spec    *map[string]interface{} `json:"spec,omitempty"`
+	BaseURL interface{} `json:"base_url"`
+
+	// Env Environment variables used in the spec.
+	Env  *interface{}            `json:"env,omitempty"`
+	Spec *map[string]interface{} `json:"spec,omitempty"`
 
 	// State State value received from the OAuth provider
 	State                *interface{}           `json:"state,omitempty"`
@@ -621,6 +624,9 @@ type ConnectorAuthRequestAWS struct {
 type ConnectorAuthRequestOAuth struct {
 	// BaseUrl Base of the URL the callback url will be constructed from
 	BaseURL interface{} `json:"base_url"`
+
+	// Env Environment variables used in the spec.
+	Env *interface{} `json:"env,omitempty"`
 
 	// PluginKind Kind of the plugin
 	PluginKind interface{} `json:"plugin_kind"`
@@ -3189,6 +3195,14 @@ func (a *ConnectorAuthFinishRequestOAuth) UnmarshalJSON(b []byte) error {
 		delete(object, "base_url")
 	}
 
+	if raw, found := object["env"]; found {
+		err = json.Unmarshal(raw, &a.Env)
+		if err != nil {
+			return fmt.Errorf("error reading 'env': %w", err)
+		}
+		delete(object, "env")
+	}
+
 	if raw, found := object["spec"]; found {
 		err = json.Unmarshal(raw, &a.Spec)
 		if err != nil {
@@ -3232,6 +3246,13 @@ func (a ConnectorAuthFinishRequestOAuth) MarshalJSON() ([]byte, error) {
 	object["base_url"], err = json.Marshal(a.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'base_url': %w", err)
+	}
+
+	if a.Env != nil {
+		object["env"], err = json.Marshal(a.Env)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'env': %w", err)
+		}
 	}
 
 	if a.Spec != nil {
@@ -3290,6 +3311,14 @@ func (a *ConnectorAuthRequestOAuth) UnmarshalJSON(b []byte) error {
 		delete(object, "base_url")
 	}
 
+	if raw, found := object["env"]; found {
+		err = json.Unmarshal(raw, &a.Env)
+		if err != nil {
+			return fmt.Errorf("error reading 'env': %w", err)
+		}
+		delete(object, "env")
+	}
+
 	if raw, found := object["plugin_kind"]; found {
 		err = json.Unmarshal(raw, &a.PluginKind)
 		if err != nil {
@@ -3344,6 +3373,13 @@ func (a ConnectorAuthRequestOAuth) MarshalJSON() ([]byte, error) {
 	object["base_url"], err = json.Marshal(a.BaseUrl)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'base_url': %w", err)
+	}
+
+	if a.Env != nil {
+		object["env"], err = json.Marshal(a.Env)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'env': %w", err)
+		}
 	}
 
 	object["plugin_kind"], err = json.Marshal(a.PluginKind)
