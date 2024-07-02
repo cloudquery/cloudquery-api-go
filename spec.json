@@ -6088,7 +6088,7 @@
             "type" : "string"
           },
           "logo" : {
-            "example" : "https://images.cloudquery.io/logos/aws.png",
+            "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
             "type" : "string"
           },
           "display_name" : {
@@ -6220,8 +6220,9 @@
             "$ref" : "#/components/schemas/PluginReleaseStageCreate"
           },
           "logo" : {
-            "description" : "URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...",
-            "example" : "https://images.cloudquery.io/logos/aws.png",
+            "description" : "URL to the plugin's logo. This will be shown in the CloudQuery Hub.",
+            "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
+            "pattern" : "^https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+$",
             "type" : "string"
           },
           "usd_per_row" : {
@@ -6281,8 +6282,9 @@
             "type" : "string"
           },
           "logo" : {
-            "description" : "URL to the plugin's logo. This will be shown in the CloudQuery Hub. This must point to https://images.cloudquery.io/...",
-            "example" : "https://images.cloudquery.io/logos/aws.png",
+            "description" : "URL to the plugin's logo. This will be shown in the CloudQuery Hub.",
+            "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f9e8",
+            "pattern" : "^https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+$",
             "type" : "string"
           },
           "public" : {
@@ -6848,7 +6850,7 @@
             "type" : "string"
           },
           "logo" : {
-            "example" : "https://images.cloudquery.io/logos/aws.png",
+            "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
             "type" : "string"
           },
           "public" : {
@@ -6931,7 +6933,8 @@
             "type" : "string"
           },
           "logo" : {
-            "example" : "https://images.cloudquery.io/logos/aws.png",
+            "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
+            "pattern" : "^https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+$",
             "type" : "string"
           },
           "public" : {
@@ -6984,7 +6987,8 @@
             "type" : "string"
           },
           "logo" : {
-            "example" : "https://images.cloudquery.io/logos/aws.png",
+            "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
+            "pattern" : "^https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+$",
             "type" : "string"
           },
           "public" : {
@@ -8785,7 +8789,7 @@
               "created_at" : "2017-07-14T16:53:42Z",
               "updated_at" : "2017-07-14T16:53:42Z",
               "homepage" : "https://cloudquery.io",
-              "logo" : "https://images.cloudquery.io/logos/aws.png",
+              "logo" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
               "official" : true,
               "short_description" : "Sync data from AWS to any destination",
               "repository" : "https://github.com/cloudquery/cloudquery",
@@ -8971,7 +8975,7 @@
               "created_at" : "2017-07-14T16:53:42Z",
               "updated_at" : "2017-07-14T16:53:42Z",
               "homepage" : "https://cloudquery.io",
-              "logo" : "https://images.cloudquery.io/logos/aws.png",
+              "logo" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
               "official" : true,
               "short_description" : "Sync data from AWS to any destination",
               "repository" : "https://github.com/cloudquery/cloudquery",
@@ -9112,7 +9116,7 @@
               "created_at" : "2017-07-14T16:53:42Z",
               "updated_at" : "2017-07-14T16:53:42Z",
               "homepage" : "https://cloudquery.io",
-              "logo" : "https://images.cloudquery.io/logos/aws.png",
+              "logo" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
               "official" : true,
               "short_description" : "Sync data from AWS to any destination",
               "repository" : "https://github.com/cloudquery/cloudquery",
@@ -9143,7 +9147,7 @@
               "created_at" : "2017-07-14T16:53:42Z",
               "updated_at" : "2017-07-14T16:53:42Z",
               "homepage" : "https://cloudquery.io",
-              "logo" : "https://images.cloudquery.io/logos/aws.png",
+              "logo" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
               "official" : true,
               "short_description" : "AWS policies",
               "repository" : "https://github.com/cloudquery/cloudquery",
