@@ -1961,10 +1961,25 @@ type SyncDestinationCreate struct {
 	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
 }
 
+// SyncDestinationCreateFromTestConnection Sync Destination from Test Connection Definition
+type SyncDestinationCreateFromTestConnection struct {
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
+
+	// MigrateMode Migrate mode for the destination
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
+
+	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// WriteMode Write mode for the destination
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
+}
+
 // SyncDestinationMigrateMode Migrate mode for the destination
 type SyncDestinationMigrateMode string
 
-// SyncDestinationUpdate Sync Destination Definition
+// SyncDestinationUpdate Sync Destination Update Definition
 type SyncDestinationUpdate struct {
 	// ConnectorId ID of the Connector
 	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
@@ -1984,6 +1999,18 @@ type SyncDestinationUpdate struct {
 
 	// Version Version of the plugin
 	Version *string `json:"version,omitempty"`
+
+	// WriteMode Write mode for the destination
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
+}
+
+// SyncDestinationUpdateFromTestConnection Sync Destination Update from Test Connection Definition
+type SyncDestinationUpdateFromTestConnection struct {
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
+
+	// MigrateMode Migrate mode for the destination
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
 
 	// WriteMode Write mode for the destination
 	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
@@ -2153,6 +2180,21 @@ type SyncSourceCreate struct {
 	Version string `json:"version"`
 }
 
+// SyncSourceCreateFromTestConnection Sync Source from Test Connection Definition
+type SyncSourceCreateFromTestConnection struct {
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
+
+	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
+	SkipTables *[]string `json:"skip_tables,omitempty"`
+
+	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
+	Tables []string `json:"tables"`
+}
+
 // SyncSourceUpdate Sync Source Update Definition
 type SyncSourceUpdate struct {
 	// ConnectorId ID of the Connector
@@ -2178,12 +2220,24 @@ type SyncSourceUpdate struct {
 	Version *string `json:"version,omitempty"`
 }
 
+// SyncSourceUpdateFromTestConnection Sync Source Update from Test Connection Definition
+type SyncSourceUpdateFromTestConnection struct {
+	// LastUpdateSource How was the source or destination been created or updated last
+	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
+
+	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
+	SkipTables *[]string `json:"skip_tables,omitempty"`
+
+	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
+	Tables *[]string `json:"tables,omitempty"`
+}
+
 // SyncTestConnection defines model for SyncTestConnection.
 type SyncTestConnection struct {
-	// CompletedAt Cron schedule for the sync
+	// CompletedAt Time the test connection was completed
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
 
-	// CreatedAt Whether the sync is disabled
+	// CreatedAt Time the test connection was created
 	CreatedAt time.Time `json:"created_at"`
 
 	// FailureCode Code for failure
@@ -2194,6 +2248,15 @@ type SyncTestConnection struct {
 
 	// Id unique ID of the test connection
 	ID ID `json:"id"`
+
+	// PluginKind The kind of plugin, ie. source or destination.
+	PluginKind *PluginKind `json:"plugin_kind,omitempty"`
+
+	// PluginPath Plugin path in CloudQuery registry
+	PluginPath *SyncPluginPath `json:"plugin_path,omitempty"`
+
+	// PluginVersion The version in semantic version format.
+	PluginVersion *VersionName `json:"plugin_version,omitempty"`
 
 	// Status The status of the sync run
 	Status SyncTestConnectionStatus `json:"status"`
@@ -3057,6 +3120,18 @@ type CreateSyncJSONRequestBody = SyncCreate
 
 // UpdateSyncTestConnectionJSONRequestBody defines body for UpdateSyncTestConnection for application/json ContentType.
 type UpdateSyncTestConnectionJSONRequestBody = UpdateSyncTestConnectionRequest
+
+// CreateSyncDestinationFromTestConnectionJSONRequestBody defines body for CreateSyncDestinationFromTestConnection for application/json ContentType.
+type CreateSyncDestinationFromTestConnectionJSONRequestBody = SyncDestinationCreateFromTestConnection
+
+// CreateSyncSourceFromTestConnectionJSONRequestBody defines body for CreateSyncSourceFromTestConnection for application/json ContentType.
+type CreateSyncSourceFromTestConnectionJSONRequestBody = SyncSourceCreateFromTestConnection
+
+// UpdateSyncDestinationFromTestConnectionJSONRequestBody defines body for UpdateSyncDestinationFromTestConnection for application/json ContentType.
+type UpdateSyncDestinationFromTestConnectionJSONRequestBody = SyncDestinationUpdateFromTestConnection
+
+// UpdateSyncSourceFromTestConnectionJSONRequestBody defines body for UpdateSyncSourceFromTestConnection for application/json ContentType.
+type UpdateSyncSourceFromTestConnectionJSONRequestBody = SyncSourceUpdateFromTestConnection
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
 type UpdateSyncJSONRequestBody = SyncUpdate
