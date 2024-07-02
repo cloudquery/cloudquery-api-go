@@ -3854,6 +3854,9 @@
           "422" : {
             "$ref" : "#/components/responses/UnprocessableEntity"
           },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
           }
@@ -4087,6 +4090,9 @@
           },
           "422" : {
             "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
           },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
