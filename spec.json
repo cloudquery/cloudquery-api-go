@@ -1213,6 +1213,98 @@
         "tags" : [ "plugins" ]
       }
     },
+    "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/uiassets" : {
+      "post" : {
+        "description" : "Get URLs to upload UI assets for a given plugin version",
+        "operationId" : "UploadPluginUIAssets",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/plugin_kind"
+        }, {
+          "$ref" : "#/components/parameters/plugin_name"
+        }, {
+          "$ref" : "#/components/parameters/version_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UploadPluginUIAssets_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UploadPluginUIAssets_201_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "plugins" ]
+      },
+      "put" : {
+        "description" : "Finalize UI asset upload",
+        "operationId" : "FinalizePluginUIAssetUpload",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/plugin_kind"
+        }, {
+          "$ref" : "#/components/parameters/plugin_name"
+        }, {
+          "$ref" : "#/components/parameters/version_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FinalizePluginUIAssetUpload_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "plugins" ]
+      }
+    },
     "/addons" : {
       "get" : {
         "description" : "List all addons",
@@ -6687,6 +6779,11 @@
             "example_config" : {
               "description" : "Example configuration for the plugin. This can be used in generated quickstart guides, for example. Markdown format.",
               "type" : "string"
+            },
+            "ui_base_url" : {
+              "description" : "Base URL for the plugin's UI. Only available for plugins with a UI and for logged in users.",
+              "type" : "string",
+              "x-go-name" : "UIBaseURL"
             }
           },
           "required" : [ "example_config" ]
@@ -6973,6 +7070,41 @@
           }
         },
         "required" : [ "url" ]
+      },
+      "PluginUIAssetUploadRequest" : {
+        "additionalProperties" : false,
+        "description" : "CloudQuery Plugin UI Asset Upload Request",
+        "properties" : {
+          "name" : {
+            "description" : "The path and name of the asset",
+            "example" : "scripts/main.js",
+            "type" : "string"
+          },
+          "content_type" : {
+            "description" : "Content-type of the asset",
+            "example" : "application/json",
+            "type" : "string"
+          }
+        },
+        "required" : [ "name" ],
+        "title" : "CloudQuery Plugin UI Asset Upload Request"
+      },
+      "PluginUIAsset" : {
+        "additionalProperties" : false,
+        "description" : "CloudQuery Plugin UI Asset",
+        "properties" : {
+          "name" : {
+            "description" : "The path and name of the asset",
+            "type" : "string"
+          },
+          "upload_url" : {
+            "description" : "URL to upload the asset to",
+            "type" : "string",
+            "x-go-name" : "UploadURL"
+          }
+        },
+        "required" : [ "name", "upload_url" ],
+        "title" : "CloudQuery Plugin UI Asset"
       },
       "AddonName" : {
         "description" : "The unique name for the addon.",
@@ -9280,6 +9412,43 @@
           }
         },
         "required" : [ "names" ]
+      },
+      "FinalizePluginUIAssetUpload_request" : {
+        "properties" : {
+          "ui_id" : {
+            "description" : "ID representing the finished upload",
+            "type" : "string",
+            "x-go-name" : "UIID"
+          }
+        },
+        "required" : [ "ui_id" ]
+      },
+      "UploadPluginUIAssets_request" : {
+        "properties" : {
+          "assets" : {
+            "items" : {
+              "$ref" : "#/components/schemas/PluginUIAssetUploadRequest"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "assets" ]
+      },
+      "UploadPluginUIAssets_201_response" : {
+        "properties" : {
+          "ui_id" : {
+            "description" : "ID representing this upload",
+            "type" : "string",
+            "x-go-name" : "UIID"
+          },
+          "assets" : {
+            "items" : {
+              "$ref" : "#/components/schemas/PluginUIAsset"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "assets", "ui_id" ]
       },
       "ListAddons_200_response" : {
         "properties" : {

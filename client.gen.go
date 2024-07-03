@@ -240,6 +240,16 @@ type ClientInterface interface {
 	// GetPluginVersionTable request
 	GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UploadPluginUIAssetsWithBody request with any body
+	UploadPluginUIAssetsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UploadPluginUIAssets(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UploadPluginUIAssetsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FinalizePluginUIAssetUploadWithBody request with any body
+	FinalizePluginUIAssetUploadWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	FinalizePluginUIAssetUpload(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body FinalizePluginUIAssetUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// AuthRegistryRequest request
 	AuthRegistryRequest(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1233,6 +1243,54 @@ func (c *Client) CreatePluginVersionTables(ctx context.Context, teamName TeamNam
 
 func (c *Client) GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPluginVersionTableRequest(c.Server, teamName, pluginKind, pluginName, versionName, tableName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadPluginUIAssetsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadPluginUIAssetsRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadPluginUIAssets(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UploadPluginUIAssetsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadPluginUIAssetsRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FinalizePluginUIAssetUploadWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFinalizePluginUIAssetUploadRequestWithBody(c.Server, teamName, pluginKind, pluginName, versionName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FinalizePluginUIAssetUpload(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body FinalizePluginUIAssetUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFinalizePluginUIAssetUploadRequest(c.Server, teamName, pluginKind, pluginName, versionName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5253,6 +5311,142 @@ func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginKin
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewUploadPluginUIAssetsRequest calls the generic UploadPluginUIAssets builder with application/json body
+func NewUploadPluginUIAssetsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UploadPluginUIAssetsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUploadPluginUIAssetsRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
+}
+
+// NewUploadPluginUIAssetsRequestWithBody generates requests for UploadPluginUIAssets with any type of body
+func NewUploadPluginUIAssetsRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/uiassets", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewFinalizePluginUIAssetUploadRequest calls the generic FinalizePluginUIAssetUpload builder with application/json body
+func NewFinalizePluginUIAssetUploadRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body FinalizePluginUIAssetUploadJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewFinalizePluginUIAssetUploadRequestWithBody(server, teamName, pluginKind, pluginName, versionName, "application/json", bodyReader)
+}
+
+// NewFinalizePluginUIAssetUploadRequestWithBody generates requests for FinalizePluginUIAssetUpload with any type of body
+func NewFinalizePluginUIAssetUploadRequestWithBody(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/uiassets", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -10592,6 +10786,16 @@ type ClientWithResponsesInterface interface {
 	// GetPluginVersionTableWithResponse request
 	GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error)
 
+	// UploadPluginUIAssetsWithBodyWithResponse request with any body
+	UploadPluginUIAssetsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadPluginUIAssetsResponse, error)
+
+	UploadPluginUIAssetsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UploadPluginUIAssetsJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadPluginUIAssetsResponse, error)
+
+	// FinalizePluginUIAssetUploadWithBodyWithResponse request with any body
+	FinalizePluginUIAssetUploadWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FinalizePluginUIAssetUploadResponse, error)
+
+	FinalizePluginUIAssetUploadWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body FinalizePluginUIAssetUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*FinalizePluginUIAssetUploadResponse, error)
+
 	// AuthRegistryRequestWithResponse request
 	AuthRegistryRequestWithResponse(ctx context.Context, params *AuthRegistryRequestParams, reqEditors ...RequestEditorFn) (*AuthRegistryRequestResponse, error)
 
@@ -11946,6 +12150,58 @@ func (r GetPluginVersionTableResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetPluginVersionTableResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UploadPluginUIAssetsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *UploadPluginUIAssets201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UploadPluginUIAssetsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UploadPluginUIAssetsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type FinalizePluginUIAssetUploadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r FinalizePluginUIAssetUploadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FinalizePluginUIAssetUploadResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -14885,6 +15141,40 @@ func (c *ClientWithResponses) GetPluginVersionTableWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetPluginVersionTableResponse(rsp)
+}
+
+// UploadPluginUIAssetsWithBodyWithResponse request with arbitrary body returning *UploadPluginUIAssetsResponse
+func (c *ClientWithResponses) UploadPluginUIAssetsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadPluginUIAssetsResponse, error) {
+	rsp, err := c.UploadPluginUIAssetsWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadPluginUIAssetsResponse(rsp)
+}
+
+func (c *ClientWithResponses) UploadPluginUIAssetsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body UploadPluginUIAssetsJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadPluginUIAssetsResponse, error) {
+	rsp, err := c.UploadPluginUIAssets(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadPluginUIAssetsResponse(rsp)
+}
+
+// FinalizePluginUIAssetUploadWithBodyWithResponse request with arbitrary body returning *FinalizePluginUIAssetUploadResponse
+func (c *ClientWithResponses) FinalizePluginUIAssetUploadWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FinalizePluginUIAssetUploadResponse, error) {
+	rsp, err := c.FinalizePluginUIAssetUploadWithBody(ctx, teamName, pluginKind, pluginName, versionName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFinalizePluginUIAssetUploadResponse(rsp)
+}
+
+func (c *ClientWithResponses) FinalizePluginUIAssetUploadWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, body FinalizePluginUIAssetUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*FinalizePluginUIAssetUploadResponse, error) {
+	rsp, err := c.FinalizePluginUIAssetUpload(ctx, teamName, pluginKind, pluginName, versionName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFinalizePluginUIAssetUploadResponse(rsp)
 }
 
 // AuthRegistryRequestWithResponse request returning *AuthRegistryRequestResponse
@@ -18045,6 +18335,114 @@ func ParseGetPluginVersionTableResponse(rsp *http.Response) (*GetPluginVersionTa
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUploadPluginUIAssetsResponse parses an HTTP response from a UploadPluginUIAssetsWithResponse call
+func ParseUploadPluginUIAssetsResponse(rsp *http.Response) (*UploadPluginUIAssetsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UploadPluginUIAssetsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest UploadPluginUIAssets201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFinalizePluginUIAssetUploadResponse parses an HTTP response from a FinalizePluginUIAssetUploadWithResponse call
+func ParseFinalizePluginUIAssetUploadResponse(rsp *http.Response) (*FinalizePluginUIAssetUploadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FinalizePluginUIAssetUploadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
