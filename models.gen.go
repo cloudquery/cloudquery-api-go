@@ -854,6 +854,12 @@ type FieldError struct {
 	Status      int                `json:"status"`
 }
 
+// FinalizePluginUIAssetUploadRequest defines model for FinalizePluginUIAssetUpload_request.
+type FinalizePluginUIAssetUploadRequest struct {
+	// UiId ID representing the finished upload
+	UIID string `json:"ui_id"`
+}
+
 // GetCurrentUserMemberships200Response defines model for GetCurrentUserMemberships_200_response.
 type GetCurrentUserMemberships200Response struct {
 	Items    []MembershipWithTeam `json:"items"`
@@ -1582,6 +1588,24 @@ type PluginTableName = string
 //   - open-core: This option is deprecated, values will either be free or paid.
 type PluginTier string
 
+// PluginUIAsset CloudQuery Plugin UI Asset
+type PluginUIAsset struct {
+	// Name The path and name of the asset
+	Name string `json:"name"`
+
+	// UploadUrl URL to upload the asset to
+	UploadURL string `json:"upload_url"`
+}
+
+// PluginUIAssetUploadRequest CloudQuery Plugin UI Asset Upload Request
+type PluginUIAssetUploadRequest struct {
+	// ContentType Content-type of the asset
+	ContentType *string `json:"content_type,omitempty"`
+
+	// Name The path and name of the asset
+	Name string `json:"name"`
+}
+
 // PluginUpdate defines model for PluginUpdate.
 type PluginUpdate struct {
 	// Category Supported categories for plugins
@@ -1746,6 +1770,9 @@ type PluginVersionDetails struct {
 
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
 	SupportedTargets []string `json:"supported_targets"`
+
+	// UiBaseUrl Base URL for the plugin's UI. Only available for plugins with a UI and for logged in users.
+	UIBaseURL *string `json:"ui_base_url,omitempty"`
 }
 
 // PluginVersionList CloudQuery Plugin Version
@@ -2423,6 +2450,19 @@ type UpdateTeamRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// UploadPluginUIAssets201Response defines model for UploadPluginUIAssets_201_response.
+type UploadPluginUIAssets201Response struct {
+	Assets []PluginUIAsset `json:"assets"`
+
+	// UiId ID representing this upload
+	UIID string `json:"ui_id"`
+}
+
+// UploadPluginUIAssetsRequest defines model for UploadPluginUIAssets_request.
+type UploadPluginUIAssetsRequest struct {
+	Assets []PluginUIAssetUploadRequest `json:"assets"`
+}
+
 // UsageCurrent The usage of a plugin within the current calendar month.
 type UsageCurrent struct {
 	// PluginKind The kind of plugin, ie. source or destination.
@@ -3045,6 +3085,12 @@ type DeletePluginVersionTablesJSONRequestBody = DeletePluginVersionTablesRequest
 
 // CreatePluginVersionTablesJSONRequestBody defines body for CreatePluginVersionTables for application/json ContentType.
 type CreatePluginVersionTablesJSONRequestBody = CreatePluginVersionTablesRequest
+
+// UploadPluginUIAssetsJSONRequestBody defines body for UploadPluginUIAssets for application/json ContentType.
+type UploadPluginUIAssetsJSONRequestBody = UploadPluginUIAssetsRequest
+
+// FinalizePluginUIAssetUploadJSONRequestBody defines body for FinalizePluginUIAssetUpload for application/json ContentType.
+type FinalizePluginUIAssetUploadJSONRequestBody = FinalizePluginUIAssetUploadRequest
 
 // CreateTeamJSONRequestBody defines body for CreateTeam for application/json ContentType.
 type CreateTeamJSONRequestBody = CreateTeamRequest
