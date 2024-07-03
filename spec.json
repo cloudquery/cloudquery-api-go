@@ -5420,8 +5420,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       },
       "post" : {
         "description" : "Create new connector",
@@ -5463,8 +5462,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       }
     },
     "/teams/{team_name}/connectors/{connector_id}" : {
@@ -5497,8 +5495,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       },
       "patch" : {
         "description" : "Update a connector",
@@ -5541,8 +5538,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       }
     },
     "/teams/{team_name}/connectors/{connector_id}/authenticate" : {
@@ -5571,8 +5567,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       }
     },
     "/teams/{team_name}/connectors/{connector_id}/authenticate/aws" : {
@@ -5617,8 +5612,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       },
       "post" : {
         "description" : "Authenticate or reauthenticate the given AWS connector",
@@ -5665,8 +5659,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       }
     },
     "/teams/{team_name}/connectors/{connector_id}/authenticate/oauth" : {
@@ -5711,8 +5704,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       },
       "post" : {
         "description" : "Authenticate or reauthenticate the given OAuth connector",
@@ -5759,8 +5751,7 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "syncs" ],
-        "x-internal" : true
+        "tags" : [ "syncs" ]
       }
     }
   },
