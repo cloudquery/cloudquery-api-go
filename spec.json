@@ -1214,6 +1214,37 @@
       }
     },
     "/plugins/{team_name}/{plugin_kind}/{plugin_name}/versions/{version_name}/uiassets" : {
+      "delete" : {
+        "description" : "Remove UI assets for a given plugin version",
+        "operationId" : "RemovePluginUIAssets",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/plugin_kind"
+        }, {
+          "$ref" : "#/components/parameters/plugin_name"
+        }, {
+          "$ref" : "#/components/parameters/version_name"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "plugins" ]
+      },
       "post" : {
         "description" : "Get URLs to upload UI assets for a given plugin version",
         "operationId" : "UploadPluginUIAssets",

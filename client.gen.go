@@ -240,6 +240,9 @@ type ClientInterface interface {
 	// GetPluginVersionTable request
 	GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RemovePluginUIAssets request
+	RemovePluginUIAssets(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// UploadPluginUIAssetsWithBody request with any body
 	UploadPluginUIAssetsWithBody(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1243,6 +1246,18 @@ func (c *Client) CreatePluginVersionTables(ctx context.Context, teamName TeamNam
 
 func (c *Client) GetPluginVersionTable(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPluginVersionTableRequest(c.Server, teamName, pluginKind, pluginName, versionName, tableName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemovePluginUIAssets(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemovePluginUIAssetsRequest(c.Server, teamName, pluginKind, pluginName, versionName)
 	if err != nil {
 		return nil, err
 	}
@@ -5308,6 +5323,61 @@ func NewGetPluginVersionTableRequest(server string, teamName TeamName, pluginKin
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRemovePluginUIAssetsRequest generates requests for RemovePluginUIAssets
+func NewRemovePluginUIAssetsRequest(server string, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "plugin_kind", runtime.ParamLocationPath, pluginKind)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "plugin_name", runtime.ParamLocationPath, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam3 string
+
+	pathParam3, err = runtime.StyleParamWithLocation("simple", false, "version_name", runtime.ParamLocationPath, versionName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/plugins/%s/%s/%s/versions/%s/uiassets", pathParam0, pathParam1, pathParam2, pathParam3)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -10786,6 +10856,9 @@ type ClientWithResponsesInterface interface {
 	// GetPluginVersionTableWithResponse request
 	GetPluginVersionTableWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, tableName string, reqEditors ...RequestEditorFn) (*GetPluginVersionTableResponse, error)
 
+	// RemovePluginUIAssetsWithResponse request
+	RemovePluginUIAssetsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*RemovePluginUIAssetsResponse, error)
+
 	// UploadPluginUIAssetsWithBodyWithResponse request with any body
 	UploadPluginUIAssetsWithBodyWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadPluginUIAssetsResponse, error)
 
@@ -12150,6 +12223,31 @@ func (r GetPluginVersionTableResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetPluginVersionTableResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemovePluginUIAssetsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r RemovePluginUIAssetsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemovePluginUIAssetsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -15141,6 +15239,15 @@ func (c *ClientWithResponses) GetPluginVersionTableWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetPluginVersionTableResponse(rsp)
+}
+
+// RemovePluginUIAssetsWithResponse request returning *RemovePluginUIAssetsResponse
+func (c *ClientWithResponses) RemovePluginUIAssetsWithResponse(ctx context.Context, teamName TeamName, pluginKind PluginKind, pluginName PluginName, versionName VersionName, reqEditors ...RequestEditorFn) (*RemovePluginUIAssetsResponse, error) {
+	rsp, err := c.RemovePluginUIAssets(ctx, teamName, pluginKind, pluginName, versionName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemovePluginUIAssetsResponse(rsp)
 }
 
 // UploadPluginUIAssetsWithBodyWithResponse request with arbitrary body returning *UploadPluginUIAssetsResponse
@@ -18335,6 +18442,53 @@ func ParseGetPluginVersionTableResponse(rsp *http.Response) (*GetPluginVersionTa
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemovePluginUIAssetsResponse parses an HTTP response from a RemovePluginUIAssetsWithResponse call
+func ParseRemovePluginUIAssetsResponse(rsp *http.Response) (*RemovePluginUIAssetsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemovePluginUIAssetsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
