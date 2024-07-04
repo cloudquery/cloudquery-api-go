@@ -391,7 +391,7 @@ type AddonCreate struct {
 	// DisplayName The addon's display name
 	DisplayName string  `json:"display_name"`
 	Homepage    *string `json:"homepage,omitempty"`
-	Logo        string  `json:"logo"`
+	Logo        *string `json:"logo,omitempty"`
 
 	// Name The unique name for the addon.
 	Name AddonName `json:"name"`
@@ -1321,7 +1321,7 @@ type PluginCreate struct {
 	Kind PluginKind `json:"kind"`
 
 	// Logo URL to the plugin's logo. This will be shown in the CloudQuery Hub.
-	Logo string `json:"logo"`
+	Logo *string `json:"logo,omitempty"`
 
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
