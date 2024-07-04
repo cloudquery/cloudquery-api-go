@@ -6561,7 +6561,7 @@
             "type" : "integer"
           }
         },
-        "required" : [ "category", "display_name", "kind", "logo", "name", "public", "short_description", "team_name" ]
+        "required" : [ "category", "display_name", "kind", "name", "public", "short_description", "team_name" ]
       },
       "PluginReleaseStageUpdate" : {
         "description" : "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
@@ -6604,7 +6604,7 @@
           "logo" : {
             "description" : "URL to the plugin's logo. This will be shown in the CloudQuery Hub.",
             "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f9e8",
-            "pattern" : "^https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+$",
+            "pattern" : "^(https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+)?$",
             "type" : "string"
           },
           "public" : {
@@ -7302,7 +7302,7 @@
             "type" : "boolean"
           }
         },
-        "required" : [ "addon_format", "addon_type", "category", "display_name", "logo", "name", "public", "short_description", "team_name", "tier" ],
+        "required" : [ "addon_format", "addon_type", "category", "display_name", "name", "public", "short_description", "team_name", "tier" ],
         "title" : "CloudQuery Addon"
       },
       "AddonUpdate" : {
@@ -7348,7 +7348,7 @@
           },
           "logo" : {
             "example" : "https://storage.googleapis.com/cq-cloud-images/9ac4cb31-e971-4879-8619-87dc22b0f98e",
-            "pattern" : "^https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+$",
+            "pattern" : "^(https:\\/\\/storage\\.googleapis\\.com\\/cq-cloud-images\\/[a-z0-9-]+)?$",
             "type" : "string"
           },
           "public" : {
