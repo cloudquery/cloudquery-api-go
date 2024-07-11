@@ -3892,7 +3892,7 @@
         "tags" : [ "syncs" ]
       },
       "post" : {
-        "description" : "Create new Sync Source definition.",
+        "description" : "Create new draft Sync Source definition.",
         "operationId" : "CreateSyncSource",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -3939,7 +3939,8 @@
     },
     "/teams/{team_name}/sync-sources/test" : {
       "post" : {
-        "description" : "Test a Sync Source definition.",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Test a Sync Source definition. Use CreateTestConnectionForSyncSource instead.",
         "operationId" : "TestSyncSource",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -4094,6 +4095,140 @@
         "tags" : [ "syncs" ]
       }
     },
+    "/teams/{team_name}/sync-sources/{sync_source_name}/test-connections" : {
+      "post" : {
+        "description" : "Create a test connection for sync source.",
+        "operationId" : "CreateTestConnectionForSyncSource",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncTestConnectionCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-sources/{sync_source_name}/test-connections/{sync_test_connection_id}" : {
+      "get" : {
+        "description" : "Get test connection details for sync source.",
+        "operationId" : "GetTestConnectionForSyncSource",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_test_connection_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-sources/{sync_source_name}/test-connections/{sync_test_connection_id}/promote" : {
+      "post" : {
+        "description" : "Promote a test connection for sync source.",
+        "operationId" : "PromoteTestConnectionForSyncSource",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_test_connection_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncSource"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
     "/teams/{team_name}/sync-destinations" : {
       "get" : {
         "description" : "List all sync destination definitions.",
@@ -4129,7 +4264,7 @@
         "tags" : [ "syncs" ]
       },
       "post" : {
-        "description" : "Create new Sync Destination definition.",
+        "description" : "Create new draft Sync Destination definition.",
         "operationId" : "CreateSyncDestination",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -4176,7 +4311,8 @@
     },
     "/teams/{team_name}/sync-destinations/test" : {
       "post" : {
-        "description" : "Test a Sync Destination definition.",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Test a Sync Destination definition. Use CreateTestConnectionForSyncDestination instead.",
         "operationId" : "TestSyncDestination",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -4323,6 +4459,140 @@
           },
           "422" : {
             "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-destinations/{sync_destination_name}/test-connections" : {
+      "post" : {
+        "description" : "Create a test connection for sync destination.",
+        "operationId" : "CreateTestConnectionForSyncDestination",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncTestConnectionCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-destinations/{sync_destination_name}/test-connections/{sync_test_connection_id}" : {
+      "get" : {
+        "description" : "Get test connection details for sync destination.",
+        "operationId" : "GetTestConnectionForSyncDestination",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_test_connection_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-destinations/{sync_destination_name}/test-connections/{sync_test_connection_id}/promote" : {
+      "post" : {
+        "description" : "Promote a test connection for sync destination.",
+        "operationId" : "PromoteTestConnectionForSyncDestination",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_test_connection_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDestination"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
           },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
@@ -4878,7 +5148,8 @@
     },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}" : {
       "get" : {
-        "description" : "Get a Sync Test Connection",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Get a Sync Test Connection. Use GetTestConnectionForSyncSource or GetTestConnectionForSyncDestination instead.",
         "operationId" : "GetSyncTestConnection",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -4957,7 +5228,8 @@
     },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/new-source" : {
       "post" : {
-        "description" : "Create new Sync Source definition from a test connection.",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Create new Sync Source definition from a test connection. Use PromoteTestConnectionForSyncSource instead.",
         "operationId" : "CreateSyncSourceFromTestConnection",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -5006,7 +5278,8 @@
     },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/new-destination" : {
       "post" : {
-        "description" : "Create new Sync Destination definition from a test connection.",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Create new Sync Destination definition from a test connection. Use PromoteTestConnectionForSyncDestination instead.",
         "operationId" : "CreateSyncDestinationFromTestConnection",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -5055,7 +5328,8 @@
     },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/update-source/{sync_source_name}" : {
       "patch" : {
-        "description" : "Update Sync Source definition from a test connection.",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Update Sync Source definition from a test connection. Use PromoteTestConnectionForSyncSource and/or UpdateSyncSource instead.",
         "operationId" : "UpdateSyncSourceFromTestConnection",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -5106,7 +5380,8 @@
     },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/update-destination/{sync_destination_name}" : {
       "patch" : {
-        "description" : "Update Sync Destination definition from a test connection.",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Update Sync Destination definition from a test connection. Use PromoteTestConnectionForSyncDestination and/or UpdateSyncDestination instead.",
         "operationId" : "UpdateSyncDestinationFromTestConnection",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -6044,6 +6319,16 @@
         },
         "style" : "simple"
       },
+      "sync_test_connection_id" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "sync_test_connection_id",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/SyncTestConnectionID"
+        },
+        "style" : "simple"
+      },
       "sync_destination_name" : {
         "explode" : false,
         "in" : "path",
@@ -6090,16 +6375,6 @@
         },
         "style" : "simple",
         "x-go-name" : "ConnectorID"
-      },
-      "sync_test_connection_id" : {
-        "explode" : false,
-        "in" : "path",
-        "name" : "sync_test_connection_id",
-        "required" : true,
-        "schema" : {
-          "$ref" : "#/components/schemas/SyncTestConnectionID"
-        },
-        "style" : "simple"
       },
       "managed_database_id" : {
         "explode" : false,
@@ -8363,9 +8638,13 @@
                 "$ref" : "#/components/schemas/SyncEnv"
               },
               "type" : "array"
+            },
+            "draft" : {
+              "description" : "If a sync source is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.",
+              "type" : "boolean"
             }
           },
-          "required" : [ "created_at", "env", "updated_at" ]
+          "required" : [ "created_at", "draft", "env", "updated_at" ]
         } ]
       },
       "SyncTestConnectionID" : {
@@ -8468,6 +8747,35 @@
         },
         "title" : "Sync Source definition for updating a source"
       },
+      "SyncTestConnectionCreate" : {
+        "properties" : {
+          "path" : {
+            "$ref" : "#/components/schemas/SyncPluginPath"
+          },
+          "version" : {
+            "description" : "Version of the plugin",
+            "example" : "v1.2.3",
+            "type" : "string"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            },
+            "type" : "array"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
+          }
+        },
+        "required" : [ "path", "version" ],
+        "title" : "Sync Test Connection creation definition"
+      },
       "SyncDestinationWriteMode" : {
         "default" : "overwrite-delete-stale",
         "description" : "Write mode for the destination",
@@ -8548,9 +8856,13 @@
                 "$ref" : "#/components/schemas/SyncEnv"
               },
               "type" : "array"
+            },
+            "draft" : {
+              "description" : "If a sync destination is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.",
+              "type" : "boolean"
             }
           },
-          "required" : [ "created_at", "env", "updated_at" ]
+          "required" : [ "created_at", "draft", "env", "updated_at" ]
         } ]
       },
       "SyncDestinationUpdate" : {

@@ -1940,6 +1940,9 @@ type SyncDestination struct {
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
+	// Draft If a sync destination is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.
+	Draft bool `json:"draft"`
+
 	// Env Environment variables for the plugin.
 	Env []SyncEnv `json:"env"`
 
@@ -2159,6 +2162,9 @@ type SyncSource struct {
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
+	// Draft If a sync source is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.
+	Draft bool `json:"draft"`
+
 	// Env Environment variables for the plugin.
 	Env []SyncEnv `json:"env"`
 
@@ -2293,6 +2299,22 @@ type SyncTestConnection struct {
 
 	// Status The status of the sync run
 	Status SyncTestConnectionStatus `json:"status"`
+}
+
+// SyncTestConnectionCreate defines model for SyncTestConnectionCreate.
+type SyncTestConnectionCreate struct {
+	// ConnectorID ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
+
+	// Path Plugin path in CloudQuery registry
+	Path SyncPluginPath          `json:"path"`
+	Spec *map[string]interface{} `json:"spec,omitempty"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
 }
 
 // ID unique ID of the test connection
@@ -3158,6 +3180,9 @@ type TestSyncDestinationJSONRequestBody = SyncDestinationCreate
 // UpdateSyncDestinationJSONRequestBody defines body for UpdateSyncDestination for application/json ContentType.
 type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
 
+// CreateTestConnectionForSyncDestinationJSONRequestBody defines body for CreateTestConnectionForSyncDestination for application/json ContentType.
+type CreateTestConnectionForSyncDestinationJSONRequestBody = SyncTestConnectionCreate
+
 // CreateSyncSourceJSONRequestBody defines body for CreateSyncSource for application/json ContentType.
 type CreateSyncSourceJSONRequestBody = SyncSourceCreate
 
@@ -3166,6 +3191,9 @@ type TestSyncSourceJSONRequestBody = SyncSourceCreate
 
 // UpdateSyncSourceJSONRequestBody defines body for UpdateSyncSource for application/json ContentType.
 type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
+
+// CreateTestConnectionForSyncSourceJSONRequestBody defines body for CreateTestConnectionForSyncSource for application/json ContentType.
+type CreateTestConnectionForSyncSourceJSONRequestBody = SyncTestConnectionCreate
 
 // CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
 type CreateSyncJSONRequestBody = SyncCreate
