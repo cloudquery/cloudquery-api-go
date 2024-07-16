@@ -7243,6 +7243,10 @@
             "description" : "Arrow Type of the column",
             "type" : "string"
           },
+          "type_schema": {
+            "description": "For columns of type JSON, the schema of the JSON object",
+            "type": "string"
+          },
           "unique" : {
             "description" : "Whether the column has a unique constraint",
             "type" : "boolean"
