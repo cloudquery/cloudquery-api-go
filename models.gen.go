@@ -1520,6 +1520,9 @@ type PluginTableColumn struct {
 	// Type Arrow Type of the column
 	Type string `json:"type"`
 
+	// TypeSchema For columns of type JSON, the schema of the JSON object
+	TypeSchema *string `json:"type_schema,omitempty"`
+
 	// Unique Whether the column has a unique constraint
 	Unique bool `json:"unique"`
 }
