@@ -590,19 +590,16 @@ type ConnectorAuthFinishRequestAWS struct {
 
 // ConnectorAuthFinishRequestOAuth OAuth connector authentication request, filled in after the user has authenticated through OAuth
 type ConnectorAuthFinishRequestOAuth struct {
-	// AuthCode Auth code received from the OAuth provider
-	AuthCode interface{} `json:"auth_code"`
-
 	// BaseURL Base of the URL the callback url was constructed from
 	BaseURL interface{} `json:"base_url"`
 
 	// Env Environment variables used in the spec.
-	Env  *interface{}            `json:"env,omitempty"`
-	Spec *map[string]interface{} `json:"spec,omitempty"`
+	Env *interface{} `json:"env,omitempty"`
 
-	// State State value received from the OAuth provider
-	State                *interface{}           `json:"state,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	// ReturnURL URL the user was redirected to (including new parameter values) after the OAuth flow is complete
+	ReturnURL            interface{}             `json:"return_url"`
+	Spec                 *map[string]interface{} `json:"spec,omitempty"`
+	AdditionalProperties map[string]interface{}  `json:"-"`
 }
 
 // ConnectorAuthRequestAWS AWS connector authentication request to start the authentication process
@@ -3396,14 +3393,6 @@ func (a *ConnectorAuthFinishRequestOAuth) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	if raw, found := object["auth_code"]; found {
-		err = json.Unmarshal(raw, &a.AuthCode)
-		if err != nil {
-			return fmt.Errorf("error reading 'auth_code': %w", err)
-		}
-		delete(object, "auth_code")
-	}
-
 	if raw, found := object["base_url"]; found {
 		err = json.Unmarshal(raw, &a.BaseURL)
 		if err != nil {
@@ -3420,20 +3409,20 @@ func (a *ConnectorAuthFinishRequestOAuth) UnmarshalJSON(b []byte) error {
 		delete(object, "env")
 	}
 
+	if raw, found := object["return_url"]; found {
+		err = json.Unmarshal(raw, &a.ReturnURL)
+		if err != nil {
+			return fmt.Errorf("error reading 'return_url': %w", err)
+		}
+		delete(object, "return_url")
+	}
+
 	if raw, found := object["spec"]; found {
 		err = json.Unmarshal(raw, &a.Spec)
 		if err != nil {
 			return fmt.Errorf("error reading 'spec': %w", err)
 		}
 		delete(object, "spec")
-	}
-
-	if raw, found := object["state"]; found {
-		err = json.Unmarshal(raw, &a.State)
-		if err != nil {
-			return fmt.Errorf("error reading 'state': %w", err)
-		}
-		delete(object, "state")
 	}
 
 	if len(object) != 0 {
@@ -3455,11 +3444,6 @@ func (a ConnectorAuthFinishRequestOAuth) MarshalJSON() ([]byte, error) {
 	var err error
 	object := make(map[string]json.RawMessage)
 
-	object["auth_code"], err = json.Marshal(a.AuthCode)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'auth_code': %w", err)
-	}
-
 	object["base_url"], err = json.Marshal(a.BaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'base_url': %w", err)
@@ -3472,17 +3456,15 @@ func (a ConnectorAuthFinishRequestOAuth) MarshalJSON() ([]byte, error) {
 		}
 	}
 
+	object["return_url"], err = json.Marshal(a.ReturnURL)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'return_url': %w", err)
+	}
+
 	if a.Spec != nil {
 		object["spec"], err = json.Marshal(a.Spec)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'spec': %w", err)
-		}
-	}
-
-	if a.State != nil {
-		object["state"], err = json.Marshal(a.State)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'state': %w", err)
 		}
 	}
 
