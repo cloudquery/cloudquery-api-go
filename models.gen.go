@@ -1813,6 +1813,30 @@ type PriceCategorySpend struct {
 	Total    string              `json:"total"`
 }
 
+// PromoteSyncDestinationTestConnection Sync Destination Definition
+type PromoteSyncDestinationTestConnection struct {
+	// MigrateMode Migrate mode for the destination
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
+
+	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// WriteMode Write mode for the destination
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
+}
+
+// PromoteSyncSourceTestConnection Sync Source Definition
+type PromoteSyncSourceTestConnection struct {
+	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
+	Name string `json:"name"`
+
+	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
+	SkipTables *[]string `json:"skip_tables,omitempty"`
+
+	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
+	Tables []string `json:"tables"`
+}
+
 // RegistryAuthToken JWT token for the image registry
 type RegistryAuthToken struct {
 	AccessToken string `json:"access_token"`
@@ -2017,6 +2041,61 @@ type SyncDestinationCreateFromTestConnection struct {
 
 // SyncDestinationMigrateMode Migrate mode for the destination
 type SyncDestinationMigrateMode string
+
+// SyncDestinationTestConnection defines model for SyncDestinationTestConnection.
+type SyncDestinationTestConnection struct {
+	// CompletedAt Time the test connection was completed
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CreatedAt Time the test connection was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// FailureCode Code for failure
+	FailureCode *string `json:"failure_code,omitempty"`
+
+	// FailureReason Reason for failure
+	FailureReason *string `json:"failure_reason,omitempty"`
+
+	// ID unique ID of the test connection
+	ID ID `json:"id"`
+
+	// PluginPath Plugin path in CloudQuery registry
+	PluginPath *SyncPluginPath `json:"plugin_path,omitempty"`
+
+	// PluginVersion The version in semantic version format.
+	PluginVersion *VersionName `json:"plugin_version,omitempty"`
+
+	// Status The status of the sync run
+	Status SyncTestConnectionStatus `json:"status"`
+}
+
+// SyncDestinationTestConnectionCreate defines model for SyncDestinationTestConnectionCreate.
+type SyncDestinationTestConnectionCreate struct {
+	// ConnectorID ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
+	// DestinationName Name of an existing destination
+	DestinationName *string `json:"destination_name,omitempty"`
+
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
+
+	// MigrateMode Migrate mode for the destination
+	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
+
+	// Path Plugin path in CloudQuery registry
+	Path SyncPluginPath          `json:"path"`
+	Spec *map[string]interface{} `json:"spec,omitempty"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
+
+	// WriteMode Write mode for the destination
+	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
+}
+
+// SyncDestinationTestConnectionID ID of the Sync Destination Test Connection
+type SyncDestinationTestConnectionID = openapi_types.UUID
 
 // SyncDestinationUpdate Sync Destination Update Definition
 type SyncDestinationUpdate struct {
@@ -2236,6 +2315,55 @@ type SyncSourceCreateFromTestConnection struct {
 	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
 	Tables []string `json:"tables"`
 }
+
+// SyncSourceTestConnection defines model for SyncSourceTestConnection.
+type SyncSourceTestConnection struct {
+	// CompletedAt Time the test connection was completed
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+
+	// CreatedAt Time the test connection was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// FailureCode Code for failure
+	FailureCode *string `json:"failure_code,omitempty"`
+
+	// FailureReason Reason for failure
+	FailureReason *string `json:"failure_reason,omitempty"`
+
+	// ID unique ID of the test connection
+	ID ID `json:"id"`
+
+	// PluginPath Plugin path in CloudQuery registry
+	PluginPath *SyncPluginPath `json:"plugin_path,omitempty"`
+
+	// PluginVersion The version in semantic version format.
+	PluginVersion *VersionName `json:"plugin_version,omitempty"`
+
+	// Status The status of the sync run
+	Status SyncTestConnectionStatus `json:"status"`
+}
+
+// SyncSourceTestConnectionCreate defines model for SyncSourceTestConnectionCreate.
+type SyncSourceTestConnectionCreate struct {
+	// ConnectorID ID of the Connector
+	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
+	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
+	Env *[]SyncEnvCreate `json:"env,omitempty"`
+
+	// Path Plugin path in CloudQuery registry
+	Path SyncPluginPath `json:"path"`
+
+	// SourceName Name of an existing source
+	SourceName *string                 `json:"source_name,omitempty"`
+	Spec       *map[string]interface{} `json:"spec,omitempty"`
+
+	// Version Version of the plugin
+	Version string `json:"version"`
+}
+
+// SyncSourceTestConnectionID ID of the Sync Source Test Connection
+type SyncSourceTestConnectionID = openapi_types.UUID
 
 // SyncSourceUpdate Sync Source Update Definition
 type SyncSourceUpdate struct {
@@ -3174,6 +3302,12 @@ type UpdateSpendingLimitJSONRequestBody = SpendingLimitUpdate
 // CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
 type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
 
+// CreateSyncDestinationTestConnectionJSONRequestBody defines body for CreateSyncDestinationTestConnection for application/json ContentType.
+type CreateSyncDestinationTestConnectionJSONRequestBody = SyncDestinationTestConnectionCreate
+
+// PromoteSyncDestinationTestConnectionJSONRequestBody defines body for PromoteSyncDestinationTestConnection for application/json ContentType.
+type PromoteSyncDestinationTestConnectionJSONRequestBody = PromoteSyncDestinationTestConnection
+
 // CreateSyncDestinationJSONRequestBody defines body for CreateSyncDestination for application/json ContentType.
 type CreateSyncDestinationJSONRequestBody = SyncDestinationCreate
 
@@ -3185,6 +3319,12 @@ type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
 
 // CreateTestConnectionForSyncDestinationJSONRequestBody defines body for CreateTestConnectionForSyncDestination for application/json ContentType.
 type CreateTestConnectionForSyncDestinationJSONRequestBody = SyncTestConnectionCreate
+
+// CreateSyncSourceTestConnectionJSONRequestBody defines body for CreateSyncSourceTestConnection for application/json ContentType.
+type CreateSyncSourceTestConnectionJSONRequestBody = SyncSourceTestConnectionCreate
+
+// PromoteSyncSourceTestConnectionJSONRequestBody defines body for PromoteSyncSourceTestConnection for application/json ContentType.
+type PromoteSyncSourceTestConnectionJSONRequestBody = PromoteSyncSourceTestConnection
 
 // CreateSyncSourceJSONRequestBody defines body for CreateSyncSource for application/json ContentType.
 type CreateSyncSourceJSONRequestBody = SyncSourceCreate
