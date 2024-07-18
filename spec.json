@@ -3857,6 +3857,296 @@
         "tags" : [ "registry" ]
       }
     },
+    "/teams/{team_name}/sync-source-test-connections" : {
+      "post" : {
+        "description" : "Create a test source connection.",
+        "operationId" : "CreateSyncSourceTestConnection",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncSourceTestConnectionCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncSourceTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-source-test-connections/{sync_source_test_connection_id}" : {
+      "get" : {
+        "description" : "Get a sync source test connection.",
+        "operationId" : "GetSyncSourceTestConnection",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_test_connection_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncSourceTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-source-test-connections/{sync_source_test_connection_id}/promote" : {
+      "post" : {
+        "description" : "Promote a sync source test connection to a sync source.",
+        "operationId" : "PromoteSyncSourceTestConnection",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_test_connection_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PromoteSyncSourceTestConnection"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncSource"
+                }
+              }
+            },
+            "description" : "Successful response indicating that an existing sync source was replaced."
+          },
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncSource"
+                }
+              }
+            },
+            "description" : "Successful response indicating that a new sync source was created."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-destination-test-connections" : {
+      "post" : {
+        "description" : "Create a test destination connection.",
+        "operationId" : "CreateSyncDestinationTestConnection",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncDestinationTestConnectionCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDestinationTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-destination-test-connections/{sync_destination_test_connection_id}" : {
+      "get" : {
+        "description" : "Get a sync destination test connection.",
+        "operationId" : "GetSyncDestinationTestConnection",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_test_connection_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDestinationTestConnection"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/sync-destination-test-connections/{sync_destination_test_connection_id}/promote" : {
+      "post" : {
+        "description" : "Promote a sync destination test connection to a sync destination.",
+        "operationId" : "PromoteSyncDestinationTestConnection",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_test_connection_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PromoteSyncDestinationTestConnection"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDestination"
+                }
+              }
+            },
+            "description" : "Successful response indicating that an existing sync destination was replaced."
+          },
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDestination"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
     "/teams/{team_name}/sync-sources" : {
       "get" : {
         "description" : "List all sync source definitions.",
@@ -6306,6 +6596,28 @@
         "style" : "simple",
         "x-go-name" : "APIKeyID"
       },
+      "sync_source_test_connection_id" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "sync_source_test_connection_id",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/SyncSourceTestConnectionID"
+        },
+        "style" : "simple",
+        "x-go-name" : "SyncSourceTestConnectionID"
+      },
+      "sync_destination_test_connection_id" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "sync_destination_test_connection_id",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/SyncDestinationTestConnectionID"
+        },
+        "style" : "simple",
+        "x-go-name" : "SyncDestinationTestConnectionID"
+      },
       "sync_source_name" : {
         "explode" : false,
         "in" : "path",
@@ -8544,17 +8856,135 @@
         },
         "required" : [ "name" ]
       },
-      "SyncLastUpdateSource" : {
-        "description" : "How was the source or destination been created or updated last",
-        "enum" : [ "yaml", "ui" ],
-        "type" : "string"
-      },
       "ConnectorID" : {
         "description" : "ID of the Connector",
         "example" : "12345678-1234-1234-1234-1234567890ab",
         "format" : "uuid",
         "type" : "string",
         "x-go-name" : "ConnectorID"
+      },
+      "SyncSourceTestConnectionCreate" : {
+        "properties" : {
+          "path" : {
+            "$ref" : "#/components/schemas/SyncPluginPath"
+          },
+          "source_name" : {
+            "description" : "Name of an existing source",
+            "type" : "string"
+          },
+          "version" : {
+            "description" : "Version of the plugin",
+            "example" : "v1.2.3",
+            "type" : "string"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            },
+            "type" : "array"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
+          }
+        },
+        "required" : [ "path", "version" ],
+        "title" : "Sync Source Test Connection creation definition"
+      },
+      "SyncTestConnectionID" : {
+        "description" : "unique ID of the test connection",
+        "example" : "12345678-1234-1234-1234-1234567890ab",
+        "format" : "uuid",
+        "type" : "string",
+        "x-go-name" : "ID"
+      },
+      "SyncTestConnectionStatus" : {
+        "description" : "The status of the sync run",
+        "enum" : [ "completed", "failed", "started", "created" ],
+        "type" : "string"
+      },
+      "SyncSourceTestConnection" : {
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/SyncTestConnectionID"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/SyncTestConnectionStatus"
+          },
+          "failure_reason" : {
+            "description" : "Reason for failure",
+            "example" : "password authentication failed for user \"exampleuser\"",
+            "type" : "string"
+          },
+          "failure_code" : {
+            "description" : "Code for failure",
+            "example" : "INVALID_CREDENTIALS",
+            "type" : "string"
+          },
+          "created_at" : {
+            "description" : "Time the test connection was created",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "completed_at" : {
+            "description" : "Time the test connection was completed",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "plugin_path" : {
+            "$ref" : "#/components/schemas/SyncPluginPath"
+          },
+          "plugin_version" : {
+            "$ref" : "#/components/schemas/VersionName"
+          }
+        },
+        "required" : [ "created_at", "id", "status" ]
+      },
+      "SyncSourceTestConnectionID" : {
+        "description" : "ID of the Sync Source Test Connection",
+        "example" : "12345678-1234-1234-1234-1234567890ab",
+        "format" : "uuid",
+        "type" : "string",
+        "x-go-name" : "SyncSourceTestConnectionID"
+      },
+      "PromoteSyncSourceTestConnection" : {
+        "description" : "Sync Source Definition",
+        "properties" : {
+          "name" : {
+            "description" : "Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.",
+            "example" : "my-source-definition",
+            "pattern" : "^[a-zA-Z0-9_-]+$",
+            "type" : "string"
+          },
+          "tables" : {
+            "description" : "Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.",
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "skip_tables" : {
+            "description" : "Tables matched by `tables` that should be skipped. Wildcards are supported.",
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "name", "tables" ],
+        "title" : "Sync Source definition for creating a new source"
+      },
+      "SyncLastUpdateSource" : {
+        "description" : "How was the source or destination been created or updated last",
+        "enum" : [ "yaml", "ui" ],
+        "type" : "string"
       },
       "SyncSourceCreate" : {
         "description" : "Sync Source Definition",
@@ -8651,17 +9081,198 @@
           "required" : [ "created_at", "draft", "env", "updated_at" ]
         } ]
       },
-      "SyncTestConnectionID" : {
-        "description" : "unique ID of the test connection",
+      "SyncDestinationWriteMode" : {
+        "default" : "overwrite-delete-stale",
+        "description" : "Write mode for the destination",
+        "enum" : [ "append", "overwrite", "overwrite-delete-stale" ],
+        "type" : "string"
+      },
+      "SyncDestinationMigrateMode" : {
+        "default" : "safe",
+        "description" : "Migrate mode for the destination",
+        "enum" : [ "safe", "forced" ],
+        "type" : "string"
+      },
+      "SyncDestinationTestConnectionCreate" : {
+        "properties" : {
+          "path" : {
+            "$ref" : "#/components/schemas/SyncPluginPath"
+          },
+          "destination_name" : {
+            "description" : "Name of an existing destination",
+            "type" : "string"
+          },
+          "version" : {
+            "description" : "Version of the plugin",
+            "example" : "v1.2.3",
+            "type" : "string"
+          },
+          "write_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
+          },
+          "migrate_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            },
+            "type" : "array"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
+          }
+        },
+        "required" : [ "path", "version" ],
+        "title" : "Sync Destination Test Connection creation definition"
+      },
+      "SyncDestinationTestConnection" : {
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/SyncTestConnectionID"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/SyncTestConnectionStatus"
+          },
+          "failure_reason" : {
+            "description" : "Reason for failure",
+            "example" : "password authentication failed for user \"exampleuser\"",
+            "type" : "string"
+          },
+          "failure_code" : {
+            "description" : "Code for failure",
+            "example" : "INVALID_CREDENTIALS",
+            "type" : "string"
+          },
+          "created_at" : {
+            "description" : "Time the test connection was created",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "completed_at" : {
+            "description" : "Time the test connection was completed",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "plugin_path" : {
+            "$ref" : "#/components/schemas/SyncPluginPath"
+          },
+          "plugin_version" : {
+            "$ref" : "#/components/schemas/VersionName"
+          }
+        },
+        "required" : [ "created_at", "id", "status" ]
+      },
+      "SyncDestinationTestConnectionID" : {
+        "description" : "ID of the Sync Destination Test Connection",
         "example" : "12345678-1234-1234-1234-1234567890ab",
         "format" : "uuid",
         "type" : "string",
-        "x-go-name" : "ID"
+        "x-go-name" : "SyncDestinationTestConnectionID"
       },
-      "SyncTestConnectionStatus" : {
-        "description" : "The status of the sync run",
-        "enum" : [ "completed", "failed", "started", "created" ],
-        "type" : "string"
+      "PromoteSyncDestinationTestConnection" : {
+        "description" : "Sync Destination Definition",
+        "properties" : {
+          "name" : {
+            "description" : "Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.",
+            "example" : "my-destination-definition",
+            "pattern" : "^[a-zA-Z0-9_-]+$",
+            "type" : "string"
+          },
+          "write_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
+          },
+          "migrate_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
+          }
+        },
+        "required" : [ "name" ],
+        "title" : "Sync Destination definition for creating a new source"
+      },
+      "SyncDestinationCreate" : {
+        "description" : "Sync Destination Definition",
+        "properties" : {
+          "name" : {
+            "description" : "Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.",
+            "example" : "my-destination-definition",
+            "pattern" : "^[a-zA-Z0-9_-]+$",
+            "type" : "string"
+          },
+          "path" : {
+            "$ref" : "#/components/schemas/SyncPluginPath"
+          },
+          "version" : {
+            "description" : "Version of the plugin",
+            "example" : "v1.2.3",
+            "type" : "string"
+          },
+          "write_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
+          },
+          "migrate_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            },
+            "type" : "array"
+          },
+          "last_update_source" : {
+            "$ref" : "#/components/schemas/SyncLastUpdateSource"
+          },
+          "connector_id" : {
+            "$ref" : "#/components/schemas/ConnectorID"
+          }
+        },
+        "required" : [ "name", "path", "version" ],
+        "title" : "Sync Destination definition for creating a new destination"
+      },
+      "SyncDestination" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/SyncDestinationCreate"
+        }, {
+          "properties" : {
+            "created_at" : {
+              "description" : "Time when the source was created",
+              "example" : "2023-07-14T16:53:42Z",
+              "format" : "date-time",
+              "type" : "string"
+            },
+            "updated_at" : {
+              "description" : "Time when the source was last updated",
+              "example" : "2023-07-14T16:53:42Z",
+              "format" : "date-time",
+              "type" : "string"
+            },
+            "env" : {
+              "description" : "Environment variables for the plugin.",
+              "items" : {
+                "$ref" : "#/components/schemas/SyncEnv"
+              },
+              "type" : "array"
+            },
+            "draft" : {
+              "description" : "If a sync destination is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.",
+              "type" : "boolean"
+            }
+          },
+          "required" : [ "created_at", "draft", "env", "updated_at" ]
+        } ]
       },
       "SyncTestConnection" : {
         "properties" : {
@@ -8779,95 +9390,6 @@
         },
         "required" : [ "path", "version" ],
         "title" : "Sync Test Connection creation definition"
-      },
-      "SyncDestinationWriteMode" : {
-        "default" : "overwrite-delete-stale",
-        "description" : "Write mode for the destination",
-        "enum" : [ "append", "overwrite", "overwrite-delete-stale" ],
-        "type" : "string"
-      },
-      "SyncDestinationMigrateMode" : {
-        "default" : "safe",
-        "description" : "Migrate mode for the destination",
-        "enum" : [ "safe", "forced" ],
-        "type" : "string"
-      },
-      "SyncDestinationCreate" : {
-        "description" : "Sync Destination Definition",
-        "properties" : {
-          "name" : {
-            "description" : "Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.",
-            "example" : "my-destination-definition",
-            "pattern" : "^[a-zA-Z0-9_-]+$",
-            "type" : "string"
-          },
-          "path" : {
-            "$ref" : "#/components/schemas/SyncPluginPath"
-          },
-          "version" : {
-            "description" : "Version of the plugin",
-            "example" : "v1.2.3",
-            "type" : "string"
-          },
-          "write_mode" : {
-            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
-          },
-          "migrate_mode" : {
-            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
-          },
-          "spec" : {
-            "additionalProperties" : false,
-            "format" : "Plugin parameters, specific to each plugin",
-            "type" : "object"
-          },
-          "env" : {
-            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
-            "items" : {
-              "$ref" : "#/components/schemas/SyncEnvCreate"
-            },
-            "type" : "array"
-          },
-          "last_update_source" : {
-            "$ref" : "#/components/schemas/SyncLastUpdateSource"
-          },
-          "connector_id" : {
-            "$ref" : "#/components/schemas/ConnectorID"
-          }
-        },
-        "required" : [ "name", "path", "version" ],
-        "title" : "Sync Destination definition for creating a new destination"
-      },
-      "SyncDestination" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/SyncDestinationCreate"
-        }, {
-          "properties" : {
-            "created_at" : {
-              "description" : "Time when the source was created",
-              "example" : "2023-07-14T16:53:42Z",
-              "format" : "date-time",
-              "type" : "string"
-            },
-            "updated_at" : {
-              "description" : "Time when the source was last updated",
-              "example" : "2023-07-14T16:53:42Z",
-              "format" : "date-time",
-              "type" : "string"
-            },
-            "env" : {
-              "description" : "Environment variables for the plugin.",
-              "items" : {
-                "$ref" : "#/components/schemas/SyncEnv"
-              },
-              "type" : "array"
-            },
-            "draft" : {
-              "description" : "If a sync destination is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.",
-              "type" : "boolean"
-            }
-          },
-          "required" : [ "created_at", "draft", "env", "updated_at" ]
-        } ]
       },
       "SyncDestinationUpdate" : {
         "description" : "Sync Destination Update Definition",
