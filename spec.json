@@ -9383,6 +9383,22 @@
         },
         "title" : "Sync Destination definition for updating a destination"
       },
+      "SyncIncremental" : {
+        "description" : "Managed Sync Incremental Options definition",
+        "properties" : {
+          "table" : {
+            "description" : "Name of the table in which to store incremental sync data",
+            "pattern" : "^([a-zA-Z_][a-zA-Z0-9_]*)?$",
+            "type" : "string"
+          },
+          "destination" : {
+            "description" : "Name of the destination in which to store incremental sync data",
+            "pattern" : "^([a-zA-Z][a-zA-Z0-9_-]*)?$",
+            "type" : "string"
+          }
+        },
+        "required" : [ "destination", "table" ]
+      },
       "Sync" : {
         "description" : "Managed Sync definition",
         "properties" : {
@@ -9421,6 +9437,9 @@
             "description" : "Memory quota for the sync",
             "example" : "2Gi",
             "type" : "string"
+          },
+          "incremental" : {
+            "$ref" : "#/components/schemas/SyncIncremental"
           },
           "created_at" : {
             "description" : "Time when the sync was created",
@@ -9479,9 +9498,27 @@
             "default" : "2Gi",
             "description" : "Memory quota for the sync",
             "type" : "string"
+          },
+          "incremental" : {
+            "$ref" : "#/components/schemas/SyncIncremental"
           }
         },
         "required" : [ "destinations", "name", "source" ]
+      },
+      "SyncIncrementalUpdate" : {
+        "description" : "Managed Sync Incremental Options Update definition",
+        "properties" : {
+          "table" : {
+            "description" : "Name of the table in which to store incremental sync data",
+            "pattern" : "^([a-zA-Z_][a-zA-Z0-9_]*)?$",
+            "type" : "string"
+          },
+          "destination" : {
+            "description" : "Name of the destination in which to store incremental sync data",
+            "pattern" : "^([a-zA-Z][a-zA-Z0-9_-]*)?$",
+            "type" : "string"
+          }
+        }
       },
       "SyncUpdate" : {
         "description" : "Managed Sync definition",
@@ -9526,6 +9563,9 @@
             "default" : "2Gi",
             "description" : "Memory quota for the sync",
             "type" : "string"
+          },
+          "incremental" : {
+            "$ref" : "#/components/schemas/SyncIncrementalUpdate"
           }
         }
       },

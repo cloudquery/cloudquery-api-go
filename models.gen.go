@@ -1918,6 +1918,9 @@ type Sync struct {
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
 
+	// Incremental Managed Sync Incremental Options definition
+	Incremental *SyncIncremental `json:"incremental,omitempty"`
+
 	// Memory Memory quota for the sync
 	Memory string `json:"memory"`
 
@@ -1942,6 +1945,9 @@ type SyncCreate struct {
 
 	// Disabled Whether the sync is disabled
 	Disabled *bool `json:"disabled,omitempty"`
+
+	// Incremental Managed Sync Incremental Options definition
+	Incremental *SyncIncremental `json:"incremental,omitempty"`
 
 	// Memory Memory quota for the sync
 	Memory *string `json:"memory,omitempty"`
@@ -2134,6 +2140,24 @@ type SyncEnvCreate struct {
 
 	// Value Value of the environment variable
 	Value *string `json:"value,omitempty"`
+}
+
+// SyncIncremental Managed Sync Incremental Options definition
+type SyncIncremental struct {
+	// Destination Name of the destination in which to store incremental sync data
+	Destination string `json:"destination"`
+
+	// Table Name of the table in which to store incremental sync data
+	Table string `json:"table"`
+}
+
+// SyncIncrementalUpdate Managed Sync Incremental Options Update definition
+type SyncIncrementalUpdate struct {
+	// Destination Name of the destination in which to store incremental sync data
+	Destination *string `json:"destination,omitempty"`
+
+	// Table Name of the table in which to store incremental sync data
+	Table *string `json:"table,omitempty"`
 }
 
 // SyncLastUpdateSource How was the source or destination been created or updated last
@@ -2436,6 +2460,9 @@ type SyncUpdate struct {
 
 	// Env Environment variables for the sync
 	Env *[]SyncEnv `json:"env,omitempty"`
+
+	// Incremental Managed Sync Incremental Options Update definition
+	Incremental *SyncIncrementalUpdate `json:"incremental,omitempty"`
 
 	// Memory Memory quota for the sync
 	Memory *string `json:"memory,omitempty"`
