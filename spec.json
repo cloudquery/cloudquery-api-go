@@ -9319,14 +9319,6 @@
       "SyncSourceUpdate" : {
         "description" : "Sync Source Update Definition",
         "properties" : {
-          "path" : {
-            "$ref" : "#/components/schemas/SyncPluginPath"
-          },
-          "version" : {
-            "description" : "Version of the plugin",
-            "example" : "v1.2.3",
-            "type" : "string"
-          },
           "tables" : {
             "description" : "Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.",
             "items" : {
@@ -9341,23 +9333,8 @@
             },
             "type" : "array"
           },
-          "spec" : {
-            "additionalProperties" : false,
-            "format" : "Plugin parameters, specific to each plugin",
-            "type" : "object"
-          },
-          "env" : {
-            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
-            "items" : {
-              "$ref" : "#/components/schemas/SyncEnvCreate"
-            },
-            "type" : "array"
-          },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
-          },
-          "connector_id" : {
-            "$ref" : "#/components/schemas/ConnectorID"
           }
         },
         "title" : "Sync Source definition for updating a source"
@@ -9394,37 +9371,14 @@
       "SyncDestinationUpdate" : {
         "description" : "Sync Destination Update Definition",
         "properties" : {
-          "path" : {
-            "$ref" : "#/components/schemas/SyncPluginPath"
-          },
-          "version" : {
-            "description" : "Version of the plugin",
-            "example" : "v1.2.3",
-            "type" : "string"
-          },
           "write_mode" : {
             "$ref" : "#/components/schemas/SyncDestinationWriteMode"
           },
           "migrate_mode" : {
             "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
           },
-          "spec" : {
-            "additionalProperties" : false,
-            "format" : "Plugin parameters, specific to each plugin",
-            "type" : "object"
-          },
-          "env" : {
-            "description" : "Environment variables for the plugin. All environment variables will be stored as secrets.",
-            "items" : {
-              "$ref" : "#/components/schemas/SyncEnvCreate"
-            },
-            "type" : "array"
-          },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
-          },
-          "connector_id" : {
-            "$ref" : "#/components/schemas/ConnectorID"
           }
         },
         "title" : "Sync Destination definition for updating a destination"

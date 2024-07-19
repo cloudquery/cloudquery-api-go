@@ -2096,24 +2096,11 @@ type SyncDestinationTestConnectionID = openapi_types.UUID
 
 // SyncDestinationUpdate Sync Destination Update Definition
 type SyncDestinationUpdate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
 	// LastUpdateSource How was the source or destination been created or updated last
 	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
 	// MigrateMode Migrate mode for the destination
 	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// Path Plugin path in CloudQuery registry
-	Path *SyncPluginPath         `json:"path,omitempty"`
-	Spec *map[string]interface{} `json:"spec,omitempty"`
-
-	// Version Version of the plugin
-	Version *string `json:"version,omitempty"`
 
 	// WriteMode Write mode for the destination
 	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
@@ -2364,27 +2351,14 @@ type SyncSourceTestConnectionID = openapi_types.UUID
 
 // SyncSourceUpdate Sync Source Update Definition
 type SyncSourceUpdate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
 	// LastUpdateSource How was the source or destination been created or updated last
 	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
-	// Path Plugin path in CloudQuery registry
-	Path *SyncPluginPath `json:"path,omitempty"`
-
 	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string               `json:"skip_tables,omitempty"`
-	Spec       *map[string]interface{} `json:"spec,omitempty"`
+	SkipTables *[]string `json:"skip_tables,omitempty"`
 
 	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
 	Tables *[]string `json:"tables,omitempty"`
-
-	// Version Version of the plugin
-	Version *string `json:"version,omitempty"`
 }
 
 // SyncSourceUpdateFromTestConnection Sync Source Update from Test Connection Definition
