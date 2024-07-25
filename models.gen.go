@@ -857,6 +857,12 @@ type FinalizePluginUIAssetUploadRequest struct {
 	UIID string `json:"ui_id"`
 }
 
+// GetConnectorAuthStatusAWS200Response defines model for GetConnectorAuthStatusAWS_200_response.
+type GetConnectorAuthStatusAWS200Response struct {
+	// RoleARN ARN of role created by the user
+	RoleARN *string `json:"role_arn,omitempty"`
+}
+
 // GetCurrentUserMemberships200Response defines model for GetCurrentUserMemberships_200_response.
 type GetCurrentUserMemberships200Response struct {
 	Items    []MembershipWithTeam `json:"items"`

@@ -6167,6 +6167,43 @@
       }
     },
     "/teams/{team_name}/connectors/{connector_id}/authenticate/aws" : {
+      "get" : {
+        "description" : "Get authentication status for the given AWS connector",
+        "operationId" : "GetConnectorAuthStatusAWS",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConnectorAuthStatusAWS_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      },
       "patch" : {
         "description" : "Complete authentication for the given AWS connector",
         "operationId" : "AuthenticateConnectorFinishAWS",
@@ -10888,6 +10925,15 @@
           }
         },
         "required" : [ "items", "metadata" ]
+      },
+      "GetConnectorAuthStatusAWS_200_response" : {
+        "properties" : {
+          "role_arn" : {
+            "description" : "ARN of role created by the user",
+            "type" : "string",
+            "x-go-name" : "RoleARN"
+          }
+        }
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {
