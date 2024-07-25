@@ -325,6 +325,9 @@ type ClientInterface interface {
 	// RevokeConnector request
 	RevokeConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetConnectorAuthStatusAWS request
+	GetConnectorAuthStatusAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// AuthenticateConnectorFinishAWSWithBody request with any body
 	AuthenticateConnectorFinishAWSWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1666,6 +1669,18 @@ func (c *Client) UpdateConnector(ctx context.Context, teamName TeamName, connect
 
 func (c *Client) RevokeConnector(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRevokeConnectorRequest(c.Server, teamName, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetConnectorAuthStatusAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetConnectorAuthStatusAWSRequest(c.Server, teamName, connectorID)
 	if err != nil {
 		return nil, err
 	}
@@ -6918,6 +6933,47 @@ func NewRevokeConnectorRequest(server string, teamName TeamName, connectorID Con
 	return req, nil
 }
 
+// NewGetConnectorAuthStatusAWSRequest generates requests for GetConnectorAuthStatusAWS
+func NewGetConnectorAuthStatusAWSRequest(server string, teamName TeamName, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/aws", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewAuthenticateConnectorFinishAWSRequest calls the generic AuthenticateConnectorFinishAWS builder with application/json body
 func NewAuthenticateConnectorFinishAWSRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishAWSJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -11789,6 +11845,9 @@ type ClientWithResponsesInterface interface {
 	// RevokeConnectorWithResponse request
 	RevokeConnectorWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*RevokeConnectorResponse, error)
 
+	// GetConnectorAuthStatusAWSWithResponse request
+	GetConnectorAuthStatusAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetConnectorAuthStatusAWSResponse, error)
+
 	// AuthenticateConnectorFinishAWSWithBodyWithResponse request with any body
 	AuthenticateConnectorFinishAWSWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishAWSResponse, error)
 
@@ -13718,6 +13777,33 @@ func (r RevokeConnectorResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r RevokeConnectorResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetConnectorAuthStatusAWSResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetConnectorAuthStatusAWS200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetConnectorAuthStatusAWSResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetConnectorAuthStatusAWSResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -16734,6 +16820,15 @@ func (c *ClientWithResponses) RevokeConnectorWithResponse(ctx context.Context, t
 		return nil, err
 	}
 	return ParseRevokeConnectorResponse(rsp)
+}
+
+// GetConnectorAuthStatusAWSWithResponse request returning *GetConnectorAuthStatusAWSResponse
+func (c *ClientWithResponses) GetConnectorAuthStatusAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetConnectorAuthStatusAWSResponse, error) {
+	rsp, err := c.GetConnectorAuthStatusAWS(ctx, teamName, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetConnectorAuthStatusAWSResponse(rsp)
 }
 
 // AuthenticateConnectorFinishAWSWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorFinishAWSResponse
@@ -21051,6 +21146,67 @@ func ParseRevokeConnectorResponse(rsp *http.Response) (*RevokeConnectorResponse,
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetConnectorAuthStatusAWSResponse parses an HTTP response from a GetConnectorAuthStatusAWSWithResponse call
+func ParseGetConnectorAuthStatusAWSResponse(rsp *http.Response) (*GetConnectorAuthStatusAWSResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetConnectorAuthStatusAWSResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetConnectorAuthStatusAWS200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
