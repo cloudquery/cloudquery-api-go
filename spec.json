@@ -7559,9 +7559,17 @@
           "is_paid" : {
             "description" : "Whether the table is paid",
             "type" : "boolean"
+          },
+          "permissions_needed" : {
+            "description" : "List of permissions needed to access this table, if any",
+            "example" : [ "storage.buckets.list" ],
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
           }
         },
-        "required" : [ "description", "is_incremental", "name", "relations", "title" ],
+        "required" : [ "description", "is_incremental", "name", "permissions_needed", "relations", "title" ],
         "title" : "CloudQuery Plugin Table"
       },
       "PluginTableColumn" : {
@@ -7628,6 +7636,14 @@
           "relations" : {
             "description" : "Names of the tables that depend on this table",
             "example" : [ "aws_s3_bucket_cors_rules" ],
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "permissions_needed" : {
+            "description" : "List of permissions needed to access this table, if any",
+            "example" : [ "storage.buckets.list" ],
             "items" : {
               "type" : "string"
             },
