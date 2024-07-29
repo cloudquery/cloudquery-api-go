@@ -7708,9 +7708,17 @@
           "is_paid" : {
             "description" : "Whether the table is paid",
             "type" : "boolean"
+          },
+          "permissions_needed" : {
+            "description" : "List of permissions needed to access this table, if any",
+            "example" : [ "storage.buckets.list" ],
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
           }
         },
-        "required" : [ "columns", "description", "is_incremental", "name", "relations", "title" ]
+        "required" : [ "columns", "description", "is_incremental", "name", "permissions_needed", "relations", "title" ]
       },
       "PluginAsset" : {
         "additionalProperties" : false,

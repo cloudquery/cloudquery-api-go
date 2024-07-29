@@ -1582,6 +1582,9 @@ type PluginTableDetails struct {
 	// Parent Name of the parent table, if any
 	Parent *string `json:"parent,omitempty"`
 
+	// PermissionsNeeded List of permissions needed to access this table, if any
+	PermissionsNeeded []string `json:"permissions_needed"`
+
 	// Relations Names of the tables that depend on this table
 	Relations []string `json:"relations"`
 
