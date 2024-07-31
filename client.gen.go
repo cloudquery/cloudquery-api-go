@@ -457,16 +457,6 @@ type ClientInterface interface {
 	// ListSyncDestinations request
 	ListSyncDestinations(ctx context.Context, teamName TeamName, params *ListSyncDestinationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// CreateSyncDestinationWithBody request with any body
-	CreateSyncDestinationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateSyncDestination(ctx context.Context, teamName TeamName, body CreateSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// TestSyncDestinationWithBody request with any body
-	TestSyncDestinationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	TestSyncDestination(ctx context.Context, teamName TeamName, body TestSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// DeleteSyncDestination request
 	DeleteSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -478,16 +468,8 @@ type ClientInterface interface {
 
 	UpdateSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, body UpdateSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// CreateTestConnectionForSyncDestinationWithBody request with any body
-	CreateTestConnectionForSyncDestinationWithBody(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateTestConnectionForSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, body CreateTestConnectionForSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// GetTestConnectionForSyncDestination request
 	GetTestConnectionForSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// PromoteTestConnectionForSyncDestination request
-	PromoteTestConnectionForSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateSyncSourceTestConnectionWithBody request with any body
 	CreateSyncSourceTestConnectionWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -505,16 +487,6 @@ type ClientInterface interface {
 	// ListSyncSources request
 	ListSyncSources(ctx context.Context, teamName TeamName, params *ListSyncSourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// CreateSyncSourceWithBody request with any body
-	CreateSyncSourceWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateSyncSource(ctx context.Context, teamName TeamName, body CreateSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// TestSyncSourceWithBody request with any body
-	TestSyncSourceWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	TestSyncSource(ctx context.Context, teamName TeamName, body TestSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// DeleteSyncSource request
 	DeleteSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -526,16 +498,8 @@ type ClientInterface interface {
 
 	UpdateSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, body UpdateSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// CreateTestConnectionForSyncSourceWithBody request with any body
-	CreateTestConnectionForSyncSourceWithBody(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateTestConnectionForSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, body CreateTestConnectionForSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// GetTestConnectionForSyncSource request
 	GetTestConnectionForSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// PromoteTestConnectionForSyncSource request
-	PromoteTestConnectionForSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListSyncs request
 	ListSyncs(ctx context.Context, teamName TeamName, params *ListSyncsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -558,26 +522,6 @@ type ClientInterface interface {
 
 	// GetTestConnectionConnectorIdentity request
 	GetTestConnectionConnectorIdentity(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CreateSyncDestinationFromTestConnectionWithBody request with any body
-	CreateSyncDestinationFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateSyncDestinationFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CreateSyncSourceFromTestConnectionWithBody request with any body
-	CreateSyncSourceFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateSyncSourceFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// UpdateSyncDestinationFromTestConnectionWithBody request with any body
-	UpdateSyncDestinationFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	UpdateSyncDestinationFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, body UpdateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// UpdateSyncSourceFromTestConnectionWithBody request with any body
-	UpdateSyncSourceFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	UpdateSyncSourceFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, body UpdateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteSync request
 	DeleteSync(ctx context.Context, teamName TeamName, syncName SyncName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2267,54 +2211,6 @@ func (c *Client) ListSyncDestinations(ctx context.Context, teamName TeamName, pa
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateSyncDestinationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncDestinationRequestWithBody(c.Server, teamName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateSyncDestination(ctx context.Context, teamName TeamName, body CreateSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncDestinationRequest(c.Server, teamName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) TestSyncDestinationWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTestSyncDestinationRequestWithBody(c.Server, teamName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) TestSyncDestination(ctx context.Context, teamName TeamName, body TestSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTestSyncDestinationRequest(c.Server, teamName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) DeleteSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteSyncDestinationRequest(c.Server, teamName, syncDestinationName)
 	if err != nil {
@@ -2363,44 +2259,8 @@ func (c *Client) UpdateSyncDestination(ctx context.Context, teamName TeamName, s
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateTestConnectionForSyncDestinationWithBody(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateTestConnectionForSyncDestinationRequestWithBody(c.Server, teamName, syncDestinationName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateTestConnectionForSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, body CreateTestConnectionForSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateTestConnectionForSyncDestinationRequest(c.Server, teamName, syncDestinationName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) GetTestConnectionForSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTestConnectionForSyncDestinationRequest(c.Server, teamName, syncDestinationName, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) PromoteTestConnectionForSyncDestination(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPromoteTestConnectionForSyncDestinationRequest(c.Server, teamName, syncDestinationName, syncTestConnectionId)
 	if err != nil {
 		return nil, err
 	}
@@ -2483,54 +2343,6 @@ func (c *Client) ListSyncSources(ctx context.Context, teamName TeamName, params 
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateSyncSourceWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncSourceRequestWithBody(c.Server, teamName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateSyncSource(ctx context.Context, teamName TeamName, body CreateSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncSourceRequest(c.Server, teamName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) TestSyncSourceWithBody(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTestSyncSourceRequestWithBody(c.Server, teamName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) TestSyncSource(ctx context.Context, teamName TeamName, body TestSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTestSyncSourceRequest(c.Server, teamName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) DeleteSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteSyncSourceRequest(c.Server, teamName, syncSourceName)
 	if err != nil {
@@ -2579,44 +2391,8 @@ func (c *Client) UpdateSyncSource(ctx context.Context, teamName TeamName, syncSo
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateTestConnectionForSyncSourceWithBody(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateTestConnectionForSyncSourceRequestWithBody(c.Server, teamName, syncSourceName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateTestConnectionForSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, body CreateTestConnectionForSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateTestConnectionForSyncSourceRequest(c.Server, teamName, syncSourceName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) GetTestConnectionForSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTestConnectionForSyncSourceRequest(c.Server, teamName, syncSourceName, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) PromoteTestConnectionForSyncSource(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPromoteTestConnectionForSyncSourceRequest(c.Server, teamName, syncSourceName, syncTestConnectionId)
 	if err != nil {
 		return nil, err
 	}
@@ -2713,102 +2489,6 @@ func (c *Client) GetTestConnectionConnectorCredentials(ctx context.Context, team
 
 func (c *Client) GetTestConnectionConnectorIdentity(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTestConnectionConnectorIdentityRequest(c.Server, teamName, syncTestConnectionId, connectorID)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateSyncDestinationFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncDestinationFromTestConnectionRequestWithBody(c.Server, teamName, syncTestConnectionId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateSyncDestinationFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncDestinationFromTestConnectionRequest(c.Server, teamName, syncTestConnectionId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateSyncSourceFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncSourceFromTestConnectionRequestWithBody(c.Server, teamName, syncTestConnectionId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateSyncSourceFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateSyncSourceFromTestConnectionRequest(c.Server, teamName, syncTestConnectionId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateSyncDestinationFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSyncDestinationFromTestConnectionRequestWithBody(c.Server, teamName, syncTestConnectionId, syncDestinationName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateSyncDestinationFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, body UpdateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSyncDestinationFromTestConnectionRequest(c.Server, teamName, syncTestConnectionId, syncDestinationName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateSyncSourceFromTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSyncSourceFromTestConnectionRequestWithBody(c.Server, teamName, syncTestConnectionId, syncSourceName, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateSyncSourceFromTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, body UpdateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSyncSourceFromTestConnectionRequest(c.Server, teamName, syncTestConnectionId, syncSourceName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8738,100 +8418,6 @@ func NewListSyncDestinationsRequest(server string, teamName TeamName, params *Li
 	return req, nil
 }
 
-// NewCreateSyncDestinationRequest calls the generic CreateSyncDestination builder with application/json body
-func NewCreateSyncDestinationRequest(server string, teamName TeamName, body CreateSyncDestinationJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateSyncDestinationRequestWithBody(server, teamName, "application/json", bodyReader)
-}
-
-// NewCreateSyncDestinationRequestWithBody generates requests for CreateSyncDestination with any type of body
-func NewCreateSyncDestinationRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-destinations", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewTestSyncDestinationRequest calls the generic TestSyncDestination builder with application/json body
-func NewTestSyncDestinationRequest(server string, teamName TeamName, body TestSyncDestinationJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewTestSyncDestinationRequestWithBody(server, teamName, "application/json", bodyReader)
-}
-
-// NewTestSyncDestinationRequestWithBody generates requests for TestSyncDestination with any type of body
-func NewTestSyncDestinationRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-destinations/test", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 // NewDeleteSyncDestinationRequest generates requests for DeleteSyncDestination
 func NewDeleteSyncDestinationRequest(server string, teamName TeamName, syncDestinationName SyncDestinationName) (*http.Request, error) {
 	var err error
@@ -8968,60 +8554,6 @@ func NewUpdateSyncDestinationRequestWithBody(server string, teamName TeamName, s
 	return req, nil
 }
 
-// NewCreateTestConnectionForSyncDestinationRequest calls the generic CreateTestConnectionForSyncDestination builder with application/json body
-func NewCreateTestConnectionForSyncDestinationRequest(server string, teamName TeamName, syncDestinationName SyncDestinationName, body CreateTestConnectionForSyncDestinationJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateTestConnectionForSyncDestinationRequestWithBody(server, teamName, syncDestinationName, "application/json", bodyReader)
-}
-
-// NewCreateTestConnectionForSyncDestinationRequestWithBody generates requests for CreateTestConnectionForSyncDestination with any type of body
-func NewCreateTestConnectionForSyncDestinationRequestWithBody(server string, teamName TeamName, syncDestinationName SyncDestinationName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_destination_name", runtime.ParamLocationPath, syncDestinationName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-destinations/%s/test-connections", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 // NewGetTestConnectionForSyncDestinationRequest generates requests for GetTestConnectionForSyncDestination
 func NewGetTestConnectionForSyncDestinationRequest(server string, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId) (*http.Request, error) {
 	var err error
@@ -9063,54 +8595,6 @@ func NewGetTestConnectionForSyncDestinationRequest(server string, teamName TeamN
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewPromoteTestConnectionForSyncDestinationRequest generates requests for PromoteTestConnectionForSyncDestination
-func NewPromoteTestConnectionForSyncDestinationRequest(server string, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_destination_name", runtime.ParamLocationPath, syncDestinationName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-destinations/%s/test-connections/%s/promote", pathParam0, pathParam1, pathParam2)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -9332,100 +8816,6 @@ func NewListSyncSourcesRequest(server string, teamName TeamName, params *ListSyn
 	return req, nil
 }
 
-// NewCreateSyncSourceRequest calls the generic CreateSyncSource builder with application/json body
-func NewCreateSyncSourceRequest(server string, teamName TeamName, body CreateSyncSourceJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateSyncSourceRequestWithBody(server, teamName, "application/json", bodyReader)
-}
-
-// NewCreateSyncSourceRequestWithBody generates requests for CreateSyncSource with any type of body
-func NewCreateSyncSourceRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-sources", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewTestSyncSourceRequest calls the generic TestSyncSource builder with application/json body
-func NewTestSyncSourceRequest(server string, teamName TeamName, body TestSyncSourceJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewTestSyncSourceRequestWithBody(server, teamName, "application/json", bodyReader)
-}
-
-// NewTestSyncSourceRequestWithBody generates requests for TestSyncSource with any type of body
-func NewTestSyncSourceRequestWithBody(server string, teamName TeamName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-sources/test", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 // NewDeleteSyncSourceRequest generates requests for DeleteSyncSource
 func NewDeleteSyncSourceRequest(server string, teamName TeamName, syncSourceName SyncSourceName) (*http.Request, error) {
 	var err error
@@ -9562,60 +8952,6 @@ func NewUpdateSyncSourceRequestWithBody(server string, teamName TeamName, syncSo
 	return req, nil
 }
 
-// NewCreateTestConnectionForSyncSourceRequest calls the generic CreateTestConnectionForSyncSource builder with application/json body
-func NewCreateTestConnectionForSyncSourceRequest(server string, teamName TeamName, syncSourceName SyncSourceName, body CreateTestConnectionForSyncSourceJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateTestConnectionForSyncSourceRequestWithBody(server, teamName, syncSourceName, "application/json", bodyReader)
-}
-
-// NewCreateTestConnectionForSyncSourceRequestWithBody generates requests for CreateTestConnectionForSyncSource with any type of body
-func NewCreateTestConnectionForSyncSourceRequestWithBody(server string, teamName TeamName, syncSourceName SyncSourceName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_source_name", runtime.ParamLocationPath, syncSourceName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-sources/%s/test-connections", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 // NewGetTestConnectionForSyncSourceRequest generates requests for GetTestConnectionForSyncSource
 func NewGetTestConnectionForSyncSourceRequest(server string, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId) (*http.Request, error) {
 	var err error
@@ -9657,54 +8993,6 @@ func NewGetTestConnectionForSyncSourceRequest(server string, teamName TeamName, 
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewPromoteTestConnectionForSyncSourceRequest generates requests for PromoteTestConnectionForSyncSource
-func NewPromoteTestConnectionForSyncSourceRequest(server string, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_source_name", runtime.ParamLocationPath, syncSourceName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/sync-sources/%s/test-connections/%s/promote", pathParam0, pathParam1, pathParam2)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -10018,236 +9306,6 @@ func NewGetTestConnectionConnectorIdentityRequest(server string, teamName TeamNa
 	if err != nil {
 		return nil, err
 	}
-
-	return req, nil
-}
-
-// NewCreateSyncDestinationFromTestConnectionRequest calls the generic CreateSyncDestinationFromTestConnection builder with application/json body
-func NewCreateSyncDestinationFromTestConnectionRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncDestinationFromTestConnectionJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateSyncDestinationFromTestConnectionRequestWithBody(server, teamName, syncTestConnectionId, "application/json", bodyReader)
-}
-
-// NewCreateSyncDestinationFromTestConnectionRequestWithBody generates requests for CreateSyncDestinationFromTestConnection with any type of body
-func NewCreateSyncDestinationFromTestConnectionRequestWithBody(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s/new-destination", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewCreateSyncSourceFromTestConnectionRequest calls the generic CreateSyncSourceFromTestConnection builder with application/json body
-func NewCreateSyncSourceFromTestConnectionRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncSourceFromTestConnectionJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateSyncSourceFromTestConnectionRequestWithBody(server, teamName, syncTestConnectionId, "application/json", bodyReader)
-}
-
-// NewCreateSyncSourceFromTestConnectionRequestWithBody generates requests for CreateSyncSourceFromTestConnection with any type of body
-func NewCreateSyncSourceFromTestConnectionRequestWithBody(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s/new-source", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewUpdateSyncDestinationFromTestConnectionRequest calls the generic UpdateSyncDestinationFromTestConnection builder with application/json body
-func NewUpdateSyncDestinationFromTestConnectionRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, body UpdateSyncDestinationFromTestConnectionJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewUpdateSyncDestinationFromTestConnectionRequestWithBody(server, teamName, syncTestConnectionId, syncDestinationName, "application/json", bodyReader)
-}
-
-// NewUpdateSyncDestinationFromTestConnectionRequestWithBody generates requests for UpdateSyncDestinationFromTestConnection with any type of body
-func NewUpdateSyncDestinationFromTestConnectionRequestWithBody(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_destination_name", runtime.ParamLocationPath, syncDestinationName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s/update-destination/%s", pathParam0, pathParam1, pathParam2)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PATCH", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewUpdateSyncSourceFromTestConnectionRequest calls the generic UpdateSyncSourceFromTestConnection builder with application/json body
-func NewUpdateSyncSourceFromTestConnectionRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, body UpdateSyncSourceFromTestConnectionJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewUpdateSyncSourceFromTestConnectionRequestWithBody(server, teamName, syncTestConnectionId, syncSourceName, "application/json", bodyReader)
-}
-
-// NewUpdateSyncSourceFromTestConnectionRequestWithBody generates requests for UpdateSyncSourceFromTestConnection with any type of body
-func NewUpdateSyncSourceFromTestConnectionRequestWithBody(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam2 string
-
-	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "sync_source_name", runtime.ParamLocationPath, syncSourceName)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s/update-source/%s", pathParam0, pathParam1, pathParam2)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PATCH", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -11977,16 +11035,6 @@ type ClientWithResponsesInterface interface {
 	// ListSyncDestinationsWithResponse request
 	ListSyncDestinationsWithResponse(ctx context.Context, teamName TeamName, params *ListSyncDestinationsParams, reqEditors ...RequestEditorFn) (*ListSyncDestinationsResponse, error)
 
-	// CreateSyncDestinationWithBodyWithResponse request with any body
-	CreateSyncDestinationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncDestinationResponse, error)
-
-	CreateSyncDestinationWithResponse(ctx context.Context, teamName TeamName, body CreateSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncDestinationResponse, error)
-
-	// TestSyncDestinationWithBodyWithResponse request with any body
-	TestSyncDestinationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TestSyncDestinationResponse, error)
-
-	TestSyncDestinationWithResponse(ctx context.Context, teamName TeamName, body TestSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*TestSyncDestinationResponse, error)
-
 	// DeleteSyncDestinationWithResponse request
 	DeleteSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, reqEditors ...RequestEditorFn) (*DeleteSyncDestinationResponse, error)
 
@@ -11998,16 +11046,8 @@ type ClientWithResponsesInterface interface {
 
 	UpdateSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, body UpdateSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncDestinationResponse, error)
 
-	// CreateTestConnectionForSyncDestinationWithBodyWithResponse request with any body
-	CreateTestConnectionForSyncDestinationWithBodyWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncDestinationResponse, error)
-
-	CreateTestConnectionForSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, body CreateTestConnectionForSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncDestinationResponse, error)
-
 	// GetTestConnectionForSyncDestinationWithResponse request
 	GetTestConnectionForSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*GetTestConnectionForSyncDestinationResponse, error)
-
-	// PromoteTestConnectionForSyncDestinationWithResponse request
-	PromoteTestConnectionForSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*PromoteTestConnectionForSyncDestinationResponse, error)
 
 	// CreateSyncSourceTestConnectionWithBodyWithResponse request with any body
 	CreateSyncSourceTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncSourceTestConnectionResponse, error)
@@ -12025,16 +11065,6 @@ type ClientWithResponsesInterface interface {
 	// ListSyncSourcesWithResponse request
 	ListSyncSourcesWithResponse(ctx context.Context, teamName TeamName, params *ListSyncSourcesParams, reqEditors ...RequestEditorFn) (*ListSyncSourcesResponse, error)
 
-	// CreateSyncSourceWithBodyWithResponse request with any body
-	CreateSyncSourceWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncSourceResponse, error)
-
-	CreateSyncSourceWithResponse(ctx context.Context, teamName TeamName, body CreateSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncSourceResponse, error)
-
-	// TestSyncSourceWithBodyWithResponse request with any body
-	TestSyncSourceWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TestSyncSourceResponse, error)
-
-	TestSyncSourceWithResponse(ctx context.Context, teamName TeamName, body TestSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*TestSyncSourceResponse, error)
-
 	// DeleteSyncSourceWithResponse request
 	DeleteSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, reqEditors ...RequestEditorFn) (*DeleteSyncSourceResponse, error)
 
@@ -12046,16 +11076,8 @@ type ClientWithResponsesInterface interface {
 
 	UpdateSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, body UpdateSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncSourceResponse, error)
 
-	// CreateTestConnectionForSyncSourceWithBodyWithResponse request with any body
-	CreateTestConnectionForSyncSourceWithBodyWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncSourceResponse, error)
-
-	CreateTestConnectionForSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, body CreateTestConnectionForSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncSourceResponse, error)
-
 	// GetTestConnectionForSyncSourceWithResponse request
 	GetTestConnectionForSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*GetTestConnectionForSyncSourceResponse, error)
-
-	// PromoteTestConnectionForSyncSourceWithResponse request
-	PromoteTestConnectionForSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*PromoteTestConnectionForSyncSourceResponse, error)
 
 	// ListSyncsWithResponse request
 	ListSyncsWithResponse(ctx context.Context, teamName TeamName, params *ListSyncsParams, reqEditors ...RequestEditorFn) (*ListSyncsResponse, error)
@@ -12078,26 +11100,6 @@ type ClientWithResponsesInterface interface {
 
 	// GetTestConnectionConnectorIdentityWithResponse request
 	GetTestConnectionConnectorIdentityWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetTestConnectionConnectorIdentityResponse, error)
-
-	// CreateSyncDestinationFromTestConnectionWithBodyWithResponse request with any body
-	CreateSyncDestinationFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncDestinationFromTestConnectionResponse, error)
-
-	CreateSyncDestinationFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncDestinationFromTestConnectionResponse, error)
-
-	// CreateSyncSourceFromTestConnectionWithBodyWithResponse request with any body
-	CreateSyncSourceFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncSourceFromTestConnectionResponse, error)
-
-	CreateSyncSourceFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncSourceFromTestConnectionResponse, error)
-
-	// UpdateSyncDestinationFromTestConnectionWithBodyWithResponse request with any body
-	UpdateSyncDestinationFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncDestinationFromTestConnectionResponse, error)
-
-	UpdateSyncDestinationFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, body UpdateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncDestinationFromTestConnectionResponse, error)
-
-	// UpdateSyncSourceFromTestConnectionWithBodyWithResponse request with any body
-	UpdateSyncSourceFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncSourceFromTestConnectionResponse, error)
-
-	UpdateSyncSourceFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, body UpdateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncSourceFromTestConnectionResponse, error)
 
 	// DeleteSyncWithResponse request
 	DeleteSyncWithResponse(ctx context.Context, teamName TeamName, syncName SyncName, reqEditors ...RequestEditorFn) (*DeleteSyncResponse, error)
@@ -14680,61 +13682,6 @@ func (r ListSyncDestinationsResponse) StatusCode() int {
 	return 0
 }
 
-type CreateSyncDestinationResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncDestination
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateSyncDestinationResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateSyncDestinationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type TestSyncDestinationResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncTestConnection
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r TestSyncDestinationResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r TestSyncDestinationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type DeleteSyncDestinationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -14812,34 +13759,6 @@ func (r UpdateSyncDestinationResponse) StatusCode() int {
 	return 0
 }
 
-type CreateTestConnectionForSyncDestinationResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncTestConnection
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateTestConnectionForSyncDestinationResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateTestConnectionForSyncDestinationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type GetTestConnectionForSyncDestinationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -14860,34 +13779,6 @@ func (r GetTestConnectionForSyncDestinationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetTestConnectionForSyncDestinationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type PromoteTestConnectionForSyncDestinationResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *SyncDestination
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r PromoteTestConnectionForSyncDestinationResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r PromoteTestConnectionForSyncDestinationResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -15001,61 +13892,6 @@ func (r ListSyncSourcesResponse) StatusCode() int {
 	return 0
 }
 
-type CreateSyncSourceResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncSource
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateSyncSourceResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateSyncSourceResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type TestSyncSourceResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncTestConnection
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r TestSyncSourceResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r TestSyncSourceResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type DeleteSyncSourceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15133,34 +13969,6 @@ func (r UpdateSyncSourceResponse) StatusCode() int {
 	return 0
 }
 
-type CreateTestConnectionForSyncSourceResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncTestConnection
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateTestConnectionForSyncSourceResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateTestConnectionForSyncSourceResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type GetTestConnectionForSyncSourceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15181,34 +13989,6 @@ func (r GetTestConnectionForSyncSourceResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetTestConnectionForSyncSourceResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type PromoteTestConnectionForSyncSourceResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *SyncSource
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r PromoteTestConnectionForSyncSourceResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r PromoteTestConnectionForSyncSourceResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -15366,114 +14146,6 @@ func (r GetTestConnectionConnectorIdentityResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetTestConnectionConnectorIdentityResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CreateSyncDestinationFromTestConnectionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncDestination
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateSyncDestinationFromTestConnectionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateSyncDestinationFromTestConnectionResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CreateSyncSourceFromTestConnectionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON201      *SyncSource
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateSyncSourceFromTestConnectionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateSyncSourceFromTestConnectionResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateSyncDestinationFromTestConnectionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *SyncDestination
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateSyncDestinationFromTestConnectionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateSyncDestinationFromTestConnectionResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateSyncSourceFromTestConnectionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *SyncSource
-	JSON400      *BadRequest
-	JSON401      *RequiresAuthentication
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateSyncSourceFromTestConnectionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateSyncSourceFromTestConnectionResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -17248,40 +15920,6 @@ func (c *ClientWithResponses) ListSyncDestinationsWithResponse(ctx context.Conte
 	return ParseListSyncDestinationsResponse(rsp)
 }
 
-// CreateSyncDestinationWithBodyWithResponse request with arbitrary body returning *CreateSyncDestinationResponse
-func (c *ClientWithResponses) CreateSyncDestinationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncDestinationResponse, error) {
-	rsp, err := c.CreateSyncDestinationWithBody(ctx, teamName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncDestinationResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateSyncDestinationWithResponse(ctx context.Context, teamName TeamName, body CreateSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncDestinationResponse, error) {
-	rsp, err := c.CreateSyncDestination(ctx, teamName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncDestinationResponse(rsp)
-}
-
-// TestSyncDestinationWithBodyWithResponse request with arbitrary body returning *TestSyncDestinationResponse
-func (c *ClientWithResponses) TestSyncDestinationWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TestSyncDestinationResponse, error) {
-	rsp, err := c.TestSyncDestinationWithBody(ctx, teamName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseTestSyncDestinationResponse(rsp)
-}
-
-func (c *ClientWithResponses) TestSyncDestinationWithResponse(ctx context.Context, teamName TeamName, body TestSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*TestSyncDestinationResponse, error) {
-	rsp, err := c.TestSyncDestination(ctx, teamName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseTestSyncDestinationResponse(rsp)
-}
-
 // DeleteSyncDestinationWithResponse request returning *DeleteSyncDestinationResponse
 func (c *ClientWithResponses) DeleteSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, reqEditors ...RequestEditorFn) (*DeleteSyncDestinationResponse, error) {
 	rsp, err := c.DeleteSyncDestination(ctx, teamName, syncDestinationName, reqEditors...)
@@ -17317,23 +15955,6 @@ func (c *ClientWithResponses) UpdateSyncDestinationWithResponse(ctx context.Cont
 	return ParseUpdateSyncDestinationResponse(rsp)
 }
 
-// CreateTestConnectionForSyncDestinationWithBodyWithResponse request with arbitrary body returning *CreateTestConnectionForSyncDestinationResponse
-func (c *ClientWithResponses) CreateTestConnectionForSyncDestinationWithBodyWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncDestinationResponse, error) {
-	rsp, err := c.CreateTestConnectionForSyncDestinationWithBody(ctx, teamName, syncDestinationName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateTestConnectionForSyncDestinationResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateTestConnectionForSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, body CreateTestConnectionForSyncDestinationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncDestinationResponse, error) {
-	rsp, err := c.CreateTestConnectionForSyncDestination(ctx, teamName, syncDestinationName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateTestConnectionForSyncDestinationResponse(rsp)
-}
-
 // GetTestConnectionForSyncDestinationWithResponse request returning *GetTestConnectionForSyncDestinationResponse
 func (c *ClientWithResponses) GetTestConnectionForSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*GetTestConnectionForSyncDestinationResponse, error) {
 	rsp, err := c.GetTestConnectionForSyncDestination(ctx, teamName, syncDestinationName, syncTestConnectionId, reqEditors...)
@@ -17341,15 +15962,6 @@ func (c *ClientWithResponses) GetTestConnectionForSyncDestinationWithResponse(ct
 		return nil, err
 	}
 	return ParseGetTestConnectionForSyncDestinationResponse(rsp)
-}
-
-// PromoteTestConnectionForSyncDestinationWithResponse request returning *PromoteTestConnectionForSyncDestinationResponse
-func (c *ClientWithResponses) PromoteTestConnectionForSyncDestinationWithResponse(ctx context.Context, teamName TeamName, syncDestinationName SyncDestinationName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*PromoteTestConnectionForSyncDestinationResponse, error) {
-	rsp, err := c.PromoteTestConnectionForSyncDestination(ctx, teamName, syncDestinationName, syncTestConnectionId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePromoteTestConnectionForSyncDestinationResponse(rsp)
 }
 
 // CreateSyncSourceTestConnectionWithBodyWithResponse request with arbitrary body returning *CreateSyncSourceTestConnectionResponse
@@ -17404,40 +16016,6 @@ func (c *ClientWithResponses) ListSyncSourcesWithResponse(ctx context.Context, t
 	return ParseListSyncSourcesResponse(rsp)
 }
 
-// CreateSyncSourceWithBodyWithResponse request with arbitrary body returning *CreateSyncSourceResponse
-func (c *ClientWithResponses) CreateSyncSourceWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncSourceResponse, error) {
-	rsp, err := c.CreateSyncSourceWithBody(ctx, teamName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncSourceResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateSyncSourceWithResponse(ctx context.Context, teamName TeamName, body CreateSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncSourceResponse, error) {
-	rsp, err := c.CreateSyncSource(ctx, teamName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncSourceResponse(rsp)
-}
-
-// TestSyncSourceWithBodyWithResponse request with arbitrary body returning *TestSyncSourceResponse
-func (c *ClientWithResponses) TestSyncSourceWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TestSyncSourceResponse, error) {
-	rsp, err := c.TestSyncSourceWithBody(ctx, teamName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseTestSyncSourceResponse(rsp)
-}
-
-func (c *ClientWithResponses) TestSyncSourceWithResponse(ctx context.Context, teamName TeamName, body TestSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*TestSyncSourceResponse, error) {
-	rsp, err := c.TestSyncSource(ctx, teamName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseTestSyncSourceResponse(rsp)
-}
-
 // DeleteSyncSourceWithResponse request returning *DeleteSyncSourceResponse
 func (c *ClientWithResponses) DeleteSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, reqEditors ...RequestEditorFn) (*DeleteSyncSourceResponse, error) {
 	rsp, err := c.DeleteSyncSource(ctx, teamName, syncSourceName, reqEditors...)
@@ -17473,23 +16051,6 @@ func (c *ClientWithResponses) UpdateSyncSourceWithResponse(ctx context.Context, 
 	return ParseUpdateSyncSourceResponse(rsp)
 }
 
-// CreateTestConnectionForSyncSourceWithBodyWithResponse request with arbitrary body returning *CreateTestConnectionForSyncSourceResponse
-func (c *ClientWithResponses) CreateTestConnectionForSyncSourceWithBodyWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncSourceResponse, error) {
-	rsp, err := c.CreateTestConnectionForSyncSourceWithBody(ctx, teamName, syncSourceName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateTestConnectionForSyncSourceResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateTestConnectionForSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, body CreateTestConnectionForSyncSourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTestConnectionForSyncSourceResponse, error) {
-	rsp, err := c.CreateTestConnectionForSyncSource(ctx, teamName, syncSourceName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateTestConnectionForSyncSourceResponse(rsp)
-}
-
 // GetTestConnectionForSyncSourceWithResponse request returning *GetTestConnectionForSyncSourceResponse
 func (c *ClientWithResponses) GetTestConnectionForSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*GetTestConnectionForSyncSourceResponse, error) {
 	rsp, err := c.GetTestConnectionForSyncSource(ctx, teamName, syncSourceName, syncTestConnectionId, reqEditors...)
@@ -17497,15 +16058,6 @@ func (c *ClientWithResponses) GetTestConnectionForSyncSourceWithResponse(ctx con
 		return nil, err
 	}
 	return ParseGetTestConnectionForSyncSourceResponse(rsp)
-}
-
-// PromoteTestConnectionForSyncSourceWithResponse request returning *PromoteTestConnectionForSyncSourceResponse
-func (c *ClientWithResponses) PromoteTestConnectionForSyncSourceWithResponse(ctx context.Context, teamName TeamName, syncSourceName SyncSourceName, syncTestConnectionId SyncTestConnectionId, reqEditors ...RequestEditorFn) (*PromoteTestConnectionForSyncSourceResponse, error) {
-	rsp, err := c.PromoteTestConnectionForSyncSource(ctx, teamName, syncSourceName, syncTestConnectionId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePromoteTestConnectionForSyncSourceResponse(rsp)
 }
 
 // ListSyncsWithResponse request returning *ListSyncsResponse
@@ -17576,74 +16128,6 @@ func (c *ClientWithResponses) GetTestConnectionConnectorIdentityWithResponse(ctx
 		return nil, err
 	}
 	return ParseGetTestConnectionConnectorIdentityResponse(rsp)
-}
-
-// CreateSyncDestinationFromTestConnectionWithBodyWithResponse request with arbitrary body returning *CreateSyncDestinationFromTestConnectionResponse
-func (c *ClientWithResponses) CreateSyncDestinationFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncDestinationFromTestConnectionResponse, error) {
-	rsp, err := c.CreateSyncDestinationFromTestConnectionWithBody(ctx, teamName, syncTestConnectionId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncDestinationFromTestConnectionResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateSyncDestinationFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncDestinationFromTestConnectionResponse, error) {
-	rsp, err := c.CreateSyncDestinationFromTestConnection(ctx, teamName, syncTestConnectionId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncDestinationFromTestConnectionResponse(rsp)
-}
-
-// CreateSyncSourceFromTestConnectionWithBodyWithResponse request with arbitrary body returning *CreateSyncSourceFromTestConnectionResponse
-func (c *ClientWithResponses) CreateSyncSourceFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncSourceFromTestConnectionResponse, error) {
-	rsp, err := c.CreateSyncSourceFromTestConnectionWithBody(ctx, teamName, syncTestConnectionId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncSourceFromTestConnectionResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateSyncSourceFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body CreateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncSourceFromTestConnectionResponse, error) {
-	rsp, err := c.CreateSyncSourceFromTestConnection(ctx, teamName, syncTestConnectionId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateSyncSourceFromTestConnectionResponse(rsp)
-}
-
-// UpdateSyncDestinationFromTestConnectionWithBodyWithResponse request with arbitrary body returning *UpdateSyncDestinationFromTestConnectionResponse
-func (c *ClientWithResponses) UpdateSyncDestinationFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncDestinationFromTestConnectionResponse, error) {
-	rsp, err := c.UpdateSyncDestinationFromTestConnectionWithBody(ctx, teamName, syncTestConnectionId, syncDestinationName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateSyncDestinationFromTestConnectionResponse(rsp)
-}
-
-func (c *ClientWithResponses) UpdateSyncDestinationFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncDestinationName SyncDestinationName, body UpdateSyncDestinationFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncDestinationFromTestConnectionResponse, error) {
-	rsp, err := c.UpdateSyncDestinationFromTestConnection(ctx, teamName, syncTestConnectionId, syncDestinationName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateSyncDestinationFromTestConnectionResponse(rsp)
-}
-
-// UpdateSyncSourceFromTestConnectionWithBodyWithResponse request with arbitrary body returning *UpdateSyncSourceFromTestConnectionResponse
-func (c *ClientWithResponses) UpdateSyncSourceFromTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncSourceFromTestConnectionResponse, error) {
-	rsp, err := c.UpdateSyncSourceFromTestConnectionWithBody(ctx, teamName, syncTestConnectionId, syncSourceName, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateSyncSourceFromTestConnectionResponse(rsp)
-}
-
-func (c *ClientWithResponses) UpdateSyncSourceFromTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, syncSourceName SyncSourceName, body UpdateSyncSourceFromTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncSourceFromTestConnectionResponse, error) {
-	rsp, err := c.UpdateSyncSourceFromTestConnection(ctx, teamName, syncTestConnectionId, syncSourceName, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateSyncSourceFromTestConnectionResponse(rsp)
 }
 
 // DeleteSyncWithResponse request returning *DeleteSyncResponse
@@ -23106,135 +21590,6 @@ func ParseListSyncDestinationsResponse(rsp *http.Response) (*ListSyncDestination
 	return response, nil
 }
 
-// ParseCreateSyncDestinationResponse parses an HTTP response from a CreateSyncDestinationWithResponse call
-func ParseCreateSyncDestinationResponse(rsp *http.Response) (*CreateSyncDestinationResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateSyncDestinationResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncDestination
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseTestSyncDestinationResponse parses an HTTP response from a TestSyncDestinationWithResponse call
-func ParseTestSyncDestinationResponse(rsp *http.Response) (*TestSyncDestinationResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &TestSyncDestinationResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncTestConnection
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseDeleteSyncDestinationResponse parses an HTTP response from a DeleteSyncDestinationWithResponse call
 func ParseDeleteSyncDestinationResponse(rsp *http.Response) (*DeleteSyncDestinationResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -23390,74 +21745,6 @@ func ParseUpdateSyncDestinationResponse(rsp *http.Response) (*UpdateSyncDestinat
 	return response, nil
 }
 
-// ParseCreateTestConnectionForSyncDestinationResponse parses an HTTP response from a CreateTestConnectionForSyncDestinationWithResponse call
-func ParseCreateTestConnectionForSyncDestinationResponse(rsp *http.Response) (*CreateTestConnectionForSyncDestinationResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateTestConnectionForSyncDestinationResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncTestConnection
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseGetTestConnectionForSyncDestinationResponse parses an HTTP response from a GetTestConnectionForSyncDestinationWithResponse call
 func ParseGetTestConnectionForSyncDestinationResponse(rsp *http.Response) (*GetTestConnectionForSyncDestinationResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -23499,74 +21786,6 @@ func ParseGetTestConnectionForSyncDestinationResponse(rsp *http.Response) (*GetT
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParsePromoteTestConnectionForSyncDestinationResponse parses an HTTP response from a PromoteTestConnectionForSyncDestinationWithResponse call
-func ParsePromoteTestConnectionForSyncDestinationResponse(rsp *http.Response) (*PromoteTestConnectionForSyncDestinationResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PromoteTestConnectionForSyncDestinationResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SyncDestination
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -23817,135 +22036,6 @@ func ParseListSyncSourcesResponse(rsp *http.Response) (*ListSyncSourcesResponse,
 	return response, nil
 }
 
-// ParseCreateSyncSourceResponse parses an HTTP response from a CreateSyncSourceWithResponse call
-func ParseCreateSyncSourceResponse(rsp *http.Response) (*CreateSyncSourceResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateSyncSourceResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncSource
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseTestSyncSourceResponse parses an HTTP response from a TestSyncSourceWithResponse call
-func ParseTestSyncSourceResponse(rsp *http.Response) (*TestSyncSourceResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &TestSyncSourceResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncTestConnection
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseDeleteSyncSourceResponse parses an HTTP response from a DeleteSyncSourceWithResponse call
 func ParseDeleteSyncSourceResponse(rsp *http.Response) (*DeleteSyncSourceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24101,74 +22191,6 @@ func ParseUpdateSyncSourceResponse(rsp *http.Response) (*UpdateSyncSourceRespons
 	return response, nil
 }
 
-// ParseCreateTestConnectionForSyncSourceResponse parses an HTTP response from a CreateTestConnectionForSyncSourceWithResponse call
-func ParseCreateTestConnectionForSyncSourceResponse(rsp *http.Response) (*CreateTestConnectionForSyncSourceResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateTestConnectionForSyncSourceResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncTestConnection
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseGetTestConnectionForSyncSourceResponse parses an HTTP response from a GetTestConnectionForSyncSourceWithResponse call
 func ParseGetTestConnectionForSyncSourceResponse(rsp *http.Response) (*GetTestConnectionForSyncSourceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24210,74 +22232,6 @@ func ParseGetTestConnectionForSyncSourceResponse(rsp *http.Response) (*GetTestCo
 			return nil, err
 		}
 		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParsePromoteTestConnectionForSyncSourceResponse parses an HTTP response from a PromoteTestConnectionForSyncSourceWithResponse call
-func ParsePromoteTestConnectionForSyncSourceResponse(rsp *http.Response) (*PromoteTestConnectionForSyncSourceResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PromoteTestConnectionForSyncSourceResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SyncSource
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
@@ -24577,250 +22531,6 @@ func ParseGetTestConnectionConnectorIdentityResponse(rsp *http.Response) (*GetTe
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest GetSyncRunConnectorIdentity200Response
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCreateSyncDestinationFromTestConnectionResponse parses an HTTP response from a CreateSyncDestinationFromTestConnectionWithResponse call
-func ParseCreateSyncDestinationFromTestConnectionResponse(rsp *http.Response) (*CreateSyncDestinationFromTestConnectionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateSyncDestinationFromTestConnectionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncDestination
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCreateSyncSourceFromTestConnectionResponse parses an HTTP response from a CreateSyncSourceFromTestConnectionWithResponse call
-func ParseCreateSyncSourceFromTestConnectionResponse(rsp *http.Response) (*CreateSyncSourceFromTestConnectionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateSyncSourceFromTestConnectionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
-		var dest SyncSource
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON201 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateSyncDestinationFromTestConnectionResponse parses an HTTP response from a UpdateSyncDestinationFromTestConnectionWithResponse call
-func ParseUpdateSyncDestinationFromTestConnectionResponse(rsp *http.Response) (*UpdateSyncDestinationFromTestConnectionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateSyncDestinationFromTestConnectionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SyncDestination
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest RequiresAuthentication
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateSyncSourceFromTestConnectionResponse parses an HTTP response from a UpdateSyncSourceFromTestConnectionWithResponse call
-func ParseUpdateSyncSourceFromTestConnectionResponse(rsp *http.Response) (*UpdateSyncSourceFromTestConnectionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateSyncSourceFromTestConnectionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SyncSource
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

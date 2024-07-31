@@ -2039,21 +2039,6 @@ type SyncDestinationCreate struct {
 	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
 }
 
-// SyncDestinationCreateFromTestConnection Sync Destination from Test Connection Definition
-type SyncDestinationCreateFromTestConnection struct {
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
-}
-
 // SyncDestinationMigrateMode Migrate mode for the destination
 type SyncDestinationMigrateMode string
 
@@ -2114,18 +2099,6 @@ type SyncDestinationTestConnectionID = openapi_types.UUID
 
 // SyncDestinationUpdate Sync Destination Update Definition
 type SyncDestinationUpdate struct {
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
-}
-
-// SyncDestinationUpdateFromTestConnection Sync Destination Update from Test Connection Definition
-type SyncDestinationUpdateFromTestConnection struct {
 	// LastUpdateSource How was the source or destination been created or updated last
 	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
@@ -2321,21 +2294,6 @@ type SyncSourceCreate struct {
 	Version string `json:"version"`
 }
 
-// SyncSourceCreateFromTestConnection Sync Source from Test Connection Definition
-type SyncSourceCreateFromTestConnection struct {
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string `json:"skip_tables,omitempty"`
-
-	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
-	Tables []string `json:"tables"`
-}
-
 // SyncSourceTestConnection defines model for SyncSourceTestConnection.
 type SyncSourceTestConnection struct {
 	// CompletedAt Time the test connection was completed
@@ -2397,18 +2355,6 @@ type SyncSourceUpdate struct {
 	Tables *[]string `json:"tables,omitempty"`
 }
 
-// SyncSourceUpdateFromTestConnection Sync Source Update from Test Connection Definition
-type SyncSourceUpdateFromTestConnection struct {
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string `json:"skip_tables,omitempty"`
-
-	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
-	Tables *[]string `json:"tables,omitempty"`
-}
-
 // SyncTestConnection defines model for SyncTestConnection.
 type SyncTestConnection struct {
 	// CompletedAt Time the test connection was completed
@@ -2437,22 +2383,6 @@ type SyncTestConnection struct {
 
 	// Status The status of the sync run
 	Status SyncTestConnectionStatus `json:"status"`
-}
-
-// SyncTestConnectionCreate defines model for SyncTestConnectionCreate.
-type SyncTestConnectionCreate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath          `json:"path"`
-	Spec *map[string]interface{} `json:"spec,omitempty"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
 }
 
 // ID unique ID of the test connection
@@ -3318,17 +3248,8 @@ type CreateSyncDestinationTestConnectionJSONRequestBody = SyncDestinationTestCon
 // PromoteSyncDestinationTestConnectionJSONRequestBody defines body for PromoteSyncDestinationTestConnection for application/json ContentType.
 type PromoteSyncDestinationTestConnectionJSONRequestBody = PromoteSyncDestinationTestConnection
 
-// CreateSyncDestinationJSONRequestBody defines body for CreateSyncDestination for application/json ContentType.
-type CreateSyncDestinationJSONRequestBody = SyncDestinationCreate
-
-// TestSyncDestinationJSONRequestBody defines body for TestSyncDestination for application/json ContentType.
-type TestSyncDestinationJSONRequestBody = SyncDestinationCreate
-
 // UpdateSyncDestinationJSONRequestBody defines body for UpdateSyncDestination for application/json ContentType.
 type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
-
-// CreateTestConnectionForSyncDestinationJSONRequestBody defines body for CreateTestConnectionForSyncDestination for application/json ContentType.
-type CreateTestConnectionForSyncDestinationJSONRequestBody = SyncTestConnectionCreate
 
 // CreateSyncSourceTestConnectionJSONRequestBody defines body for CreateSyncSourceTestConnection for application/json ContentType.
 type CreateSyncSourceTestConnectionJSONRequestBody = SyncSourceTestConnectionCreate
@@ -3336,35 +3257,14 @@ type CreateSyncSourceTestConnectionJSONRequestBody = SyncSourceTestConnectionCre
 // PromoteSyncSourceTestConnectionJSONRequestBody defines body for PromoteSyncSourceTestConnection for application/json ContentType.
 type PromoteSyncSourceTestConnectionJSONRequestBody = PromoteSyncSourceTestConnection
 
-// CreateSyncSourceJSONRequestBody defines body for CreateSyncSource for application/json ContentType.
-type CreateSyncSourceJSONRequestBody = SyncSourceCreate
-
-// TestSyncSourceJSONRequestBody defines body for TestSyncSource for application/json ContentType.
-type TestSyncSourceJSONRequestBody = SyncSourceCreate
-
 // UpdateSyncSourceJSONRequestBody defines body for UpdateSyncSource for application/json ContentType.
 type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
-
-// CreateTestConnectionForSyncSourceJSONRequestBody defines body for CreateTestConnectionForSyncSource for application/json ContentType.
-type CreateTestConnectionForSyncSourceJSONRequestBody = SyncTestConnectionCreate
 
 // CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
 type CreateSyncJSONRequestBody = SyncCreate
 
 // UpdateSyncTestConnectionJSONRequestBody defines body for UpdateSyncTestConnection for application/json ContentType.
 type UpdateSyncTestConnectionJSONRequestBody = UpdateSyncTestConnectionRequest
-
-// CreateSyncDestinationFromTestConnectionJSONRequestBody defines body for CreateSyncDestinationFromTestConnection for application/json ContentType.
-type CreateSyncDestinationFromTestConnectionJSONRequestBody = SyncDestinationCreateFromTestConnection
-
-// CreateSyncSourceFromTestConnectionJSONRequestBody defines body for CreateSyncSourceFromTestConnection for application/json ContentType.
-type CreateSyncSourceFromTestConnectionJSONRequestBody = SyncSourceCreateFromTestConnection
-
-// UpdateSyncDestinationFromTestConnectionJSONRequestBody defines body for UpdateSyncDestinationFromTestConnection for application/json ContentType.
-type UpdateSyncDestinationFromTestConnectionJSONRequestBody = SyncDestinationUpdateFromTestConnection
-
-// UpdateSyncSourceFromTestConnectionJSONRequestBody defines body for UpdateSyncSourceFromTestConnection for application/json ContentType.
-type UpdateSyncSourceFromTestConnectionJSONRequestBody = SyncSourceUpdateFromTestConnection
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
 type UpdateSyncJSONRequestBody = SyncUpdate
