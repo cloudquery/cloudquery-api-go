@@ -2524,8 +2524,8 @@ type UpdateSyncRunRequest struct {
 	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
 }
 
-// UpdateSyncTestConnectionRequest defines model for UpdateSyncTestConnection_request.
-type UpdateSyncTestConnectionRequest struct {
+// UpdateSyncTestConnectionForSyncSourceRequest defines model for UpdateSyncTestConnectionForSyncSource_request.
+type UpdateSyncTestConnectionForSyncSourceRequest struct {
 	// FailureCode Code for failure
 	FailureCode *string `json:"failure_code,omitempty"`
 
@@ -3245,6 +3245,9 @@ type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
 // CreateSyncDestinationTestConnectionJSONRequestBody defines body for CreateSyncDestinationTestConnection for application/json ContentType.
 type CreateSyncDestinationTestConnectionJSONRequestBody = SyncDestinationTestConnectionCreate
 
+// UpdateSyncTestConnectionForSyncDestinationJSONRequestBody defines body for UpdateSyncTestConnectionForSyncDestination for application/json ContentType.
+type UpdateSyncTestConnectionForSyncDestinationJSONRequestBody = UpdateSyncTestConnectionForSyncSourceRequest
+
 // PromoteSyncDestinationTestConnectionJSONRequestBody defines body for PromoteSyncDestinationTestConnection for application/json ContentType.
 type PromoteSyncDestinationTestConnectionJSONRequestBody = PromoteSyncDestinationTestConnection
 
@@ -3253,6 +3256,9 @@ type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
 
 // CreateSyncSourceTestConnectionJSONRequestBody defines body for CreateSyncSourceTestConnection for application/json ContentType.
 type CreateSyncSourceTestConnectionJSONRequestBody = SyncSourceTestConnectionCreate
+
+// UpdateSyncTestConnectionForSyncSourceJSONRequestBody defines body for UpdateSyncTestConnectionForSyncSource for application/json ContentType.
+type UpdateSyncTestConnectionForSyncSourceJSONRequestBody = UpdateSyncTestConnectionForSyncSourceRequest
 
 // PromoteSyncSourceTestConnectionJSONRequestBody defines body for PromoteSyncSourceTestConnection for application/json ContentType.
 type PromoteSyncSourceTestConnectionJSONRequestBody = PromoteSyncSourceTestConnection
@@ -3264,7 +3270,7 @@ type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
 type CreateSyncJSONRequestBody = SyncCreate
 
 // UpdateSyncTestConnectionJSONRequestBody defines body for UpdateSyncTestConnection for application/json ContentType.
-type UpdateSyncTestConnectionJSONRequestBody = UpdateSyncTestConnectionRequest
+type UpdateSyncTestConnectionJSONRequestBody = UpdateSyncTestConnectionForSyncSourceRequest
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
 type UpdateSyncJSONRequestBody = SyncUpdate
