@@ -3941,6 +3941,52 @@
           }
         },
         "tags" : [ "syncs" ]
+      },
+      "patch" : {
+        "description" : "Update a sync source test connection.",
+        "operationId" : "UpdateSyncTestConnectionForSyncSource",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_test_connection_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateSyncTestConnectionForSyncSource_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncSourceTestConnection"
+                }
+              }
+            },
+            "description" : "Updated"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
       }
     },
     "/teams/{team_name}/sync-source-test-connections/{sync_source_test_connection_id}/promote" : {
@@ -4080,6 +4126,52 @@
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      },
+      "patch" : {
+        "description" : "Update a sync destination test connection.",
+        "operationId" : "UpdateSyncTestConnectionForSyncDestination",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_test_connection_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateSyncTestConnectionForSyncSource_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDestinationTestConnection"
+                }
+              }
+            },
+            "description" : "Updated"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
           },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
@@ -5053,40 +5145,9 @@
       }
     },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "DEPRECATED. Get a Sync Test Connection. Use GetTestConnectionForSyncSource or GetTestConnectionForSyncDestination instead.",
-        "operationId" : "GetSyncTestConnection",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "$ref" : "#/components/parameters/sync_test_connection_id"
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SyncTestConnection"
-                }
-              }
-            },
-            "description" : "Response"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "syncs" ]
-      },
       "patch" : {
-        "description" : "Update a Sync Test Connection",
+        "deprecated" : true,
+        "description" : "DEPRECATED. Update a Sync Test Connection. Use UpdateSyncTestConnectionForSyncSource or UpdateSyncTestConnectionForSyncDestination instead.",
         "operationId" : "UpdateSyncTestConnection",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -5097,7 +5158,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/UpdateSyncTestConnection_request"
+                "$ref" : "#/components/schemas/UpdateSyncTestConnectionForSyncSource_request"
               }
             }
           }
@@ -10072,6 +10133,24 @@
         },
         "required" : [ "expires_at", "name" ]
       },
+      "UpdateSyncTestConnectionForSyncSource_request" : {
+        "properties" : {
+          "status" : {
+            "$ref" : "#/components/schemas/SyncTestConnectionStatus"
+          },
+          "failure_reason" : {
+            "description" : "Reason for failure",
+            "example" : "password authentication failed for user \"exampleuser\"",
+            "type" : "string"
+          },
+          "failure_code" : {
+            "description" : "Code for failure",
+            "example" : "INVALID_CREDENTIALS",
+            "type" : "string"
+          }
+        },
+        "required" : [ "status" ]
+      },
       "ListSyncSources_200_response" : {
         "properties" : {
           "items" : {
@@ -10188,24 +10267,6 @@
             "$ref" : "#/components/schemas/ConnectorCredentialsResponseOAuth"
           }
         }
-      },
-      "UpdateSyncTestConnection_request" : {
-        "properties" : {
-          "status" : {
-            "$ref" : "#/components/schemas/SyncTestConnectionStatus"
-          },
-          "failure_reason" : {
-            "description" : "Reason for failure",
-            "example" : "password authentication failed for user \"exampleuser\"",
-            "type" : "string"
-          },
-          "failure_code" : {
-            "description" : "Code for failure",
-            "example" : "INVALID_CREDENTIALS",
-            "type" : "string"
-          }
-        },
-        "required" : [ "status" ]
       },
       "GetManagedDatabases_200_response" : {
         "properties" : {
