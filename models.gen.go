@@ -98,6 +98,7 @@ const (
 const (
 	PluginKindDestination PluginKind = "destination"
 	PluginKindSource      PluginKind = "source"
+	PluginKindTransformer PluginKind = "transformer"
 )
 
 // Defines values for PluginNotificationRequestStatus.
