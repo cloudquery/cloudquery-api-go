@@ -6359,7 +6359,7 @@
       },
       "PluginKind" : {
         "description" : "The kind of plugin, ie. source or destination.",
-        "enum" : [ "source", "destination" ],
+        "enum" : [ "source", "destination", "transformer" ],
         "example" : "source",
         "type" : "string"
       },
