@@ -854,6 +854,9 @@ type FinalizePluginUIAssetUploadRequest struct {
 
 // GetConnectorAuthStatusAWS200Response defines model for GetConnectorAuthStatusAWS_200_response.
 type GetConnectorAuthStatusAWS200Response struct {
+	// ExternalID External ID used for the role
+	ExternalID *string `json:"external_id,omitempty"`
+
 	// RoleARN ARN of role created by the user
 	RoleARN *string `json:"role_arn,omitempty"`
 }
@@ -2505,8 +2508,8 @@ type TeamSubscriptionOrderStatus string
 
 // UpdateCurrentUserRequest defines model for UpdateCurrentUser_request.
 type UpdateCurrentUserRequest struct {
-	// Name The user's name
-	Name                 *interface{}           `json:"name,omitempty"`
+	// Name The unique name for the user.
+	Name                 *UserName              `json:"name,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
