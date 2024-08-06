@@ -519,11 +519,6 @@ type ClientInterface interface {
 
 	CreateSync(ctx context.Context, teamName TeamName, body CreateSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateSyncTestConnectionWithBody request with any body
-	UpdateSyncTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	UpdateSyncTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// GetTestConnectionConnectorCredentials request
 	GetTestConnectionConnectorCredentials(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2484,30 +2479,6 @@ func (c *Client) CreateSyncWithBody(ctx context.Context, teamName TeamName, cont
 
 func (c *Client) CreateSync(ctx context.Context, teamName TeamName, body CreateSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateSyncRequest(c.Server, teamName, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateSyncTestConnectionWithBody(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSyncTestConnectionRequestWithBody(c.Server, teamName, syncTestConnectionId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateSyncTestConnection(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateSyncTestConnectionRequest(c.Server, teamName, syncTestConnectionId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -9270,60 +9241,6 @@ func NewCreateSyncRequestWithBody(server string, teamName TeamName, contentType 
 	return req, nil
 }
 
-// NewUpdateSyncTestConnectionRequest calls the generic UpdateSyncTestConnection builder with application/json body
-func NewUpdateSyncTestConnectionRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewUpdateSyncTestConnectionRequestWithBody(server, teamName, syncTestConnectionId, "application/json", bodyReader)
-}
-
-// NewUpdateSyncTestConnectionRequestWithBody generates requests for UpdateSyncTestConnection with any type of body
-func NewUpdateSyncTestConnectionRequestWithBody(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "sync_test_connection_id", runtime.ParamLocationPath, syncTestConnectionId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/teams/%s/syncs/test-connections/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PATCH", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
 // NewGetTestConnectionConnectorCredentialsRequest generates requests for GetTestConnectionConnectorCredentials
 func NewGetTestConnectionConnectorCredentialsRequest(server string, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID) (*http.Request, error) {
 	var err error
@@ -11206,11 +11123,6 @@ type ClientWithResponsesInterface interface {
 	CreateSyncWithBodyWithResponse(ctx context.Context, teamName TeamName, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSyncResponse, error)
 
 	CreateSyncWithResponse(ctx context.Context, teamName TeamName, body CreateSyncJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSyncResponse, error)
-
-	// UpdateSyncTestConnectionWithBodyWithResponse request with any body
-	UpdateSyncTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncTestConnectionResponse, error)
-
-	UpdateSyncTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncTestConnectionResponse, error)
 
 	// GetTestConnectionConnectorCredentialsWithResponse request
 	GetTestConnectionConnectorCredentialsWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetTestConnectionConnectorCredentialsResponse, error)
@@ -14217,33 +14129,6 @@ func (r CreateSyncResponse) StatusCode() int {
 	return 0
 }
 
-type UpdateSyncTestConnectionResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *SyncTestConnection
-	JSON400      *BadRequest
-	JSON403      *Forbidden
-	JSON404      *NotFound
-	JSON422      *UnprocessableEntity
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateSyncTestConnectionResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateSyncTestConnectionResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type GetTestConnectionConnectorCredentialsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16264,23 +16149,6 @@ func (c *ClientWithResponses) CreateSyncWithResponse(ctx context.Context, teamNa
 		return nil, err
 	}
 	return ParseCreateSyncResponse(rsp)
-}
-
-// UpdateSyncTestConnectionWithBodyWithResponse request with arbitrary body returning *UpdateSyncTestConnectionResponse
-func (c *ClientWithResponses) UpdateSyncTestConnectionWithBodyWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSyncTestConnectionResponse, error) {
-	rsp, err := c.UpdateSyncTestConnectionWithBody(ctx, teamName, syncTestConnectionId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateSyncTestConnectionResponse(rsp)
-}
-
-func (c *ClientWithResponses) UpdateSyncTestConnectionWithResponse(ctx context.Context, teamName TeamName, syncTestConnectionId SyncTestConnectionId, body UpdateSyncTestConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSyncTestConnectionResponse, error) {
-	rsp, err := c.UpdateSyncTestConnection(ctx, teamName, syncTestConnectionId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateSyncTestConnectionResponse(rsp)
 }
 
 // GetTestConnectionConnectorCredentialsWithResponse request returning *GetTestConnectionConnectorCredentialsResponse
@@ -22619,67 +22487,6 @@ func ParseCreateSyncResponse(rsp *http.Response) (*CreateSyncResponse, error) {
 			return nil, err
 		}
 		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest UnprocessableEntity
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateSyncTestConnectionResponse parses an HTTP response from a UpdateSyncTestConnectionWithResponse call
-func ParseUpdateSyncTestConnectionResponse(rsp *http.Response) (*UpdateSyncTestConnectionResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateSyncTestConnectionResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SyncTestConnection
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Forbidden
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
