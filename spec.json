@@ -5144,55 +5144,6 @@
         "x-internal" : true
       }
     },
-    "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}" : {
-      "patch" : {
-        "deprecated" : true,
-        "description" : "DEPRECATED. Update a Sync Test Connection. Use UpdateSyncTestConnectionForSyncSource or UpdateSyncTestConnectionForSyncDestination instead.",
-        "operationId" : "UpdateSyncTestConnection",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "$ref" : "#/components/parameters/sync_test_connection_id"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UpdateSyncTestConnectionForSyncSource_request"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SyncTestConnection"
-                }
-              }
-            },
-            "description" : "Updated"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/UnprocessableEntity"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "syncs" ]
-      }
-    },
     "/teams/{team_name}/syncs/test-connections/{sync_test_connection_id}/connector/{connector_id}/identity" : {
       "get" : {
         "description" : "Get connector identity for a test connection.",
@@ -9165,17 +9116,9 @@
             "description" : "Role ARN to assume",
             "type" : "string",
             "x-go-name" : "RoleARN"
-          },
-          "account_ids" : {
-            "description" : "List of AWS account IDs",
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array",
-            "x-go-name" : "AccountIDs"
           }
         },
-        "required" : [ "account_ids", "role_arn" ]
+        "required" : [ "role_arn" ]
       },
       "ConnectorCredentialsResponseAWS" : {
         "additionalProperties" : false,
@@ -9337,15 +9280,6 @@
             "description" : "Name of the plugin",
             "example" : "aws",
             "type" : "string"
-          },
-          "account_ids" : {
-            "description" : "List of AWS account IDs to authenticate",
-            "example" : [ "123456789012" ],
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array",
-            "x-go-name" : "AccountIDs"
           }
         },
         "required" : [ "plugin_kind", "plugin_name", "plugin_team" ]

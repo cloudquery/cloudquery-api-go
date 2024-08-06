@@ -605,9 +605,6 @@ type ConnectorAuthFinishRequestOAuth struct {
 
 // ConnectorAuthRequestAWS AWS connector authentication request to start the authentication process
 type ConnectorAuthRequestAWS struct {
-	// AccountIDs List of AWS account IDs to authenticate
-	AccountIDs *[]string `json:"account_ids,omitempty"`
-
 	// PluginKind Kind of the plugin
 	PluginKind string `json:"plugin_kind"`
 
@@ -689,9 +686,6 @@ type ConnectorID = openapi_types.UUID
 
 // ConnectorIdentityResponseAWS AWS connector identity response
 type ConnectorIdentityResponseAWS struct {
-	// AccountIDs List of AWS account IDs
-	AccountIDs []string `json:"account_ids"`
-
 	// RoleARN Role ARN to assume
 	RoleARN string `json:"role_arn"`
 }
@@ -3269,9 +3263,6 @@ type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
 
 // CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
 type CreateSyncJSONRequestBody = SyncCreate
-
-// UpdateSyncTestConnectionJSONRequestBody defines body for UpdateSyncTestConnection for application/json ContentType.
-type UpdateSyncTestConnectionJSONRequestBody = UpdateSyncTestConnectionForSyncSourceRequest
 
 // UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
 type UpdateSyncJSONRequestBody = SyncUpdate
