@@ -8280,6 +8280,12 @@
             "format" : "date-time",
             "type" : "string"
           },
+          "last_access_at" : {
+            "description" : "Timestamp at which API key was last used - accurate to the day only.",
+            "example" : "2017-07-14T16:53:42Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
           "expired" : {
             "description" : "Whether the API key has expired or not",
             "example" : false,

@@ -306,6 +306,9 @@ type APIKey struct {
 	// Key API key. Will be shown only in the response when creating the key.
 	Key *string `json:"key,omitempty"`
 
+	// LastAccessAt Timestamp at which API key was last used - accurate to the day only.
+	LastAccessAt *time.Time `json:"last_access_at,omitempty"`
+
 	// Name Name of the API key
 	Name APIKeyName `json:"name"`
 
