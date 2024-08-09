@@ -608,14 +608,31 @@ type ConnectorAuthFinishRequestOAuth struct {
 
 // ConnectorAuthRequestAWS AWS connector authentication request to start the authentication process
 type ConnectorAuthRequestAWS struct {
+	// Env Environment variables used in the spec.
+	Env *interface{} `json:"env,omitempty"`
+
 	// PluginKind Kind of the plugin
-	PluginKind string `json:"plugin_kind"`
+	PluginKind interface{} `json:"plugin_kind"`
 
 	// PluginName Name of the plugin
-	PluginName string `json:"plugin_name"`
+	PluginName interface{} `json:"plugin_name"`
 
 	// PluginTeam Team that owns the plugin we are authenticating the connector for
-	PluginTeam string `json:"plugin_team"`
+	PluginTeam interface{} `json:"plugin_team"`
+
+	// PluginVersion Version of the plugin
+	PluginVersion *interface{} `json:"plugin_version,omitempty"`
+
+	// SkipDependentTables Whether to skip dependent tables, setting from the outer spec
+	SkipDependentTables *interface{} `json:"skip_dependent_tables,omitempty"`
+
+	// SkipTables Tables to skip authentication, setting from the outer spec
+	SkipTables *interface{}            `json:"skip_tables,omitempty"`
+	Spec       *map[string]interface{} `json:"spec,omitempty"`
+
+	// Tables Tables to authenticate, setting from the outer spec
+	Tables               *interface{}           `json:"tables,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // ConnectorAuthRequestOAuth OAuth connector authentication request to start the authentication process
@@ -633,9 +650,21 @@ type ConnectorAuthRequestOAuth struct {
 	PluginName interface{} `json:"plugin_name"`
 
 	// PluginTeam Team that owns the plugin we are authenticating the connector for
-	PluginTeam           interface{}             `json:"plugin_team"`
-	Spec                 *map[string]interface{} `json:"spec,omitempty"`
-	AdditionalProperties map[string]interface{}  `json:"-"`
+	PluginTeam interface{} `json:"plugin_team"`
+
+	// PluginVersion Version of the plugin
+	PluginVersion *interface{} `json:"plugin_version,omitempty"`
+
+	// SkipDependentTables Whether to skip dependent tables, setting from the outer spec
+	SkipDependentTables *interface{} `json:"skip_dependent_tables,omitempty"`
+
+	// SkipTables Tables to skip authentication, setting from the outer spec
+	SkipTables *interface{}            `json:"skip_tables,omitempty"`
+	Spec       *map[string]interface{} `json:"spec,omitempty"`
+
+	// Tables Tables to authenticate, setting from the outer spec
+	Tables               *interface{}           `json:"tables,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // ConnectorAuthResponseAWS AWS connector authentication response to start the authentication process
@@ -823,6 +852,9 @@ type DeletePluginVersionTablesRequest struct {
 type DeleteTeamInvitationRequest struct {
 	Email openapi_types.Email `json:"email"`
 }
+
+// DisplayName A human-readable display name
+type DisplayName = string
 
 // DockerError Error Returned from the Docker Authorization Handler to the Docker Registry
 type DockerError struct {
@@ -1825,6 +1857,9 @@ type PriceCategorySpend struct {
 
 // PromoteSyncDestinationTestConnection Sync Destination Definition
 type PromoteSyncDestinationTestConnection struct {
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// MigrateMode Migrate mode for the destination
 	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
 
@@ -1837,6 +1872,9 @@ type PromoteSyncDestinationTestConnection struct {
 
 // PromoteSyncSourceTestConnection Sync Source Definition
 type PromoteSyncSourceTestConnection struct {
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
 
@@ -1931,6 +1969,9 @@ type Sync struct {
 	// Disabled Whether the sync is disabled
 	Disabled bool `json:"disabled"`
 
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// Incremental Managed Sync Incremental Options definition
 	Incremental *SyncIncremental `json:"incremental,omitempty"`
 
@@ -1959,6 +2000,9 @@ type SyncCreate struct {
 	// Disabled Whether the sync is disabled
 	Disabled *bool `json:"disabled,omitempty"`
 
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// Incremental Managed Sync Incremental Options definition
 	Incremental *SyncIncremental `json:"incremental,omitempty"`
 
@@ -1982,6 +2026,9 @@ type SyncDestination struct {
 
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
+
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
 
 	// Draft If a sync destination is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.
 	Draft bool `json:"draft"`
@@ -2016,6 +2063,9 @@ type SyncDestination struct {
 type SyncDestinationCreate struct {
 	// ConnectorID ID of the Connector
 	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
 
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
@@ -2100,6 +2150,9 @@ type SyncDestinationTestConnectionID = openapi_types.UUID
 
 // SyncDestinationUpdate Sync Destination Update Definition
 type SyncDestinationUpdate struct {
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// LastUpdateSource How was the source or destination been created or updated last
 	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
@@ -2238,6 +2291,9 @@ type SyncSource struct {
 	// CreatedAt Time when the source was created
 	CreatedAt time.Time `json:"created_at"`
 
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// Draft If a sync source is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.
 	Draft bool `json:"draft"`
 
@@ -2271,6 +2327,9 @@ type SyncSource struct {
 type SyncSourceCreate struct {
 	// ConnectorID ID of the Connector
 	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
+
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
 
 	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
 	Env *[]SyncEnvCreate `json:"env,omitempty"`
@@ -2346,6 +2405,9 @@ type SyncSourceTestConnectionID = openapi_types.UUID
 
 // SyncSourceUpdate Sync Source Update Definition
 type SyncSourceUpdate struct {
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
+
 	// LastUpdateSource How was the source or destination been created or updated last
 	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
@@ -2400,6 +2462,9 @@ type SyncUpdate struct {
 
 	// Disabled Whether the sync is disabled
 	Disabled *bool `json:"disabled,omitempty"`
+
+	// DisplayName A human-readable display name
+	DisplayName *DisplayName `json:"display_name,omitempty"`
 
 	// Env Environment variables for the sync
 	Env *[]SyncEnv `json:"env,omitempty"`
@@ -3394,6 +3459,188 @@ func (a ConnectorAuthFinishRequestOAuth) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
+// Getter for additional properties for ConnectorAuthRequestAWS. Returns the specified
+// element and whether it was found
+func (a ConnectorAuthRequestAWS) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ConnectorAuthRequestAWS
+func (a *ConnectorAuthRequestAWS) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ConnectorAuthRequestAWS to handle AdditionalProperties
+func (a *ConnectorAuthRequestAWS) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["env"]; found {
+		err = json.Unmarshal(raw, &a.Env)
+		if err != nil {
+			return fmt.Errorf("error reading 'env': %w", err)
+		}
+		delete(object, "env")
+	}
+
+	if raw, found := object["plugin_kind"]; found {
+		err = json.Unmarshal(raw, &a.PluginKind)
+		if err != nil {
+			return fmt.Errorf("error reading 'plugin_kind': %w", err)
+		}
+		delete(object, "plugin_kind")
+	}
+
+	if raw, found := object["plugin_name"]; found {
+		err = json.Unmarshal(raw, &a.PluginName)
+		if err != nil {
+			return fmt.Errorf("error reading 'plugin_name': %w", err)
+		}
+		delete(object, "plugin_name")
+	}
+
+	if raw, found := object["plugin_team"]; found {
+		err = json.Unmarshal(raw, &a.PluginTeam)
+		if err != nil {
+			return fmt.Errorf("error reading 'plugin_team': %w", err)
+		}
+		delete(object, "plugin_team")
+	}
+
+	if raw, found := object["plugin_version"]; found {
+		err = json.Unmarshal(raw, &a.PluginVersion)
+		if err != nil {
+			return fmt.Errorf("error reading 'plugin_version': %w", err)
+		}
+		delete(object, "plugin_version")
+	}
+
+	if raw, found := object["skip_dependent_tables"]; found {
+		err = json.Unmarshal(raw, &a.SkipDependentTables)
+		if err != nil {
+			return fmt.Errorf("error reading 'skip_dependent_tables': %w", err)
+		}
+		delete(object, "skip_dependent_tables")
+	}
+
+	if raw, found := object["skip_tables"]; found {
+		err = json.Unmarshal(raw, &a.SkipTables)
+		if err != nil {
+			return fmt.Errorf("error reading 'skip_tables': %w", err)
+		}
+		delete(object, "skip_tables")
+	}
+
+	if raw, found := object["spec"]; found {
+		err = json.Unmarshal(raw, &a.Spec)
+		if err != nil {
+			return fmt.Errorf("error reading 'spec': %w", err)
+		}
+		delete(object, "spec")
+	}
+
+	if raw, found := object["tables"]; found {
+		err = json.Unmarshal(raw, &a.Tables)
+		if err != nil {
+			return fmt.Errorf("error reading 'tables': %w", err)
+		}
+		delete(object, "tables")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ConnectorAuthRequestAWS to handle AdditionalProperties
+func (a ConnectorAuthRequestAWS) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.Env != nil {
+		object["env"], err = json.Marshal(a.Env)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'env': %w", err)
+		}
+	}
+
+	object["plugin_kind"], err = json.Marshal(a.PluginKind)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'plugin_kind': %w", err)
+	}
+
+	object["plugin_name"], err = json.Marshal(a.PluginName)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'plugin_name': %w", err)
+	}
+
+	object["plugin_team"], err = json.Marshal(a.PluginTeam)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'plugin_team': %w", err)
+	}
+
+	if a.PluginVersion != nil {
+		object["plugin_version"], err = json.Marshal(a.PluginVersion)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'plugin_version': %w", err)
+		}
+	}
+
+	if a.SkipDependentTables != nil {
+		object["skip_dependent_tables"], err = json.Marshal(a.SkipDependentTables)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'skip_dependent_tables': %w", err)
+		}
+	}
+
+	if a.SkipTables != nil {
+		object["skip_tables"], err = json.Marshal(a.SkipTables)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'skip_tables': %w", err)
+		}
+	}
+
+	if a.Spec != nil {
+		object["spec"], err = json.Marshal(a.Spec)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'spec': %w", err)
+		}
+	}
+
+	if a.Tables != nil {
+		object["tables"], err = json.Marshal(a.Tables)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'tables': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
 // Getter for additional properties for ConnectorAuthRequestOAuth. Returns the specified
 // element and whether it was found
 func (a ConnectorAuthRequestOAuth) Get(fieldName string) (value interface{}, found bool) {
@@ -3459,12 +3706,44 @@ func (a *ConnectorAuthRequestOAuth) UnmarshalJSON(b []byte) error {
 		delete(object, "plugin_team")
 	}
 
+	if raw, found := object["plugin_version"]; found {
+		err = json.Unmarshal(raw, &a.PluginVersion)
+		if err != nil {
+			return fmt.Errorf("error reading 'plugin_version': %w", err)
+		}
+		delete(object, "plugin_version")
+	}
+
+	if raw, found := object["skip_dependent_tables"]; found {
+		err = json.Unmarshal(raw, &a.SkipDependentTables)
+		if err != nil {
+			return fmt.Errorf("error reading 'skip_dependent_tables': %w", err)
+		}
+		delete(object, "skip_dependent_tables")
+	}
+
+	if raw, found := object["skip_tables"]; found {
+		err = json.Unmarshal(raw, &a.SkipTables)
+		if err != nil {
+			return fmt.Errorf("error reading 'skip_tables': %w", err)
+		}
+		delete(object, "skip_tables")
+	}
+
 	if raw, found := object["spec"]; found {
 		err = json.Unmarshal(raw, &a.Spec)
 		if err != nil {
 			return fmt.Errorf("error reading 'spec': %w", err)
 		}
 		delete(object, "spec")
+	}
+
+	if raw, found := object["tables"]; found {
+		err = json.Unmarshal(raw, &a.Tables)
+		if err != nil {
+			return fmt.Errorf("error reading 'tables': %w", err)
+		}
+		delete(object, "tables")
 	}
 
 	if len(object) != 0 {
@@ -3513,10 +3792,38 @@ func (a ConnectorAuthRequestOAuth) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("error marshaling 'plugin_team': %w", err)
 	}
 
+	if a.PluginVersion != nil {
+		object["plugin_version"], err = json.Marshal(a.PluginVersion)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'plugin_version': %w", err)
+		}
+	}
+
+	if a.SkipDependentTables != nil {
+		object["skip_dependent_tables"], err = json.Marshal(a.SkipDependentTables)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'skip_dependent_tables': %w", err)
+		}
+	}
+
+	if a.SkipTables != nil {
+		object["skip_tables"], err = json.Marshal(a.SkipTables)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'skip_tables': %w", err)
+		}
+	}
+
 	if a.Spec != nil {
 		object["spec"], err = json.Marshal(a.Spec)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'spec': %w", err)
+		}
+	}
+
+	if a.Tables != nil {
+		object["tables"], err = json.Marshal(a.Tables)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'tables': %w", err)
 		}
 	}
 

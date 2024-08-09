@@ -8438,6 +8438,14 @@
         "type" : "string",
         "x-go-name" : "SyncSourceTestConnectionID"
       },
+      "DisplayName" : {
+        "description" : "A human-readable display name",
+        "example" : "Human Readable Name",
+        "maxLength" : 255,
+        "minLength" : 1,
+        "pattern" : "^[a-zA-Z\\p{L}][a-zA-Z\\p{L} \\-']*$",
+        "type" : "string"
+      },
       "PromoteSyncSourceTestConnection" : {
         "description" : "Sync Source Definition",
         "properties" : {
@@ -8446,6 +8454,9 @@
             "example" : "my-source-definition",
             "pattern" : "^[a-zA-Z0-9_-]+$",
             "type" : "string"
+          },
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
           },
           "tables" : {
             "description" : "Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.",
@@ -8478,6 +8489,9 @@
             "example" : "my-source-definition",
             "pattern" : "^[a-zA-Z0-9_-]+$",
             "type" : "string"
+          },
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
           },
           "path" : {
             "$ref" : "#/components/schemas/SyncPluginPath"
@@ -8671,6 +8685,9 @@
             "pattern" : "^[a-zA-Z0-9_-]+$",
             "type" : "string"
           },
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
+          },
           "write_mode" : {
             "$ref" : "#/components/schemas/SyncDestinationWriteMode"
           },
@@ -8689,6 +8706,9 @@
             "example" : "my-destination-definition",
             "pattern" : "^[a-zA-Z0-9_-]+$",
             "type" : "string"
+          },
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
           },
           "path" : {
             "$ref" : "#/components/schemas/SyncPluginPath"
@@ -8761,6 +8781,9 @@
       "SyncSourceUpdate" : {
         "description" : "Sync Source Update Definition",
         "properties" : {
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
+          },
           "tables" : {
             "description" : "Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.",
             "items" : {
@@ -8826,6 +8849,9 @@
       "SyncDestinationUpdate" : {
         "description" : "Sync Destination Update Definition",
         "properties" : {
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
+          },
           "write_mode" : {
             "$ref" : "#/components/schemas/SyncDestinationWriteMode"
           },
@@ -8861,6 +8887,9 @@
             "description" : "Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.",
             "pattern" : "^[a-zA-Z0-9_-]+$",
             "type" : "string"
+          },
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
           },
           "source" : {
             "description" : "Unique name of the source",
@@ -8920,6 +8949,9 @@
             "pattern" : "^[a-zA-Z0-9_-]+$",
             "type" : "string"
           },
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
+          },
           "source" : {
             "description" : "Unique name of the source",
             "pattern" : "^[a-zA-Z0-9_-]+$",
@@ -8978,6 +9010,9 @@
       "SyncUpdate" : {
         "description" : "Managed Sync definition",
         "properties" : {
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
+          },
           "source" : {
             "description" : "Unique name of the source",
             "pattern" : "^[a-zA-Z0-9_-]+$",
@@ -9270,23 +9305,50 @@
         }
       },
       "ConnectorAuthRequestAWS" : {
-        "additionalProperties" : false,
+        "additionalProperties" : { },
         "description" : "AWS connector authentication request to start the authentication process",
         "properties" : {
           "plugin_team" : {
             "description" : "Team that owns the plugin we are authenticating the connector for",
-            "example" : "cloudquery",
-            "type" : "string"
+            "example" : "cloudquery"
           },
           "plugin_kind" : {
             "description" : "Kind of the plugin",
-            "example" : "source",
-            "type" : "string"
+            "example" : "source"
           },
           "plugin_name" : {
             "description" : "Name of the plugin",
-            "example" : "aws",
-            "type" : "string"
+            "example" : "aws"
+          },
+          "plugin_version" : {
+            "description" : "Version of the plugin",
+            "example" : "v27.1.0"
+          },
+          "spec" : {
+            "additionalProperties" : false,
+            "format" : "Plugin parameters, specific to each plugin",
+            "type" : "object"
+          },
+          "env" : {
+            "description" : "Environment variables used in the spec.",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncEnvCreate"
+            }
+          },
+          "tables" : {
+            "description" : "Tables to authenticate, setting from the outer spec",
+            "items" : {
+              "example" : "aws_s3_buckets"
+            }
+          },
+          "skip_tables" : {
+            "description" : "Tables to skip authentication, setting from the outer spec",
+            "items" : {
+              "example" : "aws_s3_buckets"
+            }
+          },
+          "skip_dependent_tables" : {
+            "description" : "Whether to skip dependent tables, setting from the outer spec"
           }
         },
         "required" : [ "plugin_kind", "plugin_name", "plugin_team" ]
@@ -9354,6 +9416,10 @@
             "description" : "Name of the plugin",
             "example" : "googleanalytics"
           },
+          "plugin_version" : {
+            "description" : "Version of the plugin",
+            "example" : "v3.0.0"
+          },
           "base_url" : {
             "description" : "Base of the URL the callback url will be constructed from",
             "example" : "https://cloud.cloudquery.io/oauth",
@@ -9369,6 +9435,21 @@
             "items" : {
               "$ref" : "#/components/schemas/SyncEnvCreate"
             }
+          },
+          "tables" : {
+            "description" : "Tables to authenticate, setting from the outer spec",
+            "items" : {
+              "example" : "github_organizations"
+            }
+          },
+          "skip_tables" : {
+            "description" : "Tables to skip authentication, setting from the outer spec",
+            "items" : {
+              "example" : "github_organizations"
+            }
+          },
+          "skip_dependent_tables" : {
+            "description" : "Whether to skip dependent tables, setting from the outer spec"
           }
         },
         "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]
