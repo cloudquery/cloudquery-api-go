@@ -635,6 +635,18 @@ type ConnectorAuthRequestAWS struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// ConnectorAuthRequestGCP GCP connector authentication request to start the authentication process
+type ConnectorAuthRequestGCP struct {
+	// PluginKind Kind of the plugin
+	PluginKind string `json:"plugin_kind"`
+
+	// PluginName Name of the plugin
+	PluginName string `json:"plugin_name"`
+
+	// PluginTeam Team that owns the plugin we are authenticating the connector for
+	PluginTeam string `json:"plugin_team"`
+}
+
 // ConnectorAuthRequestOAuth OAuth connector authentication request to start the authentication process
 type ConnectorAuthRequestOAuth struct {
 	// BaseURL Base of the URL the callback url will be constructed from
@@ -680,6 +692,12 @@ type ConnectorAuthResponseAWS struct {
 
 	// SuggestedPolicyARNs List of AWS policy ARNs suggested to grant inside the role definition
 	SuggestedPolicyARNs []string `json:"suggested_policy_arns"`
+}
+
+// ConnectorAuthResponseGCP GCP connector authentication response to start the authentication process
+type ConnectorAuthResponseGCP struct {
+	// ServiceAccount CloudQuery GCP Service Account to grant access to
+	ServiceAccount string `json:"service_account"`
 }
 
 // ConnectorAuthResponseOAuth OAuth connector authentication response to start the authentication process
@@ -894,6 +912,12 @@ type GetConnectorAuthStatusAWS200Response struct {
 
 	// RoleARN ARN of role created by the user
 	RoleARN *string `json:"role_arn,omitempty"`
+}
+
+// GetConnectorAuthStatusGCP200Response defines model for GetConnectorAuthStatusGCP_200_response.
+type GetConnectorAuthStatusGCP200Response struct {
+	// ServiceAccount CloudQuery GCP Service Account to grant access to
+	ServiceAccount *string `json:"service_account,omitempty"`
 }
 
 // GetCurrentUserMemberships200Response defines model for GetCurrentUserMemberships_200_response.
@@ -3274,6 +3298,9 @@ type AuthenticateConnectorFinishAWSJSONRequestBody = ConnectorAuthFinishRequestA
 
 // AuthenticateConnectorAWSJSONRequestBody defines body for AuthenticateConnectorAWS for application/json ContentType.
 type AuthenticateConnectorAWSJSONRequestBody = ConnectorAuthRequestAWS
+
+// AuthenticateConnectorGCPJSONRequestBody defines body for AuthenticateConnectorGCP for application/json ContentType.
+type AuthenticateConnectorGCPJSONRequestBody = ConnectorAuthRequestGCP
 
 // AuthenticateConnectorFinishOAuthJSONRequestBody defines body for AuthenticateConnectorFinishOAuth for application/json ContentType.
 type AuthenticateConnectorFinishOAuthJSONRequestBody = ConnectorAuthFinishRequestOAuth

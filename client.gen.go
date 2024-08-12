@@ -338,6 +338,17 @@ type ClientInterface interface {
 
 	AuthenticateConnectorAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetConnectorAuthStatusGCP request
+	GetConnectorAuthStatusGCP(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthenticateConnectorGCPWithBody request with any body
+	AuthenticateConnectorGCPWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthenticateConnectorGCP(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorGCPJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthenticateConnectorFinishGCP request
+	AuthenticateConnectorFinishGCP(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// AuthenticateConnectorFinishOAuthWithBody request with any body
 	AuthenticateConnectorFinishOAuthWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1675,6 +1686,54 @@ func (c *Client) AuthenticateConnectorAWSWithBody(ctx context.Context, teamName 
 
 func (c *Client) AuthenticateConnectorAWS(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAuthenticateConnectorAWSRequest(c.Server, teamName, connectorID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetConnectorAuthStatusGCP(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetConnectorAuthStatusGCPRequest(c.Server, teamName, connectorID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorGCPWithBody(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorGCPRequestWithBody(c.Server, teamName, connectorID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorGCP(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorGCPJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorGCPRequest(c.Server, teamName, connectorID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthenticateConnectorFinishGCP(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthenticateConnectorFinishGCPRequest(c.Server, teamName, connectorID)
 	if err != nil {
 		return nil, err
 	}
@@ -6776,6 +6835,142 @@ func NewAuthenticateConnectorAWSRequestWithBody(server string, teamName TeamName
 	return req, nil
 }
 
+// NewGetConnectorAuthStatusGCPRequest generates requests for GetConnectorAuthStatusGCP
+func NewGetConnectorAuthStatusGCPRequest(server string, teamName TeamName, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/gcp", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAuthenticateConnectorGCPRequest calls the generic AuthenticateConnectorGCP builder with application/json body
+func NewAuthenticateConnectorGCPRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorGCPJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthenticateConnectorGCPRequestWithBody(server, teamName, connectorID, "application/json", bodyReader)
+}
+
+// NewAuthenticateConnectorGCPRequestWithBody generates requests for AuthenticateConnectorGCP with any type of body
+func NewAuthenticateConnectorGCPRequestWithBody(server string, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/gcp", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAuthenticateConnectorFinishGCPRequest generates requests for AuthenticateConnectorFinishGCP
+func NewAuthenticateConnectorFinishGCPRequest(server string, teamName TeamName, connectorID ConnectorID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "connector_id", runtime.ParamLocationPath, connectorID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/connectors/%s/authenticate/gcp/finish", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewAuthenticateConnectorFinishOAuthRequest calls the generic AuthenticateConnectorFinishOAuth builder with application/json body
 func NewAuthenticateConnectorFinishOAuthRequest(server string, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorFinishOAuthJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -10943,6 +11138,17 @@ type ClientWithResponsesInterface interface {
 
 	AuthenticateConnectorAWSWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorAWSJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorAWSResponse, error)
 
+	// GetConnectorAuthStatusGCPWithResponse request
+	GetConnectorAuthStatusGCPWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetConnectorAuthStatusGCPResponse, error)
+
+	// AuthenticateConnectorGCPWithBodyWithResponse request with any body
+	AuthenticateConnectorGCPWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorGCPResponse, error)
+
+	AuthenticateConnectorGCPWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorGCPJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorGCPResponse, error)
+
+	// AuthenticateConnectorFinishGCPWithResponse request
+	AuthenticateConnectorFinishGCPWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishGCPResponse, error)
+
 	// AuthenticateConnectorFinishOAuthWithBodyWithResponse request with any body
 	AuthenticateConnectorFinishOAuthWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishOAuthResponse, error)
 
@@ -12889,6 +13095,87 @@ func (r AuthenticateConnectorAWSResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AuthenticateConnectorAWSResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetConnectorAuthStatusGCPResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetConnectorAuthStatusGCP200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetConnectorAuthStatusGCPResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetConnectorAuthStatusGCPResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthenticateConnectorGCPResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ConnectorAuthResponseGCP
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthenticateConnectorGCPResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthenticateConnectorGCPResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthenticateConnectorFinishGCPResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthenticateConnectorFinishGCPResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthenticateConnectorFinishGCPResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -15566,6 +15853,41 @@ func (c *ClientWithResponses) AuthenticateConnectorAWSWithResponse(ctx context.C
 		return nil, err
 	}
 	return ParseAuthenticateConnectorAWSResponse(rsp)
+}
+
+// GetConnectorAuthStatusGCPWithResponse request returning *GetConnectorAuthStatusGCPResponse
+func (c *ClientWithResponses) GetConnectorAuthStatusGCPWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*GetConnectorAuthStatusGCPResponse, error) {
+	rsp, err := c.GetConnectorAuthStatusGCP(ctx, teamName, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetConnectorAuthStatusGCPResponse(rsp)
+}
+
+// AuthenticateConnectorGCPWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorGCPResponse
+func (c *ClientWithResponses) AuthenticateConnectorGCPWithBodyWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthenticateConnectorGCPResponse, error) {
+	rsp, err := c.AuthenticateConnectorGCPWithBody(ctx, teamName, connectorID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorGCPResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthenticateConnectorGCPWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, body AuthenticateConnectorGCPJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthenticateConnectorGCPResponse, error) {
+	rsp, err := c.AuthenticateConnectorGCP(ctx, teamName, connectorID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorGCPResponse(rsp)
+}
+
+// AuthenticateConnectorFinishGCPWithResponse request returning *AuthenticateConnectorFinishGCPResponse
+func (c *ClientWithResponses) AuthenticateConnectorFinishGCPWithResponse(ctx context.Context, teamName TeamName, connectorID ConnectorID, reqEditors ...RequestEditorFn) (*AuthenticateConnectorFinishGCPResponse, error) {
+	rsp, err := c.AuthenticateConnectorFinishGCP(ctx, teamName, connectorID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthenticateConnectorFinishGCPResponse(rsp)
 }
 
 // AuthenticateConnectorFinishOAuthWithBodyWithResponse request with arbitrary body returning *AuthenticateConnectorFinishOAuthResponse
@@ -19858,6 +20180,189 @@ func ParseAuthenticateConnectorAWSResponse(rsp *http.Response) (*AuthenticateCon
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetConnectorAuthStatusGCPResponse parses an HTTP response from a GetConnectorAuthStatusGCPWithResponse call
+func ParseGetConnectorAuthStatusGCPResponse(rsp *http.Response) (*GetConnectorAuthStatusGCPResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetConnectorAuthStatusGCPResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetConnectorAuthStatusGCP200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthenticateConnectorGCPResponse parses an HTTP response from a AuthenticateConnectorGCPWithResponse call
+func ParseAuthenticateConnectorGCPResponse(rsp *http.Response) (*AuthenticateConnectorGCPResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthenticateConnectorGCPResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConnectorAuthResponseGCP
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthenticateConnectorFinishGCPResponse parses an HTTP response from a AuthenticateConnectorFinishGCPWithResponse call
+func ParseAuthenticateConnectorFinishGCPResponse(rsp *http.Response) (*AuthenticateConnectorFinishGCPResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthenticateConnectorFinishGCPResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound

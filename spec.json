@@ -5719,6 +5719,127 @@
         "tags" : [ "syncs" ]
       }
     },
+    "/teams/{team_name}/connectors/{connector_id}/authenticate/gcp" : {
+      "get" : {
+        "description" : "Get authentication status for the given GCP connector",
+        "operationId" : "GetConnectorAuthStatusGCP",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConnectorAuthStatusGCP_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      },
+      "post" : {
+        "description" : "Authenticate or reauthenticate the given GCP connector",
+        "operationId" : "AuthenticateConnectorGCP",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorAuthRequestGCP"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConnectorAuthResponseGCP"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
+    "/teams/{team_name}/connectors/{connector_id}/authenticate/gcp/finish" : {
+      "post" : {
+        "description" : "Complete authentication for the given GCP connector",
+        "operationId" : "AuthenticateConnectorFinishGCP",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/connector_id"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Authentication is complete."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
     "/teams/{team_name}/connectors/{connector_id}/authenticate/oauth" : {
       "patch" : {
         "description" : "Complete authentication for the given OAuth connector",
@@ -9400,6 +9521,39 @@
         },
         "required" : [ "role_arn" ]
       },
+      "ConnectorAuthRequestGCP" : {
+        "additionalProperties" : false,
+        "description" : "GCP connector authentication request to start the authentication process",
+        "properties" : {
+          "plugin_team" : {
+            "description" : "Team that owns the plugin we are authenticating the connector for",
+            "example" : "cloudquery",
+            "type" : "string"
+          },
+          "plugin_kind" : {
+            "description" : "Kind of the plugin",
+            "example" : "source",
+            "type" : "string"
+          },
+          "plugin_name" : {
+            "description" : "Name of the plugin",
+            "example" : "aws",
+            "type" : "string"
+          }
+        },
+        "required" : [ "plugin_kind", "plugin_name", "plugin_team" ]
+      },
+      "ConnectorAuthResponseGCP" : {
+        "additionalProperties" : false,
+        "description" : "GCP connector authentication response to start the authentication process",
+        "properties" : {
+          "service_account" : {
+            "description" : "CloudQuery GCP Service Account to grant access to",
+            "type" : "string"
+          }
+        },
+        "required" : [ "service_account" ]
+      },
       "ConnectorAuthRequestOAuth" : {
         "additionalProperties" : { },
         "description" : "OAuth connector authentication request to start the authentication process",
@@ -10327,6 +10481,14 @@
             "description" : "External ID used for the role",
             "type" : "string",
             "x-go-name" : "ExternalID"
+          }
+        }
+      },
+      "GetConnectorAuthStatusGCP_200_response" : {
+        "properties" : {
+          "service_account" : {
+            "description" : "CloudQuery GCP Service Account to grant access to",
+            "type" : "string"
           }
         }
       },
