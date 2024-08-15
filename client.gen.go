@@ -11727,6 +11727,7 @@ func (r UploadAddonAssetResponse) StatusCode() int {
 type CQHealthCheckResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON500      *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -17366,6 +17367,16 @@ func ParseCQHealthCheckResponse(rsp *http.Response) (*CQHealthCheckResponse, err
 	response := &CQHealthCheckResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
 	}
 
 	return response, nil
