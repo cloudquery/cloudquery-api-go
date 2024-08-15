@@ -1994,7 +1994,7 @@ type Sync struct {
 	Disabled bool `json:"disabled"`
 
 	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
+	DisplayName DisplayName `json:"display_name"`
 
 	// Incremental Managed Sync Incremental Options definition
 	Incremental *SyncIncremental `json:"incremental,omitempty"`
