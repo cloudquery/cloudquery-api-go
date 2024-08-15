@@ -9064,7 +9064,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "cpu", "created_at", "destinations", "disabled", "memory", "name", "schedule", "source", "updated_at" ]
+        "required" : [ "cpu", "created_at", "destinations", "disabled", "display_name", "memory", "name", "schedule", "source", "updated_at" ]
       },
       "SyncCreate" : {
         "description" : "Managed Sync definition",
