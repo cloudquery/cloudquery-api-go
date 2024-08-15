@@ -16,7 +16,8 @@
     "version" : "1.0.0"
   },
   "servers" : [ {
-    "url" : "https://api.cloudquery.io"
+    "url" : "https://api.cloudquery.io",
+    "x-internal" : false
   } ],
   "security" : [ {
     "bearerAuth" : [ ]
@@ -61,6 +62,9 @@
         "responses" : {
           "200" : {
             "description" : "Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
           }
         },
         "security" : [ ],
@@ -6395,19 +6399,6 @@
       }
     },
     "schemas" : {
-      "ImageURL" : {
-        "properties" : {
-          "upload_url" : {
-            "example" : "https://cloudquery.io/api/v1/upload/1234567890abcdef1234567890abcdef",
-            "type" : "string"
-          },
-          "download_url" : {
-            "example" : "https://cloudquery.io/api/v1/download/1234567890abcdef1234567890abcdef",
-            "type" : "string"
-          }
-        },
-        "required" : [ "download_url", "upload_url" ]
-      },
       "BasicError" : {
         "additionalProperties" : false,
         "description" : "Basic Error",
@@ -6421,6 +6412,19 @@
         },
         "required" : [ "message", "status" ],
         "title" : "Basic Error"
+      },
+      "ImageURL" : {
+        "properties" : {
+          "upload_url" : {
+            "example" : "https://cloudquery.io/api/v1/upload/1234567890abcdef1234567890abcdef",
+            "type" : "string"
+          },
+          "download_url" : {
+            "example" : "https://cloudquery.io/api/v1/download/1234567890abcdef1234567890abcdef",
+            "type" : "string"
+          }
+        },
+        "required" : [ "download_url", "upload_url" ]
       },
       "TeamName" : {
         "description" : "The unique name for the team.",
@@ -8564,7 +8568,7 @@
         "example" : "Human Readable Name",
         "maxLength" : 255,
         "minLength" : 1,
-        "pattern" : "^[a-zA-Z\\p{L}][a-zA-Z\\p{L} \\-']*$",
+        "pattern" : "^[a-zA-Z\\p{L}\\p{N}_][a-zA-Z\\p{L}\\p{N}_ \\-']*$",
         "type" : "string"
       },
       "PromoteSyncSourceTestConnection" : {
