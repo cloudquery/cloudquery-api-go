@@ -6528,7 +6528,7 @@
       },
       "PluginCategory" : {
         "description" : "Supported categories for plugins",
-        "enum" : [ "cloud-infrastructure", "databases", "sales-marketing", "engineering-analytics", "marketing-analytics", "shipment-tracking", "product-analytics", "cloud-finops", "project-management", "fleet-management", "security", "data-warehouses", "human-resources", "other" ],
+        "enum" : [ "cloud-infrastructure", "databases", "sales-marketing", "engineering-analytics", "marketing-analytics", "shipment-tracking", "product-analytics", "cloud-finops", "project-management", "fleet-management", "security", "data-warehouses", "human-resources", "finance", "customer-support", "other" ],
         "type" : "string"
       },
       "PluginPriceCategory" : {
