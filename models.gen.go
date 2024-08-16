@@ -80,9 +80,11 @@ const (
 const (
 	PluginCategoryCloudFinops          PluginCategory = "cloud-finops"
 	PluginCategoryCloudInfrastructure  PluginCategory = "cloud-infrastructure"
+	PluginCategoryCustomerSupport      PluginCategory = "customer-support"
 	PluginCategoryDataWarehouses       PluginCategory = "data-warehouses"
 	PluginCategoryDatabases            PluginCategory = "databases"
 	PluginCategoryEngineeringAnalytics PluginCategory = "engineering-analytics"
+	PluginCategoryFinance              PluginCategory = "finance"
 	PluginCategoryFleetManagement      PluginCategory = "fleet-management"
 	PluginCategoryHumanResources       PluginCategory = "human-resources"
 	PluginCategoryMarketingAnalytics   PluginCategory = "marketing-analytics"
