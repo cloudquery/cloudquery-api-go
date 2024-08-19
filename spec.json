@@ -7709,9 +7709,13 @@
             "example" : "CloudQuery",
             "maxLength" : 255,
             "type" : "string"
+          },
+          "internal" : {
+            "example" : false,
+            "type" : "boolean"
           }
         },
-        "required" : [ "display_name", "is_trial_active", "name", "plan" ],
+        "required" : [ "display_name", "internal", "is_trial_active", "name", "plan" ],
         "title" : "Team"
       },
       "TeamImageCreate" : {
@@ -10271,7 +10275,8 @@
                 "name" : "cloudquery",
                 "display_name" : "CloudQuery",
                 "plan" : "free",
-                "is_trial_active" : false
+                "is_trial_active" : false,
+                "internal" : false
               }
             } ],
             "items" : {
