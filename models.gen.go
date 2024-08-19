@@ -2521,6 +2521,7 @@ type Team struct {
 
 	// DisplayName The team's display name
 	DisplayName   string `json:"display_name"`
+	Internal      bool   `json:"internal"`
 	IsTrialActive bool   `json:"is_trial_active"`
 
 	// Name The unique name for the team.
