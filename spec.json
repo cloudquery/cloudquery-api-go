@@ -3808,7 +3808,7 @@
           },
           "style" : "form"
         }, {
-          "description" : "Service requesting the JTW token",
+          "description" : "Service requesting the JWT token",
           "explode" : true,
           "in" : "query",
           "name" : "service",
