@@ -14,6 +14,7 @@ import (
 const (
 	BasicAuthScopes  = "basicAuth.Scopes"
 	BearerAuthScopes = "bearerAuth.Scopes"
+	CookieAuthScopes = "cookieAuth.Scopes"
 )
 
 // Defines values for APIKeyScope.
@@ -858,6 +859,12 @@ type CreateTeamRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// CreateUserToken201Response defines model for CreateUserToken_201_response.
+type CreateUserToken201Response struct {
+	// CustomToken Token to exchange for refresh token
+	CustomToken string `json:"custom_token"`
+}
+
 // DeletePluginVersionDocsRequest defines model for DeletePluginVersionDocs_request.
 type DeletePluginVersionDocsRequest struct {
 	Names []PluginDocsPageName `json:"names"`
@@ -1250,6 +1257,12 @@ type ListTeams200Response struct {
 type ListUsersByTeam200Response struct {
 	Items    []User       `json:"items"`
 	Metadata ListMetadata `json:"metadata"`
+}
+
+// LoginUserRequest defines model for LoginUser_request.
+type LoginUserRequest struct {
+	IDToken              interface{}            `json:"id_token"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // ManagedDatabase Managed Database definition
@@ -3380,6 +3393,9 @@ type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody = UpdateCurrentUserRequest
 
+// LoginUserJSONRequestBody defines body for LoginUser for application/json ContentType.
+type LoginUserJSONRequestBody = LoginUserRequest
+
 // Getter for additional properties for ConnectorAuthFinishRequestOAuth. Returns the specified
 // element and whether it was found
 func (a ConnectorAuthFinishRequestOAuth) Get(fieldName string) (value interface{}, found bool) {
@@ -3934,6 +3950,72 @@ func (a CreateTeamRequest) MarshalJSON() ([]byte, error) {
 	object["name"], err = json.Marshal(a.Name)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for LoginUserRequest. Returns the specified
+// element and whether it was found
+func (a LoginUserRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for LoginUserRequest
+func (a *LoginUserRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for LoginUserRequest to handle AdditionalProperties
+func (a *LoginUserRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["id_token"]; found {
+		err = json.Unmarshal(raw, &a.IDToken)
+		if err != nil {
+			return fmt.Errorf("error reading 'id_token': %w", err)
+		}
+		delete(object, "id_token")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for LoginUserRequest to handle AdditionalProperties
+func (a LoginUserRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["id_token"], err = json.Marshal(a.IDToken)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'id_token': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
