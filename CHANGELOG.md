@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.13.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.12.9...v1.13.0) (2024-08-21)
+
+
+### Features
+
+* add team_internal config key ([#224](https://github.com/cloudquery/cloudquery-api-go/issues/224)) ([b29625e](https://github.com/cloudquery/cloudquery-api-go/commit/b29625e4e682c352996f846d5eca30c54498287c))
+
+
+### Bug Fixes
+
+* Generate CloudQuery Go API Client from `spec.json` ([#225](https://github.com/cloudquery/cloudquery-api-go/issues/225)) ([6311b43](https://github.com/cloudquery/cloudquery-api-go/commit/6311b438f0b50f96114f7aba5057586056ae092d))
+* Generate CloudQuery Go API Client from `spec.json` ([#227](https://github.com/cloudquery/cloudquery-api-go/issues/227)) ([882b4b8](https://github.com/cloudquery/cloudquery-api-go/commit/882b4b8bcab6f55e055a8682c65e8d9249cf17af))
+
 ## [1.12.9](https://github.com/cloudquery/cloudquery-api-go/compare/v1.12.8...v1.12.9) (2024-08-19)
 
 
