@@ -1905,6 +1905,9 @@ type PromoteSyncDestinationTestConnection struct {
 	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
 
+	// OverwriteDestination Set this to allow overwriting an existing sync destination. Defaults to true to preserve compatibility.
+	OverwriteDestination *bool `json:"overwrite_destination,omitempty"`
+
 	// WriteMode Write mode for the destination
 	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
 }
@@ -1916,6 +1919,9 @@ type PromoteSyncSourceTestConnection struct {
 
 	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
 	Name string `json:"name"`
+
+	// OverwriteSource Set this to allow overwriting an existing sync source. Defaults to true to preserve compatibility.
+	OverwriteSource *bool `json:"overwrite_source,omitempty"`
 
 	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
 	SkipTables *[]string `json:"skip_tables,omitempty"`
