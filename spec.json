@@ -8685,6 +8685,10 @@
               "type" : "string"
             },
             "type" : "array"
+          },
+          "overwrite_source" : {
+            "type" : "boolean",
+            "Description" : "Set this to allow overwriting an existing sync source. Defaults to true to preserve compatibility."
           }
         },
         "required" : [ "name", "tables" ],
@@ -8907,6 +8911,10 @@
           },
           "migrate_mode" : {
             "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
+          },
+          "overwrite_destination" : {
+            "type" : "boolean",
+            "Description" : "Set this to allow overwriting an existing sync destination. Defaults to true to preserve compatibility."
           }
         },
         "required" : [ "name" ],
