@@ -3597,7 +3597,7 @@
                 "description" : "Session cookie",
                 "explode" : false,
                 "schema" : {
-                  "example" : "__session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9Cg...; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600",
+                  "example" : "__session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9Cg...; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600",
                   "type" : "string"
                 },
                 "style" : "simple"
@@ -7966,6 +7966,11 @@
             "example" : "2017-07-14T16:53:42Z",
             "format" : "date-time",
             "type" : "string"
+          },
+          "profile_image_url" : {
+            "description" : "Profile image URL of user",
+            "type" : "string",
+            "x-go-name" : "ProfileImageURL"
           }
         },
         "required" : [ "email", "id" ],

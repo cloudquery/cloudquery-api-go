@@ -2786,8 +2786,11 @@ type User struct {
 	ID openapi_types.UUID `json:"id"`
 
 	// Name The unique name for the user.
-	Name      *UserName  `json:"name,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	Name *UserName `json:"name,omitempty"`
+
+	// ProfileImageURL Profile image URL of user
+	ProfileImageURL *string    `json:"profile_image_url,omitempty"`
+	UpdatedAt       *time.Time `json:"updated_at,omitempty"`
 }
 
 // UserID ID of the User
