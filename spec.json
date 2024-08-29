@@ -42,6 +42,8 @@
     "name" : "syncs"
   }, {
     "name" : "managed-databases"
+  }, {
+    "name" : "analytics"
   } ],
   "paths" : {
     "/" : {
@@ -3697,6 +3699,83 @@
         "tags" : [ "users" ]
       }
     },
+    "/user/reset-password" : {
+      "post" : {
+        "description" : "Reset user password from email",
+        "operationId" : "ResetUserPassword",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResetUserPassword_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Email failed to send"
+          },
+          "204" : {
+            "description" : "Password reset email was sent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "users" ]
+      }
+    },
+    "/user/verify-email" : {
+      "post" : {
+        "description" : "Verify user email",
+        "operationId" : "VerifyUserEmail",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/VerifyUserEmail_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Email is already verified"
+          },
+          "202" : {
+            "description" : "Email failed to send"
+          },
+          "204" : {
+            "description" : "Verification email was sent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "users" ]
+      }
+    },
     "/user/invitations" : {
       "get" : {
         "description" : "List of the current user's unaccepted invitations",
@@ -3755,6 +3834,72 @@
           }
         },
         "tags" : [ "users" ]
+      }
+    },
+    "/user/event" : {
+      "post" : {
+        "description" : "Send a user event",
+        "operationId" : "SendUserEvent",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SendUserEvent_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "analytics" ]
+      }
+    },
+    "/user/anon-event" : {
+      "post" : {
+        "description" : "Send an anonymous event",
+        "operationId" : "SendAnonymousEvent",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SendAnonymousEvent_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "analytics" ]
       }
     },
     "/users/{user_id}" : {
@@ -10406,6 +10551,39 @@
         },
         "required" : [ "custom_token" ]
       },
+      "ResetUserPassword_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "email" : {
+            "description" : "Email address to reset",
+            "format" : "email"
+          },
+          "subdomain" : {
+            "description" : "Subdomain to use in the URL"
+          }
+        },
+        "required" : [ "email" ]
+      },
+      "VerifyUserEmail_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "email" : {
+            "description" : "Email address to verify",
+            "format" : "email"
+          },
+          "return_to" : {
+            "description" : "Return to this URL after verification",
+            "format" : "url"
+          },
+          "state" : {
+            "description" : "Additional state to pass"
+          },
+          "subdomain" : {
+            "description" : "Subdomain to use in the URL"
+          }
+        },
+        "required" : [ "email" ]
+      },
       "ListCurrentUserInvitations_200_response" : {
         "properties" : {
           "items" : {
@@ -10444,6 +10622,34 @@
           }
         },
         "required" : [ "items", "metadata" ]
+      },
+      "SendUserEvent_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "name" : {
+            "description" : "Name of event"
+          },
+          "properties" : {
+            "description" : "Properties of event, keys should be of string type"
+          }
+        },
+        "required" : [ "name" ]
+      },
+      "SendAnonymousEvent_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "name" : {
+            "description" : "Name of event"
+          },
+          "anonymous_id" : {
+            "description" : "Anonymous ID identifying the user",
+            "x-go-name" : "AnonymousID"
+          },
+          "properties" : {
+            "description" : "Properties of event, keys should be of string type"
+          }
+        },
+        "required" : [ "anonymous_id", "name" ]
       },
       "ListTeamAPIKeys_200_response" : {
         "properties" : {
