@@ -1946,6 +1946,39 @@ type RemoveTeamMembershipRequest struct {
 	Email string `json:"email"`
 }
 
+// ResetUserPasswordRequest defines model for ResetUserPassword_request.
+type ResetUserPasswordRequest struct {
+	// Email Email address to reset
+	Email interface{} `json:"email"`
+
+	// Subdomain Subdomain to use in the URL
+	Subdomain            *interface{}           `json:"subdomain,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// SendAnonymousEventRequest defines model for SendAnonymousEvent_request.
+type SendAnonymousEventRequest struct {
+	// AnonymousID Anonymous ID identifying the user
+	AnonymousID interface{} `json:"anonymous_id"`
+
+	// Name Name of event
+	Name interface{} `json:"name"`
+
+	// Properties Properties of event, keys should be of string type
+	Properties           *interface{}           `json:"properties,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// SendUserEventRequest defines model for SendUserEvent_request.
+type SendUserEventRequest struct {
+	// Name Name of event
+	Name interface{} `json:"name"`
+
+	// Properties Properties of event, keys should be of string type
+	Properties           *interface{}           `json:"properties,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // SpendSummary A spend summary for a team, summarizing the spend by each price category over a given time range.
 // Note that empty or all-zero values are not included in the response.
 type SpendSummary struct {
@@ -2799,6 +2832,22 @@ type UserID = openapi_types.UUID
 // UserName The unique name for the user.
 type UserName = string
 
+// VerifyUserEmailRequest defines model for VerifyUserEmail_request.
+type VerifyUserEmailRequest struct {
+	// Email Email address to verify
+	Email interface{} `json:"email"`
+
+	// ReturnTo Return to this URL after verification
+	ReturnTo *interface{} `json:"return_to,omitempty"`
+
+	// State Additional state to pass
+	State *interface{} `json:"state,omitempty"`
+
+	// Subdomain Subdomain to use in the URL
+	Subdomain            *interface{}           `json:"subdomain,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // VersionName The version in semantic version format.
 type VersionName = string
 
@@ -3402,8 +3451,20 @@ type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody = UpdateCurrentUserRequest
 
+// SendAnonymousEventJSONRequestBody defines body for SendAnonymousEvent for application/json ContentType.
+type SendAnonymousEventJSONRequestBody = SendAnonymousEventRequest
+
+// SendUserEventJSONRequestBody defines body for SendUserEvent for application/json ContentType.
+type SendUserEventJSONRequestBody = SendUserEventRequest
+
 // LoginUserJSONRequestBody defines body for LoginUser for application/json ContentType.
 type LoginUserJSONRequestBody = LoginUserRequest
+
+// ResetUserPasswordJSONRequestBody defines body for ResetUserPassword for application/json ContentType.
+type ResetUserPasswordJSONRequestBody = ResetUserPasswordRequest
+
+// VerifyUserEmailJSONRequestBody defines body for VerifyUserEmail for application/json ContentType.
+type VerifyUserEmailJSONRequestBody = VerifyUserEmailRequest
 
 // Getter for additional properties for ConnectorAuthFinishRequestOAuth. Returns the specified
 // element and whether it was found
@@ -4036,6 +4097,262 @@ func (a LoginUserRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
+// Getter for additional properties for ResetUserPasswordRequest. Returns the specified
+// element and whether it was found
+func (a ResetUserPasswordRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ResetUserPasswordRequest
+func (a *ResetUserPasswordRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ResetUserPasswordRequest to handle AdditionalProperties
+func (a *ResetUserPasswordRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["email"]; found {
+		err = json.Unmarshal(raw, &a.Email)
+		if err != nil {
+			return fmt.Errorf("error reading 'email': %w", err)
+		}
+		delete(object, "email")
+	}
+
+	if raw, found := object["subdomain"]; found {
+		err = json.Unmarshal(raw, &a.Subdomain)
+		if err != nil {
+			return fmt.Errorf("error reading 'subdomain': %w", err)
+		}
+		delete(object, "subdomain")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ResetUserPasswordRequest to handle AdditionalProperties
+func (a ResetUserPasswordRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["email"], err = json.Marshal(a.Email)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	if a.Subdomain != nil {
+		object["subdomain"], err = json.Marshal(a.Subdomain)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'subdomain': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for SendAnonymousEventRequest. Returns the specified
+// element and whether it was found
+func (a SendAnonymousEventRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for SendAnonymousEventRequest
+func (a *SendAnonymousEventRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for SendAnonymousEventRequest to handle AdditionalProperties
+func (a *SendAnonymousEventRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["anonymous_id"]; found {
+		err = json.Unmarshal(raw, &a.AnonymousID)
+		if err != nil {
+			return fmt.Errorf("error reading 'anonymous_id': %w", err)
+		}
+		delete(object, "anonymous_id")
+	}
+
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &a.Name)
+		if err != nil {
+			return fmt.Errorf("error reading 'name': %w", err)
+		}
+		delete(object, "name")
+	}
+
+	if raw, found := object["properties"]; found {
+		err = json.Unmarshal(raw, &a.Properties)
+		if err != nil {
+			return fmt.Errorf("error reading 'properties': %w", err)
+		}
+		delete(object, "properties")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for SendAnonymousEventRequest to handle AdditionalProperties
+func (a SendAnonymousEventRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["anonymous_id"], err = json.Marshal(a.AnonymousID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'anonymous_id': %w", err)
+	}
+
+	object["name"], err = json.Marshal(a.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	if a.Properties != nil {
+		object["properties"], err = json.Marshal(a.Properties)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'properties': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for SendUserEventRequest. Returns the specified
+// element and whether it was found
+func (a SendUserEventRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for SendUserEventRequest
+func (a *SendUserEventRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for SendUserEventRequest to handle AdditionalProperties
+func (a *SendUserEventRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &a.Name)
+		if err != nil {
+			return fmt.Errorf("error reading 'name': %w", err)
+		}
+		delete(object, "name")
+	}
+
+	if raw, found := object["properties"]; found {
+		err = json.Unmarshal(raw, &a.Properties)
+		if err != nil {
+			return fmt.Errorf("error reading 'properties': %w", err)
+		}
+		delete(object, "properties")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for SendUserEventRequest to handle AdditionalProperties
+func (a SendUserEventRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["name"], err = json.Marshal(a.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	if a.Properties != nil {
+		object["properties"], err = json.Marshal(a.Properties)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'properties': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
 // Getter for additional properties for SpendSummary. Returns the specified
 // element and whether it was found
 func (a SpendSummary) Get(fieldName string) (value interface{}, found bool) {
@@ -4398,6 +4715,117 @@ func (a UsageSummary) MarshalJSON() ([]byte, error) {
 	object["values"], err = json.Marshal(a.Values)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'values': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for VerifyUserEmailRequest. Returns the specified
+// element and whether it was found
+func (a VerifyUserEmailRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for VerifyUserEmailRequest
+func (a *VerifyUserEmailRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for VerifyUserEmailRequest to handle AdditionalProperties
+func (a *VerifyUserEmailRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["email"]; found {
+		err = json.Unmarshal(raw, &a.Email)
+		if err != nil {
+			return fmt.Errorf("error reading 'email': %w", err)
+		}
+		delete(object, "email")
+	}
+
+	if raw, found := object["return_to"]; found {
+		err = json.Unmarshal(raw, &a.ReturnTo)
+		if err != nil {
+			return fmt.Errorf("error reading 'return_to': %w", err)
+		}
+		delete(object, "return_to")
+	}
+
+	if raw, found := object["state"]; found {
+		err = json.Unmarshal(raw, &a.State)
+		if err != nil {
+			return fmt.Errorf("error reading 'state': %w", err)
+		}
+		delete(object, "state")
+	}
+
+	if raw, found := object["subdomain"]; found {
+		err = json.Unmarshal(raw, &a.Subdomain)
+		if err != nil {
+			return fmt.Errorf("error reading 'subdomain': %w", err)
+		}
+		delete(object, "subdomain")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for VerifyUserEmailRequest to handle AdditionalProperties
+func (a VerifyUserEmailRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["email"], err = json.Marshal(a.Email)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	if a.ReturnTo != nil {
+		object["return_to"], err = json.Marshal(a.ReturnTo)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'return_to': %w", err)
+		}
+	}
+
+	if a.State != nil {
+		object["state"], err = json.Marshal(a.State)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'state': %w", err)
+		}
+	}
+
+	if a.Subdomain != nil {
+		object["subdomain"], err = json.Marshal(a.Subdomain)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'subdomain': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {

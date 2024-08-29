@@ -606,6 +606,16 @@ type ClientInterface interface {
 
 	UpdateCurrentUser(ctx context.Context, body UpdateCurrentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SendAnonymousEventWithBody request with any body
+	SendAnonymousEventWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendAnonymousEvent(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SendUserEventWithBody request with any body
+	SendUserEventWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SendUserEvent(ctx context.Context, body SendUserEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListCurrentUserInvitations request
 	ListCurrentUserInvitations(ctx context.Context, params *ListCurrentUserInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -620,8 +630,18 @@ type ClientInterface interface {
 	// GetCurrentUserMemberships request
 	GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ResetUserPasswordWithBody request with any body
+	ResetUserPasswordWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ResetUserPassword(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateUserToken request
 	CreateUserToken(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// VerifyUserEmailWithBody request with any body
+	VerifyUserEmailWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	VerifyUserEmail(ctx context.Context, body VerifyUserEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteUser request
 	DeleteUser(ctx context.Context, userID UserID, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2883,6 +2903,54 @@ func (c *Client) UpdateCurrentUser(ctx context.Context, body UpdateCurrentUserJS
 	return c.Client.Do(req)
 }
 
+func (c *Client) SendAnonymousEventWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendAnonymousEventRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendAnonymousEvent(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendAnonymousEventRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendUserEventWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendUserEventRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SendUserEvent(ctx context.Context, body SendUserEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSendUserEventRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ListCurrentUserInvitations(ctx context.Context, params *ListCurrentUserInvitationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListCurrentUserInvitationsRequest(c.Server, params)
 	if err != nil {
@@ -2943,8 +3011,56 @@ func (c *Client) GetCurrentUserMemberships(ctx context.Context, params *GetCurre
 	return c.Client.Do(req)
 }
 
+func (c *Client) ResetUserPasswordWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResetUserPasswordRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ResetUserPassword(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResetUserPasswordRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CreateUserToken(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateUserTokenRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) VerifyUserEmailWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyUserEmailRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) VerifyUserEmail(ctx context.Context, body VerifyUserEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewVerifyUserEmailRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -10745,6 +10861,86 @@ func NewUpdateCurrentUserRequestWithBody(server string, contentType string, body
 	return req, nil
 }
 
+// NewSendAnonymousEventRequest calls the generic SendAnonymousEvent builder with application/json body
+func NewSendAnonymousEventRequest(server string, body SendAnonymousEventJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendAnonymousEventRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendAnonymousEventRequestWithBody generates requests for SendAnonymousEvent with any type of body
+func NewSendAnonymousEventRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/anon-event")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSendUserEventRequest calls the generic SendUserEvent builder with application/json body
+func NewSendUserEventRequest(server string, body SendUserEventJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSendUserEventRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSendUserEventRequestWithBody generates requests for SendUserEvent with any type of body
+func NewSendUserEventRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/event")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListCurrentUserInvitationsRequest generates requests for ListCurrentUserInvitations
 func NewListCurrentUserInvitationsRequest(server string, params *ListCurrentUserInvitationsParams) (*http.Request, error) {
 	var err error
@@ -10942,6 +11138,46 @@ func NewGetCurrentUserMembershipsRequest(server string, params *GetCurrentUserMe
 	return req, nil
 }
 
+// NewResetUserPasswordRequest calls the generic ResetUserPassword builder with application/json body
+func NewResetUserPasswordRequest(server string, body ResetUserPasswordJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewResetUserPasswordRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewResetUserPasswordRequestWithBody generates requests for ResetUserPassword with any type of body
+func NewResetUserPasswordRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/reset-password")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewCreateUserTokenRequest generates requests for CreateUserToken
 func NewCreateUserTokenRequest(server string) (*http.Request, error) {
 	var err error
@@ -10965,6 +11201,46 @@ func NewCreateUserTokenRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewVerifyUserEmailRequest calls the generic VerifyUserEmail builder with application/json body
+func NewVerifyUserEmailRequest(server string, body VerifyUserEmailJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewVerifyUserEmailRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewVerifyUserEmailRequestWithBody generates requests for VerifyUserEmail with any type of body
+func NewVerifyUserEmailRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/verify-email")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -11559,6 +11835,16 @@ type ClientWithResponsesInterface interface {
 
 	UpdateCurrentUserWithResponse(ctx context.Context, body UpdateCurrentUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCurrentUserResponse, error)
 
+	// SendAnonymousEventWithBodyWithResponse request with any body
+	SendAnonymousEventWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendAnonymousEventResponse, error)
+
+	SendAnonymousEventWithResponse(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*SendAnonymousEventResponse, error)
+
+	// SendUserEventWithBodyWithResponse request with any body
+	SendUserEventWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendUserEventResponse, error)
+
+	SendUserEventWithResponse(ctx context.Context, body SendUserEventJSONRequestBody, reqEditors ...RequestEditorFn) (*SendUserEventResponse, error)
+
 	// ListCurrentUserInvitationsWithResponse request
 	ListCurrentUserInvitationsWithResponse(ctx context.Context, params *ListCurrentUserInvitationsParams, reqEditors ...RequestEditorFn) (*ListCurrentUserInvitationsResponse, error)
 
@@ -11573,8 +11859,18 @@ type ClientWithResponsesInterface interface {
 	// GetCurrentUserMembershipsWithResponse request
 	GetCurrentUserMembershipsWithResponse(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*GetCurrentUserMembershipsResponse, error)
 
+	// ResetUserPasswordWithBodyWithResponse request with any body
+	ResetUserPasswordWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error)
+
+	ResetUserPasswordWithResponse(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error)
+
 	// CreateUserTokenWithResponse request
 	CreateUserTokenWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CreateUserTokenResponse, error)
+
+	// VerifyUserEmailWithBodyWithResponse request with any body
+	VerifyUserEmailWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyUserEmailResponse, error)
+
+	VerifyUserEmailWithResponse(ctx context.Context, body VerifyUserEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyUserEmailResponse, error)
 
 	// DeleteUserWithResponse request
 	DeleteUserWithResponse(ctx context.Context, userID UserID, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error)
@@ -15160,6 +15456,55 @@ func (r UpdateCurrentUserResponse) StatusCode() int {
 	return 0
 }
 
+type SendAnonymousEventResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r SendAnonymousEventResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendAnonymousEventResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SendUserEventResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r SendUserEventResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SendUserEventResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListCurrentUserInvitationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15262,6 +15607,31 @@ func (r GetCurrentUserMembershipsResponse) StatusCode() int {
 	return 0
 }
 
+type ResetUserPasswordResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ResetUserPasswordResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ResetUserPasswordResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateUserTokenResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15281,6 +15651,31 @@ func (r CreateUserTokenResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateUserTokenResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type VerifyUserEmailResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r VerifyUserEmailResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r VerifyUserEmailResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -16955,6 +17350,40 @@ func (c *ClientWithResponses) UpdateCurrentUserWithResponse(ctx context.Context,
 	return ParseUpdateCurrentUserResponse(rsp)
 }
 
+// SendAnonymousEventWithBodyWithResponse request with arbitrary body returning *SendAnonymousEventResponse
+func (c *ClientWithResponses) SendAnonymousEventWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendAnonymousEventResponse, error) {
+	rsp, err := c.SendAnonymousEventWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendAnonymousEventResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendAnonymousEventWithResponse(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*SendAnonymousEventResponse, error) {
+	rsp, err := c.SendAnonymousEvent(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendAnonymousEventResponse(rsp)
+}
+
+// SendUserEventWithBodyWithResponse request with arbitrary body returning *SendUserEventResponse
+func (c *ClientWithResponses) SendUserEventWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendUserEventResponse, error) {
+	rsp, err := c.SendUserEventWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendUserEventResponse(rsp)
+}
+
+func (c *ClientWithResponses) SendUserEventWithResponse(ctx context.Context, body SendUserEventJSONRequestBody, reqEditors ...RequestEditorFn) (*SendUserEventResponse, error) {
+	rsp, err := c.SendUserEvent(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSendUserEventResponse(rsp)
+}
+
 // ListCurrentUserInvitationsWithResponse request returning *ListCurrentUserInvitationsResponse
 func (c *ClientWithResponses) ListCurrentUserInvitationsWithResponse(ctx context.Context, params *ListCurrentUserInvitationsParams, reqEditors ...RequestEditorFn) (*ListCurrentUserInvitationsResponse, error) {
 	rsp, err := c.ListCurrentUserInvitations(ctx, params, reqEditors...)
@@ -16999,6 +17428,23 @@ func (c *ClientWithResponses) GetCurrentUserMembershipsWithResponse(ctx context.
 	return ParseGetCurrentUserMembershipsResponse(rsp)
 }
 
+// ResetUserPasswordWithBodyWithResponse request with arbitrary body returning *ResetUserPasswordResponse
+func (c *ClientWithResponses) ResetUserPasswordWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error) {
+	rsp, err := c.ResetUserPasswordWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseResetUserPasswordResponse(rsp)
+}
+
+func (c *ClientWithResponses) ResetUserPasswordWithResponse(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error) {
+	rsp, err := c.ResetUserPassword(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseResetUserPasswordResponse(rsp)
+}
+
 // CreateUserTokenWithResponse request returning *CreateUserTokenResponse
 func (c *ClientWithResponses) CreateUserTokenWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CreateUserTokenResponse, error) {
 	rsp, err := c.CreateUserToken(ctx, reqEditors...)
@@ -17006,6 +17452,23 @@ func (c *ClientWithResponses) CreateUserTokenWithResponse(ctx context.Context, r
 		return nil, err
 	}
 	return ParseCreateUserTokenResponse(rsp)
+}
+
+// VerifyUserEmailWithBodyWithResponse request with arbitrary body returning *VerifyUserEmailResponse
+func (c *ClientWithResponses) VerifyUserEmailWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyUserEmailResponse, error) {
+	rsp, err := c.VerifyUserEmailWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyUserEmailResponse(rsp)
+}
+
+func (c *ClientWithResponses) VerifyUserEmailWithResponse(ctx context.Context, body VerifyUserEmailJSONRequestBody, reqEditors ...RequestEditorFn) (*VerifyUserEmailResponse, error) {
+	rsp, err := c.VerifyUserEmail(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseVerifyUserEmailResponse(rsp)
 }
 
 // DeleteUserWithResponse request returning *DeleteUserResponse
@@ -24541,6 +25004,93 @@ func ParseUpdateCurrentUserResponse(rsp *http.Response) (*UpdateCurrentUserRespo
 	return response, nil
 }
 
+// ParseSendAnonymousEventResponse parses an HTTP response from a SendAnonymousEventWithResponse call
+func ParseSendAnonymousEventResponse(rsp *http.Response) (*SendAnonymousEventResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendAnonymousEventResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSendUserEventResponse parses an HTTP response from a SendUserEventWithResponse call
+func ParseSendUserEventResponse(rsp *http.Response) (*SendUserEventResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SendUserEventResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListCurrentUserInvitationsResponse parses an HTTP response from a ListCurrentUserInvitationsWithResponse call
 func ParseListCurrentUserInvitationsResponse(rsp *http.Response) (*ListCurrentUserInvitationsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24743,6 +25293,53 @@ func ParseGetCurrentUserMembershipsResponse(rsp *http.Response) (*GetCurrentUser
 	return response, nil
 }
 
+// ParseResetUserPasswordResponse parses an HTTP response from a ResetUserPasswordWithResponse call
+func ParseResetUserPasswordResponse(rsp *http.Response) (*ResetUserPasswordResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ResetUserPasswordResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCreateUserTokenResponse parses an HTTP response from a CreateUserTokenWithResponse call
 func ParseCreateUserTokenResponse(rsp *http.Response) (*CreateUserTokenResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24777,6 +25374,53 @@ func ParseCreateUserTokenResponse(rsp *http.Response) (*CreateUserTokenResponse,
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseVerifyUserEmailResponse parses an HTTP response from a VerifyUserEmailWithResponse call
+func ParseVerifyUserEmailResponse(rsp *http.Response) (*VerifyUserEmailResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &VerifyUserEmailResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
