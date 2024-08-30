@@ -2660,6 +2660,15 @@ type UpdateCurrentUserRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// UpdateCustomerRequest defines model for UpdateCustomer_request.
+type UpdateCustomerRequest struct {
+	CompanyName          *string                `json:"company_name,omitempty"`
+	FirstName            string                 `json:"first_name"`
+	LastName             string                 `json:"last_name"`
+	LearnedAboutCqFrom   *string                `json:"learned_about_cq_from,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // UpdateSyncRunRequest defines model for UpdateSyncRun_request.
 type UpdateSyncRunRequest struct {
 	// Status The status of the sync run
@@ -3453,6 +3462,9 @@ type UpdateCurrentUserJSONRequestBody = UpdateCurrentUserRequest
 
 // SendAnonymousEventJSONRequestBody defines body for SendAnonymousEvent for application/json ContentType.
 type SendAnonymousEventJSONRequestBody = SendAnonymousEventRequest
+
+// UpdateCustomerJSONRequestBody defines body for UpdateCustomer for application/json ContentType.
+type UpdateCustomerJSONRequestBody = UpdateCustomerRequest
 
 // SendUserEventJSONRequestBody defines body for SendUserEvent for application/json ContentType.
 type SendUserEventJSONRequestBody = SendUserEventRequest
@@ -4554,6 +4566,115 @@ func (a UpdateCurrentUserRequest) MarshalJSON() ([]byte, error) {
 		object["name"], err = json.Marshal(a.Name)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'name': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for UpdateCustomerRequest. Returns the specified
+// element and whether it was found
+func (a UpdateCustomerRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for UpdateCustomerRequest
+func (a *UpdateCustomerRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for UpdateCustomerRequest to handle AdditionalProperties
+func (a *UpdateCustomerRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["company_name"]; found {
+		err = json.Unmarshal(raw, &a.CompanyName)
+		if err != nil {
+			return fmt.Errorf("error reading 'company_name': %w", err)
+		}
+		delete(object, "company_name")
+	}
+
+	if raw, found := object["first_name"]; found {
+		err = json.Unmarshal(raw, &a.FirstName)
+		if err != nil {
+			return fmt.Errorf("error reading 'first_name': %w", err)
+		}
+		delete(object, "first_name")
+	}
+
+	if raw, found := object["last_name"]; found {
+		err = json.Unmarshal(raw, &a.LastName)
+		if err != nil {
+			return fmt.Errorf("error reading 'last_name': %w", err)
+		}
+		delete(object, "last_name")
+	}
+
+	if raw, found := object["learned_about_cq_from"]; found {
+		err = json.Unmarshal(raw, &a.LearnedAboutCqFrom)
+		if err != nil {
+			return fmt.Errorf("error reading 'learned_about_cq_from': %w", err)
+		}
+		delete(object, "learned_about_cq_from")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for UpdateCustomerRequest to handle AdditionalProperties
+func (a UpdateCustomerRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.CompanyName != nil {
+		object["company_name"], err = json.Marshal(a.CompanyName)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'company_name': %w", err)
+		}
+	}
+
+	object["first_name"], err = json.Marshal(a.FirstName)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'first_name': %w", err)
+	}
+
+	object["last_name"], err = json.Marshal(a.LastName)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'last_name': %w", err)
+	}
+
+	if a.LearnedAboutCqFrom != nil {
+		object["learned_about_cq_from"], err = json.Marshal(a.LearnedAboutCqFrom)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'learned_about_cq_from': %w", err)
 		}
 	}
 
