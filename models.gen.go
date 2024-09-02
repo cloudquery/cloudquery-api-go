@@ -2849,9 +2849,6 @@ type VerifyUserEmailRequest struct {
 	// ReturnTo Return to this URL after verification
 	ReturnTo *interface{} `json:"return_to,omitempty"`
 
-	// State Additional state to pass
-	State *interface{} `json:"state,omitempty"`
-
 	// Subdomain Subdomain to use in the URL
 	Subdomain            *interface{}           `json:"subdomain,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -4888,14 +4885,6 @@ func (a *VerifyUserEmailRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "return_to")
 	}
 
-	if raw, found := object["state"]; found {
-		err = json.Unmarshal(raw, &a.State)
-		if err != nil {
-			return fmt.Errorf("error reading 'state': %w", err)
-		}
-		delete(object, "state")
-	}
-
 	if raw, found := object["subdomain"]; found {
 		err = json.Unmarshal(raw, &a.Subdomain)
 		if err != nil {
@@ -4932,13 +4921,6 @@ func (a VerifyUserEmailRequest) MarshalJSON() ([]byte, error) {
 		object["return_to"], err = json.Marshal(a.ReturnTo)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'return_to': %w", err)
-		}
-	}
-
-	if a.State != nil {
-		object["state"], err = json.Marshal(a.State)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'state': %w", err)
 		}
 	}
 

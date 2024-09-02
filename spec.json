@@ -10609,9 +10609,6 @@
             "description" : "Return to this URL after verification",
             "format" : "url"
           },
-          "state" : {
-            "description" : "Additional state to pass"
-          },
           "subdomain" : {
             "description" : "Subdomain to use in the URL"
           }
