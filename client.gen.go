@@ -15011,6 +15011,7 @@ type DeleteSyncResponse struct {
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
 
@@ -15761,7 +15762,7 @@ type VerifyUserEmailResponse struct {
 	HTTPResponse *http.Response
 	JSON400      *BadRequest
 	JSON404      *NotFound
-	JSON405      *MethodNotAllowed
+	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
 
@@ -24037,6 +24038,13 @@ func ParseDeleteSyncResponse(rsp *http.Response) (*DeleteSyncResponse, error) {
 		}
 		response.JSON404 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -25578,12 +25586,12 @@ func ParseVerifyUserEmailResponse(rsp *http.Response) (*VerifyUserEmailResponse,
 		}
 		response.JSON404 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
-		var dest MethodNotAllowed
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.JSON405 = &dest
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
