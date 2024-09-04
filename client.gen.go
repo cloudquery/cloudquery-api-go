@@ -15536,6 +15536,7 @@ type SendAnonymousEventResponse struct {
 	HTTPResponse *http.Response
 	JSON400      *BadRequest
 	JSON404      *NotFound
+	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
 
@@ -25155,6 +25156,13 @@ func ParseSendAnonymousEventResponse(rsp *http.Response) (*SendAnonymousEventRes
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
