@@ -3696,7 +3696,8 @@
         "security" : [ {
           "cookieAuth" : [ ]
         } ],
-        "tags" : [ "users" ]
+        "tags" : [ "users" ],
+        "x-internal" : true
       }
     },
     "/user/reset-password" : {
@@ -3773,7 +3774,8 @@
           }
         },
         "security" : [ ],
-        "tags" : [ "users" ]
+        "tags" : [ "users" ],
+        "x-internal" : true
       }
     },
     "/user/invitations" : {
@@ -3867,7 +3869,8 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "analytics" ]
+        "tags" : [ "analytics" ],
+        "x-internal" : true
       }
     },
     "/user/anon-event" : {
@@ -3902,7 +3905,8 @@
           }
         },
         "security" : [ ],
-        "tags" : [ "analytics" ]
+        "tags" : [ "analytics" ],
+        "x-internal" : true
       }
     },
     "/user/customer" : {
@@ -3936,7 +3940,8 @@
             "$ref" : "#/components/responses/InternalError"
           }
         },
-        "tags" : [ "analytics" ]
+        "tags" : [ "analytics" ],
+        "x-internal" : true
       }
     },
     "/users/{user_id}" : {
