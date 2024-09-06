@@ -58,11 +58,8 @@
                 "description" : "RFC 8631 compliant link relation information",
                 "explode" : false,
                 "schema" : {
-                  "items" : {
-                    "example" : "<https://api-docs.cloudquery.io>; rel=\"service-doc\"",
-                    "type" : "string"
-                  },
-                  "type" : "array"
+                  "example" : "<https://api-docs.cloudquery.io>; rel=\"service-doc\"",
+                  "type" : "string"
                 },
                 "style" : "simple"
               }
