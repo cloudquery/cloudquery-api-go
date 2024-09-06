@@ -52,11 +52,46 @@
         "operationId" : "HealthCheck",
         "responses" : {
           "200" : {
-            "description" : "Response"
+            "description" : "Response",
+            "headers" : {
+              "Link" : {
+                "description" : "RFC 8631 compliant link relation information",
+                "explode" : false,
+                "schema" : {
+                  "items" : {
+                    "example" : "<https://api-docs.cloudquery.io>; rel=\"service-doc\"",
+                    "type" : "string"
+                  },
+                  "type" : "array"
+                },
+                "style" : "simple"
+              }
+            }
           }
         },
         "security" : [ ],
         "tags" : [ "healthcheck" ]
+      }
+    },
+    "/openapi.json" : {
+      "get" : {
+        "description" : "Returns the OpenAPI definition in JSON format.",
+        "operationId" : "GetOpenAPIJSON",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "description" : "The OpenAPI document for this API in JSON format",
+                  "type" : "object"
+                }
+              }
+            },
+            "description" : "OpenAPI specification in JSON format"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Get OpenAPI JSON"
       }
     },
     "/cq-healthcheck" : {
@@ -3726,8 +3761,8 @@
           "404" : {
             "$ref" : "#/components/responses/NotFound"
           },
-          "405" : {
-            "$ref" : "#/components/responses/MethodNotAllowed"
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
           },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
@@ -4734,6 +4769,43 @@
         "tags" : [ "syncs" ]
       }
     },
+    "/teams/{team_name}/sync-sources/{sync_source_name}/syncs" : {
+      "get" : {
+        "description" : "List all Syncs for a given sync source.",
+        "operationId" : "ListSyncSourceSyncs",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_source_name"
+        }, {
+          "$ref" : "#/components/parameters/per_page"
+        }, {
+          "$ref" : "#/components/parameters/page"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ListSyncSourceSyncs_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
     "/teams/{team_name}/sync-destinations" : {
       "get" : {
         "description" : "List all sync destination definitions.",
@@ -4914,6 +4986,43 @@
         "tags" : [ "syncs" ]
       }
     },
+    "/teams/{team_name}/sync-destinations/{sync_destination_name}/syncs" : {
+      "get" : {
+        "description" : "List all Syncs for a given sync destination.",
+        "operationId" : "ListSyncDestinationSyncs",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "$ref" : "#/components/parameters/sync_destination_name"
+        }, {
+          "$ref" : "#/components/parameters/per_page"
+        }, {
+          "$ref" : "#/components/parameters/page"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ListSyncSourceSyncs_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "syncs" ]
+      }
+    },
     "/teams/{team_name}/syncs" : {
       "get" : {
         "description" : "List all Syncs.",
@@ -4930,7 +5039,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ListSyncs_200_response"
+                  "$ref" : "#/components/schemas/ListSyncSourceSyncs_200_response"
                 }
               }
             },
@@ -9302,24 +9411,6 @@
         },
         "required" : [ "created_at", "id", "status" ]
       },
-      "SyncDestinationUpdate" : {
-        "description" : "Sync Destination Update Definition",
-        "properties" : {
-          "display_name" : {
-            "$ref" : "#/components/schemas/DisplayName"
-          },
-          "write_mode" : {
-            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
-          },
-          "migrate_mode" : {
-            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
-          },
-          "last_update_source" : {
-            "$ref" : "#/components/schemas/SyncLastUpdateSource"
-          }
-        },
-        "title" : "Sync Destination definition for updating a destination"
-      },
       "SyncIncremental" : {
         "description" : "Managed Sync Incremental Options definition",
         "properties" : {
@@ -9396,6 +9487,24 @@
           }
         },
         "required" : [ "cpu", "created_at", "destinations", "disabled", "display_name", "memory", "name", "schedule", "source", "updated_at" ]
+      },
+      "SyncDestinationUpdate" : {
+        "description" : "Sync Destination Update Definition",
+        "properties" : {
+          "display_name" : {
+            "$ref" : "#/components/schemas/DisplayName"
+          },
+          "write_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
+          },
+          "migrate_mode" : {
+            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
+          },
+          "last_update_source" : {
+            "$ref" : "#/components/schemas/SyncLastUpdateSource"
+          }
+        },
+        "title" : "Sync Destination definition for updating a destination"
       },
       "SyncCreate" : {
         "description" : "Managed Sync definition",
@@ -10769,11 +10878,11 @@
         },
         "required" : [ "items", "metadata" ]
       },
-      "ListSyncDestinations_200_response" : {
+      "ListSyncSourceSyncs_200_response" : {
         "properties" : {
           "items" : {
             "items" : {
-              "$ref" : "#/components/schemas/SyncDestination"
+              "$ref" : "#/components/schemas/Sync"
             },
             "type" : "array"
           },
@@ -10783,11 +10892,11 @@
         },
         "required" : [ "items", "metadata" ]
       },
-      "ListSyncs_200_response" : {
+      "ListSyncDestinations_200_response" : {
         "properties" : {
           "items" : {
             "items" : {
-              "$ref" : "#/components/schemas/Sync"
+              "$ref" : "#/components/schemas/SyncDestination"
             },
             "type" : "array"
           },

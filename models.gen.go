@@ -1217,15 +1217,15 @@ type ListSyncRuns200Response struct {
 	Metadata ListMetadata `json:"metadata"`
 }
 
-// ListSyncSources200Response defines model for ListSyncSources_200_response.
-type ListSyncSources200Response struct {
-	Items    []SyncSource `json:"items"`
+// ListSyncSourceSyncs200Response defines model for ListSyncSourceSyncs_200_response.
+type ListSyncSourceSyncs200Response struct {
+	Items    []Sync       `json:"items"`
 	Metadata ListMetadata `json:"metadata"`
 }
 
-// ListSyncs200Response defines model for ListSyncs_200_response.
-type ListSyncs200Response struct {
-	Items    []Sync       `json:"items"`
+// ListSyncSources200Response defines model for ListSyncSources_200_response.
+type ListSyncSources200Response struct {
+	Items    []SyncSource `json:"items"`
 	Metadata ListMetadata `json:"metadata"`
 }
 
@@ -3201,8 +3201,26 @@ type ListSyncDestinationsParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
+// ListSyncDestinationSyncsParams defines parameters for ListSyncDestinationSyncs.
+type ListSyncDestinationSyncsParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+}
+
 // ListSyncSourcesParams defines parameters for ListSyncSources.
 type ListSyncSourcesParams struct {
+	// PerPage The number of results per page (max 1000).
+	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// Page Page number of the results to fetch
+	Page *Page `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// ListSyncSourceSyncsParams defines parameters for ListSyncSourceSyncs.
+type ListSyncSourceSyncsParams struct {
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
 
