@@ -63,6 +63,14 @@ const (
 	ConnectorStatusRevoked       ConnectorStatus = "revoked"
 )
 
+// Defines values for ContentType.
+const (
+	ContentTypeImagegif  ContentType = "image/gif"
+	ContentTypeImagejpeg ContentType = "image/jpeg"
+	ContentTypeImagepng  ContentType = "image/png"
+	ContentTypeImagewebp ContentType = "image/webp"
+)
+
 // Defines values for EmailTeamInvitationRequestRole.
 const (
 	EmailTeamInvitationRequestRoleAdmin  EmailTeamInvitationRequestRole = "admin"
@@ -752,6 +760,9 @@ type ConnectorUpdate struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// ContentType The HTTP Content-Type of the image or asset
+type ContentType string
+
 // CreateAddonVersionRequest defines model for CreateAddonVersion_request.
 type CreateAddonVersionRequest struct {
 	// AddonDeps addon dependencies in the format of ['team_name/type/addon_name@version']
@@ -965,7 +976,10 @@ type GetTeamMemberships200Response struct {
 // ImageURL defines model for ImageURL.
 type ImageURL struct {
 	DownloadUrl string `json:"download_url"`
-	UploadUrl   string `json:"upload_url"`
+
+	// RequiredHeaders Required HTTP headers to include for the upload
+	RequiredHeaders map[string]interface{} `json:"required_headers"`
+	UploadUrl       string                 `json:"upload_url"`
 }
 
 // Invitation defines model for Invitation.
@@ -2593,6 +2607,9 @@ type TeamImage struct {
 	// Name Name of image
 	Name string `json:"name"`
 
+	// RequiredHeaders Required HTTP headers to include for the upload
+	RequiredHeaders map[string]interface{} `json:"required_headers"`
+
 	// UploadURL URL to upload image
 	UploadURL *string `json:"upload_url,omitempty"`
 
@@ -2604,6 +2621,9 @@ type TeamImage struct {
 type TeamImageCreate struct {
 	// Checksum SHA1 checksum of image
 	Checksum string `json:"checksum"`
+
+	// ContentType The HTTP Content-Type of the image or asset
+	ContentType *ContentType `json:"content_type,omitempty"`
 
 	// Name Name of image
 	Name string `json:"name"`
@@ -2695,6 +2715,12 @@ type UpdateTeamRequest struct {
 	// DisplayName The team's display name
 	DisplayName          *interface{}           `json:"display_name,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// UploadImageRequest defines model for UploadImage_request.
+type UploadImageRequest struct {
+	// ContentType The HTTP Content-Type of the image or asset
+	ContentType *ContentType `json:"content_type,omitempty"`
 }
 
 // UploadPluginUIAssets201Response defines model for UploadPluginUIAssets_201_response.
@@ -3471,6 +3497,9 @@ type CreateSyncRunProgressJSONRequestBody = CreateSyncRunProgressRequest
 
 // IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
 type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
+
+// UploadImageJSONRequestBody defines body for UploadImage for application/json ContentType.
+type UploadImageJSONRequestBody = UploadImageRequest
 
 // UpdateCurrentUserJSONRequestBody defines body for UpdateCurrentUser for application/json ContentType.
 type UpdateCurrentUserJSONRequestBody = UpdateCurrentUserRequest

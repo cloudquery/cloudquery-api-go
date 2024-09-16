@@ -604,8 +604,10 @@ type ClientInterface interface {
 	// ListUsersByTeam request
 	ListUsersByTeam(ctx context.Context, teamName TeamName, params *ListUsersByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UploadImage request
-	UploadImage(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// UploadImageWithBody request with any body
+	UploadImageWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UploadImage(ctx context.Context, body UploadImageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetCurrentUser request
 	GetCurrentUser(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2905,8 +2907,20 @@ func (c *Client) ListUsersByTeam(ctx context.Context, teamName TeamName, params 
 	return c.Client.Do(req)
 }
 
-func (c *Client) UploadImage(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUploadImageRequest(c.Server)
+func (c *Client) UploadImageWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadImageRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UploadImage(ctx context.Context, body UploadImageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUploadImageRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -11026,8 +11040,19 @@ func NewListUsersByTeamRequest(server string, teamName TeamName, params *ListUse
 	return req, nil
 }
 
-// NewUploadImageRequest generates requests for UploadImage
-func NewUploadImageRequest(server string) (*http.Request, error) {
+// NewUploadImageRequest calls the generic UploadImage builder with application/json body
+func NewUploadImageRequest(server string, body UploadImageJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUploadImageRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUploadImageRequestWithBody generates requests for UploadImage with any type of body
+func NewUploadImageRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -11045,10 +11070,12 @@ func NewUploadImageRequest(server string) (*http.Request, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -12132,8 +12159,10 @@ type ClientWithResponsesInterface interface {
 	// ListUsersByTeamWithResponse request
 	ListUsersByTeamWithResponse(ctx context.Context, teamName TeamName, params *ListUsersByTeamParams, reqEditors ...RequestEditorFn) (*ListUsersByTeamResponse, error)
 
-	// UploadImageWithResponse request
-	UploadImageWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*UploadImageResponse, error)
+	// UploadImageWithBodyWithResponse request with any body
+	UploadImageWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadImageResponse, error)
+
+	UploadImageWithResponse(ctx context.Context, body UploadImageJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadImageResponse, error)
 
 	// GetCurrentUserWithResponse request
 	GetCurrentUserWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCurrentUserResponse, error)
@@ -17754,9 +17783,17 @@ func (c *ClientWithResponses) ListUsersByTeamWithResponse(ctx context.Context, t
 	return ParseListUsersByTeamResponse(rsp)
 }
 
-// UploadImageWithResponse request returning *UploadImageResponse
-func (c *ClientWithResponses) UploadImageWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*UploadImageResponse, error) {
-	rsp, err := c.UploadImage(ctx, reqEditors...)
+// UploadImageWithBodyWithResponse request with arbitrary body returning *UploadImageResponse
+func (c *ClientWithResponses) UploadImageWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UploadImageResponse, error) {
+	rsp, err := c.UploadImageWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUploadImageResponse(rsp)
+}
+
+func (c *ClientWithResponses) UploadImageWithResponse(ctx context.Context, body UploadImageJSONRequestBody, reqEditors ...RequestEditorFn) (*UploadImageResponse, error) {
+	rsp, err := c.UploadImage(ctx, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
