@@ -113,6 +113,16 @@
         "description" : "Get a URL to upload image that will be publicly accessible",
         "operationId" : "UploadImage",
         "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UploadImage_request"
+              }
+            }
+          },
+          "required" : false
+        },
         "responses" : {
           "200" : {
             "content" : {
@@ -6833,6 +6843,12 @@
         "required" : [ "message", "status" ],
         "title" : "Basic Error"
       },
+      "ContentType" : {
+        "description" : "The HTTP Content-Type of the image or asset",
+        "enum" : [ "image/jpeg", "image/png", "image/gif", "image/webp" ],
+        "example" : "image/png",
+        "type" : "string"
+      },
       "ImageURL" : {
         "properties" : {
           "upload_url" : {
@@ -6842,9 +6858,17 @@
           "download_url" : {
             "example" : "https://cloudquery.io/api/v1/download/1234567890abcdef1234567890abcdef",
             "type" : "string"
+          },
+          "required_headers" : {
+            "additionalProperties" : {
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "description" : "Required HTTP headers to include for the upload"
           }
         },
-        "required" : [ "download_url", "upload_url" ]
+        "required" : [ "download_url", "required_headers", "upload_url" ]
       },
       "TeamName" : {
         "description" : "The unique name for the team.",
@@ -8153,6 +8177,9 @@
             "minLength" : 40,
             "pattern" : "^[a-f0-9]+$",
             "type" : "string"
+          },
+          "content_type" : {
+            "$ref" : "#/components/schemas/ContentType"
           }
         },
         "required" : [ "checksum", "name" ],
@@ -8177,9 +8204,17 @@
             "description" : "URL to upload image",
             "type" : "string",
             "x-go-name" : "UploadURL"
+          },
+          "required_headers" : {
+            "additionalProperties" : {
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "description" : "Required HTTP headers to include for the upload"
           }
         },
-        "required" : [ "checksum", "name", "url" ]
+        "required" : [ "checksum", "name", "required_headers", "url" ]
       },
       "AddonOrderID" : {
         "description" : "ID of the addon order",
@@ -10088,6 +10123,13 @@
         },
         "required" : [ "base_url", "return_url" ]
       },
+      "UploadImage_request" : {
+        "properties" : {
+          "content_type" : {
+            "$ref" : "#/components/schemas/ContentType"
+          }
+        }
+      },
       "ListPluginNotificationRequests_200_response" : {
         "properties" : {
           "items" : {
@@ -10710,7 +10752,8 @@
             "format" : "email"
           },
           "subdomain" : {
-            "description" : "Subdomain to use in the URL"
+            "description" : "Subdomain to use in the URL",
+            "pattern" : "^[a-zA-Z0-9-]+$"
           }
         },
         "required" : [ "email" ]
@@ -10724,10 +10767,12 @@
           },
           "return_to" : {
             "description" : "Return to this URL after verification",
-            "format" : "url"
+            "format" : "url",
+            "pattern" : "^https:\\/\\/(.*\\.)?cloudquery\\.io(\\/.*)?$"
           },
           "subdomain" : {
-            "description" : "Subdomain to use in the URL"
+            "description" : "Subdomain to use in the URL",
+            "pattern" : "^[a-zA-Z0-9-]+$"
           }
         },
         "required" : [ "email" ]
