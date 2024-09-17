@@ -6294,6 +6294,16 @@
           "required" : true
         },
         "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConnectorAuthResponseOAuth"
+                }
+              }
+            },
+            "description" : "First part of authentication is complete, follow redirect to continue"
+          },
           "204" : {
             "description" : "Authentication is complete."
           },
@@ -10080,6 +10090,9 @@
           },
           "skip_dependent_tables" : {
             "description" : "Whether to skip dependent tables, setting from the outer spec"
+          },
+          "flavor" : {
+            "description" : "Override default flavor"
           }
         },
         "required" : [ "base_url", "plugin_kind", "plugin_name", "plugin_team" ]

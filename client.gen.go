@@ -14010,6 +14010,7 @@ func (r AuthenticateConnectorFinishGCPResponse) StatusCode() int {
 type AuthenticateConnectorFinishOAuthResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *ConnectorAuthResponseOAuth
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
@@ -21675,6 +21676,13 @@ func ParseAuthenticateConnectorFinishOAuthResponse(rsp *http.Response) (*Authent
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ConnectorAuthResponseOAuth
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
