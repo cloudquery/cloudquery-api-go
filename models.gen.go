@@ -666,6 +666,9 @@ type ConnectorAuthRequestOAuth struct {
 	// Env Environment variables used in the spec.
 	Env *interface{} `json:"env,omitempty"`
 
+	// Flavor Override default flavor
+	Flavor *interface{} `json:"flavor,omitempty"`
+
 	// PluginKind Kind of the plugin
 	PluginKind interface{} `json:"plugin_kind"`
 
@@ -3854,6 +3857,14 @@ func (a *ConnectorAuthRequestOAuth) UnmarshalJSON(b []byte) error {
 		delete(object, "env")
 	}
 
+	if raw, found := object["flavor"]; found {
+		err = json.Unmarshal(raw, &a.Flavor)
+		if err != nil {
+			return fmt.Errorf("error reading 'flavor': %w", err)
+		}
+		delete(object, "flavor")
+	}
+
 	if raw, found := object["plugin_kind"]; found {
 		err = json.Unmarshal(raw, &a.PluginKind)
 		if err != nil {
@@ -3946,6 +3957,13 @@ func (a ConnectorAuthRequestOAuth) MarshalJSON() ([]byte, error) {
 		object["env"], err = json.Marshal(a.Env)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'env': %w", err)
+		}
+	}
+
+	if a.Flavor != nil {
+		object["flavor"], err = json.Marshal(a.Flavor)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'flavor': %w", err)
 		}
 	}
 
