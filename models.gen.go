@@ -65,7 +65,6 @@ const (
 
 // Defines values for ContentType.
 const (
-	ContentTypeImagegif  ContentType = "image/gif"
 	ContentTypeImagejpeg ContentType = "image/jpeg"
 	ContentTypeImagepng  ContentType = "image/png"
 	ContentTypeImagewebp ContentType = "image/webp"
@@ -2626,7 +2625,7 @@ type TeamImageCreate struct {
 	Checksum string `json:"checksum"`
 
 	// ContentType The HTTP Content-Type of the image or asset
-	ContentType *ContentType `json:"content_type,omitempty"`
+	ContentType ContentType `json:"content_type"`
 
 	// Name Name of image
 	Name string `json:"name"`
@@ -2723,7 +2722,7 @@ type UpdateTeamRequest struct {
 // UploadImageRequest defines model for UploadImage_request.
 type UploadImageRequest struct {
 	// ContentType The HTTP Content-Type of the image or asset
-	ContentType *ContentType `json:"content_type,omitempty"`
+	ContentType ContentType `json:"content_type"`
 }
 
 // UploadPluginUIAssets201Response defines model for UploadPluginUIAssets_201_response.
