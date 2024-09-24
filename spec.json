@@ -121,7 +121,7 @@
               }
             }
           },
-          "required" : false
+          "required" : true
         },
         "responses" : {
           "200" : {
@@ -6855,7 +6855,7 @@
       },
       "ContentType" : {
         "description" : "The HTTP Content-Type of the image or asset",
-        "enum" : [ "image/jpeg", "image/png", "image/gif", "image/webp" ],
+        "enum" : [ "image/jpeg", "image/png", "image/webp" ],
         "example" : "image/png",
         "type" : "string"
       },
@@ -8192,7 +8192,7 @@
             "$ref" : "#/components/schemas/ContentType"
           }
         },
-        "required" : [ "checksum", "name" ],
+        "required" : [ "checksum", "content_type", "name" ],
         "title" : "Create Team Image Request"
       },
       "TeamImage" : {
@@ -10141,7 +10141,8 @@
           "content_type" : {
             "$ref" : "#/components/schemas/ContentType"
           }
-        }
+        },
+        "required" : [ "content_type" ]
       },
       "ListPluginNotificationRequests_200_response" : {
         "properties" : {
