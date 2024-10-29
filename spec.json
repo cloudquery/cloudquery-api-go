@@ -8367,7 +8367,7 @@
             "$ref" : "#/components/schemas/User"
           }
         },
-        "required" : [ "role" ],
+        "required" : [ "role", "user" ],
         "title" : "CloudQuery User Membership"
       },
       "SpendingLimit" : {
@@ -8731,7 +8731,7 @@
             "$ref" : "#/components/schemas/Team"
           }
         },
-        "required" : [ "role" ],
+        "required" : [ "role", "team" ],
         "title" : "CloudQuery Team Membership"
       },
       "TeamSubscriptionOrderID" : {

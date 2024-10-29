@@ -1313,7 +1313,7 @@ type MembershipWithTeam struct {
 	Role string `json:"role"`
 
 	// Team CloudQuery Team
-	Team *Team `json:"team,omitempty"`
+	Team Team `json:"team"`
 }
 
 // MembershipWithUser defines model for MembershipWithUser.
@@ -1321,7 +1321,7 @@ type MembershipWithUser struct {
 	Role string `json:"role"`
 
 	// User CloudQuery User
-	User *User `json:"user,omitempty"`
+	User User `json:"user"`
 }
 
 // Plugin CloudQuery Plugin
