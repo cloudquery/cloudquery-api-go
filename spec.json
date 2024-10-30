@@ -2787,7 +2787,18 @@
                 }
               }
             },
-            "description" : "Plugin usage for the current calendar month."
+            "description" : "Plugin usage for the current calendar month.",
+            "headers" : {
+              "x-cq-query-interval" : {
+                "explode" : false,
+                "schema" : {
+                  "description" : "Suggested interval in seconds between usage queries.",
+                  "format" : "int32",
+                  "type" : "integer"
+                },
+                "style" : "simple"
+              }
+            }
           },
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
