@@ -340,6 +340,42 @@ type AcceptTeamInvitationRequest struct {
 	Token openapi_types.UUID `json:"token"`
 }
 
+// ActivatePlatform200Response defines model for ActivatePlatform_200_response.
+type ActivatePlatform200Response struct {
+	// ActivationID Activation ID for the platform
+	ActivationID interface{} `json:"activation_id"`
+
+	// NextCheckInSeconds Time in seconds until the next check in
+	NextCheckInSeconds interface{} `json:"next_check_in_seconds"`
+
+	// TeamName Name of the team that was activated
+	TeamName             interface{}            `json:"team_name"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// ActivatePlatform205Response defines model for ActivatePlatform_205_response.
+type ActivatePlatform205Response struct {
+	// ButtonText Text for the button
+	ButtonText *interface{} `json:"button_text,omitempty"`
+
+	// ButtonURL URL for the button
+	ButtonURL *interface{} `json:"button_url,omitempty"`
+
+	// Error Error message
+	Error                interface{}            `json:"error"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// ActivatePlatformRequest defines model for ActivatePlatform_request.
+type ActivatePlatformRequest struct {
+	// APIKey Team API key to activate platform with
+	APIKey interface{} `json:"api_key"`
+
+	// InstallationID Installation ID of the platform
+	InstallationID       interface{}            `json:"installation_id"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // Addon CloudQuery Addon
 type Addon struct {
 	// AddonFormat Supported formats for addons
@@ -1962,6 +1998,23 @@ type RemoveTeamMembershipRequest struct {
 	Email string `json:"email"`
 }
 
+// RenewPlatformActivation200Response defines model for RenewPlatformActivation_200_response.
+type RenewPlatformActivation200Response struct {
+	// NextCheckInSeconds Time in seconds until the next check in
+	NextCheckInSeconds   interface{}            `json:"next_check_in_seconds"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// RenewPlatformActivationRequest defines model for RenewPlatformActivation_request.
+type RenewPlatformActivationRequest struct {
+	// ActivationID Previous activation ID
+	ActivationID interface{} `json:"activation_id"`
+
+	// InstallationID Installation ID of the platform
+	InstallationID       interface{}            `json:"installation_id"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // ResetUserPasswordRequest defines model for ResetUserPassword_request.
 type ResetUserPasswordRequest struct {
 	// Email Email address to reset
@@ -3362,6 +3415,12 @@ type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
 type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
 
+// ActivatePlatformJSONRequestBody defines body for ActivatePlatform for application/json ContentType.
+type ActivatePlatformJSONRequestBody = ActivatePlatformRequest
+
+// RenewPlatformActivationJSONRequestBody defines body for RenewPlatformActivation for application/json ContentType.
+type RenewPlatformActivationJSONRequestBody = RenewPlatformActivationRequest
+
 // CreatePluginNotificationRequestJSONRequestBody defines body for CreatePluginNotificationRequest for application/json ContentType.
 type CreatePluginNotificationRequestJSONRequestBody = PluginNotificationRequestCreate
 
@@ -3523,6 +3582,273 @@ type ResetUserPasswordJSONRequestBody = ResetUserPasswordRequest
 
 // VerifyUserEmailJSONRequestBody defines body for VerifyUserEmail for application/json ContentType.
 type VerifyUserEmailJSONRequestBody = VerifyUserEmailRequest
+
+// Getter for additional properties for ActivatePlatform200Response. Returns the specified
+// element and whether it was found
+func (a ActivatePlatform200Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ActivatePlatform200Response
+func (a *ActivatePlatform200Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ActivatePlatform200Response to handle AdditionalProperties
+func (a *ActivatePlatform200Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["activation_id"]; found {
+		err = json.Unmarshal(raw, &a.ActivationID)
+		if err != nil {
+			return fmt.Errorf("error reading 'activation_id': %w", err)
+		}
+		delete(object, "activation_id")
+	}
+
+	if raw, found := object["next_check_in_seconds"]; found {
+		err = json.Unmarshal(raw, &a.NextCheckInSeconds)
+		if err != nil {
+			return fmt.Errorf("error reading 'next_check_in_seconds': %w", err)
+		}
+		delete(object, "next_check_in_seconds")
+	}
+
+	if raw, found := object["team_name"]; found {
+		err = json.Unmarshal(raw, &a.TeamName)
+		if err != nil {
+			return fmt.Errorf("error reading 'team_name': %w", err)
+		}
+		delete(object, "team_name")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ActivatePlatform200Response to handle AdditionalProperties
+func (a ActivatePlatform200Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["activation_id"], err = json.Marshal(a.ActivationID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'activation_id': %w", err)
+	}
+
+	object["next_check_in_seconds"], err = json.Marshal(a.NextCheckInSeconds)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'next_check_in_seconds': %w", err)
+	}
+
+	object["team_name"], err = json.Marshal(a.TeamName)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'team_name': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for ActivatePlatform205Response. Returns the specified
+// element and whether it was found
+func (a ActivatePlatform205Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ActivatePlatform205Response
+func (a *ActivatePlatform205Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ActivatePlatform205Response to handle AdditionalProperties
+func (a *ActivatePlatform205Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["button_text"]; found {
+		err = json.Unmarshal(raw, &a.ButtonText)
+		if err != nil {
+			return fmt.Errorf("error reading 'button_text': %w", err)
+		}
+		delete(object, "button_text")
+	}
+
+	if raw, found := object["button_url"]; found {
+		err = json.Unmarshal(raw, &a.ButtonURL)
+		if err != nil {
+			return fmt.Errorf("error reading 'button_url': %w", err)
+		}
+		delete(object, "button_url")
+	}
+
+	if raw, found := object["error"]; found {
+		err = json.Unmarshal(raw, &a.Error)
+		if err != nil {
+			return fmt.Errorf("error reading 'error': %w", err)
+		}
+		delete(object, "error")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ActivatePlatform205Response to handle AdditionalProperties
+func (a ActivatePlatform205Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.ButtonText != nil {
+		object["button_text"], err = json.Marshal(a.ButtonText)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'button_text': %w", err)
+		}
+	}
+
+	if a.ButtonURL != nil {
+		object["button_url"], err = json.Marshal(a.ButtonURL)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'button_url': %w", err)
+		}
+	}
+
+	object["error"], err = json.Marshal(a.Error)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'error': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for ActivatePlatformRequest. Returns the specified
+// element and whether it was found
+func (a ActivatePlatformRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ActivatePlatformRequest
+func (a *ActivatePlatformRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ActivatePlatformRequest to handle AdditionalProperties
+func (a *ActivatePlatformRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["api_key"]; found {
+		err = json.Unmarshal(raw, &a.APIKey)
+		if err != nil {
+			return fmt.Errorf("error reading 'api_key': %w", err)
+		}
+		delete(object, "api_key")
+	}
+
+	if raw, found := object["installation_id"]; found {
+		err = json.Unmarshal(raw, &a.InstallationID)
+		if err != nil {
+			return fmt.Errorf("error reading 'installation_id': %w", err)
+		}
+		delete(object, "installation_id")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ActivatePlatformRequest to handle AdditionalProperties
+func (a ActivatePlatformRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["api_key"], err = json.Marshal(a.APIKey)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'api_key': %w", err)
+	}
+
+	object["installation_id"], err = json.Marshal(a.InstallationID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
 
 // Getter for additional properties for ConnectorAuthFinishRequestOAuth. Returns the specified
 // element and whether it was found
@@ -4159,6 +4485,151 @@ func (a LoginUserRequest) MarshalJSON() ([]byte, error) {
 	object["id_token"], err = json.Marshal(a.IDToken)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'id_token': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for RenewPlatformActivation200Response. Returns the specified
+// element and whether it was found
+func (a RenewPlatformActivation200Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for RenewPlatformActivation200Response
+func (a *RenewPlatformActivation200Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for RenewPlatformActivation200Response to handle AdditionalProperties
+func (a *RenewPlatformActivation200Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["next_check_in_seconds"]; found {
+		err = json.Unmarshal(raw, &a.NextCheckInSeconds)
+		if err != nil {
+			return fmt.Errorf("error reading 'next_check_in_seconds': %w", err)
+		}
+		delete(object, "next_check_in_seconds")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for RenewPlatformActivation200Response to handle AdditionalProperties
+func (a RenewPlatformActivation200Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["next_check_in_seconds"], err = json.Marshal(a.NextCheckInSeconds)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'next_check_in_seconds': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for RenewPlatformActivationRequest. Returns the specified
+// element and whether it was found
+func (a RenewPlatformActivationRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for RenewPlatformActivationRequest
+func (a *RenewPlatformActivationRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for RenewPlatformActivationRequest to handle AdditionalProperties
+func (a *RenewPlatformActivationRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["activation_id"]; found {
+		err = json.Unmarshal(raw, &a.ActivationID)
+		if err != nil {
+			return fmt.Errorf("error reading 'activation_id': %w", err)
+		}
+		delete(object, "activation_id")
+	}
+
+	if raw, found := object["installation_id"]; found {
+		err = json.Unmarshal(raw, &a.InstallationID)
+		if err != nil {
+			return fmt.Errorf("error reading 'installation_id': %w", err)
+		}
+		delete(object, "installation_id")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for RenewPlatformActivationRequest to handle AdditionalProperties
+func (a RenewPlatformActivationRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["activation_id"], err = json.Marshal(a.ActivationID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'activation_id': %w", err)
+	}
+
+	object["installation_id"], err = json.Marshal(a.InstallationID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
