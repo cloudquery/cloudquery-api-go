@@ -44,6 +44,8 @@
     "name" : "managed-databases"
   }, {
     "name" : "analytics"
+  }, {
+    "name" : "platform"
   } ],
   "paths" : {
     "/" : {
@@ -6386,6 +6388,112 @@
         },
         "tags" : [ "syncs" ]
       }
+    },
+    "/platform/activate" : {
+      "post" : {
+        "description" : "Activate platform usage by API key",
+        "operationId" : "ActivatePlatform",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ActivatePlatform_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivatePlatform_200_response"
+                }
+              }
+            },
+            "description" : "Success"
+          },
+          "205" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivatePlatform_205_response"
+                }
+              }
+            },
+            "description" : "Activation method is no longer valid"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/platform/activate/renew" : {
+      "post" : {
+        "description" : "Renew platform activation",
+        "operationId" : "RenewPlatformActivation",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RenewPlatformActivation_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RenewPlatformActivation_200_response"
+                }
+              }
+            },
+            "description" : "Success"
+          },
+          "205" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActivatePlatform_205_response"
+                }
+              }
+            },
+            "description" : "Activation method is no longer valid"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
     }
   },
   "components" : {
@@ -11097,6 +11205,80 @@
             "type" : "string"
           }
         }
+      },
+      "ActivatePlatform_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "api_key" : {
+            "description" : "Team API key to activate platform with",
+            "x-go-name" : "APIKey"
+          },
+          "installation_id" : {
+            "description" : "Installation ID of the platform",
+            "pattern" : "^[a-z0-9]{64}$",
+            "x-go-name" : "InstallationID"
+          }
+        },
+        "required" : [ "api_key", "installation_id" ]
+      },
+      "ActivatePlatform_200_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "activation_id" : {
+            "description" : "Activation ID for the platform",
+            "format" : "uuid",
+            "x-go-name" : "ActivationID"
+          },
+          "team_name" : {
+            "description" : "Name of the team that was activated"
+          },
+          "next_check_in_seconds" : {
+            "description" : "Time in seconds until the next check in"
+          }
+        },
+        "required" : [ "activation_id", "next_check_in_seconds", "team_name" ]
+      },
+      "ActivatePlatform_205_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "error" : {
+            "description" : "Error message"
+          },
+          "button_text" : {
+            "description" : "Text for the button"
+          },
+          "button_url" : {
+            "description" : "URL for the button",
+            "format" : "url",
+            "x-go-name" : "ButtonURL"
+          }
+        },
+        "required" : [ "error" ]
+      },
+      "RenewPlatformActivation_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "installation_id" : {
+            "description" : "Installation ID of the platform",
+            "pattern" : "^[a-z0-9]{64}$",
+            "x-go-name" : "InstallationID"
+          },
+          "activation_id" : {
+            "description" : "Previous activation ID",
+            "format" : "uuid",
+            "x-go-name" : "ActivationID"
+          }
+        },
+        "required" : [ "activation_id", "installation_id" ]
+      },
+      "RenewPlatformActivation_200_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "next_check_in_seconds" : {
+            "description" : "Time in seconds until the next check in"
+          }
+        },
+        "required" : [ "next_check_in_seconds" ]
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {
