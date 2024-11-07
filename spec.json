@@ -2396,6 +2396,9 @@
           "404" : {
             "$ref" : "#/components/responses/NotFound"
           },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
           }
@@ -2467,6 +2470,9 @@
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
           },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
