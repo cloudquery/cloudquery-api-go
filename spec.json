@@ -10997,6 +10997,9 @@
           },
           "learned_about_cq_from" : {
             "type" : "string"
+          },
+          "phone" : {
+            "type" : "string"
           }
         },
         "required" : [ "first_name", "last_name" ]
