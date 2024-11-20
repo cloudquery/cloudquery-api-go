@@ -2741,6 +2741,7 @@ type UpdateCustomerRequest struct {
 	FirstName            string                 `json:"first_name"`
 	LastName             string                 `json:"last_name"`
 	LearnedAboutCqFrom   *string                `json:"learned_about_cq_from,omitempty"`
+	Phone                *string                `json:"phone,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -5167,6 +5168,14 @@ func (a *UpdateCustomerRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "learned_about_cq_from")
 	}
 
+	if raw, found := object["phone"]; found {
+		err = json.Unmarshal(raw, &a.Phone)
+		if err != nil {
+			return fmt.Errorf("error reading 'phone': %w", err)
+		}
+		delete(object, "phone")
+	}
+
 	if len(object) != 0 {
 		a.AdditionalProperties = make(map[string]interface{})
 		for fieldName, fieldBuf := range object {
@@ -5207,6 +5216,13 @@ func (a UpdateCustomerRequest) MarshalJSON() ([]byte, error) {
 		object["learned_about_cq_from"], err = json.Marshal(a.LearnedAboutCqFrom)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'learned_about_cq_from': %w", err)
+		}
+	}
+
+	if a.Phone != nil {
+		object["phone"], err = json.Marshal(a.Phone)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'phone': %w", err)
 		}
 	}
 
