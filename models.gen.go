@@ -164,11 +164,24 @@ const (
 	SyncDestinationMigrateModeSafe   SyncDestinationMigrateMode = "safe"
 )
 
+// Defines values for SyncDestinationMigrateModeUpdate.
+const (
+	SyncDestinationMigrateModeUpdateForced SyncDestinationMigrateModeUpdate = "forced"
+	SyncDestinationMigrateModeUpdateSafe   SyncDestinationMigrateModeUpdate = "safe"
+)
+
 // Defines values for SyncDestinationWriteMode.
 const (
 	SyncDestinationWriteModeAppend               SyncDestinationWriteMode = "append"
 	SyncDestinationWriteModeOverwrite            SyncDestinationWriteMode = "overwrite"
 	SyncDestinationWriteModeOverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
+)
+
+// Defines values for SyncDestinationWriteModeUpdate.
+const (
+	SyncDestinationWriteModeUpdateAppend               SyncDestinationWriteModeUpdate = "append"
+	SyncDestinationWriteModeUpdateOverwrite            SyncDestinationWriteModeUpdate = "overwrite"
+	SyncDestinationWriteModeUpdateOverwriteDeleteStale SyncDestinationWriteModeUpdate = "overwrite-delete-stale"
 )
 
 // Defines values for SyncLastUpdateSource.
@@ -2242,6 +2255,9 @@ type SyncDestinationCreate struct {
 // SyncDestinationMigrateMode Migrate mode for the destination
 type SyncDestinationMigrateMode string
 
+// SyncDestinationMigrateModeUpdate Migrate mode for the destination, for updating
+type SyncDestinationMigrateModeUpdate string
+
 // SyncDestinationTestConnection defines model for SyncDestinationTestConnection.
 type SyncDestinationTestConnection struct {
 	// CompletedAt Time the test connection was completed
@@ -2305,15 +2321,18 @@ type SyncDestinationUpdate struct {
 	// LastUpdateSource How was the source or destination been created or updated last
 	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
 
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
+	// MigrateMode Migrate mode for the destination, for updating
+	MigrateMode *SyncDestinationMigrateModeUpdate `json:"migrate_mode,omitempty"`
 
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
+	// WriteMode Write mode for the destination, for updating
+	WriteMode *SyncDestinationWriteModeUpdate `json:"write_mode,omitempty"`
 }
 
 // SyncDestinationWriteMode Write mode for the destination
 type SyncDestinationWriteMode string
+
+// SyncDestinationWriteModeUpdate Write mode for the destination, for updating
+type SyncDestinationWriteModeUpdate string
 
 // SyncEnv Environment variable. Environment variables are assumed to be secret.
 type SyncEnv struct {
