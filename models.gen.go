@@ -1144,6 +1144,8 @@ type ListInvoicesByTeam200Response struct {
 // ListMetadata defines model for ListMetadata.
 type ListMetadata struct {
 	LastPage   *int `json:"last_page,omitempty"`
+	PageSize   int  `json:"page_size"`
+	TimeMs     *int `json:"time_ms,omitempty"`
 	TotalCount *int `json:"total_count,omitempty"`
 }
 
@@ -2737,12 +2739,13 @@ type UpdateCurrentUserRequest struct {
 
 // UpdateCustomerRequest defines model for UpdateCustomer_request.
 type UpdateCustomerRequest struct {
-	CompanyName          *string                `json:"company_name,omitempty"`
-	FirstName            string                 `json:"first_name"`
-	LastName             string                 `json:"last_name"`
-	LearnedAboutCqFrom   *string                `json:"learned_about_cq_from,omitempty"`
-	Phone                *string                `json:"phone,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	CompanyName             *string                `json:"company_name,omitempty"`
+	FirstName               string                 `json:"first_name"`
+	LastName                string                 `json:"last_name"`
+	LearnedAboutCqFrom      *string                `json:"learned_about_cq_from,omitempty"`
+	LearnedAboutCqFromOther *string                `json:"learned_about_cq_from_other,omitempty"`
+	Phone                   *string                `json:"phone,omitempty"`
+	AdditionalProperties    map[string]interface{} `json:"-"`
 }
 
 // UpdateSyncRunRequest defines model for UpdateSyncRun_request.
@@ -5168,6 +5171,14 @@ func (a *UpdateCustomerRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "learned_about_cq_from")
 	}
 
+	if raw, found := object["learned_about_cq_from_other"]; found {
+		err = json.Unmarshal(raw, &a.LearnedAboutCqFromOther)
+		if err != nil {
+			return fmt.Errorf("error reading 'learned_about_cq_from_other': %w", err)
+		}
+		delete(object, "learned_about_cq_from_other")
+	}
+
 	if raw, found := object["phone"]; found {
 		err = json.Unmarshal(raw, &a.Phone)
 		if err != nil {
@@ -5216,6 +5227,13 @@ func (a UpdateCustomerRequest) MarshalJSON() ([]byte, error) {
 		object["learned_about_cq_from"], err = json.Marshal(a.LearnedAboutCqFrom)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'learned_about_cq_from': %w", err)
+		}
+	}
+
+	if a.LearnedAboutCqFromOther != nil {
+		object["learned_about_cq_from_other"], err = json.Marshal(a.LearnedAboutCqFromOther)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'learned_about_cq_from_other': %w", err)
 		}
 	}
 

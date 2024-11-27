@@ -7067,8 +7067,15 @@
           },
           "last_page" : {
             "type" : "integer"
+          },
+          "page_size" : {
+            "type" : "integer"
+          },
+          "time_ms" : {
+            "type" : "integer"
           }
-        }
+        },
+        "required" : [ "page_size" ]
       },
       "PluginNotificationRequestCreate" : {
         "additionalProperties" : false,
@@ -10996,6 +11003,9 @@
             "type" : "string"
           },
           "learned_about_cq_from" : {
+            "type" : "string"
+          },
+          "learned_about_cq_from_other" : {
             "type" : "string"
           },
           "phone" : {
