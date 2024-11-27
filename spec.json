@@ -9662,6 +9662,16 @@
         },
         "required" : [ "cpu", "created_at", "destinations", "disabled", "display_name", "memory", "name", "schedule", "source", "updated_at" ]
       },
+      "SyncDestinationWriteModeUpdate" : {
+        "description" : "Write mode for the destination, for updating",
+        "enum" : [ "append", "overwrite", "overwrite-delete-stale" ],
+        "type" : "string"
+      },
+      "SyncDestinationMigrateModeUpdate" : {
+        "description" : "Migrate mode for the destination, for updating",
+        "enum" : [ "safe", "forced" ],
+        "type" : "string"
+      },
       "SyncDestinationUpdate" : {
         "description" : "Sync Destination Update Definition",
         "properties" : {
@@ -9669,10 +9679,10 @@
             "$ref" : "#/components/schemas/DisplayName"
           },
           "write_mode" : {
-            "$ref" : "#/components/schemas/SyncDestinationWriteMode"
+            "$ref" : "#/components/schemas/SyncDestinationWriteModeUpdate"
           },
           "migrate_mode" : {
-            "$ref" : "#/components/schemas/SyncDestinationMigrateMode"
+            "$ref" : "#/components/schemas/SyncDestinationMigrateModeUpdate"
           },
           "last_update_source" : {
             "$ref" : "#/components/schemas/SyncLastUpdateSource"
