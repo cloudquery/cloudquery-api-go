@@ -10924,7 +10924,7 @@
           "return_to" : {
             "description" : "Return to this URL after verification",
             "format" : "url",
-            "pattern" : "^https:\\/\\/(.*\\.)?cloudquery\\.io(\\/.*)?$"
+            "pattern" : "^(https:\\/\\/(.*\\.)?cloudquery\\.io(\\/.*)?|http:\\/\\/localhost(:\\d+)?\\/callback)$"
           },
           "subdomain" : {
             "description" : "Subdomain to use in the URL",
