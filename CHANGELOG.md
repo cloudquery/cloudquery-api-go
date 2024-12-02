@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.4](https://github.com/cloudquery/cloudquery-api-go/compare/v1.13.3...v1.13.4) (2024-12-02)
+
+
+### Bug Fixes
+
+* **deps:** Bump github.com/hashicorp/go-retryablehttp from 0.7.5 to 0.7.7 ([#255](https://github.com/cloudquery/cloudquery-api-go/issues/255)) ([c628e2a](https://github.com/cloudquery/cloudquery-api-go/commit/c628e2add9f77e8a1dfe5fa7dad213cb86eb5d44))
+
 ## [1.13.3](https://github.com/cloudquery/cloudquery-api-go/compare/v1.13.2...v1.13.3) (2024-12-02)
 
 
