@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.5](https://github.com/cloudquery/cloudquery-api-go/compare/v1.13.4...v1.13.5) (2024-12-03)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/adrg/xdg to v0.5.3 ([#259](https://github.com/cloudquery/cloudquery-api-go/issues/259)) ([9c97ad9](https://github.com/cloudquery/cloudquery-api-go/commit/9c97ad9edca9906f86bd717fbf5ad9d2a1bf9dc2))
+* **deps:** Update module github.com/stretchr/testify to v1.10.0 ([#260](https://github.com/cloudquery/cloudquery-api-go/issues/260)) ([c5c30db](https://github.com/cloudquery/cloudquery-api-go/commit/c5c30dbabb9facc50d2d0e06870c23b03bbefebf))
+
 ## [1.13.4](https://github.com/cloudquery/cloudquery-api-go/compare/v1.13.3...v1.13.4) (2024-12-02)
 
 
