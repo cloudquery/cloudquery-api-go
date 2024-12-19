@@ -73,7 +73,9 @@ func NewTokenClient() *TokenClient {
 func (tc *TokenClient) GetToken() (Token, error) {
 	tokenType := tc.GetTokenType()
 	if tokenType != BearerToken {
-		return Token{Type: tokenType, Value: os.Getenv(EnvVarCloudQueryAPIKey)}, nil
+		tokenFromEnv := os.Getenv(EnvVarCloudQueryAPIKey)
+		trimmedToken := strings.TrimSpace(tokenFromEnv)
+		return Token{Type: tokenType, Value: trimmedToken}, nil
 	}
 
 	// If the token is not expired, return it
