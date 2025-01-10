@@ -14,7 +14,7 @@ jobs:
 
       - name: Get Specs File
         run: |
-          curl -H "Authorization: token ${{ secrets.GH_CQ_BOT }}" https://raw.githubusercontent.com/cloudquery/cloud/main/internal/servergen/spec.json -o spec.json
+          curl -H "Authorization: token ${{ secrets.GH_CQ_BOT }}" https://raw.githubusercontent.com/cloudquery/cloud/main/cloud/internal/servergen/spec.json -o spec.json
 
       - name: Format Specs File
         run: |
