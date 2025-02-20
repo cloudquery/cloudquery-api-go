@@ -2958,6 +2958,9 @@ type VerifyUserEmailRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// VersionFilter A version filter in semantic version format with prefix ranges.
+type VersionFilter = string
+
 // VersionName The version in semantic version format.
 type VersionName = string
 
@@ -3120,6 +3123,7 @@ type ListPluginVersionsParams struct {
 
 	// IncludePrereleases Whether to include prerelease versions
 	IncludePrereleases *IncludePrereleases `form:"include_prereleases,omitempty" json:"include_prereleases,omitempty"`
+	VersionFilter      *VersionFilter      `form:"version_filter,omitempty" json:"version_filter,omitempty"`
 }
 
 // ListPluginVersionsParamsSortBy defines parameters for ListPluginVersions.

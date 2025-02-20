@@ -4861,6 +4861,22 @@ func NewListPluginVersionsRequest(server string, teamName TeamName, pluginKind P
 
 		}
 
+		if params.VersionFilter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "version_filter", runtime.ParamLocationQuery, *params.VersionFilter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -13083,6 +13099,7 @@ type ListPluginVersionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *ListPluginVersions200Response
+	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
@@ -19636,6 +19653,13 @@ func ParseListPluginVersionsResponse(rsp *http.Response) (*ListPluginVersionsRes
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
