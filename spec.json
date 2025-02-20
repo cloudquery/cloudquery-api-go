@@ -608,6 +608,8 @@
           "$ref" : "#/components/parameters/include_drafts"
         }, {
           "$ref" : "#/components/parameters/include_prereleases"
+        }, {
+          "$ref" : "#/components/parameters/version_filter"
         } ],
         "responses" : {
           "200" : {
@@ -619,6 +621,9 @@
               }
             },
             "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
           },
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
@@ -6619,6 +6624,16 @@
         },
         "style" : "form"
       },
+      "version_filter" : {
+        "explode" : true,
+        "in" : "query",
+        "name" : "version_filter",
+        "required" : false,
+        "schema" : {
+          "$ref" : "#/components/schemas/VersionFilter"
+        },
+        "style" : "form"
+      },
       "version_name" : {
         "explode" : false,
         "in" : "path",
@@ -7450,6 +7465,11 @@
         },
         "required" : [ "effective_from", "free_rows_per_month", "usd_per_row" ],
         "title" : "CloudQuery Plugin Price Create"
+      },
+      "VersionFilter" : {
+        "description" : "A version filter in semantic version format with prefix ranges.",
+        "pattern" : "^[^~]?v[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+        "type" : "string"
       },
       "PluginProtocols" : {
         "description" : "The CloudQuery protocols supported by this plugin version (only protocol 3 is supported by new plugins).",
