@@ -153,6 +153,9 @@ type ClientInterface interface {
 
 	RenewPlatformActivation(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetPlatformFlags request
+	GetPlatformFlags(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPluginNotificationRequests request
 	ListPluginNotificationRequests(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -927,6 +930,18 @@ func (c *Client) RenewPlatformActivationWithBody(ctx context.Context, contentTyp
 
 func (c *Client) RenewPlatformActivation(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRenewPlatformActivationRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPlatformFlags(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPlatformFlagsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -4098,6 +4113,33 @@ func NewRenewPlatformActivationRequestWithBody(server string, contentType string
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetPlatformFlagsRequest generates requests for GetPlatformFlags
+func NewGetPlatformFlagsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/platform/flags")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -11862,6 +11904,9 @@ type ClientWithResponsesInterface interface {
 
 	RenewPlatformActivationWithResponse(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*RenewPlatformActivationResponse, error)
 
+	// GetPlatformFlagsWithResponse request
+	GetPlatformFlagsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPlatformFlagsResponse, error)
+
 	// ListPluginNotificationRequestsWithResponse request
 	ListPluginNotificationRequestsWithResponse(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*ListPluginNotificationRequestsResponse, error)
 
@@ -12782,6 +12827,30 @@ func (r RenewPlatformActivationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r RenewPlatformActivationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPlatformFlagsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PlatformFlags
+	JSON401      *RequiresAuthentication
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPlatformFlagsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPlatformFlagsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -16564,6 +16633,15 @@ func (c *ClientWithResponses) RenewPlatformActivationWithResponse(ctx context.Co
 	return ParseRenewPlatformActivationResponse(rsp)
 }
 
+// GetPlatformFlagsWithResponse request returning *GetPlatformFlagsResponse
+func (c *ClientWithResponses) GetPlatformFlagsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPlatformFlagsResponse, error) {
+	rsp, err := c.GetPlatformFlags(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPlatformFlagsResponse(rsp)
+}
+
 // ListPluginNotificationRequestsWithResponse request returning *ListPluginNotificationRequestsResponse
 func (c *ClientWithResponses) ListPluginNotificationRequestsWithResponse(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*ListPluginNotificationRequestsResponse, error) {
 	rsp, err := c.ListPluginNotificationRequests(ctx, params, reqEditors...)
@@ -19007,6 +19085,46 @@ func ParseRenewPlatformActivationResponse(rsp *http.Response) (*RenewPlatformAct
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPlatformFlagsResponse parses an HTTP response from a GetPlatformFlagsWithResponse call
+func ParseGetPlatformFlagsResponse(rsp *http.Response) (*GetPlatformFlagsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPlatformFlagsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PlatformFlags
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
