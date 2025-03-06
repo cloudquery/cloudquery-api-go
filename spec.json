@@ -290,6 +290,10 @@
           "$ref" : "#/components/parameters/page"
         }, {
           "$ref" : "#/components/parameters/per_page"
+        }, {
+          "$ref" : "#/components/parameters/plugin_include_release_stages"
+        }, {
+          "$ref" : "#/components/parameters/plugin_exclude_release_stages"
         } ],
         "responses" : {
           "200" : {
@@ -6606,6 +6610,37 @@
         },
         "style" : "form"
       },
+      "plugin_include_release_stages" : {
+        "allowEmptyValue" : true,
+        "description" : "Include these release stages in the response",
+        "explode" : true,
+        "in" : "query",
+        "name" : "include_release_stages",
+        "required" : false,
+        "schema" : {
+          "items" : {
+            "$ref" : "#/components/schemas/PluginReleaseStage"
+          },
+          "type" : "array"
+        },
+        "style" : "form"
+      },
+      "plugin_exclude_release_stages" : {
+        "allowEmptyValue" : true,
+        "description" : "Exclude these release stages from the response",
+        "explode" : true,
+        "in" : "query",
+        "name" : "exclude_release_stages",
+        "required" : false,
+        "schema" : {
+          "default" : [ "deprecated" ],
+          "items" : {
+            "$ref" : "#/components/schemas/PluginReleaseStage"
+          },
+          "type" : "array"
+        },
+        "style" : "form"
+      },
       "team_name" : {
         "explode" : false,
         "in" : "path",
@@ -7153,6 +7188,11 @@
           }
         } ]
       },
+      "PluginReleaseStage" : {
+        "description" : "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
+        "enum" : [ "coming-soon", "preview", "ga", "deprecated" ],
+        "type" : "string"
+      },
       "PluginCategory" : {
         "description" : "Supported categories for plugins",
         "enum" : [ "cloud-infrastructure", "databases", "sales-marketing", "engineering-analytics", "marketing-analytics", "shipment-tracking", "product-analytics", "cloud-finops", "project-management", "fleet-management", "security", "data-warehouses", "human-resources", "finance", "customer-support", "other" ],
@@ -7161,11 +7201,6 @@
       "PluginPriceCategory" : {
         "description" : "Supported price categories for billing",
         "enum" : [ "api", "database", "free" ],
-        "type" : "string"
-      },
-      "PluginReleaseStage" : {
-        "description" : "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
-        "enum" : [ "coming-soon", "preview", "ga" ],
         "type" : "string"
       },
       "PluginTier" : {
@@ -7365,7 +7400,7 @@
       },
       "PluginReleaseStageUpdate" : {
         "description" : "Official plugins can go through three release stages: Coming Soon, Preview, and GA.\nThe Coming Soon stage is for plugins that are not yet ready for Preview, but users can subscribe to be notified when they are ready.\nBoth Preview and GA plugins follow semantic versioning. The main differences between the two stages are:\nPreview plugins are still experimental and may have frequent breaking changes. Preview plugins might get deprecated due to lack of usage. Long Term Support with community Discord and bug fixes is only guaranteed for GA plugins. Premium plugins are often discounted or free during the Preview stage.",
-        "enum" : [ "coming-soon", "preview", "ga" ],
+        "enum" : [ "coming-soon", "preview", "ga", "deprecated" ],
         "type" : "string"
       },
       "PluginUpdate" : {

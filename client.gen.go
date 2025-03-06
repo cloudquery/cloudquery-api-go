@@ -4415,6 +4415,38 @@ func NewListPluginsRequest(server string, params *ListPluginsParams) (*http.Requ
 
 		}
 
+		if params.IncludeReleaseStages != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "include_release_stages", runtime.ParamLocationQuery, *params.IncludeReleaseStages); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ExcludeReleaseStages != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "exclude_release_stages", runtime.ParamLocationQuery, *params.ExcludeReleaseStages); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
