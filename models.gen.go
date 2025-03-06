@@ -133,6 +133,7 @@ const (
 // Defines values for PluginReleaseStage.
 const (
 	PluginReleaseStageComingSoon PluginReleaseStage = "coming-soon"
+	PluginReleaseStageDeprecated PluginReleaseStage = "deprecated"
 	PluginReleaseStageGa         PluginReleaseStage = "ga"
 	PluginReleaseStagePreview    PluginReleaseStage = "preview"
 )
@@ -147,6 +148,7 @@ const (
 // Defines values for PluginReleaseStageUpdate.
 const (
 	PluginReleaseStageUpdateComingSoon PluginReleaseStageUpdate = "coming-soon"
+	PluginReleaseStageUpdateDeprecated PluginReleaseStageUpdate = "deprecated"
 	PluginReleaseStageUpdateGa         PluginReleaseStageUpdate = "ga"
 	PluginReleaseStageUpdatePreview    PluginReleaseStageUpdate = "preview"
 )
@@ -2991,6 +2993,12 @@ type Page = int64
 // PerPage defines model for per_page.
 type PerPage = int64
 
+// PluginExcludeReleaseStages defines model for plugin_exclude_release_stages.
+type PluginExcludeReleaseStages = []PluginReleaseStage
+
+// PluginIncludeReleaseStages defines model for plugin_include_release_stages.
+type PluginIncludeReleaseStages = []PluginReleaseStage
+
 // PluginSortBy defines model for plugin_sort_by.
 type PluginSortBy string
 
@@ -3105,6 +3113,12 @@ type ListPluginsParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+
+	// IncludeReleaseStages Include these release stages in the response
+	IncludeReleaseStages *PluginIncludeReleaseStages `form:"include_release_stages,omitempty" json:"include_release_stages,omitempty"`
+
+	// ExcludeReleaseStages Exclude these release stages from the response
+	ExcludeReleaseStages *PluginExcludeReleaseStages `form:"exclude_release_stages,omitempty" json:"exclude_release_stages,omitempty"`
 }
 
 // ListPluginsParamsSortBy defines parameters for ListPlugins.
