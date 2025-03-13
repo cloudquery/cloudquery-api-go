@@ -11239,6 +11239,16 @@
           },
           "status" : {
             "$ref" : "#/components/schemas/SyncRunStatus"
+          },
+          "shard_num" : {
+            "description" : "The shard number that this progress update is for",
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "shard_total" : {
+            "description" : "The total number of shards for this sync run",
+            "format" : "int32",
+            "type" : "integer"
           }
         },
         "required" : [ "errors", "rows", "warnings" ]
