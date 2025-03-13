@@ -887,6 +887,12 @@ type CreateSyncRunProgressRequest struct {
 	// Rows Number of rows synced so far
 	Rows int64 `json:"rows"`
 
+	// ShardNum The shard number that this progress update is for
+	ShardNum *int32 `json:"shard_num,omitempty"`
+
+	// ShardTotal The total number of shards for this sync run
+	ShardTotal *int32 `json:"shard_total,omitempty"`
+
 	// Status The status of the sync run
 	Status *SyncRunStatus `json:"status,omitempty"`
 
