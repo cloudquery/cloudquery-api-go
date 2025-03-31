@@ -2854,6 +2854,9 @@ type UsageCurrent struct {
 
 // UsageIncrease Increase the usage of a plugin. This can incur billing costs and should be used only by plugins.
 type UsageIncrease struct {
+	// InstallationID Installation ID associated with the platform, for platform syncs.
+	InstallationID *string `json:"installation_id,omitempty"`
+
 	// PluginKind The kind of plugin, ie. source or destination.
 	PluginKind PluginKind `json:"plugin_kind"`
 
