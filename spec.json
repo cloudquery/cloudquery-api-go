@@ -8752,6 +8752,12 @@
             "example" : "123e4567-e89b-12d3-a456-426614174000",
             "format" : "uuid",
             "type" : "string"
+          },
+          "installation_id" : {
+            "description" : "Installation ID associated with the platform, for platform syncs.",
+            "pattern" : "^[a-z0-9]{64}$",
+            "type" : "string",
+            "x-go-name" : "InstallationID"
           }
         },
         "required" : [ "plugin_kind", "plugin_name", "plugin_team", "request_id", "rows" ],
