@@ -626,6 +626,12 @@ type BasicError struct {
 	Status  int    `json:"status"`
 }
 
+// CheckUserAuthStatus200Response defines model for CheckUserAuthStatus_200_response.
+type CheckUserAuthStatus200Response struct {
+	// Authenticated Whether the user is authenticated
+	Authenticated bool `json:"authenticated"`
+}
+
 // Connector Connector definition
 type Connector struct {
 	// CreatedAt Time the connector was created

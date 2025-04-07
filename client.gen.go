@@ -635,6 +635,9 @@ type ClientInterface interface {
 
 	SendAnonymousEvent(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CheckUserAuthStatus request
+	CheckUserAuthStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// UpdateCustomerWithBody request with any body
 	UpdateCustomerWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3054,6 +3057,18 @@ func (c *Client) SendAnonymousEventWithBody(ctx context.Context, contentType str
 
 func (c *Client) SendAnonymousEvent(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSendAnonymousEventRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CheckUserAuthStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCheckUserAuthStatusRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -11415,6 +11430,33 @@ func NewSendAnonymousEventRequestWithBody(server string, contentType string, bod
 	return req, nil
 }
 
+// NewCheckUserAuthStatusRequest generates requests for CheckUserAuthStatus
+func NewCheckUserAuthStatusRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/authenticated-status")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewUpdateCustomerRequest calls the generic UpdateCustomer builder with application/json body
 func NewUpdateCustomerRequest(server string, body UpdateCustomerJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -12417,6 +12459,9 @@ type ClientWithResponsesInterface interface {
 	SendAnonymousEventWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SendAnonymousEventResponse, error)
 
 	SendAnonymousEventWithResponse(ctx context.Context, body SendAnonymousEventJSONRequestBody, reqEditors ...RequestEditorFn) (*SendAnonymousEventResponse, error)
+
+	// CheckUserAuthStatusWithResponse request
+	CheckUserAuthStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CheckUserAuthStatusResponse, error)
 
 	// UpdateCustomerWithBodyWithResponse request with any body
 	UpdateCustomerWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error)
@@ -16219,6 +16264,29 @@ func (r SendAnonymousEventResponse) StatusCode() int {
 	return 0
 }
 
+type CheckUserAuthStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CheckUserAuthStatus200Response
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CheckUserAuthStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CheckUserAuthStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type UpdateCustomerResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18207,6 +18275,15 @@ func (c *ClientWithResponses) SendAnonymousEventWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseSendAnonymousEventResponse(rsp)
+}
+
+// CheckUserAuthStatusWithResponse request returning *CheckUserAuthStatusResponse
+func (c *ClientWithResponses) CheckUserAuthStatusWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CheckUserAuthStatusResponse, error) {
+	rsp, err := c.CheckUserAuthStatus(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCheckUserAuthStatusResponse(rsp)
 }
 
 // UpdateCustomerWithBodyWithResponse request with arbitrary body returning *UpdateCustomerResponse
@@ -26214,6 +26291,39 @@ func ParseSendAnonymousEventResponse(rsp *http.Response) (*SendAnonymousEventRes
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCheckUserAuthStatusResponse parses an HTTP response from a CheckUserAuthStatusWithResponse call
+func ParseCheckUserAuthStatusResponse(rsp *http.Response) (*CheckUserAuthStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CheckUserAuthStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CheckUserAuthStatus200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
