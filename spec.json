@@ -3647,6 +3647,30 @@
         "tags" : [ "users" ]
       }
     },
+    "/user/authenticated-status" : {
+      "get" : {
+        "description" : "Check if the current user is authenticated",
+        "operationId" : "CheckUserAuthStatus",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CheckUserAuthStatus_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "users" ]
+      }
+    },
     "/user/login" : {
       "delete" : {
         "description" : "Logout a session",
@@ -10973,6 +10997,15 @@
             "$ref" : "#/components/schemas/UserName"
           }
         }
+      },
+      "CheckUserAuthStatus_200_response" : {
+        "properties" : {
+          "authenticated" : {
+            "description" : "Whether the user is authenticated",
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "authenticated" ]
       },
       "LoginUser_request" : {
         "additionalProperties" : { },
