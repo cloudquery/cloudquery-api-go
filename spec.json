@@ -6534,6 +6534,41 @@
         "x-internal" : true
       }
     },
+    "/platform/report" : {
+      "post" : {
+        "description" : "Report platform data",
+        "operationId" : "ReportPlatformData",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReportPlatformData_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
     "/platform/flags" : {
       "get" : {
         "description" : "Get platform feature flags",
@@ -11443,6 +11478,23 @@
           }
         },
         "required" : [ "next_check_in_seconds" ]
+      },
+      "ReportPlatformData_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "installation_id" : {
+            "description" : "Installation ID of the platform",
+            "pattern" : "^[a-z0-9]{64}$",
+            "x-go-name" : "InstallationID"
+          },
+          "user_additions" : {
+            "items" : { }
+          },
+          "user_removals" : {
+            "items" : { }
+          }
+        },
+        "required" : [ "installation_id", "user_additions", "user_removals" ]
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {
