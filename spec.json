@@ -11488,13 +11488,17 @@
             "x-go-name" : "InstallationID"
           },
           "user_additions" : {
-            "items" : { }
+            "items" : {
+              "type" : "string"
+            },
+            "x-go-type-skip-optional-pointer" : true
           },
           "user_removals" : {
-            "items" : { }
+            "items" : { },
+            "x-go-type-skip-optional-pointer" : true
           }
         },
-        "required" : [ "installation_id", "user_additions", "user_removals" ]
+        "required" : [ "installation_id" ]
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {

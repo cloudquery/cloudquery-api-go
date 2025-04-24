@@ -2051,8 +2051,8 @@ type RenewPlatformActivationRequest struct {
 type ReportPlatformDataRequest struct {
 	// InstallationID Installation ID of the platform
 	InstallationID       interface{}            `json:"installation_id"`
-	UserAdditions        interface{}            `json:"user_additions"`
-	UserRemovals         interface{}            `json:"user_removals"`
+	UserAdditions        interface{}            `json:"user_additions,omitempty"`
+	UserRemovals         interface{}            `json:"user_removals,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -4785,14 +4785,18 @@ func (a ReportPlatformDataRequest) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
 	}
 
-	object["user_additions"], err = json.Marshal(a.UserAdditions)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'user_additions': %w", err)
+	if a.UserAdditions != nil {
+		object["user_additions"], err = json.Marshal(a.UserAdditions)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'user_additions': %w", err)
+		}
 	}
 
-	object["user_removals"], err = json.Marshal(a.UserRemovals)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'user_removals': %w", err)
+	if a.UserRemovals != nil {
+		object["user_removals"], err = json.Marshal(a.UserRemovals)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'user_removals': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
