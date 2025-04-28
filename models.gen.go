@@ -958,8 +958,8 @@ type DeleteTeamInvitationRequest struct {
 
 // DeterminePlatformTenantByEmail200Response defines model for DeterminePlatformTenantByEmail_200_response.
 type DeterminePlatformTenantByEmail200Response struct {
-	// TenantURL URL of the tenant
-	TenantURL string `json:"tenant_url"`
+	// Items List of tenants
+	Items []TenantUser `json:"items,omitempty"`
 }
 
 // DisplayName A human-readable display name
@@ -2780,6 +2780,15 @@ type TeamSubscriptionOrderID = openapi_types.UUID
 
 // TeamSubscriptionOrderStatus defines model for TeamSubscriptionOrderStatus.
 type TeamSubscriptionOrderStatus string
+
+// TenantUser Tenant information of a platform user
+type TenantUser struct {
+	// Provider Login provider of the tenant
+	Provider *string `json:"provider,omitempty"`
+
+	// TenantURL URL of the tenant
+	TenantURL string `json:"tenant_url"`
+}
 
 // UpdateCurrentUserRequest defines model for UpdateCurrentUser_request.
 type UpdateCurrentUserRequest struct {
