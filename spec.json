@@ -4062,10 +4062,7 @@
                 }
               }
             },
-            "description" : "Tenant found"
-          },
-          "204" : {
-            "description" : "No tenant found, or multiple tenants"
+            "description" : "List of tenants"
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -9147,6 +9144,23 @@
           "required" : [ "token" ]
         } ]
       },
+      "TenantUser" : {
+        "additionalProperties" : false,
+        "description" : "Tenant information of a platform user",
+        "properties" : {
+          "tenant_url" : {
+            "description" : "URL of the tenant",
+            "format" : "url",
+            "type" : "string",
+            "x-go-name" : "TenantURL"
+          },
+          "provider" : {
+            "description" : "Login provider of the tenant",
+            "type" : "string"
+          }
+        },
+        "required" : [ "tenant_url" ]
+      },
       "UserID" : {
         "description" : "ID of the User",
         "example" : "12345678-1234-1234-1234-1234567890ab",
@@ -11233,14 +11247,15 @@
       },
       "DeterminePlatformTenantByEmail_200_response" : {
         "properties" : {
-          "tenant_url" : {
-            "description" : "URL of the tenant",
-            "format" : "url",
-            "type" : "string",
-            "x-go-name" : "TenantURL"
+          "items" : {
+            "description" : "List of tenants",
+            "items" : {
+              "$ref" : "#/components/schemas/TenantUser"
+            },
+            "type" : "array",
+            "x-go-type-skip-optional-pointer" : true
           }
-        },
-        "required" : [ "tenant_url" ]
+        }
       },
       "ListTeamAPIKeys_200_response" : {
         "properties" : {
