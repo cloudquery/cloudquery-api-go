@@ -956,6 +956,12 @@ type DeleteTeamInvitationRequest struct {
 	Email openapi_types.Email `json:"email"`
 }
 
+// DeterminePlatformTenantByEmail200Response defines model for DeterminePlatformTenantByEmail_200_response.
+type DeterminePlatformTenantByEmail200Response struct {
+	// TenantURL URL of the tenant
+	TenantURL string `json:"tenant_url"`
+}
+
 // DisplayName A human-readable display name
 type DisplayName = string
 
@@ -3469,6 +3475,11 @@ type GetCurrentUserMembershipsParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
+// DeterminePlatformTenantByEmailParams defines parameters for DeterminePlatformTenantByEmail.
+type DeterminePlatformTenantByEmailParams struct {
+	Email string `form:"email" json:"email"`
 }
 
 // CreateAddonJSONRequestBody defines body for CreateAddon for application/json ContentType.

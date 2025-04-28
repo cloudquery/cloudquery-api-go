@@ -672,6 +672,9 @@ type ClientInterface interface {
 
 	ResetUserPassword(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeterminePlatformTenantByEmail request
+	DeterminePlatformTenantByEmail(ctx context.Context, params *DeterminePlatformTenantByEmailParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateUserToken request
 	CreateUserToken(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3230,6 +3233,18 @@ func (c *Client) ResetUserPasswordWithBody(ctx context.Context, contentType stri
 
 func (c *Client) ResetUserPassword(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewResetUserPasswordRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeterminePlatformTenantByEmail(ctx context.Context, params *DeterminePlatformTenantByEmailParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeterminePlatformTenantByEmailRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -11843,6 +11858,51 @@ func NewResetUserPasswordRequestWithBody(server string, contentType string, body
 	return req, nil
 }
 
+// NewDeterminePlatformTenantByEmailRequest generates requests for DeterminePlatformTenantByEmail
+func NewDeterminePlatformTenantByEmailRequest(server string, params *DeterminePlatformTenantByEmailParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/tenant")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "email", runtime.ParamLocationQuery, params.Email); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewCreateUserTokenRequest generates requests for CreateUserToken
 func NewCreateUserTokenRequest(server string) (*http.Request, error) {
 	var err error
@@ -12565,6 +12625,9 @@ type ClientWithResponsesInterface interface {
 	ResetUserPasswordWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error)
 
 	ResetUserPasswordWithResponse(ctx context.Context, body ResetUserPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error)
+
+	// DeterminePlatformTenantByEmailWithResponse request
+	DeterminePlatformTenantByEmailWithResponse(ctx context.Context, params *DeterminePlatformTenantByEmailParams, reqEditors ...RequestEditorFn) (*DeterminePlatformTenantByEmailResponse, error)
 
 	// CreateUserTokenWithResponse request
 	CreateUserTokenWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CreateUserTokenResponse, error)
@@ -16563,6 +16626,32 @@ func (r ResetUserPasswordResponse) StatusCode() int {
 	return 0
 }
 
+type DeterminePlatformTenantByEmailResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DeterminePlatformTenantByEmail200Response
+	JSON400      *BadRequest
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r DeterminePlatformTenantByEmailResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeterminePlatformTenantByEmailResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CreateUserTokenResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18495,6 +18584,15 @@ func (c *ClientWithResponses) ResetUserPasswordWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseResetUserPasswordResponse(rsp)
+}
+
+// DeterminePlatformTenantByEmailWithResponse request returning *DeterminePlatformTenantByEmailResponse
+func (c *ClientWithResponses) DeterminePlatformTenantByEmailWithResponse(ctx context.Context, params *DeterminePlatformTenantByEmailParams, reqEditors ...RequestEditorFn) (*DeterminePlatformTenantByEmailResponse, error) {
+	rsp, err := c.DeterminePlatformTenantByEmail(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeterminePlatformTenantByEmailResponse(rsp)
 }
 
 // CreateUserTokenWithResponse request returning *CreateUserTokenResponse
@@ -26810,6 +26908,60 @@ func ParseResetUserPasswordResponse(rsp *http.Response) (*ResetUserPasswordRespo
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeterminePlatformTenantByEmailResponse parses an HTTP response from a DeterminePlatformTenantByEmailWithResponse call
+func ParseDeterminePlatformTenantByEmailResponse(rsp *http.Response) (*DeterminePlatformTenantByEmailResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeterminePlatformTenantByEmailResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeterminePlatformTenantByEmail200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

@@ -4038,6 +4038,53 @@
         "x-internal" : true
       }
     },
+    "/user/tenant" : {
+      "get" : {
+        "description" : "Determine platform tenant by email",
+        "operationId" : "DeterminePlatformTenantByEmail",
+        "parameters" : [ {
+          "explode" : true,
+          "in" : "query",
+          "name" : "email",
+          "required" : true,
+          "schema" : {
+            "description" : "Email address of the user",
+            "type" : "string"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DeterminePlatformTenantByEmail_200_response"
+                }
+              }
+            },
+            "description" : "Tenant found"
+          },
+          "204" : {
+            "description" : "No tenant found, or multiple tenants"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "platform", "users" ],
+        "x-internal" : true
+      }
+    },
     "/users/{user_id}" : {
       "delete" : {
         "description" : "Delete user",
@@ -11183,6 +11230,17 @@
           }
         },
         "required" : [ "first_name", "last_name" ]
+      },
+      "DeterminePlatformTenantByEmail_200_response" : {
+        "properties" : {
+          "tenant_url" : {
+            "description" : "URL of the tenant",
+            "format" : "url",
+            "type" : "string",
+            "x-go-name" : "TenantURL"
+          }
+        },
+        "required" : [ "tenant_url" ]
       },
       "ListTeamAPIKeys_200_response" : {
         "properties" : {
