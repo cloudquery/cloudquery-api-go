@@ -958,6 +958,9 @@ type DeleteTeamInvitationRequest struct {
 
 // DeterminePlatformTenantByEmail200Response defines model for DeterminePlatformTenantByEmail_200_response.
 type DeterminePlatformTenantByEmail200Response struct {
+	// HasCloudAccount Whether the user has a cloud account
+	HasCloudAccount bool `json:"has_cloud_account"`
+
 	// Items List of tenants
 	Items []TenantUser `json:"items,omitempty"`
 }
