@@ -11254,8 +11254,13 @@
             },
             "type" : "array",
             "x-go-type-skip-optional-pointer" : true
+          },
+          "has_cloud_account" : {
+            "description" : "Whether the user has a cloud account",
+            "type" : "boolean"
           }
-        }
+        },
+        "required" : [ "has_cloud_account" ]
       },
       "ListTeamAPIKeys_200_response" : {
         "properties" : {
