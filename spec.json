@@ -7960,6 +7960,14 @@
             },
             "type" : "array"
           },
+          "sensitive_columns" : {
+            "description" : "List of columns within this table that can contain sensitive/secret data",
+            "example" : [ "secret_key" ],
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
           "title" : {
             "description" : "Title of the table",
             "example" : "AWS S3 Buckets",
@@ -8023,6 +8031,14 @@
           "permissions_needed" : {
             "description" : "List of permissions needed to access this table, if any",
             "example" : [ "storage.buckets.list" ],
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "sensitive_columns" : {
+            "description" : "List of columns within this table that can contain sensitive/secret data",
+            "example" : [ "secret_key" ],
             "items" : {
               "type" : "string"
             },

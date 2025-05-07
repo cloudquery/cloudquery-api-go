@@ -1720,6 +1720,9 @@ type PluginTableCreate struct {
 	// Relations Names of the tables that depend on this table
 	Relations *[]string `json:"relations,omitempty"`
 
+	// SensitiveColumns List of columns within this table that can contain sensitive/secret data
+	SensitiveColumns *[]string `json:"sensitive_columns,omitempty"`
+
 	// Title Title of the table
 	Title *string `json:"title,omitempty"`
 }
@@ -1749,6 +1752,9 @@ type PluginTableDetails struct {
 
 	// Relations Names of the tables that depend on this table
 	Relations []string `json:"relations"`
+
+	// SensitiveColumns List of columns within this table that can contain sensitive/secret data
+	SensitiveColumns *[]string `json:"sensitive_columns,omitempty"`
 
 	// Title Title of the table
 	Title string `json:"title"`
