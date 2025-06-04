@@ -7749,6 +7749,12 @@
               "description" : "Base URL for the plugin's UI. Only available for plugins with a UI and for logged in users.",
               "type" : "string",
               "x-go-name" : "UIBaseURL"
+            },
+            "ui_id" : {
+              "description" : "ID of the plugin's UI.",
+              "format" : "uuid",
+              "type" : "string",
+              "x-go-name" : "UIID"
             }
           },
           "required" : [ "example_config" ]
