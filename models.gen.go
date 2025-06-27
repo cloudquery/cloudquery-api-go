@@ -902,6 +902,9 @@ type CreateSyncRunProgressRequest struct {
 	// Status The status of the sync run
 	Status *SyncRunStatus `json:"status,omitempty"`
 
+	// TableProgress Table-specific progress information for a sync run
+	TableProgress *SyncRunTableProgress `json:"table_progress,omitempty"`
+
 	// Warnings Number of warnings encountered so far
 	Warnings int64 `json:"warnings"`
 }
@@ -2494,6 +2497,18 @@ type SyncRunStatus string
 
 // SyncRunStatusReason The reason for the status
 type SyncRunStatusReason string
+
+// SyncRunTableProgress Table-specific progress information for a sync run
+type SyncRunTableProgress map[string]SyncRunTableProgressValue
+
+// SyncRunTableProgressValue defines model for SyncRunTableProgress_value.
+type SyncRunTableProgressValue struct {
+	// Errors Number of errors for this table
+	Errors int64 `json:"errors"`
+
+	// Rows Number of rows processed for this table
+	Rows int64 `json:"rows"`
+}
 
 // SyncSource defines model for SyncSource.
 type SyncSource struct {

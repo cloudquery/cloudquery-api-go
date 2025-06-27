@@ -10128,6 +10128,12 @@
           }
         } ]
       },
+      "SyncRunTableProgress" : {
+        "additionalProperties" : {
+          "$ref" : "#/components/schemas/SyncRunTableProgress_value"
+        },
+        "description" : "Table-specific progress information for a sync run"
+      },
       "ConnectorIdentityResponseAWS" : {
         "additionalProperties" : false,
         "description" : "AWS connector identity response",
@@ -11423,6 +11429,9 @@
             "description" : "The total number of shards for this sync run",
             "format" : "int32",
             "type" : "integer"
+          },
+          "table_progress" : {
+            "$ref" : "#/components/schemas/SyncRunTableProgress"
           }
         },
         "required" : [ "errors", "rows", "warnings" ]
@@ -11656,6 +11665,21 @@
           }
         },
         "required" : [ "end", "start" ]
+      },
+      "SyncRunTableProgress_value" : {
+        "properties" : {
+          "errors" : {
+            "description" : "Number of errors for this table",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "rows" : {
+            "description" : "Number of rows processed for this table",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "errors", "rows" ]
       }
     },
     "securitySchemes" : {
