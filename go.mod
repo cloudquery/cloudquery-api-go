@@ -1,10 +1,12 @@
 module github.com/cloudquery/cloudquery-api-go
 
-go 1.21.0
+go 1.23
+
+toolchain go1.23.10
 
 require (
 	github.com/adrg/xdg v0.5.3
-	github.com/hashicorp/go-retryablehttp v0.7.7
+	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/stretchr/testify v1.10.0
 )
