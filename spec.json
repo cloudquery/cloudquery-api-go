@@ -611,6 +611,8 @@
         }, {
           "$ref" : "#/components/parameters/include_drafts"
         }, {
+          "$ref" : "#/components/parameters/include_fips"
+        }, {
           "$ref" : "#/components/parameters/include_prereleases"
         }, {
           "$ref" : "#/components/parameters/version_filter"
@@ -6771,6 +6773,17 @@
         "explode" : true,
         "in" : "query",
         "name" : "include_drafts",
+        "required" : false,
+        "schema" : {
+          "type" : "boolean"
+        },
+        "style" : "form"
+      },
+      "include_fips" : {
+        "description" : "Whether to include fips versions",
+        "explode" : true,
+        "in" : "query",
+        "name" : "include_fips",
         "required" : false,
         "schema" : {
           "type" : "boolean"

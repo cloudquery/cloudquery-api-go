@@ -3047,6 +3047,9 @@ type EmailBasic = string
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
 
+// IncludeFips defines model for include_fips.
+type IncludeFips = bool
+
 // IncludePrereleases defines model for include_prereleases.
 type IncludePrereleases = bool
 
@@ -3203,6 +3206,9 @@ type ListPluginVersionsParams struct {
 
 	// IncludeDrafts Whether to include draft versions
 	IncludeDrafts *IncludeDrafts `form:"include_drafts,omitempty" json:"include_drafts,omitempty"`
+
+	// IncludeFips Whether to include fips versions
+	IncludeFips *IncludeFips `form:"include_fips,omitempty" json:"include_fips,omitempty"`
 
 	// IncludePrereleases Whether to include prerelease versions
 	IncludePrereleases *IncludePrereleases `form:"include_prereleases,omitempty" json:"include_prereleases,omitempty"`
