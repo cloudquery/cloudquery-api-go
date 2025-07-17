@@ -6614,32 +6614,6 @@
         "tags" : [ "platform" ],
         "x-internal" : true
       }
-    },
-    "/platform/flags" : {
-      "get" : {
-        "description" : "Get platform feature flags",
-        "operationId" : "GetPlatformFlags",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PlatformFlags"
-                }
-              }
-            },
-            "description" : "Response"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "security" : [ ],
-        "tags" : [ "platform" ]
-      }
     }
   },
   "components" : {
@@ -10525,11 +10499,6 @@
           }
         },
         "required" : [ "base_url", "return_url" ]
-      },
-      "PlatformFlags" : {
-        "additionalProperties" : false,
-        "description" : "A map of feature flags for the Platform",
-        "type" : "object"
       },
       "UploadImage_request" : {
         "properties" : {

@@ -1401,9 +1401,6 @@ type MembershipWithUser struct {
 	User User `json:"user"`
 }
 
-// PlatformFlags A map of feature flags for the Platform
-type PlatformFlags = map[string]interface{}
-
 // Plugin CloudQuery Plugin
 type Plugin struct {
 	// Category Supported categories for plugins
