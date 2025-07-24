@@ -3013,6 +3013,18 @@ type UserID = openapi_types.UUID
 // UserName The unique name for the user.
 type UserName = string
 
+// UserTOTPSetup200Response defines model for UserTOTPSetup_200_response.
+type UserTOTPSetup200Response struct {
+	Secret string `json:"secret"`
+	Url    string `json:"url"`
+}
+
+// UserTOTPVerifyRequest defines model for UserTOTPVerify_request.
+type UserTOTPVerifyRequest struct {
+	Otp                  string                 `json:"otp"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // VerifyUserEmailRequest defines model for VerifyUserEmail_request.
 type VerifyUserEmailRequest struct {
 	// Email Email address to verify
@@ -3521,6 +3533,11 @@ type DeterminePlatformTenantByEmailParams struct {
 	Email string `form:"email" json:"email"`
 }
 
+// UserTOTPVerifyParams defines parameters for UserTOTPVerify.
+type UserTOTPVerifyParams struct {
+	Session *string `form:"__session,omitempty" json:"__session,omitempty"`
+}
+
 // CreateAddonJSONRequestBody defines body for CreateAddon for application/json ContentType.
 type CreateAddonJSONRequestBody = AddonCreate
 
@@ -3700,6 +3717,9 @@ type LoginUserJSONRequestBody = LoginUserRequest
 
 // ResetUserPasswordJSONRequestBody defines body for ResetUserPassword for application/json ContentType.
 type ResetUserPasswordJSONRequestBody = ResetUserPasswordRequest
+
+// UserTOTPVerifyJSONRequestBody defines body for UserTOTPVerify for application/json ContentType.
+type UserTOTPVerifyJSONRequestBody = UserTOTPVerifyRequest
 
 // VerifyUserEmailJSONRequestBody defines body for VerifyUserEmail for application/json ContentType.
 type VerifyUserEmailJSONRequestBody = VerifyUserEmailRequest
@@ -5615,6 +5635,72 @@ func (a UsageSummary) MarshalJSON() ([]byte, error) {
 	object["values"], err = json.Marshal(a.Values)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'values': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for UserTOTPVerifyRequest. Returns the specified
+// element and whether it was found
+func (a UserTOTPVerifyRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for UserTOTPVerifyRequest
+func (a *UserTOTPVerifyRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for UserTOTPVerifyRequest to handle AdditionalProperties
+func (a *UserTOTPVerifyRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["otp"]; found {
+		err = json.Unmarshal(raw, &a.Otp)
+		if err != nil {
+			return fmt.Errorf("error reading 'otp': %w", err)
+		}
+		delete(object, "otp")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for UserTOTPVerifyRequest to handle AdditionalProperties
+func (a UserTOTPVerifyRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["otp"], err = json.Marshal(a.Otp)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'otp': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {

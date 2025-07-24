@@ -3796,6 +3796,142 @@
         "x-internal" : true
       }
     },
+    "/user/totp/verify" : {
+      "post" : {
+        "description" : "Verify a one time password for MFA",
+        "operationId" : "UserTOTPVerify",
+        "parameters" : [ {
+          "explode" : true,
+          "in" : "cookie",
+          "name" : "__session",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "form"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserTOTPVerify_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Multifactor authentication is complete.",
+            "headers" : {
+              "Set-Cookie" : {
+                "description" : "Session cookie",
+                "explode" : false,
+                "schema" : {
+                  "example" : "__session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9Cg...; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600",
+                  "type" : "string"
+                },
+                "style" : "simple"
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "users" ]
+      }
+    },
+    "/user/totp" : {
+      "delete" : {
+        "description" : "Disable MFA for the current user",
+        "operationId" : "UserTOTPDelete",
+        "parameters" : [ ],
+        "responses" : {
+          "204" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "users" ]
+      },
+      "post" : {
+        "description" : "Set up MFA for the current user",
+        "operationId" : "UserTOTPSetup",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserTOTPSetup_200_response"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "users" ]
+      }
+    },
     "/user/reset-password" : {
       "post" : {
         "description" : "Reset user password from email",
@@ -11130,6 +11266,26 @@
           }
         },
         "required" : [ "custom_token" ]
+      },
+      "UserTOTPVerify_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "otp" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "otp" ]
+      },
+      "UserTOTPSetup_200_response" : {
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          },
+          "secret" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "secret", "url" ]
       },
       "ResetUserPassword_request" : {
         "additionalProperties" : { },
