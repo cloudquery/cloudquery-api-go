@@ -675,6 +675,17 @@ type ClientInterface interface {
 	// CreateUserToken request
 	CreateUserToken(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UserTOTPDelete request
+	UserTOTPDelete(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UserTOTPSetup request
+	UserTOTPSetup(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UserTOTPVerifyWithBody request with any body
+	UserTOTPVerifyWithBody(ctx context.Context, params *UserTOTPVerifyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UserTOTPVerify(ctx context.Context, params *UserTOTPVerifyParams, body UserTOTPVerifyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// VerifyUserEmailWithBody request with any body
 	VerifyUserEmailWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3242,6 +3253,54 @@ func (c *Client) DeterminePlatformTenantByEmail(ctx context.Context, params *Det
 
 func (c *Client) CreateUserToken(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateUserTokenRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UserTOTPDelete(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUserTOTPDeleteRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UserTOTPSetup(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUserTOTPSetupRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UserTOTPVerifyWithBody(ctx context.Context, params *UserTOTPVerifyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUserTOTPVerifyRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UserTOTPVerify(ctx context.Context, params *UserTOTPVerifyParams, body UserTOTPVerifyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUserTOTPVerifyRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -11904,6 +11963,117 @@ func NewCreateUserTokenRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
+// NewUserTOTPDeleteRequest generates requests for UserTOTPDelete
+func NewUserTOTPDeleteRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/totp")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUserTOTPSetupRequest generates requests for UserTOTPSetup
+func NewUserTOTPSetupRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/totp")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUserTOTPVerifyRequest calls the generic UserTOTPVerify builder with application/json body
+func NewUserTOTPVerifyRequest(server string, params *UserTOTPVerifyParams, body UserTOTPVerifyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUserTOTPVerifyRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewUserTOTPVerifyRequestWithBody generates requests for UserTOTPVerify with any type of body
+func NewUserTOTPVerifyRequestWithBody(server string, params *UserTOTPVerifyParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/totp/verify")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.Session != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithLocation("simple", true, "__session", runtime.ParamLocationCookie, *params.Session)
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "__session",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewVerifyUserEmailRequest calls the generic VerifyUserEmail builder with application/json body
 func NewVerifyUserEmailRequest(server string, body VerifyUserEmailJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -12602,6 +12772,17 @@ type ClientWithResponsesInterface interface {
 
 	// CreateUserTokenWithResponse request
 	CreateUserTokenWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CreateUserTokenResponse, error)
+
+	// UserTOTPDeleteWithResponse request
+	UserTOTPDeleteWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*UserTOTPDeleteResponse, error)
+
+	// UserTOTPSetupWithResponse request
+	UserTOTPSetupWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*UserTOTPSetupResponse, error)
+
+	// UserTOTPVerifyWithBodyWithResponse request with any body
+	UserTOTPVerifyWithBodyWithResponse(ctx context.Context, params *UserTOTPVerifyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UserTOTPVerifyResponse, error)
+
+	UserTOTPVerifyWithResponse(ctx context.Context, params *UserTOTPVerifyParams, body UserTOTPVerifyJSONRequestBody, reqEditors ...RequestEditorFn) (*UserTOTPVerifyResponse, error)
 
 	// VerifyUserEmailWithBodyWithResponse request with any body
 	VerifyUserEmailWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VerifyUserEmailResponse, error)
@@ -16624,6 +16805,91 @@ func (r CreateUserTokenResponse) StatusCode() int {
 	return 0
 }
 
+type UserTOTPDeleteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UserTOTPDeleteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UserTOTPDeleteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UserTOTPSetupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UserTOTPSetup200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UserTOTPSetupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UserTOTPSetupResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UserTOTPVerifyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UserTOTPVerifyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UserTOTPVerifyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type VerifyUserEmailResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18540,6 +18806,41 @@ func (c *ClientWithResponses) CreateUserTokenWithResponse(ctx context.Context, r
 		return nil, err
 	}
 	return ParseCreateUserTokenResponse(rsp)
+}
+
+// UserTOTPDeleteWithResponse request returning *UserTOTPDeleteResponse
+func (c *ClientWithResponses) UserTOTPDeleteWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*UserTOTPDeleteResponse, error) {
+	rsp, err := c.UserTOTPDelete(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUserTOTPDeleteResponse(rsp)
+}
+
+// UserTOTPSetupWithResponse request returning *UserTOTPSetupResponse
+func (c *ClientWithResponses) UserTOTPSetupWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*UserTOTPSetupResponse, error) {
+	rsp, err := c.UserTOTPSetup(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUserTOTPSetupResponse(rsp)
+}
+
+// UserTOTPVerifyWithBodyWithResponse request with arbitrary body returning *UserTOTPVerifyResponse
+func (c *ClientWithResponses) UserTOTPVerifyWithBodyWithResponse(ctx context.Context, params *UserTOTPVerifyParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UserTOTPVerifyResponse, error) {
+	rsp, err := c.UserTOTPVerifyWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUserTOTPVerifyResponse(rsp)
+}
+
+func (c *ClientWithResponses) UserTOTPVerifyWithResponse(ctx context.Context, params *UserTOTPVerifyParams, body UserTOTPVerifyJSONRequestBody, reqEditors ...RequestEditorFn) (*UserTOTPVerifyResponse, error) {
+	rsp, err := c.UserTOTPVerify(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUserTOTPVerifyResponse(rsp)
 }
 
 // VerifyUserEmailWithBodyWithResponse request with arbitrary body returning *VerifyUserEmailResponse
@@ -26927,6 +27228,217 @@ func ParseCreateUserTokenResponse(rsp *http.Response) (*CreateUserTokenResponse,
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUserTOTPDeleteResponse parses an HTTP response from a UserTOTPDeleteWithResponse call
+func ParseUserTOTPDeleteResponse(rsp *http.Response) (*UserTOTPDeleteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UserTOTPDeleteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUserTOTPSetupResponse parses an HTTP response from a UserTOTPSetupWithResponse call
+func ParseUserTOTPSetupResponse(rsp *http.Response) (*UserTOTPSetupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UserTOTPSetupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UserTOTPSetup200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUserTOTPVerifyResponse parses an HTTP response from a UserTOTPVerifyWithResponse call
+func ParseUserTOTPVerifyResponse(rsp *http.Response) (*UserTOTPVerifyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UserTOTPVerifyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
