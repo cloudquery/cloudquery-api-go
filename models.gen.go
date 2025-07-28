@@ -3019,9 +3019,15 @@ type UserTOTPSetup200Response struct {
 	Url    string `json:"url"`
 }
 
+// UserTOTPVerify201Response defines model for UserTOTPVerify_201_response.
+type UserTOTPVerify201Response struct {
+	// CustomToken Token to exchange for ID token
+	CustomToken string `json:"custom_token"`
+}
+
 // UserTOTPVerifyRequest defines model for UserTOTPVerify_request.
 type UserTOTPVerifyRequest struct {
-	Otp                  string                 `json:"otp"`
+	OTP                  interface{}            `json:"otp"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -5672,7 +5678,7 @@ func (a *UserTOTPVerifyRequest) UnmarshalJSON(b []byte) error {
 	}
 
 	if raw, found := object["otp"]; found {
-		err = json.Unmarshal(raw, &a.Otp)
+		err = json.Unmarshal(raw, &a.OTP)
 		if err != nil {
 			return fmt.Errorf("error reading 'otp': %w", err)
 		}
@@ -5698,7 +5704,7 @@ func (a UserTOTPVerifyRequest) MarshalJSON() ([]byte, error) {
 	var err error
 	object := make(map[string]json.RawMessage)
 
-	object["otp"], err = json.Marshal(a.Otp)
+	object["otp"], err = json.Marshal(a.OTP)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'otp': %w", err)
 	}

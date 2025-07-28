@@ -3730,6 +3730,34 @@
           "204" : {
             "description" : "Authentication is complete.",
             "headers" : {
+              "Access-Control-Expose-Headers" : {
+                "description" : "Headers exposed to the client",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string"
+                },
+                "style" : "simple"
+              },
+              "X-Cq-Mfa-Configured" : {
+                "description" : "Indicates if MFA is configured for the user",
+                "explode" : false,
+                "schema" : {
+                  "enum" : [ "true", "" ],
+                  "example" : "true",
+                  "type" : "string"
+                },
+                "style" : "simple"
+              },
+              "X-Cq-Mfa-Required" : {
+                "description" : "Indicates if MFA is enforced",
+                "explode" : false,
+                "schema" : {
+                  "enum" : [ "true", "" ],
+                  "example" : "true",
+                  "type" : "string"
+                },
+                "style" : "simple"
+              },
               "Set-Cookie" : {
                 "description" : "Session cookie",
                 "explode" : false,
@@ -3820,19 +3848,15 @@
           }
         },
         "responses" : {
-          "204" : {
-            "description" : "Multifactor authentication is complete.",
-            "headers" : {
-              "Set-Cookie" : {
-                "description" : "Session cookie",
-                "explode" : false,
+          "201" : {
+            "content" : {
+              "application/json" : {
                 "schema" : {
-                  "example" : "__session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9Cg...; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600",
-                  "type" : "string"
-                },
-                "style" : "simple"
+                  "$ref" : "#/components/schemas/UserTOTPVerify_201_response"
+                }
               }
-            }
+            },
+            "description" : "Multifactor authentication is complete."
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -11271,10 +11295,19 @@
         "additionalProperties" : { },
         "properties" : {
           "otp" : {
-            "type" : "string"
+            "x-go-name" : "OTP"
           }
         },
         "required" : [ "otp" ]
+      },
+      "UserTOTPVerify_201_response" : {
+        "properties" : {
+          "custom_token" : {
+            "description" : "Token to exchange for ID token",
+            "type" : "string"
+          }
+        },
+        "required" : [ "custom_token" ]
       },
       "UserTOTPSetup_200_response" : {
         "properties" : {

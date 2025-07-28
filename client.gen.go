@@ -16864,6 +16864,7 @@ func (r UserTOTPSetupResponse) StatusCode() int {
 type UserTOTPVerifyResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON201      *UserTOTPVerify201Response
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
@@ -27391,6 +27392,13 @@ func ParseUserTOTPVerifyResponse(rsp *http.Response) (*UserTOTPVerifyResponse, e
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest UserTOTPVerify201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
