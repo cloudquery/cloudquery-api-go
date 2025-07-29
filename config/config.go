@@ -15,6 +15,7 @@ const configPath = "cloudquery/config.json"
 var configKeys = []string{
 	"team",
 	"team_internal",
+	"first_sync_completed",
 }
 
 // SetConfigHome sets the configuration home directory - useful for testing
