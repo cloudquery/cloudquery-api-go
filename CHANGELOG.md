@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.0...v1.14.1) (2025-08-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/oapi-codegen/runtime to v1.1.2 ([#308](https://github.com/cloudquery/cloudquery-api-go/issues/308)) ([97e4e57](https://github.com/cloudquery/cloudquery-api-go/commit/97e4e579cf578b9b913cac7f2ddb497fe1e244d9))
+
 ## [1.14.0](https://github.com/cloudquery/cloudquery-api-go/compare/v1.13.11...v1.14.0) (2025-07-29)
 
 
