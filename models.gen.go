@@ -1957,6 +1957,9 @@ type PluginVersionDetails struct {
 	// UIBaseURL Base URL for the plugin's UI. Only available for plugins with a UI and for logged in users.
 	UIBaseURL *string `json:"ui_base_url,omitempty"`
 
+	// UIBaseURLv2 Base URL for the plugin's UI. Only available for plugins with a UI and for logged in users.
+	UIBaseURLv2 *string `json:"ui_base_url_v2,omitempty"`
+
 	// UIID ID of the plugin's UI.
 	UIID *openapi_types.UUID `json:"ui_id,omitempty"`
 }
