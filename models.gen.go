@@ -2110,6 +2110,18 @@ type SendUserEventRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// Settings Platform settings definition
+type Settings struct {
+	// EnforceMfa Whether or not to require MFA for all users
+	EnforceMfa bool `json:"enforce_mfa"`
+}
+
+// SettingsUpdate Platform settings partial update
+type SettingsUpdate struct {
+	// EnforceMfa Whether or not to require MFA for all users
+	EnforceMfa *bool `json:"enforce_mfa,omitempty"`
+}
+
 // SpendSummary A spend summary for a team, summarizing the spend by each price category over a given time range.
 // Note that empty or all-zero values are not included in the response.
 type SpendSummary struct {
@@ -3657,6 +3669,9 @@ type CreateManagedDatabaseJSONRequestBody = ManagedDatabaseCreate
 
 // RemoveTeamMembershipJSONRequestBody defines body for RemoveTeamMembership for application/json ContentType.
 type RemoveTeamMembershipJSONRequestBody = RemoveTeamMembershipRequest
+
+// UpdateSettingsJSONRequestBody defines body for UpdateSettings for application/json ContentType.
+type UpdateSettingsJSONRequestBody = SettingsUpdate
 
 // CreateSpendingLimitJSONRequestBody defines body for CreateSpendingLimit for application/json ContentType.
 type CreateSpendingLimitJSONRequestBody = SpendingLimitCreate
