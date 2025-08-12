@@ -3578,6 +3578,87 @@
         "tags" : [ "teams" ]
       }
     },
+    "/teams/{team_name}/settings" : {
+      "get" : {
+        "description" : "Show current platform settings",
+        "operationId" : "GetSettings",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Settings"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "admin" ]
+      },
+      "patch" : {
+        "description" : "Update platform settings",
+        "operationId" : "UpdateSettings",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SettingsUpdate"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Settings"
+                }
+              }
+            },
+            "description" : "Response"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "admin" ]
+      }
+    },
     "/user" : {
       "get" : {
         "description" : "Get the current authenticated user from the OAuth token\n",
@@ -9302,6 +9383,27 @@
         },
         "required" : [ "cancel_url", "plan", "success_url" ],
         "title" : "Create team subscription order"
+      },
+      "Settings" : {
+        "description" : "Platform settings definition",
+        "properties" : {
+          "enforce_mfa" : {
+            "default" : false,
+            "description" : "Whether or not to require MFA for all users",
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "enforce_mfa" ]
+      },
+      "SettingsUpdate" : {
+        "description" : "Platform settings partial update",
+        "properties" : {
+          "enforce_mfa" : {
+            "default" : false,
+            "description" : "Whether or not to require MFA for all users",
+            "type" : "boolean"
+          }
+        }
       },
       "InvitationWithToken" : {
         "additionalProperties" : false,
