@@ -14460,6 +14460,7 @@ type CreateTeamAPIKeyResponse struct {
 	JSON201      *APIKey
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON422      *UnprocessableEntity
 	JSON500      *InternalError
 }
@@ -14485,6 +14486,7 @@ type DeleteTeamAPIKeyResponse struct {
 	HTTPResponse *http.Response
 	JSON400      *BadRequest
 	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
 	JSON404      *NotFound
 	JSON500      *InternalError
 }
@@ -22259,6 +22261,13 @@ func ParseCreateTeamAPIKeyResponse(rsp *http.Response) (*CreateTeamAPIKeyRespons
 		}
 		response.JSON401 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest UnprocessableEntity
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -22305,6 +22314,13 @@ func ParseDeleteTeamAPIKeyResponse(rsp *http.Response) (*DeleteTeamAPIKeyRespons
 			return nil, err
 		}
 		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
