@@ -19,7 +19,8 @@ const (
 
 // Defines values for APIKeyScope.
 const (
-	APIKeyScopeReadAndWrite APIKeyScope = "read-and-write"
+	APIKeyScopeReadAndWrite        APIKeyScope = "read-and-write"
+	APIKeyScopeSyncsOperationsOnly APIKeyScope = "syncs-operations-only"
 )
 
 // Defines values for AddonCategory.
@@ -915,6 +916,9 @@ type CreateTeamAPIKeyRequest struct {
 
 	// Name Name of the API key
 	Name APIKeyName `json:"name"`
+
+	// Scope Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins
+	Scope *APIKeyScope `json:"scope,omitempty"`
 }
 
 // CreateTeamImages201Response defines model for CreateTeamImages_201_response.

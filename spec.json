@@ -4425,6 +4425,9 @@
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
           },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
           "422" : {
             "$ref" : "#/components/responses/UnprocessableEntity"
           },
@@ -4453,6 +4456,9 @@
           },
           "401" : {
             "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
@@ -9461,7 +9467,7 @@
       },
       "APIKeyScope" : {
         "description" : "Scope of permissions for the API key. API keys are used for creating new plugin versions and downloading existing plugins",
-        "enum" : [ "read-and-write" ],
+        "enum" : [ "read-and-write", "syncs-operations-only" ],
         "type" : "string"
       },
       "APIKey" : {
@@ -11590,6 +11596,9 @@
           "expires_at" : {
             "format" : "date-time",
             "type" : "string"
+          },
+          "scope" : {
+            "$ref" : "#/components/schemas/APIKeyScope"
           }
         },
         "required" : [ "expires_at", "name" ]
