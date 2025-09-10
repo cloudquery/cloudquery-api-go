@@ -9663,8 +9663,9 @@
         "example" : "Human Readable Name",
         "maxLength" : 255,
         "minLength" : 1,
-        "pattern" : "^[a-zA-Z\\p{L}\\p{N}_][a-zA-Z\\p{L}\\p{N}_ \\-']*$",
-        "type" : "string"
+        "pattern" : "^[a-zA-Z\\p{L}\\p{N}_][a-zA-Z\\p{L}\\p{N}_ \\-'\\(\\)\\[\\]]*$",
+        "type" : "string",
+        "x-pattern-message" : "can contain only letters, numbers, spaces, hyphens, underscores, brackets and apostrophes"
       },
       "PromoteSyncSourceTestConnection" : {
         "description" : "Sync Source Definition",
