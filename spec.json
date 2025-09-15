@@ -10891,6 +10891,29 @@
         },
         "required" : [ "base_url", "return_url" ]
       },
+      "FunctionCallOutput" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "name" : {
+            "description" : "The name of the function that was called",
+            "x-go-name" : "Name"
+          },
+          "arguments" : {
+            "additionalProperties" : false,
+            "description" : "The arguments passed to the function",
+            "x-go-name" : "Arguments"
+          },
+          "call_id" : {
+            "description" : "The unique identifier for this function call",
+            "x-go-name" : "CallID"
+          },
+          "output" : {
+            "description" : "The output/result from the function call",
+            "x-go-name" : "Output"
+          }
+        },
+        "required" : [ "arguments", "call_id", "name", "output" ]
+      },
       "UploadImage_request" : {
         "properties" : {
           "content_type" : {
@@ -12021,12 +12044,18 @@
             "description" : "The user's message to send to the AI assistant",
             "x-go-name" : "Message"
           },
+          "function_call_outputs" : {
+            "description" : "Function call outputs from previous interactions",
+            "items" : {
+              "$ref" : "#/components/schemas/FunctionCallOutput"
+            },
+            "x-go-name" : "FunctionCallOutputs"
+          },
           "conversation_id" : {
             "description" : "Optional conversation ID to continue an existing conversation",
             "x-go-name" : "ConversationID"
           }
-        },
-        "required" : [ "message" ]
+        }
       },
       "AIOnboardingChat_200_response" : {
         "additionalProperties" : { },

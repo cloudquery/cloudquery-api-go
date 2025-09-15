@@ -334,8 +334,11 @@ type AIOnboardingChatRequest struct {
 	// ConversationID Optional conversation ID to continue an existing conversation
 	ConversationID *interface{} `json:"conversation_id,omitempty"`
 
+	// FunctionCallOutputs Function call outputs from previous interactions
+	FunctionCallOutputs *interface{} `json:"function_call_outputs,omitempty"`
+
 	// Message The user's message to send to the AI assistant
-	Message              interface{}            `json:"message"`
+	Message              *interface{}           `json:"message,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -1037,6 +1040,22 @@ type FieldError struct {
 type FinalizePluginUIAssetUploadRequest struct {
 	// UIID ID representing the finished upload
 	UIID string `json:"ui_id"`
+}
+
+// FunctionCallOutput defines model for FunctionCallOutput.
+type FunctionCallOutput struct {
+	// Arguments The arguments passed to the function
+	Arguments interface{} `json:"arguments"`
+
+	// CallID The unique identifier for this function call
+	CallID interface{} `json:"call_id"`
+
+	// Name The name of the function that was called
+	Name interface{} `json:"name"`
+
+	// Output The output/result from the function call
+	Output               interface{}            `json:"output"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // GetConnectorAuthStatusAWS200Response defines model for GetConnectorAuthStatusAWS_200_response.
@@ -3938,6 +3957,14 @@ func (a *AIOnboardingChatRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "conversation_id")
 	}
 
+	if raw, found := object["function_call_outputs"]; found {
+		err = json.Unmarshal(raw, &a.FunctionCallOutputs)
+		if err != nil {
+			return fmt.Errorf("error reading 'function_call_outputs': %w", err)
+		}
+		delete(object, "function_call_outputs")
+	}
+
 	if raw, found := object["message"]; found {
 		err = json.Unmarshal(raw, &a.Message)
 		if err != nil {
@@ -3972,9 +3999,18 @@ func (a AIOnboardingChatRequest) MarshalJSON() ([]byte, error) {
 		}
 	}
 
-	object["message"], err = json.Marshal(a.Message)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'message': %w", err)
+	if a.FunctionCallOutputs != nil {
+		object["function_call_outputs"], err = json.Marshal(a.FunctionCallOutputs)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'function_call_outputs': %w", err)
+		}
+	}
+
+	if a.Message != nil {
+		object["message"], err = json.Marshal(a.Message)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'message': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
@@ -4888,6 +4924,111 @@ func (a CreateTeamRequest) MarshalJSON() ([]byte, error) {
 	object["name"], err = json.Marshal(a.Name)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for FunctionCallOutput. Returns the specified
+// element and whether it was found
+func (a FunctionCallOutput) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for FunctionCallOutput
+func (a *FunctionCallOutput) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for FunctionCallOutput to handle AdditionalProperties
+func (a *FunctionCallOutput) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["arguments"]; found {
+		err = json.Unmarshal(raw, &a.Arguments)
+		if err != nil {
+			return fmt.Errorf("error reading 'arguments': %w", err)
+		}
+		delete(object, "arguments")
+	}
+
+	if raw, found := object["call_id"]; found {
+		err = json.Unmarshal(raw, &a.CallID)
+		if err != nil {
+			return fmt.Errorf("error reading 'call_id': %w", err)
+		}
+		delete(object, "call_id")
+	}
+
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &a.Name)
+		if err != nil {
+			return fmt.Errorf("error reading 'name': %w", err)
+		}
+		delete(object, "name")
+	}
+
+	if raw, found := object["output"]; found {
+		err = json.Unmarshal(raw, &a.Output)
+		if err != nil {
+			return fmt.Errorf("error reading 'output': %w", err)
+		}
+		delete(object, "output")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for FunctionCallOutput to handle AdditionalProperties
+func (a FunctionCallOutput) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["arguments"], err = json.Marshal(a.Arguments)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'arguments': %w", err)
+	}
+
+	object["call_id"], err = json.Marshal(a.CallID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'call_id': %w", err)
+	}
+
+	object["name"], err = json.Marshal(a.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	object["output"], err = json.Marshal(a.Output)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'output': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
