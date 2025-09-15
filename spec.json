@@ -46,6 +46,8 @@
     "name" : "analytics"
   }, {
     "name" : "platform"
+  }, {
+    "name" : "ai-onboarding"
   } ],
   "paths" : {
     "/" : {
@@ -6861,6 +6863,121 @@
         "tags" : [ "platform" ],
         "x-internal" : true
       }
+    },
+    "/teams/{team_name}/ai-onboarding/chat" : {
+      "post" : {
+        "description" : "Send a chat message to the AI onboarding assistant",
+        "operationId" : "AIOnboardingChat",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "team_name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple",
+          "x-go-name" : "TeamName"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AIOnboardingChat_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AIOnboardingChat_200_response"
+                }
+              }
+            },
+            "description" : "Chat response from the AI assistant"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "ai-onboarding" ]
+      }
+    },
+    "/teams/{team_name}/ai-onboarding/conversations" : {
+      "post" : {
+        "description" : "Start a new conversation with the AI onboarding assistant",
+        "operationId" : "AIOnboardingNewConversation",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "team_name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple",
+          "x-go-name" : "TeamName"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "additionalProperties" : { },
+                "properties" : { }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AIOnboardingNewConversation_200_response"
+                }
+              }
+            },
+            "description" : "New conversation started successfully"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/MethodNotAllowed"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "ai-onboarding" ]
+      }
     }
   },
   "components" : {
@@ -11896,6 +12013,52 @@
           }
         },
         "required" : [ "installation_id" ]
+      },
+      "AIOnboardingChat_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "message" : {
+            "description" : "The user's message to send to the AI assistant",
+            "x-go-name" : "Message"
+          },
+          "conversation_id" : {
+            "description" : "Optional conversation ID to continue an existing conversation",
+            "x-go-name" : "ConversationID"
+          }
+        },
+        "required" : [ "message" ]
+      },
+      "AIOnboardingChat_200_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "message" : {
+            "description" : "The AI assistant's response message",
+            "x-go-name" : "Message"
+          },
+          "function_call" : {
+            "description" : "The name of the function being called (if any)",
+            "x-go-name" : "FunctionCall"
+          },
+          "function_call_arguments" : {
+            "description" : "Arguments for the function call (if any)",
+            "x-go-name" : "FunctionCallArguments"
+          },
+          "function_call_id" : {
+            "description" : "ID of the function call (if any)",
+            "x-go-name" : "FunctionCallID"
+          }
+        },
+        "required" : [ "message" ]
+      },
+      "AIOnboardingNewConversation_200_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "conversation_id" : {
+            "description" : "The ID of the new conversation",
+            "x-go-name" : "ConversationID"
+          }
+        },
+        "required" : [ "conversation_id" ]
       },
       "UsageIncrease_tables_inner" : {
         "properties" : {

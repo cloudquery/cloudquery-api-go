@@ -313,6 +313,16 @@ type ClientInterface interface {
 	// DownloadAddonAssetByTeam request
 	DownloadAddonAssetByTeam(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AIOnboardingChatWithBody request with any body
+	AIOnboardingChatWithBody(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AIOnboardingChat(ctx context.Context, teamName string, body AIOnboardingChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AIOnboardingNewConversationWithBody request with any body
+	AIOnboardingNewConversationWithBody(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AIOnboardingNewConversation(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamAPIKeys request
 	ListTeamAPIKeys(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1665,6 +1675,54 @@ func (c *Client) ListAddonsByTeam(ctx context.Context, teamName TeamName, params
 
 func (c *Client) DownloadAddonAssetByTeam(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDownloadAddonAssetByTeamRequest(c.Server, teamName, addonTeam, addonType, addonName, versionName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AIOnboardingChatWithBody(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAIOnboardingChatRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AIOnboardingChat(ctx context.Context, teamName string, body AIOnboardingChatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAIOnboardingChatRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AIOnboardingNewConversationWithBody(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAIOnboardingNewConversationRequestWithBody(c.Server, teamName, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AIOnboardingNewConversation(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAIOnboardingNewConversationRequest(c.Server, teamName, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6929,6 +6987,100 @@ func NewDownloadAddonAssetByTeamRequest(server string, teamName TeamName, addonT
 		}
 
 	}
+
+	return req, nil
+}
+
+// NewAIOnboardingChatRequest calls the generic AIOnboardingChat builder with application/json body
+func NewAIOnboardingChatRequest(server string, teamName string, body AIOnboardingChatJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAIOnboardingChatRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewAIOnboardingChatRequestWithBody generates requests for AIOnboardingChat with any type of body
+func NewAIOnboardingChatRequestWithBody(server string, teamName string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/ai-onboarding/chat", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewAIOnboardingNewConversationRequest calls the generic AIOnboardingNewConversation builder with application/json body
+func NewAIOnboardingNewConversationRequest(server string, teamName string, body AIOnboardingNewConversationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAIOnboardingNewConversationRequestWithBody(server, teamName, "application/json", bodyReader)
+}
+
+// NewAIOnboardingNewConversationRequestWithBody generates requests for AIOnboardingNewConversation with any type of body
+func NewAIOnboardingNewConversationRequestWithBody(server string, teamName string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/ai-onboarding/conversations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -12536,6 +12688,16 @@ type ClientWithResponsesInterface interface {
 	// DownloadAddonAssetByTeamWithResponse request
 	DownloadAddonAssetByTeamWithResponse(ctx context.Context, teamName TeamName, addonTeam AddonTeam, addonType AddonType, addonName AddonName, versionName VersionName, params *DownloadAddonAssetByTeamParams, reqEditors ...RequestEditorFn) (*DownloadAddonAssetByTeamResponse, error)
 
+	// AIOnboardingChatWithBodyWithResponse request with any body
+	AIOnboardingChatWithBodyWithResponse(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AIOnboardingChatResponse, error)
+
+	AIOnboardingChatWithResponse(ctx context.Context, teamName string, body AIOnboardingChatJSONRequestBody, reqEditors ...RequestEditorFn) (*AIOnboardingChatResponse, error)
+
+	// AIOnboardingNewConversationWithBodyWithResponse request with any body
+	AIOnboardingNewConversationWithBodyWithResponse(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AIOnboardingNewConversationResponse, error)
+
+	AIOnboardingNewConversationWithResponse(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*AIOnboardingNewConversationResponse, error)
+
 	// ListTeamAPIKeysWithResponse request
 	ListTeamAPIKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*ListTeamAPIKeysResponse, error)
 
@@ -14423,6 +14585,62 @@ func (r DownloadAddonAssetByTeamResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DownloadAddonAssetByTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AIOnboardingChatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AIOnboardingChat200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AIOnboardingChatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AIOnboardingChatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AIOnboardingNewConversationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AIOnboardingNewConversation200Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON405      *MethodNotAllowed
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r AIOnboardingNewConversationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AIOnboardingNewConversationResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -17836,6 +18054,40 @@ func (c *ClientWithResponses) DownloadAddonAssetByTeamWithResponse(ctx context.C
 		return nil, err
 	}
 	return ParseDownloadAddonAssetByTeamResponse(rsp)
+}
+
+// AIOnboardingChatWithBodyWithResponse request with arbitrary body returning *AIOnboardingChatResponse
+func (c *ClientWithResponses) AIOnboardingChatWithBodyWithResponse(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AIOnboardingChatResponse, error) {
+	rsp, err := c.AIOnboardingChatWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAIOnboardingChatResponse(rsp)
+}
+
+func (c *ClientWithResponses) AIOnboardingChatWithResponse(ctx context.Context, teamName string, body AIOnboardingChatJSONRequestBody, reqEditors ...RequestEditorFn) (*AIOnboardingChatResponse, error) {
+	rsp, err := c.AIOnboardingChat(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAIOnboardingChatResponse(rsp)
+}
+
+// AIOnboardingNewConversationWithBodyWithResponse request with arbitrary body returning *AIOnboardingNewConversationResponse
+func (c *ClientWithResponses) AIOnboardingNewConversationWithBodyWithResponse(ctx context.Context, teamName string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AIOnboardingNewConversationResponse, error) {
+	rsp, err := c.AIOnboardingNewConversationWithBody(ctx, teamName, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAIOnboardingNewConversationResponse(rsp)
+}
+
+func (c *ClientWithResponses) AIOnboardingNewConversationWithResponse(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*AIOnboardingNewConversationResponse, error) {
+	rsp, err := c.AIOnboardingNewConversation(ctx, teamName, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAIOnboardingNewConversationResponse(rsp)
 }
 
 // ListTeamAPIKeysWithResponse request returning *ListTeamAPIKeysResponse
@@ -22166,6 +22418,142 @@ func ParseDownloadAddonAssetByTeamResponse(rsp *http.Response) (*DownloadAddonAs
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAIOnboardingChatResponse parses an HTTP response from a AIOnboardingChatWithResponse call
+func ParseAIOnboardingChatResponse(rsp *http.Response) (*AIOnboardingChatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AIOnboardingChatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AIOnboardingChat200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAIOnboardingNewConversationResponse parses an HTTP response from a AIOnboardingNewConversationWithResponse call
+func ParseAIOnboardingNewConversationResponse(rsp *http.Response) (*AIOnboardingNewConversationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AIOnboardingNewConversationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AIOnboardingNewConversation200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 405:
+		var dest MethodNotAllowed
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON405 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

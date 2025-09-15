@@ -313,6 +313,39 @@ const (
 	GetGroupedTeamUsageSummaryParamsGroupBySyncId        GetGroupedTeamUsageSummaryParamsGroupBy = "sync_id"
 )
 
+// AIOnboardingChat200Response defines model for AIOnboardingChat_200_response.
+type AIOnboardingChat200Response struct {
+	// FunctionCall The name of the function being called (if any)
+	FunctionCall *interface{} `json:"function_call,omitempty"`
+
+	// FunctionCallArguments Arguments for the function call (if any)
+	FunctionCallArguments *interface{} `json:"function_call_arguments,omitempty"`
+
+	// FunctionCallID ID of the function call (if any)
+	FunctionCallID *interface{} `json:"function_call_id,omitempty"`
+
+	// Message The AI assistant's response message
+	Message              interface{}            `json:"message"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// AIOnboardingChatRequest defines model for AIOnboardingChat_request.
+type AIOnboardingChatRequest struct {
+	// ConversationID Optional conversation ID to continue an existing conversation
+	ConversationID *interface{} `json:"conversation_id,omitempty"`
+
+	// Message The user's message to send to the AI assistant
+	Message              interface{}            `json:"message"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// AIOnboardingNewConversation200Response defines model for AIOnboardingNewConversation_200_response.
+type AIOnboardingNewConversation200Response struct {
+	// ConversationID The ID of the new conversation
+	ConversationID       interface{}            `json:"conversation_id"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // APIKey API Key to interact with CloudQuery Cloud under specific team
 type APIKey struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -3328,6 +3361,9 @@ type DownloadAddonAssetByTeamParams struct {
 	Accept *string `json:"Accept,omitempty"`
 }
 
+// AIOnboardingNewConversationJSONBody defines parameters for AIOnboardingNewConversation.
+type AIOnboardingNewConversationJSONBody map[string]interface{}
+
 // ListTeamAPIKeysParams defines parameters for ListTeamAPIKeys.
 type ListTeamAPIKeysParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -3632,6 +3668,12 @@ type UpdateTeamJSONRequestBody = UpdateTeamRequest
 // CreateAddonOrderForTeamJSONRequestBody defines body for CreateAddonOrderForTeam for application/json ContentType.
 type CreateAddonOrderForTeamJSONRequestBody = AddonOrderCreate
 
+// AIOnboardingChatJSONRequestBody defines body for AIOnboardingChat for application/json ContentType.
+type AIOnboardingChatJSONRequestBody = AIOnboardingChatRequest
+
+// AIOnboardingNewConversationJSONRequestBody defines body for AIOnboardingNewConversation for application/json ContentType.
+type AIOnboardingNewConversationJSONRequestBody AIOnboardingNewConversationJSONBody
+
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
 type CreateTeamAPIKeyJSONRequestBody = CreateTeamAPIKeyRequest
 
@@ -3751,6 +3793,264 @@ type UserTOTPVerifyJSONRequestBody = UserTOTPVerifyRequest
 
 // VerifyUserEmailJSONRequestBody defines body for VerifyUserEmail for application/json ContentType.
 type VerifyUserEmailJSONRequestBody = VerifyUserEmailRequest
+
+// Getter for additional properties for AIOnboardingChat200Response. Returns the specified
+// element and whether it was found
+func (a AIOnboardingChat200Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AIOnboardingChat200Response
+func (a *AIOnboardingChat200Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AIOnboardingChat200Response to handle AdditionalProperties
+func (a *AIOnboardingChat200Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["function_call"]; found {
+		err = json.Unmarshal(raw, &a.FunctionCall)
+		if err != nil {
+			return fmt.Errorf("error reading 'function_call': %w", err)
+		}
+		delete(object, "function_call")
+	}
+
+	if raw, found := object["function_call_arguments"]; found {
+		err = json.Unmarshal(raw, &a.FunctionCallArguments)
+		if err != nil {
+			return fmt.Errorf("error reading 'function_call_arguments': %w", err)
+		}
+		delete(object, "function_call_arguments")
+	}
+
+	if raw, found := object["function_call_id"]; found {
+		err = json.Unmarshal(raw, &a.FunctionCallID)
+		if err != nil {
+			return fmt.Errorf("error reading 'function_call_id': %w", err)
+		}
+		delete(object, "function_call_id")
+	}
+
+	if raw, found := object["message"]; found {
+		err = json.Unmarshal(raw, &a.Message)
+		if err != nil {
+			return fmt.Errorf("error reading 'message': %w", err)
+		}
+		delete(object, "message")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AIOnboardingChat200Response to handle AdditionalProperties
+func (a AIOnboardingChat200Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.FunctionCall != nil {
+		object["function_call"], err = json.Marshal(a.FunctionCall)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'function_call': %w", err)
+		}
+	}
+
+	if a.FunctionCallArguments != nil {
+		object["function_call_arguments"], err = json.Marshal(a.FunctionCallArguments)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'function_call_arguments': %w", err)
+		}
+	}
+
+	if a.FunctionCallID != nil {
+		object["function_call_id"], err = json.Marshal(a.FunctionCallID)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'function_call_id': %w", err)
+		}
+	}
+
+	object["message"], err = json.Marshal(a.Message)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'message': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for AIOnboardingChatRequest. Returns the specified
+// element and whether it was found
+func (a AIOnboardingChatRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AIOnboardingChatRequest
+func (a *AIOnboardingChatRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AIOnboardingChatRequest to handle AdditionalProperties
+func (a *AIOnboardingChatRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["conversation_id"]; found {
+		err = json.Unmarshal(raw, &a.ConversationID)
+		if err != nil {
+			return fmt.Errorf("error reading 'conversation_id': %w", err)
+		}
+		delete(object, "conversation_id")
+	}
+
+	if raw, found := object["message"]; found {
+		err = json.Unmarshal(raw, &a.Message)
+		if err != nil {
+			return fmt.Errorf("error reading 'message': %w", err)
+		}
+		delete(object, "message")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AIOnboardingChatRequest to handle AdditionalProperties
+func (a AIOnboardingChatRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.ConversationID != nil {
+		object["conversation_id"], err = json.Marshal(a.ConversationID)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'conversation_id': %w", err)
+		}
+	}
+
+	object["message"], err = json.Marshal(a.Message)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'message': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for AIOnboardingNewConversation200Response. Returns the specified
+// element and whether it was found
+func (a AIOnboardingNewConversation200Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AIOnboardingNewConversation200Response
+func (a *AIOnboardingNewConversation200Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AIOnboardingNewConversation200Response to handle AdditionalProperties
+func (a *AIOnboardingNewConversation200Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["conversation_id"]; found {
+		err = json.Unmarshal(raw, &a.ConversationID)
+		if err != nil {
+			return fmt.Errorf("error reading 'conversation_id': %w", err)
+		}
+		delete(object, "conversation_id")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AIOnboardingNewConversation200Response to handle AdditionalProperties
+func (a AIOnboardingNewConversation200Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["conversation_id"], err = json.Marshal(a.ConversationID)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'conversation_id': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
 
 // Getter for additional properties for ActivatePlatform200Response. Returns the specified
 // element and whether it was found
