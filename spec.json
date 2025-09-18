@@ -6940,8 +6940,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "additionalProperties" : { },
-                "properties" : { }
+                "$ref" : "#/components/schemas/AIOnboardingNewConversation_request"
               }
             }
           }
@@ -12054,6 +12053,11 @@
           "conversation_id" : {
             "description" : "Optional conversation ID to continue an existing conversation",
             "x-go-name" : "ConversationID"
+          },
+          "chat_mode" : {
+            "description" : "Optional chat mode - \"web\" for markdown output, \"terminal\" for plain text output",
+            "enum" : [ "web", "terminal" ],
+            "x-go-name" : "ChatMode"
           }
         }
       },
@@ -12078,6 +12082,15 @@
           }
         },
         "required" : [ "message" ]
+      },
+      "AIOnboardingNewConversation_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "try_resume" : {
+            "description" : "If true, resume existing conversation instead of starting a new one",
+            "x-go-name" : "TryResume"
+          }
+        }
       },
       "AIOnboardingNewConversation_200_response" : {
         "additionalProperties" : { },

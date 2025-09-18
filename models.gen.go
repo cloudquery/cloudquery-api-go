@@ -331,6 +331,9 @@ type AIOnboardingChat200Response struct {
 
 // AIOnboardingChatRequest defines model for AIOnboardingChat_request.
 type AIOnboardingChatRequest struct {
+	// ChatMode Optional chat mode - "web" for markdown output, "terminal" for plain text output
+	ChatMode *interface{} `json:"chat_mode,omitempty"`
+
 	// ConversationID Optional conversation ID to continue an existing conversation
 	ConversationID *interface{} `json:"conversation_id,omitempty"`
 
@@ -346,6 +349,13 @@ type AIOnboardingChatRequest struct {
 type AIOnboardingNewConversation200Response struct {
 	// ConversationID The ID of the new conversation
 	ConversationID       interface{}            `json:"conversation_id"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// AIOnboardingNewConversationRequest defines model for AIOnboardingNewConversation_request.
+type AIOnboardingNewConversationRequest struct {
+	// TryResume If true, resume existing conversation instead of starting a new one
+	TryResume            *interface{}           `json:"try_resume,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -3380,9 +3390,6 @@ type DownloadAddonAssetByTeamParams struct {
 	Accept *string `json:"Accept,omitempty"`
 }
 
-// AIOnboardingNewConversationJSONBody defines parameters for AIOnboardingNewConversation.
-type AIOnboardingNewConversationJSONBody map[string]interface{}
-
 // ListTeamAPIKeysParams defines parameters for ListTeamAPIKeys.
 type ListTeamAPIKeysParams struct {
 	// PerPage The number of results per page (max 1000).
@@ -3691,7 +3698,7 @@ type CreateAddonOrderForTeamJSONRequestBody = AddonOrderCreate
 type AIOnboardingChatJSONRequestBody = AIOnboardingChatRequest
 
 // AIOnboardingNewConversationJSONRequestBody defines body for AIOnboardingNewConversation for application/json ContentType.
-type AIOnboardingNewConversationJSONRequestBody AIOnboardingNewConversationJSONBody
+type AIOnboardingNewConversationJSONRequestBody = AIOnboardingNewConversationRequest
 
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
 type CreateTeamAPIKeyJSONRequestBody = CreateTeamAPIKeyRequest
@@ -3949,6 +3956,14 @@ func (a *AIOnboardingChatRequest) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	if raw, found := object["chat_mode"]; found {
+		err = json.Unmarshal(raw, &a.ChatMode)
+		if err != nil {
+			return fmt.Errorf("error reading 'chat_mode': %w", err)
+		}
+		delete(object, "chat_mode")
+	}
+
 	if raw, found := object["conversation_id"]; found {
 		err = json.Unmarshal(raw, &a.ConversationID)
 		if err != nil {
@@ -3991,6 +4006,13 @@ func (a *AIOnboardingChatRequest) UnmarshalJSON(b []byte) error {
 func (a AIOnboardingChatRequest) MarshalJSON() ([]byte, error) {
 	var err error
 	object := make(map[string]json.RawMessage)
+
+	if a.ChatMode != nil {
+		object["chat_mode"], err = json.Marshal(a.ChatMode)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'chat_mode': %w", err)
+		}
+	}
 
 	if a.ConversationID != nil {
 		object["conversation_id"], err = json.Marshal(a.ConversationID)
@@ -4077,6 +4099,74 @@ func (a AIOnboardingNewConversation200Response) MarshalJSON() ([]byte, error) {
 	object["conversation_id"], err = json.Marshal(a.ConversationID)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'conversation_id': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for AIOnboardingNewConversationRequest. Returns the specified
+// element and whether it was found
+func (a AIOnboardingNewConversationRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AIOnboardingNewConversationRequest
+func (a *AIOnboardingNewConversationRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AIOnboardingNewConversationRequest to handle AdditionalProperties
+func (a *AIOnboardingNewConversationRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["try_resume"]; found {
+		err = json.Unmarshal(raw, &a.TryResume)
+		if err != nil {
+			return fmt.Errorf("error reading 'try_resume': %w", err)
+		}
+		delete(object, "try_resume")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AIOnboardingNewConversationRequest to handle AdditionalProperties
+func (a AIOnboardingNewConversationRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.TryResume != nil {
+		object["try_resume"], err = json.Marshal(a.TryResume)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'try_resume': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
