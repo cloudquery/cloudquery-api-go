@@ -345,6 +345,13 @@ type AIOnboardingChatRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// AIOnboardingEndConversation200Response defines model for AIOnboardingEndConversation_200_response.
+type AIOnboardingEndConversation200Response struct {
+	// Success Whether the conversation was ended successfully
+	Success              *interface{}           `json:"success,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // AIOnboardingNewConversation200Response defines model for AIOnboardingNewConversation_200_response.
 type AIOnboardingNewConversation200Response struct {
 	// ConversationID The ID of the new conversation
@@ -4032,6 +4039,74 @@ func (a AIOnboardingChatRequest) MarshalJSON() ([]byte, error) {
 		object["message"], err = json.Marshal(a.Message)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'message': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for AIOnboardingEndConversation200Response. Returns the specified
+// element and whether it was found
+func (a AIOnboardingEndConversation200Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AIOnboardingEndConversation200Response
+func (a *AIOnboardingEndConversation200Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AIOnboardingEndConversation200Response to handle AdditionalProperties
+func (a *AIOnboardingEndConversation200Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["success"]; found {
+		err = json.Unmarshal(raw, &a.Success)
+		if err != nil {
+			return fmt.Errorf("error reading 'success': %w", err)
+		}
+		delete(object, "success")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AIOnboardingEndConversation200Response to handle AdditionalProperties
+func (a AIOnboardingEndConversation200Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.Success != nil {
+		object["success"], err = json.Marshal(a.Success)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'success': %w", err)
 		}
 	}
 
