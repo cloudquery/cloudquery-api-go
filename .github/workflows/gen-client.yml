@@ -2,6 +2,9 @@ name: Generate API Client
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   gen-api:
     timeout-minutes: 30
