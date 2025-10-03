@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.5](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.4...v1.14.5) (2025-10-01)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/stretchr/testify to v1.11.1 ([#326](https://github.com/cloudquery/cloudquery-api-go/issues/326)) ([50dbd12](https://github.com/cloudquery/cloudquery-api-go/commit/50dbd125a6653783a1d393358e670b1cb05d9b73))
+
 ## [1.14.4](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.3...v1.14.4) (2025-09-19)
 
 
