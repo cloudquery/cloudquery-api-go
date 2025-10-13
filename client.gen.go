@@ -15234,6 +15234,7 @@ type EmailTeamInvitationResponse struct {
 	JSON400      *BadRequest
 	JSON403      *Forbidden
 	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
 
@@ -23833,6 +23834,13 @@ func ParseEmailTeamInvitationResponse(rsp *http.Response) (*EmailTeamInvitationR
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
