@@ -2905,7 +2905,10 @@ type TenantUser struct {
 // UpdateCurrentUserRequest defines model for UpdateCurrentUser_request.
 type UpdateCurrentUserRequest struct {
 	// Name The unique name for the user.
-	Name                 *UserName              `json:"name,omitempty"`
+	Name *UserName `json:"name,omitempty"`
+
+	// Onboarded Whether the user has completed onboarding
+	Onboarded            *UserOnboarded         `json:"onboarded,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -3100,6 +3103,9 @@ type UserID = openapi_types.UUID
 
 // UserName The unique name for the user.
 type UserName = string
+
+// UserOnboarded Whether the user has completed onboarding
+type UserOnboarded = bool
 
 // UserTOTPSetup200Response defines model for UserTOTPSetup_200_response.
 type UserTOTPSetup200Response struct {
@@ -5946,6 +5952,14 @@ func (a *UpdateCurrentUserRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "name")
 	}
 
+	if raw, found := object["onboarded"]; found {
+		err = json.Unmarshal(raw, &a.Onboarded)
+		if err != nil {
+			return fmt.Errorf("error reading 'onboarded': %w", err)
+		}
+		delete(object, "onboarded")
+	}
+
 	if len(object) != 0 {
 		a.AdditionalProperties = make(map[string]interface{})
 		for fieldName, fieldBuf := range object {
@@ -5969,6 +5983,13 @@ func (a UpdateCurrentUserRequest) MarshalJSON() ([]byte, error) {
 		object["name"], err = json.Marshal(a.Name)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'name': %w", err)
+		}
+	}
+
+	if a.Onboarded != nil {
+		object["onboarded"], err = json.Marshal(a.Onboarded)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'onboarded': %w", err)
 		}
 	}
 
