@@ -9061,6 +9061,10 @@
         "pattern" : "^[a-zA-Z\\p{L}][a-zA-Z\\p{L} \\-']*$",
         "type" : "string"
       },
+      "UserOnboarded" : {
+        "description" : "Whether the user has completed onboarding",
+        "type" : "boolean"
+      },
       "User" : {
         "additionalProperties" : false,
         "description" : "CloudQuery User",
@@ -9083,6 +9087,9 @@
           },
           "name" : {
             "$ref" : "#/components/schemas/UserName"
+          },
+          "onboarded" : {
+            "$ref" : "#/components/schemas/UserOnboarded"
           },
           "updated_at" : {
             "example" : "2017-07-14T16:53:42Z",
@@ -9575,10 +9582,6 @@
             "type" : "boolean"
           }
         }
-      },
-      "UserOnboarded" : {
-        "description" : "Whether the user has completed onboarding",
-        "type" : "boolean"
       },
       "InvitationWithToken" : {
         "additionalProperties" : false,

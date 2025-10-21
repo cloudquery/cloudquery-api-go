@@ -3093,6 +3093,9 @@ type User struct {
 	// Name The unique name for the user.
 	Name *UserName `json:"name,omitempty"`
 
+	// Onboarded Whether the user has completed onboarding
+	Onboarded *UserOnboarded `json:"onboarded,omitempty"`
+
 	// ProfileImageURL Profile image URL of user
 	ProfileImageURL *string    `json:"profile_image_url,omitempty"`
 	UpdatedAt       *time.Time `json:"updated_at,omitempty"`
