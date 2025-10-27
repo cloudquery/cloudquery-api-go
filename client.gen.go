@@ -685,6 +685,11 @@ type ClientInterface interface {
 	// GetCurrentUserMemberships request
 	GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RegisterUserWithBody request with any body
+	RegisterUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RegisterUser(ctx context.Context, body RegisterUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ResetUserPasswordWithBody request with any body
 	ResetUserPasswordWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3322,6 +3327,30 @@ func (c *Client) LoginUser(ctx context.Context, body LoginUserJSONRequestBody, r
 
 func (c *Client) GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetCurrentUserMembershipsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RegisterUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterUserRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RegisterUser(ctx context.Context, body RegisterUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterUserRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -12177,6 +12206,46 @@ func NewGetCurrentUserMembershipsRequest(server string, params *GetCurrentUserMe
 	return req, nil
 }
 
+// NewRegisterUserRequest calls the generic RegisterUser builder with application/json body
+func NewRegisterUserRequest(server string, body RegisterUserJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterUserRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewRegisterUserRequestWithBody generates requests for RegisterUser with any type of body
+func NewRegisterUserRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/register")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewResetUserPasswordRequest calls the generic ResetUserPassword builder with application/json body
 func NewResetUserPasswordRequest(server string, body ResetUserPasswordJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -13108,6 +13177,11 @@ type ClientWithResponsesInterface interface {
 
 	// GetCurrentUserMembershipsWithResponse request
 	GetCurrentUserMembershipsWithResponse(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*GetCurrentUserMembershipsResponse, error)
+
+	// RegisterUserWithBodyWithResponse request with any body
+	RegisterUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterUserResponse, error)
+
+	RegisterUserWithResponse(ctx context.Context, body RegisterUserJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterUserResponse, error)
 
 	// ResetUserPasswordWithBodyWithResponse request with any body
 	ResetUserPasswordWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ResetUserPasswordResponse, error)
@@ -17217,6 +17291,32 @@ func (r GetCurrentUserMembershipsResponse) StatusCode() int {
 	return 0
 }
 
+type RegisterUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *RegisterUser201Response
+	JSON400      *BadRequest
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterUserResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ResetUserPasswordResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -19329,6 +19429,23 @@ func (c *ClientWithResponses) GetCurrentUserMembershipsWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseGetCurrentUserMembershipsResponse(rsp)
+}
+
+// RegisterUserWithBodyWithResponse request with arbitrary body returning *RegisterUserResponse
+func (c *ClientWithResponses) RegisterUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterUserResponse, error) {
+	rsp, err := c.RegisterUserWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterUserResponse(rsp)
+}
+
+func (c *ClientWithResponses) RegisterUserWithResponse(ctx context.Context, body RegisterUserJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterUserResponse, error) {
+	rsp, err := c.RegisterUser(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterUserResponse(rsp)
 }
 
 // ResetUserPasswordWithBodyWithResponse request with arbitrary body returning *ResetUserPasswordResponse
@@ -27985,6 +28102,60 @@ func ParseGetCurrentUserMembershipsResponse(rsp *http.Response) (*GetCurrentUser
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegisterUserResponse parses an HTTP response from a RegisterUserWithResponse call
+func ParseRegisterUserResponse(rsp *http.Response) (*RegisterUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest RegisterUser201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError

@@ -4042,6 +4042,48 @@
         "tags" : [ "users" ]
       }
     },
+    "/user/register" : {
+      "post" : {
+        "description" : "Register new user",
+        "operationId" : "RegisterUser",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterUser_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RegisterUser_201_response"
+                }
+              }
+            },
+            "description" : "User created but email not verified"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "users" ],
+        "x-internal" : true
+      }
+    },
     "/user/reset-password" : {
       "post" : {
         "description" : "Reset user password from email",
@@ -11631,6 +11673,33 @@
           }
         },
         "required" : [ "secret", "url" ]
+      },
+      "RegisterUser_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "email" : {
+            "description" : "Email address",
+            "format" : "email"
+          },
+          "password" : {
+            "description" : "Password for the new user account",
+            "minLength" : 6
+          }
+        },
+        "required" : [ "email", "password" ]
+      },
+      "RegisterUser_201_response" : {
+        "properties" : {
+          "email" : {
+            "description" : "Indicates successful user creation",
+            "type" : "string"
+          },
+          "custom_token" : {
+            "description" : "Token to exchange for ID token",
+            "type" : "string"
+          }
+        },
+        "required" : [ "custom_token", "email" ]
       },
       "ResetUserPassword_request" : {
         "additionalProperties" : { },
