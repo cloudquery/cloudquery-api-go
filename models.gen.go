@@ -2108,6 +2108,25 @@ type PromoteSyncSourceTestConnection struct {
 	Tables []string `json:"tables"`
 }
 
+// RegisterUser201Response defines model for RegisterUser_201_response.
+type RegisterUser201Response struct {
+	// CustomToken Token to exchange for ID token
+	CustomToken string `json:"custom_token"`
+
+	// Email Indicates successful user creation
+	Email string `json:"email"`
+}
+
+// RegisterUserRequest defines model for RegisterUser_request.
+type RegisterUserRequest struct {
+	// Email Email address
+	Email interface{} `json:"email"`
+
+	// Password Password for the new user account
+	Password             interface{}            `json:"password"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // RegistryAuthToken JWT token for the image registry
 type RegistryAuthToken struct {
 	AccessToken string `json:"access_token"`
@@ -3827,6 +3846,9 @@ type SendUserEventJSONRequestBody = SendUserEventRequest
 // LoginUserJSONRequestBody defines body for LoginUser for application/json ContentType.
 type LoginUserJSONRequestBody = LoginUserRequest
 
+// RegisterUserJSONRequestBody defines body for RegisterUser for application/json ContentType.
+type RegisterUserJSONRequestBody = RegisterUserRequest
+
 // ResetUserPasswordJSONRequestBody defines body for ResetUserPassword for application/json ContentType.
 type ResetUserPasswordJSONRequestBody = ResetUserPasswordRequest
 
@@ -5269,6 +5291,85 @@ func (a LoginUserRequest) MarshalJSON() ([]byte, error) {
 	object["id_token"], err = json.Marshal(a.IDToken)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'id_token': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for RegisterUserRequest. Returns the specified
+// element and whether it was found
+func (a RegisterUserRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for RegisterUserRequest
+func (a *RegisterUserRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for RegisterUserRequest to handle AdditionalProperties
+func (a *RegisterUserRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["email"]; found {
+		err = json.Unmarshal(raw, &a.Email)
+		if err != nil {
+			return fmt.Errorf("error reading 'email': %w", err)
+		}
+		delete(object, "email")
+	}
+
+	if raw, found := object["password"]; found {
+		err = json.Unmarshal(raw, &a.Password)
+		if err != nil {
+			return fmt.Errorf("error reading 'password': %w", err)
+		}
+		delete(object, "password")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for RegisterUserRequest to handle AdditionalProperties
+func (a RegisterUserRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["email"], err = json.Marshal(a.Email)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	object["password"], err = json.Marshal(a.Password)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'password': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
