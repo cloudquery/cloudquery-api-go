@@ -969,9 +969,6 @@ type ListPlugin struct {
 	LatestVersion *VersionName `json:"latest_version,omitempty"`
 	Logo          string       `json:"logo"`
 
-	// MinimumCloudVersion Minimum plugin version that is supported in CloudQuery managed syncs.
-	MinimumCloudVersion *string `json:"minimum_cloud_version,omitempty"`
-
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
 
@@ -1154,9 +1151,6 @@ type Plugin struct {
 	// Kind The kind of plugin, ie. source or destination.
 	Kind PluginKind `json:"kind"`
 	Logo string     `json:"logo"`
-
-	// MinimumCloudVersion Minimum plugin version that is supported in CloudQuery managed syncs.
-	MinimumCloudVersion *string `json:"minimum_cloud_version,omitempty"`
 
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
