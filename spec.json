@@ -5735,12 +5735,6 @@
             "example" : 1000,
             "format" : "int64",
             "type" : "integer"
-          },
-          "minimum_cloud_version" : {
-            "description" : "Minimum plugin version that is supported in CloudQuery managed syncs.",
-            "example" : "v1.2.3",
-            "maxLength" : 64,
-            "type" : "string"
           }
         },
         "required" : [ "category", "created_at", "display_name", "free_rows_per_month", "kind", "logo", "name", "official", "release_stage", "short_description", "team_name", "tier", "updated_at", "usd_per_row" ],
