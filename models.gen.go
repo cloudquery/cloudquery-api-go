@@ -1790,6 +1790,14 @@ type ReportPlatformDataRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// ReportTenantPlatformDataRequest defines model for ReportTenantPlatformData_request.
+type ReportTenantPlatformDataRequest struct {
+	Host                 string                 `json:"host"`
+	UserAdditions        interface{}            `json:"user_additions,omitempty"`
+	UserRemovals         interface{}            `json:"user_removals,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // ResetUserPasswordRequest defines model for ResetUserPassword_request.
 type ResetUserPasswordRequest struct {
 	// Email Email address to reset
@@ -2638,6 +2646,9 @@ type RenewPlatformActivationJSONRequestBody = RenewPlatformActivationRequest
 
 // ReportPlatformDataJSONRequestBody defines body for ReportPlatformData for application/json ContentType.
 type ReportPlatformDataJSONRequestBody = ReportPlatformDataRequest
+
+// ReportTenantPlatformDataJSONRequestBody defines body for ReportTenantPlatformData for application/json ContentType.
+type ReportTenantPlatformDataJSONRequestBody = ReportTenantPlatformDataRequest
 
 // CreatePluginNotificationRequestJSONRequestBody defines body for CreatePluginNotificationRequest for application/json ContentType.
 type CreatePluginNotificationRequestJSONRequestBody = PluginNotificationRequestCreate
@@ -3997,6 +4008,102 @@ func (a ReportPlatformDataRequest) MarshalJSON() ([]byte, error) {
 	object["installation_id"], err = json.Marshal(a.InstallationID)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
+	}
+
+	if a.UserAdditions != nil {
+		object["user_additions"], err = json.Marshal(a.UserAdditions)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'user_additions': %w", err)
+		}
+	}
+
+	if a.UserRemovals != nil {
+		object["user_removals"], err = json.Marshal(a.UserRemovals)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'user_removals': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for ReportTenantPlatformDataRequest. Returns the specified
+// element and whether it was found
+func (a ReportTenantPlatformDataRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ReportTenantPlatformDataRequest
+func (a *ReportTenantPlatformDataRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ReportTenantPlatformDataRequest to handle AdditionalProperties
+func (a *ReportTenantPlatformDataRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["host"]; found {
+		err = json.Unmarshal(raw, &a.Host)
+		if err != nil {
+			return fmt.Errorf("error reading 'host': %w", err)
+		}
+		delete(object, "host")
+	}
+
+	if raw, found := object["user_additions"]; found {
+		err = json.Unmarshal(raw, &a.UserAdditions)
+		if err != nil {
+			return fmt.Errorf("error reading 'user_additions': %w", err)
+		}
+		delete(object, "user_additions")
+	}
+
+	if raw, found := object["user_removals"]; found {
+		err = json.Unmarshal(raw, &a.UserRemovals)
+		if err != nil {
+			return fmt.Errorf("error reading 'user_removals': %w", err)
+		}
+		delete(object, "user_removals")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ReportTenantPlatformDataRequest to handle AdditionalProperties
+func (a ReportTenantPlatformDataRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["host"], err = json.Marshal(a.Host)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'host': %w", err)
 	}
 
 	if a.UserAdditions != nil {

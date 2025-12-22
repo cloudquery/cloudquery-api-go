@@ -15,6 +15,7 @@ import (
 
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -157,6 +158,11 @@ type ClientInterface interface {
 	ReportPlatformDataWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	ReportPlatformData(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReportTenantPlatformDataWithBody request with any body
+	ReportTenantPlatformDataWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ReportTenantPlatformData(ctx context.Context, tenantID openapi_types.UUID, body ReportTenantPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListPluginNotificationRequests request
 	ListPluginNotificationRequests(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -817,6 +823,30 @@ func (c *Client) ReportPlatformDataWithBody(ctx context.Context, contentType str
 
 func (c *Client) ReportPlatformData(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReportPlatformDataRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReportTenantPlatformDataWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReportTenantPlatformDataRequestWithBody(c.Server, tenantID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReportTenantPlatformData(ctx context.Context, tenantID openapi_types.UUID, body ReportTenantPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReportTenantPlatformDataRequest(c.Server, tenantID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3401,6 +3431,53 @@ func NewReportPlatformDataRequestWithBody(server string, contentType string, bod
 	}
 
 	operationPath := fmt.Sprintf("/platform/report")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReportTenantPlatformDataRequest calls the generic ReportTenantPlatformData builder with application/json body
+func NewReportTenantPlatformDataRequest(server string, tenantID openapi_types.UUID, body ReportTenantPlatformDataJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReportTenantPlatformDataRequestWithBody(server, tenantID, "application/json", bodyReader)
+}
+
+// NewReportTenantPlatformDataRequestWithBody generates requests for ReportTenantPlatformData with any type of body
+func NewReportTenantPlatformDataRequestWithBody(server string, tenantID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "tenant_id", runtime.ParamLocationPath, tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/platform/%s/report", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -9109,6 +9186,11 @@ type ClientWithResponsesInterface interface {
 
 	ReportPlatformDataWithResponse(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportPlatformDataResponse, error)
 
+	// ReportTenantPlatformDataWithBodyWithResponse request with any body
+	ReportTenantPlatformDataWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportTenantPlatformDataResponse, error)
+
+	ReportTenantPlatformDataWithResponse(ctx context.Context, tenantID openapi_types.UUID, body ReportTenantPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportTenantPlatformDataResponse, error)
+
 	// ListPluginNotificationRequestsWithResponse request
 	ListPluginNotificationRequestsWithResponse(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*ListPluginNotificationRequestsResponse, error)
 
@@ -9915,6 +9997,32 @@ func (r ReportPlatformDataResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ReportPlatformDataResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReportTenantPlatformDataResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ReportTenantPlatformDataResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReportTenantPlatformDataResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12753,6 +12861,23 @@ func (c *ClientWithResponses) ReportPlatformDataWithResponse(ctx context.Context
 	return ParseReportPlatformDataResponse(rsp)
 }
 
+// ReportTenantPlatformDataWithBodyWithResponse request with arbitrary body returning *ReportTenantPlatformDataResponse
+func (c *ClientWithResponses) ReportTenantPlatformDataWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportTenantPlatformDataResponse, error) {
+	rsp, err := c.ReportTenantPlatformDataWithBody(ctx, tenantID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReportTenantPlatformDataResponse(rsp)
+}
+
+func (c *ClientWithResponses) ReportTenantPlatformDataWithResponse(ctx context.Context, tenantID openapi_types.UUID, body ReportTenantPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportTenantPlatformDataResponse, error) {
+	rsp, err := c.ReportTenantPlatformData(ctx, tenantID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReportTenantPlatformDataResponse(rsp)
+}
+
 // ListPluginNotificationRequestsWithResponse request returning *ListPluginNotificationRequestsResponse
 func (c *ClientWithResponses) ListPluginNotificationRequestsWithResponse(ctx context.Context, params *ListPluginNotificationRequestsParams, reqEditors ...RequestEditorFn) (*ListPluginNotificationRequestsResponse, error) {
 	rsp, err := c.ListPluginNotificationRequests(ctx, params, reqEditors...)
@@ -14784,6 +14909,60 @@ func ParseReportPlatformDataResponse(rsp *http.Response) (*ReportPlatformDataRes
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReportTenantPlatformDataResponse parses an HTTP response from a ReportTenantPlatformDataWithResponse call
+func ParseReportTenantPlatformDataResponse(rsp *http.Response) (*ReportTenantPlatformDataResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReportTenantPlatformDataResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound

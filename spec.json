@@ -4901,6 +4901,56 @@
         "x-internal" : true
       }
     },
+    "/platform/{tenant_id}/report" : {
+      "post" : {
+        "description" : "Report tenant platform data",
+        "operationId" : "ReportTenantPlatformData",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "tenant_id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple",
+          "x-go-name" : "TenantID"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReportTenantPlatformData_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
     "/teams/{team_name}/ai-onboarding/chat" : {
       "post" : {
         "description" : "Send a chat message to the AI onboarding assistant",
@@ -8684,6 +8734,23 @@
           }
         },
         "required" : [ "installation_id" ]
+      },
+      "ReportTenantPlatformData_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "host" : {
+            "type" : "string"
+          },
+          "user_additions" : {
+            "items" : { },
+            "x-go-type-skip-optional-pointer" : true
+          },
+          "user_removals" : {
+            "items" : { },
+            "x-go-type-skip-optional-pointer" : true
+          }
+        },
+        "required" : [ "host" ]
       },
       "AIOnboardingChat_request" : {
         "additionalProperties" : { },
