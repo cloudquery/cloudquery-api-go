@@ -6,7 +6,7 @@
       "name" : "CloudQuery Support Team",
       "url" : "https://cloudquery.io"
     },
-    "description" : "Welcome to the CloudQuery API documentation! This API can be used to interact with the CloudQuery platform. The API allows you to manage your teams, usage, spend limits, plugins, addons, cloud syncs, and much more.\n\nThe API is secured using bearer tokens. To get started, you can generate an API key from the CloudQuery dashboard. For a step-by-step guide, see: https://docs.cloudquery.io/docs/deployment/generate-api-key.\n\nThe base URL for the API is `https://api.cloudquery.io`.\n",
+    "description" : "Welcome to the CloudQuery API documentation! This API can be used to interact with the CloudQuery platform. The API allows you to manage your teams, usage, spend limits, plugins, addons, cloud syncs, and much more.\n\nThe API is secured using bearer tokens. To get started, you can generate an API key from the CloudQuery dashboard. For a step-by-step guide, see: https://www.cloudquery.io/docs/cli/managing-cloudquery/deployments/generate-api-key.\n\nThe base URL for the API is `https://api.cloudquery.io`.\n",
     "license" : {
       "name" : "MIT",
       "url" : "https://spdx.org/licenses/MIT"
@@ -2551,7 +2551,7 @@
         "tags" : [ "teams" ]
       },
       "post" : {
-        "description" : "Create a spending limit for a team",
+        "description" : "Create a spending limit for a team. Deprecated.",
         "operationId" : "CreateSpendingLimit",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -2595,7 +2595,7 @@
         "tags" : [ "teams" ]
       },
       "put" : {
-        "description" : "Update a spending limit for a team",
+        "description" : "Update a spending limit for a team. Deprecated.",
         "operationId" : "UpdateSpendingLimit",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
@@ -3026,7 +3026,7 @@
     },
     "/teams/{team_name}/spend" : {
       "get" : {
-        "description" : "Get team spend for defined period.",
+        "description" : "Get team spend for defined period. Deprecated.",
         "operationId" : "GetTeamSpend",
         "parameters" : [ {
           "$ref" : "#/components/parameters/team_name"
