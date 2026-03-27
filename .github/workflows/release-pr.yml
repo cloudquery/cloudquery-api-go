@@ -18,7 +18,9 @@ jobs:
         with:
           app-id: ${{ secrets.CQ_APP_ID }}
           private-key: ${{ secrets.CQ_APP_PRIVATE_KEY }}
-          repositories: cloudquery-api-go,.github
+          repositories: |
+            cloudquery-api-go
+            .github
           permission-contents: write
           permission-pull-requests: write
           permission-actions: write

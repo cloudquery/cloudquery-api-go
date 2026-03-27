@@ -16,7 +16,9 @@ jobs:
         with:
           app-id: ${{ secrets.CQ_APP_ID }}
           private-key: ${{ secrets.CQ_APP_PRIVATE_KEY }}
-          repositories: cloudquery-api-go,cloud
+          repositories: |
+            cloudquery-api-go
+            cloud
           permission-contents: write
           permission-pull-requests: write
       - name: Checkout
