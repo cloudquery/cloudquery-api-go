@@ -16,11 +16,17 @@ jobs:
         with:
           app-id: ${{ secrets.CQ_APP_ID }}
           private-key: ${{ secrets.CQ_APP_PRIVATE_KEY }}
-          repositories: |
-            cloudquery-api-go
-            cloud
           permission-contents: write
           permission-pull-requests: write
+      - name: Generate GitHub App token for cloud repo
+        id: app-token-cloud
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
+        with:
+          app-id: ${{ secrets.CQ_APP_ID }}
+          private-key: ${{ secrets.CQ_APP_PRIVATE_KEY }}
+          repositories: |
+            cloud
+          permission-contents: read
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
@@ -28,7 +34,7 @@ jobs:
 
       - name: Get Specs File
         run: |
-          curl -H "Authorization: token ${{ steps.app-token.outputs.token }}" https://raw.githubusercontent.com/cloudquery/cloud/main/cloud/internal/servergen/spec.json -o spec.json
+          curl -H "Authorization: token ${{ steps.app-token-cloud.outputs.token }}" https://raw.githubusercontent.com/cloudquery/cloud/main/cloud/internal/servergen/spec.json -o spec.json
 
       - name: Format Specs File
         run: |
