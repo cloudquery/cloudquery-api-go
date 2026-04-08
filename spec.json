@@ -2492,153 +2492,6 @@
         "tags" : [ "teams" ]
       }
     },
-    "/teams/{team_name}/spending-limits" : {
-      "delete" : {
-        "description" : "Delete a spending limit for a team",
-        "operationId" : "DeleteSpendingLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Spending limit deleted."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      },
-      "get" : {
-        "description" : "Get monthly spending limit for team.",
-        "operationId" : "GetSpendingLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SpendingLimit"
-                }
-              }
-            },
-            "description" : "Spending limit retrieved."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      },
-      "post" : {
-        "description" : "Create a spending limit for a team. Deprecated.",
-        "operationId" : "CreateSpendingLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SpendingLimitCreate"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SpendingLimit"
-                }
-              }
-            },
-            "description" : "New spending limit created."
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/UnprocessableEntity"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      },
-      "put" : {
-        "description" : "Update a spending limit for a team. Deprecated.",
-        "operationId" : "UpdateSpendingLimit",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SpendingLimitUpdate"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SpendingLimit"
-                }
-              }
-            },
-            "description" : "Spending limit updated."
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      }
-    },
     "/teams/{team_name}/invoices" : {
       "get" : {
         "description" : "List all past invoices for the team.",
@@ -3016,65 +2869,6 @@
           },
           "422" : {
             "$ref" : "#/components/responses/UnprocessableEntity"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/InternalError"
-          }
-        },
-        "tags" : [ "teams" ]
-      }
-    },
-    "/teams/{team_name}/spend" : {
-      "get" : {
-        "description" : "Get team spend for defined period. Deprecated.",
-        "operationId" : "GetTeamSpend",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/team_name"
-        }, {
-          "description" : "A valid ISO 8601 date string representing the inclusive start of the period.",
-          "explode" : true,
-          "in" : "query",
-          "name" : "start",
-          "required" : false,
-          "schema" : {
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "style" : "form"
-        }, {
-          "description" : "A valid ISO 8601 date string representing the exclusive end of the period.",
-          "explode" : true,
-          "in" : "query",
-          "name" : "end",
-          "required" : false,
-          "schema" : {
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "style" : "form"
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SpendSummary"
-                }
-              }
-            },
-            "description" : "Team spend for defined period."
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/RequiresAuthentication"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/Forbidden"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
           },
           "500" : {
             "$ref" : "#/components/responses/InternalError"
@@ -5557,11 +5351,9 @@
       "ImageURL" : {
         "properties" : {
           "upload_url" : {
-            "example" : "https://cloudquery.io/api/v1/upload/1234567890abcdef1234567890abcdef",
             "type" : "string"
           },
           "download_url" : {
-            "example" : "https://cloudquery.io/api/v1/download/1234567890abcdef1234567890abcdef",
             "type" : "string"
           },
           "required_headers" : {
@@ -7105,65 +6897,6 @@
         "required" : [ "role", "user" ],
         "title" : "CloudQuery User Membership"
       },
-      "SpendingLimit" : {
-        "additionalProperties" : false,
-        "description" : "A configurable spending limit for the team. Empty values indicate no limit.",
-        "properties" : {
-          "created_at" : {
-            "description" : "The date and time the team limit was created.",
-            "example" : "2017-07-14T16:53:42Z",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "updated_at" : {
-            "description" : "The date and time the team limit was last updated.",
-            "example" : "2017-07-14T16:53:42Z",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "usd" : {
-            "description" : "The maximum USD amount the team is allowed to use within a calendar month.",
-            "example" : 1000,
-            "maximum" : 1000000000,
-            "minimum" : 0,
-            "type" : "integer",
-            "x-go-name" : "USD"
-          }
-        },
-        "title" : "Team Spending Limit"
-      },
-      "SpendingLimitUpdate" : {
-        "additionalProperties" : false,
-        "description" : "A configurable spending limit for the team.",
-        "properties" : {
-          "usd" : {
-            "description" : "The maximum USD amount the team is allowed to use within a calendar month.",
-            "example" : 1000,
-            "maximum" : 1000000000,
-            "minimum" : 0,
-            "type" : "integer",
-            "x-go-name" : "USD"
-          }
-        },
-        "required" : [ "usd" ],
-        "title" : "Team Spending Limit"
-      },
-      "SpendingLimitCreate" : {
-        "additionalProperties" : false,
-        "description" : "A configurable monthly limit for team usage.",
-        "properties" : {
-          "usd" : {
-            "description" : "The maximum USD amount the team is allowed to use within a calendar month.",
-            "example" : 1000,
-            "maximum" : 1000000000,
-            "minimum" : 0,
-            "type" : "integer",
-            "x-go-name" : "USD"
-          }
-        },
-        "required" : [ "usd" ],
-        "title" : "Team Spending Limit"
-      },
       "Invoice" : {
         "additionalProperties" : false,
         "description" : "Invoice details",
@@ -7381,59 +7114,6 @@
         },
         "required" : [ "groups", "metadata", "values" ],
         "title" : "CloudQuery Usage Summary"
-      },
-      "PriceCategorySpend" : {
-        "additionalProperties" : false,
-        "description" : "Spend by price category for a defined period.",
-        "properties" : {
-          "category" : {
-            "$ref" : "#/components/schemas/PluginPriceCategory"
-          },
-          "total" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "category", "total" ],
-        "title" : "Spend by price category"
-      },
-      "SpendSummaryValue" : {
-        "additionalProperties" : false,
-        "description" : "A spend summary value.",
-        "properties" : {
-          "date" : {
-            "description" : "The timestamp for the spend summary.",
-            "format" : "date-time",
-            "type" : "string"
-          },
-          "by_category" : {
-            "items" : {
-              "$ref" : "#/components/schemas/PriceCategorySpend"
-            },
-            "type" : "array"
-          },
-          "total" : {
-            "description" : "Total spend for the period in USD.",
-            "type" : "string"
-          }
-        },
-        "required" : [ "by_category", "date", "total" ],
-        "title" : "CloudQuery Spend Summary Value"
-      },
-      "SpendSummary" : {
-        "additionalProperties" : { },
-        "description" : "A spend summary for a team, summarizing the spend by each price category over a given time range.\nNote that empty or all-zero values are not included in the response.\n",
-        "properties" : {
-          "values" : {
-            "items" : {
-              "$ref" : "#/components/schemas/SpendSummaryValue"
-            }
-          },
-          "metadata" : {
-            "$ref" : "#/components/schemas/SpendSummary_metadata"
-          }
-        },
-        "required" : [ "metadata", "values" ],
-        "title" : "CloudQuery Spend Summary"
       },
       "Email" : {
         "example" : "user@example.com",
@@ -8868,21 +8548,6 @@
           }
         },
         "required" : [ "aggregation_period", "end", "metrics", "start" ]
-      },
-      "SpendSummary_metadata" : {
-        "additionalProperties" : false,
-        "description" : "Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.",
-        "properties" : {
-          "start" : {
-            "description" : "The inclusive start of the query time range.",
-            "format" : "date-time"
-          },
-          "end" : {
-            "description" : "The exclusive end of the query time range.",
-            "format" : "date-time"
-          }
-        },
-        "required" : [ "end", "start" ]
       }
     },
     "securitySchemes" : {
