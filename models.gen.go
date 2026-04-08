@@ -1722,13 +1722,6 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
-// PriceCategorySpend Spend by price category for a defined period.
-type PriceCategorySpend struct {
-	// Category Supported price categories for billing
-	Category PluginPriceCategory `json:"category"`
-	Total    string              `json:"total"`
-}
-
 // RegisterUser201Response defines model for RegisterUser_201_response.
 type RegisterUser201Response struct {
 	// CustomToken Token to exchange for ID token
@@ -1841,59 +1834,6 @@ type Settings struct {
 type SettingsUpdate struct {
 	// EnforceMfa Whether or not to require MFA for all users
 	EnforceMfa *bool `json:"enforce_mfa,omitempty"`
-}
-
-// SpendSummary A spend summary for a team, summarizing the spend by each price category over a given time range.
-// Note that empty or all-zero values are not included in the response.
-type SpendSummary struct {
-	// Metadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
-	Metadata             SpendSummaryMetadata   `json:"metadata"`
-	Values               interface{}            `json:"values"`
-	AdditionalProperties map[string]interface{} `json:"-"`
-}
-
-// SpendSummaryValue A spend summary value.
-type SpendSummaryValue struct {
-	ByCategory []PriceCategorySpend `json:"by_category"`
-
-	// Date The timestamp for the spend summary.
-	Date time.Time `json:"date"`
-
-	// Total Total spend for the period in USD.
-	Total string `json:"total"`
-}
-
-// SpendSummaryMetadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
-type SpendSummaryMetadata struct {
-	// End The exclusive end of the query time range.
-	End interface{} `json:"end"`
-
-	// Start The inclusive start of the query time range.
-	Start interface{} `json:"start"`
-}
-
-// SpendingLimit A configurable spending limit for the team. Empty values indicate no limit.
-type SpendingLimit struct {
-	// CreatedAt The date and time the team limit was created.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-
-	// UpdatedAt The date and time the team limit was last updated.
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-
-	// USD The maximum USD amount the team is allowed to use within a calendar month.
-	USD *int `json:"usd,omitempty"`
-}
-
-// SpendingLimitCreate A configurable monthly limit for team usage.
-type SpendingLimitCreate struct {
-	// USD The maximum USD amount the team is allowed to use within a calendar month.
-	USD int `json:"usd"`
-}
-
-// SpendingLimitUpdate A configurable spending limit for the team.
-type SpendingLimitUpdate struct {
-	// USD The maximum USD amount the team is allowed to use within a calendar month.
-	USD int `json:"usd"`
 }
 
 // Team CloudQuery Team
@@ -2527,15 +2467,6 @@ type DownloadPluginAssetByTeamParams struct {
 	Accept *string `json:"Accept,omitempty"`
 }
 
-// GetTeamSpendParams defines parameters for GetTeamSpend.
-type GetTeamSpendParams struct {
-	// Start A valid ISO 8601 date string representing the inclusive start of the period.
-	Start *time.Time `form:"start,omitempty" json:"start,omitempty"`
-
-	// End A valid ISO 8601 date string representing the exclusive end of the period.
-	End *time.Time `form:"end,omitempty" json:"end,omitempty"`
-}
-
 // ListSubscriptionOrdersByTeamParams defines parameters for ListSubscriptionOrdersByTeam.
 type ListSubscriptionOrdersByTeamParams struct {
 	// Page Page number of the results to fetch
@@ -2727,12 +2658,6 @@ type RemoveTeamMembershipJSONRequestBody = RemoveTeamMembershipRequest
 
 // UpdateSettingsJSONRequestBody defines body for UpdateSettings for application/json ContentType.
 type UpdateSettingsJSONRequestBody = SettingsUpdate
-
-// CreateSpendingLimitJSONRequestBody defines body for CreateSpendingLimit for application/json ContentType.
-type CreateSpendingLimitJSONRequestBody = SpendingLimitCreate
-
-// UpdateSpendingLimitJSONRequestBody defines body for UpdateSpendingLimit for application/json ContentType.
-type UpdateSpendingLimitJSONRequestBody = SpendingLimitUpdate
 
 // CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
 type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
@@ -4374,85 +4299,6 @@ func (a SendUserEventRequest) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'properties': %w", err)
 		}
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for SpendSummary. Returns the specified
-// element and whether it was found
-func (a SpendSummary) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for SpendSummary
-func (a *SpendSummary) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for SpendSummary to handle AdditionalProperties
-func (a *SpendSummary) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["metadata"]; found {
-		err = json.Unmarshal(raw, &a.Metadata)
-		if err != nil {
-			return fmt.Errorf("error reading 'metadata': %w", err)
-		}
-		delete(object, "metadata")
-	}
-
-	if raw, found := object["values"]; found {
-		err = json.Unmarshal(raw, &a.Values)
-		if err != nil {
-			return fmt.Errorf("error reading 'values': %w", err)
-		}
-		delete(object, "values")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for SpendSummary to handle AdditionalProperties
-func (a SpendSummary) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["metadata"], err = json.Marshal(a.Metadata)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'metadata': %w", err)
-	}
-
-	object["values"], err = json.Marshal(a.Values)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'values': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
