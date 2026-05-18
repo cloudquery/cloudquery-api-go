@@ -77,6 +77,13 @@ const (
 	ManagedDatabaseStatusReady   ManagedDatabaseStatus = "ready"
 )
 
+// Defines values for PlatformTenantStatus.
+const (
+	PlatformTenantStatusActive  PlatformTenantStatus = "active"
+	PlatformTenantStatusCreated PlatformTenantStatus = "created"
+	PlatformTenantStatusPending PlatformTenantStatus = "pending"
+)
+
 // Defines values for PluginCategory.
 const (
 	PluginCategoryCloudFinops          PluginCategory = "cloud-finops"
@@ -646,6 +653,33 @@ type CreateAddonVersionRequest struct {
 	PluginDeps *[]string `json:"plugin_deps,omitempty"`
 }
 
+// CreatePlatformSignup201Response defines model for CreatePlatformSignup_201_response.
+type CreatePlatformSignup201Response struct {
+	// Status Provisioning status of a platform tenant.
+	Status    PlatformTenantStatus `json:"status"`
+	Subdomain string               `json:"subdomain"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName           `json:"team_name"`
+	TenantId openapi_types.UUID `json:"tenant_id"`
+}
+
+// CreatePlatformSignupRequest defines model for CreatePlatformSignup_request.
+type CreatePlatformSignupRequest struct {
+	// Company Company name (free text). Captured for analytics. On the auto-create-team path it is also used as the new Cloud team's `display_name` (the team `name` slug stays the auto-generated subdomain).
+	Company interface{} `json:"company"`
+
+	// JobTitle User's job title (free text, e.g. "Engineering Manager"). Captured for analytics. Distinct from the Cloud team membership role (admin/member).
+	JobTitle interface{} `json:"job_title"`
+
+	// Name Full name of the user
+	Name interface{} `json:"name"`
+
+	// TeamName Optional. When set the new tenant is attached to this existing Cloud team and no team is auto-created; the caller must be an ADMIN of the team or the request 404s (same response shape as an unknown team, so membership existence is not leaked). When unset, a new Cloud team is auto-created with `name = subdomain` and the signing-up user as its sole admin.
+	TeamName             *TeamName              `json:"team_name,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // CreatePluginVersionDocs201Response defines model for CreatePluginVersionDocs_201_response.
 type CreatePluginVersionDocs201Response struct {
 	Names *[]PluginDocsPageName `json:"names,omitempty"`
@@ -1079,6 +1113,11 @@ type ListTeams200Response struct {
 	Metadata ListMetadata `json:"metadata"`
 }
 
+// ListUserPlatformTenants200Response defines model for ListUserPlatformTenants_200_response.
+type ListUserPlatformTenants200Response struct {
+	Items []PlatformTenantSummary `json:"items"`
+}
+
 // ListUsersByTeam200Response defines model for ListUsersByTeam_200_response.
 type ListUsersByTeam200Response struct {
 	Items    []User       `json:"items"`
@@ -1132,6 +1171,20 @@ type MembershipWithUser struct {
 
 	// User CloudQuery User
 	User User `json:"user"`
+}
+
+// PlatformTenantStatus Provisioning status of a platform tenant.
+type PlatformTenantStatus string
+
+// PlatformTenantSummary Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.
+type PlatformTenantSummary struct {
+	// Status Provisioning status of a platform tenant.
+	Status    PlatformTenantStatus `json:"status"`
+	Subdomain string               `json:"subdomain"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName           `json:"team_name"`
+	TenantId openapi_types.UUID `json:"tenant_id"`
 }
 
 // Plugin CloudQuery Plugin
@@ -2147,6 +2200,9 @@ type VerifyUserEmailRequest struct {
 	// Email Email address to verify
 	Email interface{} `json:"email"`
 
+	// RequireBusiness When `true`, also reject the request with 400 if the email is on a public domain.
+	RequireBusiness *interface{} `json:"require_business,omitempty"`
+
 	// ReturnTo Return to this URL after verification
 	ReturnTo *interface{} `json:"return_to,omitempty"`
 
@@ -2568,6 +2624,9 @@ type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
 type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
+
+// CreatePlatformSignupJSONRequestBody defines body for CreatePlatformSignup for application/json ContentType.
+type CreatePlatformSignupJSONRequestBody = CreatePlatformSignupRequest
 
 // ActivatePlatformJSONRequestBody defines body for ActivatePlatform for application/json ContentType.
 type ActivatePlatformJSONRequestBody = ActivatePlatformRequest
@@ -3377,6 +3436,113 @@ func (a ActivatePlatformRequest) MarshalJSON() ([]byte, error) {
 	object["installation_id"], err = json.Marshal(a.InstallationID)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for CreatePlatformSignupRequest. Returns the specified
+// element and whether it was found
+func (a CreatePlatformSignupRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for CreatePlatformSignupRequest
+func (a *CreatePlatformSignupRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for CreatePlatformSignupRequest to handle AdditionalProperties
+func (a *CreatePlatformSignupRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["company"]; found {
+		err = json.Unmarshal(raw, &a.Company)
+		if err != nil {
+			return fmt.Errorf("error reading 'company': %w", err)
+		}
+		delete(object, "company")
+	}
+
+	if raw, found := object["job_title"]; found {
+		err = json.Unmarshal(raw, &a.JobTitle)
+		if err != nil {
+			return fmt.Errorf("error reading 'job_title': %w", err)
+		}
+		delete(object, "job_title")
+	}
+
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &a.Name)
+		if err != nil {
+			return fmt.Errorf("error reading 'name': %w", err)
+		}
+		delete(object, "name")
+	}
+
+	if raw, found := object["team_name"]; found {
+		err = json.Unmarshal(raw, &a.TeamName)
+		if err != nil {
+			return fmt.Errorf("error reading 'team_name': %w", err)
+		}
+		delete(object, "team_name")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for CreatePlatformSignupRequest to handle AdditionalProperties
+func (a CreatePlatformSignupRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["company"], err = json.Marshal(a.Company)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'company': %w", err)
+	}
+
+	object["job_title"], err = json.Marshal(a.JobTitle)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'job_title': %w", err)
+	}
+
+	object["name"], err = json.Marshal(a.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	if a.TeamName != nil {
+		object["team_name"], err = json.Marshal(a.TeamName)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'team_name': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
@@ -4791,6 +4957,14 @@ func (a *VerifyUserEmailRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "email")
 	}
 
+	if raw, found := object["require_business"]; found {
+		err = json.Unmarshal(raw, &a.RequireBusiness)
+		if err != nil {
+			return fmt.Errorf("error reading 'require_business': %w", err)
+		}
+		delete(object, "require_business")
+	}
+
 	if raw, found := object["return_to"]; found {
 		err = json.Unmarshal(raw, &a.ReturnTo)
 		if err != nil {
@@ -4829,6 +5003,13 @@ func (a VerifyUserEmailRequest) MarshalJSON() ([]byte, error) {
 	object["email"], err = json.Marshal(a.Email)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	if a.RequireBusiness != nil {
+		object["require_business"], err = json.Marshal(a.RequireBusiness)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'require_business': %w", err)
+		}
 	}
 
 	if a.ReturnTo != nil {
