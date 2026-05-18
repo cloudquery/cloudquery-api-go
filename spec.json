@@ -4164,6 +4164,178 @@
         "x-internal" : true
       }
     },
+    "/platform-signup" : {
+      "post" : {
+        "description" : "Self-serve entry point for a new Platform trial. The wizard collects `name`, `job_title`, `company` and, optionally, an existing `team_name` the caller wants to attach the new tenant to. Server side: re-runs UserCheck on the caller's email (personal / disposable / blocklisted / non-deliverable addresses are rejected with 400), auto-generates a subdomain, creates the owning Cloud team (or uses the supplied one), generates a per-tenant API key + password, and inserts the `platform_tenants` row in `pending` status.\nLifetime gate: a caller may successfully sign up at most once — match is on `platform_tenants.email == user.Email`. Subsequent calls return 422. Admin override is operational only (support deletes the blocking row in the DB).\nThe Firebase `email_verified` claim may be `false` — this is the only operation in the API surface that intentionally accepts unverified callers, because the wizard captures form data before the user clicks the Mandrill verification link. The wizard's \"continuing\" screen follows up with `POST /teams/{team_name}/platform/tenant/{tenant_id}/finalize` (which DOES require a verified email) once the user verifies. The returned `team_name` and `tenant_id` are the values the wizard passes back into `/finalize`.\n",
+        "operationId" : "CreatePlatformSignup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreatePlatformSignup_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreatePlatformSignup_201_response"
+                }
+              }
+            },
+            "description" : "Signup accepted; tenant provisioning has been queued."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/platform/tenant/{tenant_id}" : {
+      "get" : {
+        "description" : "Read provisioning status of a Platform tenant owned by the given Cloud team. The authenticated user must be a member of `team_name`. Used by the signup wizard to poll until `status` becomes `active`.\n",
+        "operationId" : "GetTeamPlatformTenant",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "tenant_id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreatePlatformSignup_201_response"
+                }
+              }
+            },
+            "description" : "Tenant state"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform", "teams" ],
+        "x-internal" : true
+      }
+    },
+    "/teams/{team_name}/platform/tenant/{tenant_id}/finalize" : {
+      "post" : {
+        "description" : "Trigger Platform tenant provisioning for a tenant that was created in `pending` state via `POST /platform-signup`. Requires the caller's Firebase `email_verified` claim to be `true` — opposite of the create endpoint, which intentionally accepts unverified-email callers so the wizard can capture form data eagerly. Idempotent: a second call after the tenant has advanced past `pending` is a no-op that returns the current state. The wizard's \"continuing\" screen calls this after the user clicks the verification email link and the client refreshes its Firebase ID token.\n",
+        "operationId" : "FinalizeTeamPlatformTenant",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "tenant_id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreatePlatformSignup_201_response"
+                }
+              }
+            },
+            "description" : "Finalization triggered (or no-op if already finalized)."
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform", "teams" ],
+        "x-internal" : true
+      }
+    },
+    "/user/platform/tenants" : {
+      "get" : {
+        "description" : "List Platform tenants the authenticated user can access via Cloud team membership. Used by the signup wizard to decide whether to show the tenant-creation form (empty list) or route the user to an existing tenant. Returns tenants in any status (pending/created/active).\n",
+        "operationId" : "ListUserPlatformTenants",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ListUserPlatformTenants_200_response"
+                }
+              }
+            },
+            "description" : "Tenant list"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform", "users" ],
+        "x-internal" : true
+      }
+    },
     "/users/{user_id}" : {
       "delete" : {
         "description" : "Delete user",
@@ -7281,6 +7453,30 @@
         },
         "required" : [ "tenant_url" ]
       },
+      "PlatformTenantStatus" : {
+        "description" : "Provisioning status of a platform tenant.",
+        "enum" : [ "pending", "created", "active" ],
+        "type" : "string"
+      },
+      "PlatformTenantSummary" : {
+        "description" : "Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.\n",
+        "properties" : {
+          "tenant_id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "subdomain" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/PlatformTenantStatus"
+          },
+          "team_name" : {
+            "$ref" : "#/components/schemas/TeamName"
+          }
+        },
+        "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
+      },
       "UserID" : {
         "description" : "ID of the User",
         "example" : "12345678-1234-1234-1234-1234567890ab",
@@ -8165,6 +8361,10 @@
           "subdomain" : {
             "description" : "Subdomain to use in the URL",
             "pattern" : "^[a-zA-Z0-9-]+$"
+          },
+          "require_business" : {
+            "default" : false,
+            "description" : "When `true`, also reject the request with 400 if the email is on a public domain.\n"
           }
         },
         "required" : [ "email" ]
@@ -8276,6 +8476,63 @@
           }
         },
         "required" : [ "has_cloud_account" ]
+      },
+      "CreatePlatformSignup_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "name" : {
+            "description" : "Full name of the user",
+            "maxLength" : 255,
+            "minLength" : 1
+          },
+          "job_title" : {
+            "description" : "User's job title (free text, e.g. \"Engineering Manager\"). Captured for analytics. Distinct from the Cloud team membership role (admin/member).\n",
+            "maxLength" : 255,
+            "minLength" : 1
+          },
+          "company" : {
+            "description" : "Company name (free text). Captured for analytics. On the auto-create-team path it is also used as the new Cloud team's `display_name` (the team `name` slug stays the auto-generated subdomain).\n",
+            "maxLength" : 255,
+            "minLength" : 1
+          },
+          "team_name" : {
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/TeamName"
+            } ],
+            "description" : "Optional. When set the new tenant is attached to this existing Cloud team and no team is auto-created; the caller must be an ADMIN of the team or the request 404s (same response shape as an unknown team, so membership existence is not leaked). When unset, a new Cloud team is auto-created with `name = subdomain` and the signing-up user as its sole admin.\n"
+          }
+        },
+        "required" : [ "company", "job_title", "name" ]
+      },
+      "CreatePlatformSignup_201_response" : {
+        "properties" : {
+          "tenant_id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "subdomain" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/PlatformTenantStatus"
+          },
+          "team_name" : {
+            "$ref" : "#/components/schemas/TeamName"
+          }
+        },
+        "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
+      },
+      "ListUserPlatformTenants_200_response" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/PlatformTenantSummary"
+            },
+            "type" : "array",
+            "x-go-type-skip-optional-pointer" : true
+          }
+        },
+        "required" : [ "items" ]
       },
       "ListTeamAPIKeys_200_response" : {
         "properties" : {

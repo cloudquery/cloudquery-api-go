@@ -144,6 +144,11 @@ type ClientInterface interface {
 	// GetOpenAPIJSON request
 	GetOpenAPIJSON(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreatePlatformSignupWithBody request with any body
+	CreatePlatformSignupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePlatformSignup(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ActivatePlatformWithBody request with any body
 	ActivatePlatformWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -397,6 +402,12 @@ type ClientInterface interface {
 	// DeleteTeamMembership request
 	DeleteTeamMembership(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetTeamPlatformTenant request
+	GetTeamPlatformTenant(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// FinalizeTeamPlatformTenant request
+	FinalizeTeamPlatformTenant(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeletePluginsByTeam request
 	DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -489,6 +500,9 @@ type ClientInterface interface {
 
 	// GetCurrentUserMemberships request
 	GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListUserPlatformTenants request
+	ListUserPlatformTenants(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RegisterUserWithBody request with any body
 	RegisterUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -732,6 +746,30 @@ func (c *Client) CQHealthCheck(ctx context.Context, reqEditors ...RequestEditorF
 
 func (c *Client) GetOpenAPIJSON(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetOpenAPIJSONRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePlatformSignupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePlatformSignupRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePlatformSignup(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePlatformSignupRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1870,6 +1908,30 @@ func (c *Client) DeleteTeamMembership(ctx context.Context, teamName TeamName, em
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetTeamPlatformTenant(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTeamPlatformTenantRequest(c.Server, teamName, tenantId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) FinalizeTeamPlatformTenant(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFinalizeTeamPlatformTenantRequest(c.Server, teamName, tenantId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeletePluginsByTeamRequest(c.Server, teamName)
 	if err != nil {
@@ -2268,6 +2330,18 @@ func (c *Client) LoginUser(ctx context.Context, body LoginUserJSONRequestBody, r
 
 func (c *Client) GetCurrentUserMemberships(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetCurrentUserMembershipsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListUserPlatformTenants(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListUserPlatformTenantsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -3223,6 +3297,46 @@ func NewGetOpenAPIJSONRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewCreatePlatformSignupRequest calls the generic CreatePlatformSignup builder with application/json body
+func NewCreatePlatformSignupRequest(server string, body CreatePlatformSignupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePlatformSignupRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreatePlatformSignupRequestWithBody generates requests for CreatePlatformSignup with any type of body
+func NewCreatePlatformSignupRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/platform-signup")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -7045,6 +7159,88 @@ func NewDeleteTeamMembershipRequest(server string, teamName TeamName, email Emai
 	return req, nil
 }
 
+// NewGetTeamPlatformTenantRequest generates requests for GetTeamPlatformTenant
+func NewGetTeamPlatformTenantRequest(server string, teamName TeamName, tenantId openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "tenant_id", runtime.ParamLocationPath, tenantId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/platform/tenant/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewFinalizeTeamPlatformTenantRequest generates requests for FinalizeTeamPlatformTenant
+func NewFinalizeTeamPlatformTenantRequest(server string, teamName TeamName, tenantId openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "tenant_id", runtime.ParamLocationPath, tenantId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/platform/tenant/%s/finalize", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeletePluginsByTeamRequest generates requests for DeletePluginsByTeam
 func NewDeletePluginsByTeamRequest(server string, teamName TeamName) (*http.Request, error) {
 	var err error
@@ -8404,6 +8600,33 @@ func NewGetCurrentUserMembershipsRequest(server string, params *GetCurrentUserMe
 	return req, nil
 }
 
+// NewListUserPlatformTenantsRequest generates requests for ListUserPlatformTenants
+func NewListUserPlatformTenantsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/user/platform/tenants")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewRegisterUserRequest calls the generic RegisterUser builder with application/json body
 func NewRegisterUserRequest(server string, body RegisterUserJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -8834,6 +9057,11 @@ type ClientWithResponsesInterface interface {
 	// GetOpenAPIJSONWithResponse request
 	GetOpenAPIJSONWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOpenAPIJSONResponse, error)
 
+	// CreatePlatformSignupWithBodyWithResponse request with any body
+	CreatePlatformSignupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error)
+
+	CreatePlatformSignupWithResponse(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error)
+
 	// ActivatePlatformWithBodyWithResponse request with any body
 	ActivatePlatformWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ActivatePlatformResponse, error)
 
@@ -9087,6 +9315,12 @@ type ClientWithResponsesInterface interface {
 	// DeleteTeamMembershipWithResponse request
 	DeleteTeamMembershipWithResponse(ctx context.Context, teamName TeamName, email EmailBasic, reqEditors ...RequestEditorFn) (*DeleteTeamMembershipResponse, error)
 
+	// GetTeamPlatformTenantWithResponse request
+	GetTeamPlatformTenantWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetTeamPlatformTenantResponse, error)
+
+	// FinalizeTeamPlatformTenantWithResponse request
+	FinalizeTeamPlatformTenantWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*FinalizeTeamPlatformTenantResponse, error)
+
 	// DeletePluginsByTeamWithResponse request
 	DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error)
 
@@ -9179,6 +9413,9 @@ type ClientWithResponsesInterface interface {
 
 	// GetCurrentUserMembershipsWithResponse request
 	GetCurrentUserMembershipsWithResponse(ctx context.Context, params *GetCurrentUserMembershipsParams, reqEditors ...RequestEditorFn) (*GetCurrentUserMembershipsResponse, error)
+
+	// ListUserPlatformTenantsWithResponse request
+	ListUserPlatformTenantsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUserPlatformTenantsResponse, error)
 
 	// RegisterUserWithBodyWithResponse request with any body
 	RegisterUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterUserResponse, error)
@@ -9562,6 +9799,34 @@ func (r GetOpenAPIJSONResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetOpenAPIJSONResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePlatformSignupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CreatePlatformSignup201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePlatformSignupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePlatformSignupResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -11275,6 +11540,60 @@ func (r DeleteTeamMembershipResponse) StatusCode() int {
 	return 0
 }
 
+type GetTeamPlatformTenantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CreatePlatformSignup201Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTeamPlatformTenantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTeamPlatformTenantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type FinalizeTeamPlatformTenantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CreatePlatformSignup201Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r FinalizeTeamPlatformTenantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r FinalizeTeamPlatformTenantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeletePluginsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -11924,6 +12243,31 @@ func (r GetCurrentUserMembershipsResponse) StatusCode() int {
 	return 0
 }
 
+type ListUserPlatformTenantsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ListUserPlatformTenants200Response
+	JSON401      *RequiresAuthentication
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListUserPlatformTenantsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListUserPlatformTenantsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type RegisterUserResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -12320,6 +12664,23 @@ func (c *ClientWithResponses) GetOpenAPIJSONWithResponse(ctx context.Context, re
 		return nil, err
 	}
 	return ParseGetOpenAPIJSONResponse(rsp)
+}
+
+// CreatePlatformSignupWithBodyWithResponse request with arbitrary body returning *CreatePlatformSignupResponse
+func (c *ClientWithResponses) CreatePlatformSignupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error) {
+	rsp, err := c.CreatePlatformSignupWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePlatformSignupResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePlatformSignupWithResponse(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error) {
+	rsp, err := c.CreatePlatformSignup(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePlatformSignupResponse(rsp)
 }
 
 // ActivatePlatformWithBodyWithResponse request with arbitrary body returning *ActivatePlatformResponse
@@ -13139,6 +13500,24 @@ func (c *ClientWithResponses) DeleteTeamMembershipWithResponse(ctx context.Conte
 	return ParseDeleteTeamMembershipResponse(rsp)
 }
 
+// GetTeamPlatformTenantWithResponse request returning *GetTeamPlatformTenantResponse
+func (c *ClientWithResponses) GetTeamPlatformTenantWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetTeamPlatformTenantResponse, error) {
+	rsp, err := c.GetTeamPlatformTenant(ctx, teamName, tenantId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTeamPlatformTenantResponse(rsp)
+}
+
+// FinalizeTeamPlatformTenantWithResponse request returning *FinalizeTeamPlatformTenantResponse
+func (c *ClientWithResponses) FinalizeTeamPlatformTenantWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*FinalizeTeamPlatformTenantResponse, error) {
+	rsp, err := c.FinalizeTeamPlatformTenant(ctx, teamName, tenantId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseFinalizeTeamPlatformTenantResponse(rsp)
+}
+
 // DeletePluginsByTeamWithResponse request returning *DeletePluginsByTeamResponse
 func (c *ClientWithResponses) DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error) {
 	rsp, err := c.DeletePluginsByTeam(ctx, teamName, reqEditors...)
@@ -13434,6 +13813,15 @@ func (c *ClientWithResponses) GetCurrentUserMembershipsWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseGetCurrentUserMembershipsResponse(rsp)
+}
+
+// ListUserPlatformTenantsWithResponse request returning *ListUserPlatformTenantsResponse
+func (c *ClientWithResponses) ListUserPlatformTenantsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListUserPlatformTenantsResponse, error) {
+	rsp, err := c.ListUserPlatformTenants(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListUserPlatformTenantsResponse(rsp)
 }
 
 // RegisterUserWithBodyWithResponse request with arbitrary body returning *RegisterUserResponse
@@ -14212,6 +14600,74 @@ func ParseGetOpenAPIJSONResponse(rsp *http.Response) (*GetOpenAPIJSONResponse, e
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePlatformSignupResponse parses an HTTP response from a CreatePlatformSignupWithResponse call
+func ParseCreatePlatformSignupResponse(rsp *http.Response) (*CreatePlatformSignupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePlatformSignupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CreatePlatformSignup201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 
@@ -17847,6 +18303,128 @@ func ParseDeleteTeamMembershipResponse(rsp *http.Response) (*DeleteTeamMembershi
 	return response, nil
 }
 
+// ParseGetTeamPlatformTenantResponse parses an HTTP response from a GetTeamPlatformTenantWithResponse call
+func ParseGetTeamPlatformTenantResponse(rsp *http.Response) (*GetTeamPlatformTenantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTeamPlatformTenantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreatePlatformSignup201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseFinalizeTeamPlatformTenantResponse parses an HTTP response from a FinalizeTeamPlatformTenantWithResponse call
+func ParseFinalizeTeamPlatformTenantResponse(rsp *http.Response) (*FinalizeTeamPlatformTenantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &FinalizeTeamPlatformTenantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreatePlatformSignup201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeletePluginsByTeamResponse parses an HTTP response from a DeletePluginsByTeamWithResponse call
 func ParseDeletePluginsByTeamResponse(rsp *http.Response) (*DeletePluginsByTeamResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -19177,6 +19755,53 @@ func ParseGetCurrentUserMembershipsResponse(rsp *http.Response) (*GetCurrentUser
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListUserPlatformTenantsResponse parses an HTTP response from a ListUserPlatformTenantsWithResponse call
+func ParseListUserPlatformTenantsResponse(rsp *http.Response) (*ListUserPlatformTenantsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListUserPlatformTenantsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListUserPlatformTenants200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
