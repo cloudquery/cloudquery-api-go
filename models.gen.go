@@ -630,6 +630,12 @@ type CheckUserAuthStatus200Response struct {
 	Authenticated bool `json:"authenticated"`
 }
 
+// ConsumePlatformTenantMagicLinkRequest defines model for ConsumePlatformTenantMagicLink_request.
+type ConsumePlatformTenantMagicLinkRequest struct {
+	Token                interface{}            `json:"token"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // ContentType The HTTP Content-Type of the image or asset
 type ContentType string
 
@@ -655,6 +661,9 @@ type CreateAddonVersionRequest struct {
 
 // CreatePlatformSignup201Response defines model for CreatePlatformSignup_201_response.
 type CreatePlatformSignup201Response struct {
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
 	// Status Provisioning status of a platform tenant.
 	Status    PlatformTenantStatus `json:"status"`
 	Subdomain string               `json:"subdomain"`
@@ -1178,6 +1187,9 @@ type PlatformTenantStatus string
 
 // PlatformTenantSummary Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.
 type PlatformTenantSummary struct {
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
 	// Status Provisioning status of a platform tenant.
 	Status    PlatformTenantStatus `json:"status"`
 	Subdomain string               `json:"subdomain"`
@@ -1842,6 +1854,15 @@ type ReportTenantPlatformDataRequest struct {
 	UserAdditions        interface{}            `json:"user_additions,omitempty"`
 	UserRemovals         interface{}            `json:"user_removals,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// RequestPlatformTenantMagicLink201Response defines model for RequestPlatformTenantMagicLink_201_response.
+type RequestPlatformTenantMagicLink201Response struct {
+	// ExpiresInSeconds Seconds until the embedded token expires.
+	ExpiresInSeconds int `json:"expires_in_seconds"`
+
+	// MagicUrl Absolute URL to navigate to. Contains the token as a query parameter.
+	MagicUrl string `json:"magic_url"`
 }
 
 // ResetUserPasswordRequest defines model for ResetUserPassword_request.
@@ -2636,6 +2657,9 @@ type RenewPlatformActivationJSONRequestBody = RenewPlatformActivationRequest
 
 // ReportPlatformDataJSONRequestBody defines body for ReportPlatformData for application/json ContentType.
 type ReportPlatformDataJSONRequestBody = ReportPlatformDataRequest
+
+// ConsumePlatformTenantMagicLinkJSONRequestBody defines body for ConsumePlatformTenantMagicLink for application/json ContentType.
+type ConsumePlatformTenantMagicLinkJSONRequestBody = ConsumePlatformTenantMagicLinkRequest
 
 // ReportTenantPlatformDataJSONRequestBody defines body for ReportTenantPlatformData for application/json ContentType.
 type ReportTenantPlatformDataJSONRequestBody = ReportTenantPlatformDataRequest
@@ -3436,6 +3460,72 @@ func (a ActivatePlatformRequest) MarshalJSON() ([]byte, error) {
 	object["installation_id"], err = json.Marshal(a.InstallationID)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for ConsumePlatformTenantMagicLinkRequest. Returns the specified
+// element and whether it was found
+func (a ConsumePlatformTenantMagicLinkRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ConsumePlatformTenantMagicLinkRequest
+func (a *ConsumePlatformTenantMagicLinkRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ConsumePlatformTenantMagicLinkRequest to handle AdditionalProperties
+func (a *ConsumePlatformTenantMagicLinkRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["token"]; found {
+		err = json.Unmarshal(raw, &a.Token)
+		if err != nil {
+			return fmt.Errorf("error reading 'token': %w", err)
+		}
+		delete(object, "token")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ConsumePlatformTenantMagicLinkRequest to handle AdditionalProperties
+func (a ConsumePlatformTenantMagicLinkRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["token"], err = json.Marshal(a.Token)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'token': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
