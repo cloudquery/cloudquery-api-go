@@ -4307,6 +4307,54 @@
         "x-internal" : true
       }
     },
+    "/teams/{team_name}/platform/tenant/{tenant_id}/magic-link" : {
+      "post" : {
+        "description" : "Mint a one-shot magic-link URL for the calling Cloud user to bounce into their Platform tenant subdomain already authenticated. The caller's Cloud account email is used as the Platform user identity (no email parameter accepted, to deter abuse). The Platform tenant page at the returned URL posts the embedded token to `POST /user/magic-login` which round-trips through `POST /platform/{tenant_id}/magic-link/consume` to validate.\nNo email is sent server-side — the caller (frontend) handles delivery or direct navigation.\nThe token is single-use and short-lived. Cloud does not check whether the email exists on the tenant; the consume side returns 404 if the Platform tenant has no matching user.\n",
+        "operationId" : "RequestPlatformTenantMagicLink",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "tenant_id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RequestPlatformTenantMagicLink_201_response"
+                }
+              }
+            },
+            "description" : "Magic link minted."
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform", "teams" ],
+        "x-internal" : true
+      }
+    },
     "/user/platform/tenants" : {
       "get" : {
         "description" : "List Platform tenants the authenticated user can access via Cloud team membership. Used by the signup wizard to decide whether to show the tenant-creation form (empty list) or route the user to an existing tenant. Returns tenants in any status (pending/created/active).\n",
@@ -4896,6 +4944,63 @@
         "responses" : {
           "204" : {
             "description" : "Success"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/platform/{tenant_id}/magic-link/consume" : {
+      "post" : {
+        "description" : "Validate and consume a magic-link token previously minted via `POST /teams/{team_name}/platform/tenant/{tenant_id}/magic-link`. Called by the Platform tenant's `POST /user/magic-login` handler, which authenticates here using the per-tenant API key Cloud provisioned at signup.\nConsume is atomic: the first successful call deletes the token. The response carries the email Cloud bound to the token at mint time; Platform uses it to look up its local user and issue an ID token.\nReturns 404 (uniform, no state-leak) when the token is unknown, expired, already used, or bound to a different tenant than the caller.\n",
+        "operationId" : "ConsumePlatformTenantMagicLink",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "tenant_id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "style" : "simple",
+          "x-go-name" : "TenantID"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConsumePlatformTenantMagicLink_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RemoveTeamMembership_request"
+                }
+              }
+            },
+            "description" : "Token consumed."
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -7473,6 +7578,10 @@
           },
           "team_name" : {
             "$ref" : "#/components/schemas/TeamName"
+          },
+          "magic_login_enabled" : {
+            "description" : "Whether magic-link sign-in is available for this tenant.",
+            "type" : "boolean"
           }
         },
         "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
@@ -8518,9 +8627,27 @@
           },
           "team_name" : {
             "$ref" : "#/components/schemas/TeamName"
+          },
+          "magic_login_enabled" : {
+            "description" : "Whether magic-link sign-in is available for this tenant.",
+            "type" : "boolean"
           }
         },
         "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
+      },
+      "RequestPlatformTenantMagicLink_201_response" : {
+        "properties" : {
+          "magic_url" : {
+            "description" : "Absolute URL to navigate to. Contains the token as a query parameter.",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "expires_in_seconds" : {
+            "description" : "Seconds until the embedded token expires.",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "expires_in_seconds", "magic_url" ]
       },
       "ListUserPlatformTenants_200_response" : {
         "properties" : {
@@ -8688,6 +8815,16 @@
           }
         },
         "required" : [ "host" ]
+      },
+      "ConsumePlatformTenantMagicLink_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "token" : {
+            "maxLength" : 128,
+            "minLength" : 16
+          }
+        },
+        "required" : [ "token" ]
       },
       "AIOnboardingChat_request" : {
         "additionalProperties" : { },

@@ -164,6 +164,11 @@ type ClientInterface interface {
 
 	ReportPlatformData(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ConsumePlatformTenantMagicLinkWithBody request with any body
+	ConsumePlatformTenantMagicLinkWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ConsumePlatformTenantMagicLink(ctx context.Context, tenantID openapi_types.UUID, body ConsumePlatformTenantMagicLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ReportTenantPlatformDataWithBody request with any body
 	ReportTenantPlatformDataWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -407,6 +412,9 @@ type ClientInterface interface {
 
 	// FinalizeTeamPlatformTenant request
 	FinalizeTeamPlatformTenant(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RequestPlatformTenantMagicLink request
+	RequestPlatformTenantMagicLink(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeletePluginsByTeam request
 	DeletePluginsByTeam(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -842,6 +850,30 @@ func (c *Client) ReportPlatformDataWithBody(ctx context.Context, contentType str
 
 func (c *Client) ReportPlatformData(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReportPlatformDataRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ConsumePlatformTenantMagicLinkWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConsumePlatformTenantMagicLinkRequestWithBody(c.Server, tenantID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ConsumePlatformTenantMagicLink(ctx context.Context, tenantID openapi_types.UUID, body ConsumePlatformTenantMagicLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewConsumePlatformTenantMagicLinkRequest(c.Server, tenantID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1922,6 +1954,18 @@ func (c *Client) GetTeamPlatformTenant(ctx context.Context, teamName TeamName, t
 
 func (c *Client) FinalizeTeamPlatformTenant(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewFinalizeTeamPlatformTenantRequest(c.Server, teamName, tenantId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestPlatformTenantMagicLink(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestPlatformTenantMagicLinkRequest(c.Server, teamName, tenantId)
 	if err != nil {
 		return nil, err
 	}
@@ -3442,6 +3486,53 @@ func NewReportPlatformDataRequestWithBody(server string, contentType string, bod
 	}
 
 	operationPath := fmt.Sprintf("/platform/report")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewConsumePlatformTenantMagicLinkRequest calls the generic ConsumePlatformTenantMagicLink builder with application/json body
+func NewConsumePlatformTenantMagicLinkRequest(server string, tenantID openapi_types.UUID, body ConsumePlatformTenantMagicLinkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewConsumePlatformTenantMagicLinkRequestWithBody(server, tenantID, "application/json", bodyReader)
+}
+
+// NewConsumePlatformTenantMagicLinkRequestWithBody generates requests for ConsumePlatformTenantMagicLink with any type of body
+func NewConsumePlatformTenantMagicLinkRequestWithBody(server string, tenantID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "tenant_id", runtime.ParamLocationPath, tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/platform/%s/magic-link/consume", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -7241,6 +7332,47 @@ func NewFinalizeTeamPlatformTenantRequest(server string, teamName TeamName, tena
 	return req, nil
 }
 
+// NewRequestPlatformTenantMagicLinkRequest generates requests for RequestPlatformTenantMagicLink
+func NewRequestPlatformTenantMagicLinkRequest(server string, teamName TeamName, tenantId openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "tenant_id", runtime.ParamLocationPath, tenantId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/platform/tenant/%s/magic-link", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewDeletePluginsByTeamRequest generates requests for DeletePluginsByTeam
 func NewDeletePluginsByTeamRequest(server string, teamName TeamName) (*http.Request, error) {
 	var err error
@@ -9077,6 +9209,11 @@ type ClientWithResponsesInterface interface {
 
 	ReportPlatformDataWithResponse(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportPlatformDataResponse, error)
 
+	// ConsumePlatformTenantMagicLinkWithBodyWithResponse request with any body
+	ConsumePlatformTenantMagicLinkWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error)
+
+	ConsumePlatformTenantMagicLinkWithResponse(ctx context.Context, tenantID openapi_types.UUID, body ConsumePlatformTenantMagicLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error)
+
 	// ReportTenantPlatformDataWithBodyWithResponse request with any body
 	ReportTenantPlatformDataWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportTenantPlatformDataResponse, error)
 
@@ -9320,6 +9457,9 @@ type ClientWithResponsesInterface interface {
 
 	// FinalizeTeamPlatformTenantWithResponse request
 	FinalizeTeamPlatformTenantWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*FinalizeTeamPlatformTenantResponse, error)
+
+	// RequestPlatformTenantMagicLinkWithResponse request
+	RequestPlatformTenantMagicLinkWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*RequestPlatformTenantMagicLinkResponse, error)
 
 	// DeletePluginsByTeamWithResponse request
 	DeletePluginsByTeamWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*DeletePluginsByTeamResponse, error)
@@ -9906,6 +10046,33 @@ func (r ReportPlatformDataResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ReportPlatformDataResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ConsumePlatformTenantMagicLinkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RemoveTeamMembershipRequest
+	JSON400      *BadRequest
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r ConsumePlatformTenantMagicLinkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ConsumePlatformTenantMagicLinkResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -11594,6 +11761,33 @@ func (r FinalizeTeamPlatformTenantResponse) StatusCode() int {
 	return 0
 }
 
+type RequestPlatformTenantMagicLinkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *RequestPlatformTenantMagicLink201Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r RequestPlatformTenantMagicLinkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RequestPlatformTenantMagicLinkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DeletePluginsByTeamResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -12734,6 +12928,23 @@ func (c *ClientWithResponses) ReportPlatformDataWithResponse(ctx context.Context
 	return ParseReportPlatformDataResponse(rsp)
 }
 
+// ConsumePlatformTenantMagicLinkWithBodyWithResponse request with arbitrary body returning *ConsumePlatformTenantMagicLinkResponse
+func (c *ClientWithResponses) ConsumePlatformTenantMagicLinkWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error) {
+	rsp, err := c.ConsumePlatformTenantMagicLinkWithBody(ctx, tenantID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConsumePlatformTenantMagicLinkResponse(rsp)
+}
+
+func (c *ClientWithResponses) ConsumePlatformTenantMagicLinkWithResponse(ctx context.Context, tenantID openapi_types.UUID, body ConsumePlatformTenantMagicLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error) {
+	rsp, err := c.ConsumePlatformTenantMagicLink(ctx, tenantID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseConsumePlatformTenantMagicLinkResponse(rsp)
+}
+
 // ReportTenantPlatformDataWithBodyWithResponse request with arbitrary body returning *ReportTenantPlatformDataResponse
 func (c *ClientWithResponses) ReportTenantPlatformDataWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportTenantPlatformDataResponse, error) {
 	rsp, err := c.ReportTenantPlatformDataWithBody(ctx, tenantID, contentType, body, reqEditors...)
@@ -13516,6 +13727,15 @@ func (c *ClientWithResponses) FinalizeTeamPlatformTenantWithResponse(ctx context
 		return nil, err
 	}
 	return ParseFinalizeTeamPlatformTenantResponse(rsp)
+}
+
+// RequestPlatformTenantMagicLinkWithResponse request returning *RequestPlatformTenantMagicLinkResponse
+func (c *ClientWithResponses) RequestPlatformTenantMagicLinkWithResponse(ctx context.Context, teamName TeamName, tenantId openapi_types.UUID, reqEditors ...RequestEditorFn) (*RequestPlatformTenantMagicLinkResponse, error) {
+	rsp, err := c.RequestPlatformTenantMagicLink(ctx, teamName, tenantId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestPlatformTenantMagicLinkResponse(rsp)
 }
 
 // DeletePluginsByTeamWithResponse request returning *DeletePluginsByTeamResponse
@@ -14816,6 +15036,67 @@ func ParseReportPlatformDataResponse(rsp *http.Response) (*ReportPlatformDataRes
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseConsumePlatformTenantMagicLinkResponse parses an HTTP response from a ConsumePlatformTenantMagicLinkWithResponse call
+func ParseConsumePlatformTenantMagicLinkResponse(rsp *http.Response) (*ConsumePlatformTenantMagicLinkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ConsumePlatformTenantMagicLinkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RemoveTeamMembershipRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest NotFound
@@ -18384,6 +18665,67 @@ func ParseFinalizeTeamPlatformTenantResponse(rsp *http.Response) (*FinalizeTeamP
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRequestPlatformTenantMagicLinkResponse parses an HTTP response from a RequestPlatformTenantMagicLinkWithResponse call
+func ParseRequestPlatformTenantMagicLinkResponse(rsp *http.Response) (*RequestPlatformTenantMagicLinkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RequestPlatformTenantMagicLinkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest RequestPlatformTenantMagicLink201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest RequiresAuthentication
