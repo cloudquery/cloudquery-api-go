@@ -2004,6 +2004,9 @@ type TeamSubscriptionOrderStatus string
 
 // TenantUser Tenant information of a platform user
 type TenantUser struct {
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
 	// Provider Login provider of the tenant
 	Provider *string `json:"provider,omitempty"`
 

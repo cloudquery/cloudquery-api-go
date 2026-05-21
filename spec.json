@@ -7554,6 +7554,10 @@
           "provider" : {
             "description" : "Login provider of the tenant",
             "type" : "string"
+          },
+          "magic_login_enabled" : {
+            "description" : "Whether magic-link sign-in is available for this tenant.",
+            "type" : "boolean"
           }
         },
         "required" : [ "tenant_url" ]
