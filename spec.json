@@ -4344,6 +4344,9 @@
           "404" : {
             "$ref" : "#/components/responses/NotFound"
           },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
           "429" : {
             "$ref" : "#/components/responses/TooManyRequests"
           },
