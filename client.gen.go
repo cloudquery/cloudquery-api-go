@@ -11768,6 +11768,7 @@ type RequestPlatformTenantMagicLinkResponse struct {
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
 	JSON429      *TooManyRequests
 	JSON500      *InternalError
 }
@@ -18747,6 +18748,13 @@ func ParseRequestPlatformTenantMagicLinkResponse(rsp *http.Response) (*RequestPl
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
 		var dest TooManyRequests
