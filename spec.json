@@ -7580,6 +7580,10 @@
           "subdomain" : {
             "type" : "string"
           },
+          "host" : {
+            "description" : "Full host (e.g. `<subdomain>.cloudquery.io`) the tenant is served on.",
+            "type" : "string"
+          },
           "status" : {
             "$ref" : "#/components/schemas/PlatformTenantStatus"
           },
@@ -7591,7 +7595,7 @@
             "type" : "boolean"
           }
         },
-        "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
+        "required" : [ "host", "status", "subdomain", "team_name", "tenant_id" ]
       },
       "UserID" : {
         "description" : "ID of the User",

@@ -1187,6 +1187,9 @@ type PlatformTenantStatus string
 
 // PlatformTenantSummary Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.
 type PlatformTenantSummary struct {
+	// Host Full host (e.g. `<subdomain>.cloudquery.io`) the tenant is served on.
+	Host string `json:"host"`
+
 	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
 	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
 
