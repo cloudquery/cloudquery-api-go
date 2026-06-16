@@ -659,6 +659,24 @@ type CreateAddonVersionRequest struct {
 	PluginDeps *[]string `json:"plugin_deps,omitempty"`
 }
 
+// CreatePlatformDestinationSession201Response defines model for CreatePlatformDestinationSession_201_response.
+type CreatePlatformDestinationSession201Response struct {
+	// ApiUrl Base URL of the tenant's platform API (e.g. https://acme.us.platform.cloudquery.io). The CLI uses it to reach /external-syncs/* directly — no CQ_PLATFORM_API_URL configuration needed.
+	ApiUrl string `json:"api_url"`
+
+	// ExpiresInSeconds Seconds until the token expires.
+	ExpiresInSeconds int `json:"expires_in_seconds"`
+
+	// Token HMAC-signed, tenant-scoped token for /external-syncs/*.
+	Token string `json:"token"`
+}
+
+// CreatePlatformDestinationSessionRequest defines model for CreatePlatformDestinationSession_request.
+type CreatePlatformDestinationSessionRequest struct {
+	// TenantId The platform tenant (instance) to mint a token for.
+	TenantId openapi_types.UUID `json:"tenant_id"`
+}
+
 // CreatePlatformSignup201Response defines model for CreatePlatformSignup_201_response.
 type CreatePlatformSignup201Response struct {
 	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
@@ -2064,6 +2082,18 @@ type UploadPluginUIAssetsRequest struct {
 	Assets []PluginUIAssetUploadRequest `json:"assets"`
 }
 
+// UpsertPlatformDestinationSecretRequest defines model for UpsertPlatformDestinationSecret_request.
+type UpsertPlatformDestinationSecretRequest struct {
+	// Current The new current HMAC secret (cleartext; stored encrypted).
+	Current string `json:"current"`
+
+	// Previous The just-demoted secret, kept verifiable through the rotation grace window. Omit for backfill.
+	Previous *string `json:"previous,omitempty"`
+
+	// TenantId The platform tenant (instance) the secret belongs to.
+	TenantId openapi_types.UUID `json:"tenant_id"`
+}
+
 // UsageCurrent The usage of a plugin within the current calendar month.
 type UsageCurrent struct {
 	// PluginKind The kind of plugin, ie. source or destination.
@@ -2651,6 +2681,12 @@ type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
 type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
+
+// UpsertPlatformDestinationSecretJSONRequestBody defines body for UpsertPlatformDestinationSecret for application/json ContentType.
+type UpsertPlatformDestinationSecretJSONRequestBody = UpsertPlatformDestinationSecretRequest
+
+// CreatePlatformDestinationSessionJSONRequestBody defines body for CreatePlatformDestinationSession for application/json ContentType.
+type CreatePlatformDestinationSessionJSONRequestBody = CreatePlatformDestinationSessionRequest
 
 // CreatePlatformSignupJSONRequestBody defines body for CreatePlatformSignup for application/json ContentType.
 type CreatePlatformSignupJSONRequestBody = CreatePlatformSignupRequest
