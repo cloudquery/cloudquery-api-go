@@ -144,6 +144,16 @@ type ClientInterface interface {
 	// GetOpenAPIJSON request
 	GetOpenAPIJSON(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UpsertPlatformDestinationSecretWithBody request with any body
+	UpsertPlatformDestinationSecretWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpsertPlatformDestinationSecret(ctx context.Context, body UpsertPlatformDestinationSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreatePlatformDestinationSessionWithBody request with any body
+	CreatePlatformDestinationSessionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePlatformDestinationSession(ctx context.Context, body CreatePlatformDestinationSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreatePlatformSignupWithBody request with any body
 	CreatePlatformSignupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -754,6 +764,54 @@ func (c *Client) CQHealthCheck(ctx context.Context, reqEditors ...RequestEditorF
 
 func (c *Client) GetOpenAPIJSON(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetOpenAPIJSONRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpsertPlatformDestinationSecretWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpsertPlatformDestinationSecretRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpsertPlatformDestinationSecret(ctx context.Context, body UpsertPlatformDestinationSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpsertPlatformDestinationSecretRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePlatformDestinationSessionWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePlatformDestinationSessionRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePlatformDestinationSession(ctx context.Context, body CreatePlatformDestinationSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePlatformDestinationSessionRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3341,6 +3399,86 @@ func NewGetOpenAPIJSONRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewUpsertPlatformDestinationSecretRequest calls the generic UpsertPlatformDestinationSecret builder with application/json body
+func NewUpsertPlatformDestinationSecretRequest(server string, body UpsertPlatformDestinationSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpsertPlatformDestinationSecretRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewUpsertPlatformDestinationSecretRequestWithBody generates requests for UpsertPlatformDestinationSecret with any type of body
+func NewUpsertPlatformDestinationSecretRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/platform-destination/secret")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreatePlatformDestinationSessionRequest calls the generic CreatePlatformDestinationSession builder with application/json body
+func NewCreatePlatformDestinationSessionRequest(server string, body CreatePlatformDestinationSessionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePlatformDestinationSessionRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreatePlatformDestinationSessionRequestWithBody generates requests for CreatePlatformDestinationSession with any type of body
+func NewCreatePlatformDestinationSessionRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/platform-destination/session")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -9189,6 +9327,16 @@ type ClientWithResponsesInterface interface {
 	// GetOpenAPIJSONWithResponse request
 	GetOpenAPIJSONWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOpenAPIJSONResponse, error)
 
+	// UpsertPlatformDestinationSecretWithBodyWithResponse request with any body
+	UpsertPlatformDestinationSecretWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpsertPlatformDestinationSecretResponse, error)
+
+	UpsertPlatformDestinationSecretWithResponse(ctx context.Context, body UpsertPlatformDestinationSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*UpsertPlatformDestinationSecretResponse, error)
+
+	// CreatePlatformDestinationSessionWithBodyWithResponse request with any body
+	CreatePlatformDestinationSessionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePlatformDestinationSessionResponse, error)
+
+	CreatePlatformDestinationSessionWithResponse(ctx context.Context, body CreatePlatformDestinationSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePlatformDestinationSessionResponse, error)
+
 	// CreatePlatformSignupWithBodyWithResponse request with any body
 	CreatePlatformSignupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error)
 
@@ -9939,6 +10087,60 @@ func (r GetOpenAPIJSONResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetOpenAPIJSONResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpsertPlatformDestinationSecretResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r UpsertPlatformDestinationSecretResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpsertPlatformDestinationSecretResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePlatformDestinationSessionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CreatePlatformDestinationSession201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePlatformDestinationSessionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePlatformDestinationSessionResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12861,6 +13063,40 @@ func (c *ClientWithResponses) GetOpenAPIJSONWithResponse(ctx context.Context, re
 	return ParseGetOpenAPIJSONResponse(rsp)
 }
 
+// UpsertPlatformDestinationSecretWithBodyWithResponse request with arbitrary body returning *UpsertPlatformDestinationSecretResponse
+func (c *ClientWithResponses) UpsertPlatformDestinationSecretWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpsertPlatformDestinationSecretResponse, error) {
+	rsp, err := c.UpsertPlatformDestinationSecretWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpsertPlatformDestinationSecretResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpsertPlatformDestinationSecretWithResponse(ctx context.Context, body UpsertPlatformDestinationSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*UpsertPlatformDestinationSecretResponse, error) {
+	rsp, err := c.UpsertPlatformDestinationSecret(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpsertPlatformDestinationSecretResponse(rsp)
+}
+
+// CreatePlatformDestinationSessionWithBodyWithResponse request with arbitrary body returning *CreatePlatformDestinationSessionResponse
+func (c *ClientWithResponses) CreatePlatformDestinationSessionWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePlatformDestinationSessionResponse, error) {
+	rsp, err := c.CreatePlatformDestinationSessionWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePlatformDestinationSessionResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePlatformDestinationSessionWithResponse(ctx context.Context, body CreatePlatformDestinationSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePlatformDestinationSessionResponse, error) {
+	rsp, err := c.CreatePlatformDestinationSession(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePlatformDestinationSessionResponse(rsp)
+}
+
 // CreatePlatformSignupWithBodyWithResponse request with arbitrary body returning *CreatePlatformSignupResponse
 func (c *ClientWithResponses) CreatePlatformSignupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error) {
 	rsp, err := c.CreatePlatformSignupWithBody(ctx, contentType, body, reqEditors...)
@@ -14821,6 +15057,128 @@ func ParseGetOpenAPIJSONResponse(rsp *http.Response) (*GetOpenAPIJSONResponse, e
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpsertPlatformDestinationSecretResponse parses an HTTP response from a UpsertPlatformDestinationSecretWithResponse call
+func ParseUpsertPlatformDestinationSecretResponse(rsp *http.Response) (*UpsertPlatformDestinationSecretResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpsertPlatformDestinationSecretResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePlatformDestinationSessionResponse parses an HTTP response from a CreatePlatformDestinationSessionWithResponse call
+func ParseCreatePlatformDestinationSessionResponse(rsp *http.Response) (*CreatePlatformDestinationSessionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePlatformDestinationSessionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CreatePlatformDestinationSession201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 

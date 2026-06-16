@@ -4164,6 +4164,92 @@
         "x-internal" : true
       }
     },
+    "/platform-destination/secret" : {
+      "post" : {
+        "description" : "Store/replace cloud's copy of a platform tenant's external-sync HMAC secret(s) — the propagate step of platform admin's two-phase secret rotation (and the backfill path for tenants provisioned before rotation support). Admin authenticates with the tenant's own cloud API key (stored at tenant creation) and upserts {current, previous} atomically, so cloud never verifies only the new secret while outstanding cqpd_ tokens are signed with the old one. previous is omitted for backfill, which clears any stale grace window. Requires a durable team API key — cqpd_ tokens are rejected (a leaked derived token must not be able to replace the secret it is verified against). The caller's team must own the tenant (404 otherwise, hiding existence).",
+        "operationId" : "UpsertPlatformDestinationSecret",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertPlatformDestinationSecret_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Secret stored"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/platform-destination/session" : {
+      "post" : {
+        "description" : "Mint a short-lived (≈1 week), tenant-scoped token that authenticates the local CLI's platform-destination plugin to the platform's /external-syncs/* endpoints. It is a derived credential — the CLI re-mints it here from the durable root (cloud login, or a team API key in CI) as it nears expiry. The caller selects one of their platform tenants by tenant_id; cloud verifies the caller is a member of the owning team, then delegates the mint to platform admin (the single minting authority) and relays the returned token. Cloud holds its own copy of the per-tenant secret only to verify cqpd_ tokens offline, not to sign. The token carries only tenant id + email + expiry; no cloud credential crosses to the platform.\n",
+        "operationId" : "CreatePlatformDestinationSession",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreatePlatformDestinationSession_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreatePlatformDestinationSession_201_response"
+                }
+              }
+            },
+            "description" : "Token minted"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
     "/platform-signup" : {
       "post" : {
         "description" : "Self-serve entry point for a new Platform trial. The wizard collects `name`, `job_title`, `company` and, optionally, an existing `team_name` the caller wants to attach the new tenant to. Server side: re-runs UserCheck on the caller's email (personal / disposable / blocklisted / non-deliverable addresses are rejected with 400), auto-generates a subdomain, creates the owning Cloud team (or uses the supplied one), generates a per-tenant API key + password, and inserts the `platform_tenants` row in `pending` status.\nLifetime gate: a caller may successfully sign up at most once — match is on `platform_tenants.email == user.Email`. Subsequent calls return 422. Admin override is operational only (support deletes the blocking row in the DB).\nThe Firebase `email_verified` claim may be `false` — this is the only operation in the API surface that intentionally accepts unverified callers, because the wizard captures form data before the user clicks the Mandrill verification link. The wizard's \"continuing\" screen follows up with `POST /teams/{team_name}/platform/tenant/{tenant_id}/finalize` (which DOES require a verified email) once the user verifies. The returned `team_name` and `tenant_id` are the values the wizard passes back into `/finalize`.\n",
@@ -4360,7 +4446,7 @@
     },
     "/user/platform/tenants" : {
       "get" : {
-        "description" : "List Platform tenants the authenticated user can access via Cloud team membership. Used by the signup wizard to decide whether to show the tenant-creation form (empty list) or route the user to an existing tenant. Returns tenants in any status (pending/created/active).\n",
+        "description" : "List Platform tenants the caller can access. Interactive sessions see the tenants of every Cloud team they are a member of (used by the signup wizard to decide whether to show the tenant-creation form or route to an existing tenant). Team API keys see their one team's tenants — the CLI's tenant-discovery path before POST /platform-destination/session, so headless runs need no CQ_PLATFORM_TENANT_ID configuration. cqpd_ tokens are rejected (a derived credential must not enumerate tenants). Returns tenants in any status (pending/created/active).\n",
         "operationId" : "ListUserPlatformTenants",
         "responses" : {
           "200" : {
@@ -8596,6 +8682,52 @@
           }
         },
         "required" : [ "has_cloud_account" ]
+      },
+      "UpsertPlatformDestinationSecret_request" : {
+        "properties" : {
+          "tenant_id" : {
+            "description" : "The platform tenant (instance) the secret belongs to.",
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "current" : {
+            "description" : "The new current HMAC secret (cleartext; stored encrypted).",
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "previous" : {
+            "description" : "The just-demoted secret, kept verifiable through the rotation grace window. Omit for backfill.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "current", "tenant_id" ]
+      },
+      "CreatePlatformDestinationSession_request" : {
+        "properties" : {
+          "tenant_id" : {
+            "description" : "The platform tenant (instance) to mint a token for.",
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "required" : [ "tenant_id" ]
+      },
+      "CreatePlatformDestinationSession_201_response" : {
+        "properties" : {
+          "token" : {
+            "description" : "HMAC-signed, tenant-scoped token for /external-syncs/*.",
+            "type" : "string"
+          },
+          "expires_in_seconds" : {
+            "description" : "Seconds until the token expires.",
+            "type" : "integer"
+          },
+          "api_url" : {
+            "description" : "Base URL of the tenant's platform API (e.g. https://acme.us.platform.cloudquery.io). The CLI uses it to reach /external-syncs/* directly — no CQ_PLATFORM_API_URL configuration needed.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "api_url", "expires_in_seconds", "token" ]
       },
       "CreatePlatformSignup_request" : {
         "additionalProperties" : { },
