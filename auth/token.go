@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -84,7 +85,10 @@ func (tc *TokenClient) GetToken() (Token, error) {
 	}
 
 	refreshToken, err := ReadRefreshToken()
-	if err != nil {
+	switch {
+	case errors.Is(err, os.ErrNotExist):
+		return UndefinedToken, fmt.Errorf("not authenticated. Hint: You may need to run `cloudquery login` or set %s", EnvVarCloudQueryAPIKey)
+	case err != nil:
 		return UndefinedToken, fmt.Errorf("failed to read refresh token: %w. Hint: You may need to run `cloudquery login` or set %s", err, EnvVarCloudQueryAPIKey)
 	}
 	if refreshToken == "" {
