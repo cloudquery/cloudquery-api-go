@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cloudquery/cloudquery-api-go/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -39,6 +40,18 @@ func TestRefreshToken_Removal(t *testing.T) {
 
 	_, err = ReadRefreshToken()
 	require.Error(t, err)
+}
+
+func TestTokenClient_GetToken_NotAuthenticated(t *testing.T) {
+	t.Setenv(EnvVarCloudQueryAPIKey, "")
+	require.NoError(t, config.SetDataHome(t.TempDir()))
+	defer func() { require.NoError(t, config.UnsetDataHome()) }()
+
+	_, err := NewTokenClient().GetToken()
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "not authenticated")
+	require.NotContains(t, err.Error(), "no such file")
+	require.NotContains(t, err.Error(), "failed to read file")
 }
 
 func TestToken_Stringer(t *testing.T) {
