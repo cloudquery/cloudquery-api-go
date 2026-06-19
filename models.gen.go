@@ -56,14 +56,6 @@ const (
 	AddonTypeVisualization  AddonType = "visualization"
 )
 
-// Defines values for ConnectorStatus.
-const (
-	ConnectorStatusAuthenticated ConnectorStatus = "authenticated"
-	ConnectorStatusCreated       ConnectorStatus = "created"
-	ConnectorStatusFailed        ConnectorStatus = "failed"
-	ConnectorStatusRevoked       ConnectorStatus = "revoked"
-)
-
 // Defines values for ContentType.
 const (
 	ContentTypeImagejpeg ContentType = "image/jpeg"
@@ -83,6 +75,13 @@ const (
 	ManagedDatabaseStatusFailed  ManagedDatabaseStatus = "failed"
 	ManagedDatabaseStatusPending ManagedDatabaseStatus = "pending"
 	ManagedDatabaseStatusReady   ManagedDatabaseStatus = "ready"
+)
+
+// Defines values for PlatformTenantStatus.
+const (
+	PlatformTenantStatusActive  PlatformTenantStatus = "active"
+	PlatformTenantStatusCreated PlatformTenantStatus = "created"
+	PlatformTenantStatusPending PlatformTenantStatus = "pending"
 )
 
 // Defines values for PluginCategory.
@@ -159,61 +158,6 @@ const (
 	PluginTierFree     PluginTier = "free"
 	PluginTierOpenCore PluginTier = "open-core"
 	PluginTierPaid     PluginTier = "paid"
-)
-
-// Defines values for SyncDestinationMigrateMode.
-const (
-	SyncDestinationMigrateModeForced SyncDestinationMigrateMode = "forced"
-	SyncDestinationMigrateModeSafe   SyncDestinationMigrateMode = "safe"
-)
-
-// Defines values for SyncDestinationMigrateModeUpdate.
-const (
-	SyncDestinationMigrateModeUpdateForced SyncDestinationMigrateModeUpdate = "forced"
-	SyncDestinationMigrateModeUpdateSafe   SyncDestinationMigrateModeUpdate = "safe"
-)
-
-// Defines values for SyncDestinationWriteMode.
-const (
-	SyncDestinationWriteModeAppend               SyncDestinationWriteMode = "append"
-	SyncDestinationWriteModeOverwrite            SyncDestinationWriteMode = "overwrite"
-	SyncDestinationWriteModeOverwriteDeleteStale SyncDestinationWriteMode = "overwrite-delete-stale"
-)
-
-// Defines values for SyncDestinationWriteModeUpdate.
-const (
-	SyncDestinationWriteModeUpdateAppend               SyncDestinationWriteModeUpdate = "append"
-	SyncDestinationWriteModeUpdateOverwrite            SyncDestinationWriteModeUpdate = "overwrite"
-	SyncDestinationWriteModeUpdateOverwriteDeleteStale SyncDestinationWriteModeUpdate = "overwrite-delete-stale"
-)
-
-// Defines values for SyncLastUpdateSource.
-const (
-	SyncLastUpdateSourceUi   SyncLastUpdateSource = "ui"
-	SyncLastUpdateSourceYaml SyncLastUpdateSource = "yaml"
-)
-
-// Defines values for SyncRunStatus.
-const (
-	SyncRunStatusCancelled SyncRunStatus = "cancelled"
-	SyncRunStatusCompleted SyncRunStatus = "completed"
-	SyncRunStatusCreated   SyncRunStatus = "created"
-	SyncRunStatusFailed    SyncRunStatus = "failed"
-	SyncRunStatusStarted   SyncRunStatus = "started"
-)
-
-// Defines values for SyncRunStatusReason.
-const (
-	SyncRunStatusReasonError     SyncRunStatusReason = "error"
-	SyncRunStatusReasonOomKilled SyncRunStatusReason = "oom_killed"
-)
-
-// Defines values for SyncTestConnectionStatus.
-const (
-	SyncTestConnectionStatusCompleted SyncTestConnectionStatus = "completed"
-	SyncTestConnectionStatusCreated   SyncTestConnectionStatus = "created"
-	SyncTestConnectionStatusFailed    SyncTestConnectionStatus = "failed"
-	SyncTestConnectionStatusStarted   SyncTestConnectionStatus = "started"
 )
 
 // Defines values for TeamPlan.
@@ -686,191 +630,10 @@ type CheckUserAuthStatus200Response struct {
 	Authenticated bool `json:"authenticated"`
 }
 
-// Connector Connector definition
-type Connector struct {
-	// CreatedAt Time the connector was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// ID unique ID of the connector
-	ID openapi_types.UUID `json:"id"`
-
-	// Name Name of the connector
-	Name string `json:"name"`
-
-	// Status The status of the connector
-	Status ConnectorStatus `json:"status"`
-
-	// Type Type of the connector
-	Type string `json:"type"`
-}
-
-// ConnectorAuthFinishRequestAWS AWS connector authentication request, filled in after the user has authenticated through AWS
-type ConnectorAuthFinishRequestAWS struct {
-	// ExternalID External ID in the role definition. Optional. If not provided the previously suggested external ID will be used. Empty string will remove the external ID.
-	ExternalID *string `json:"external_id,omitempty"`
-
-	// RoleARN ARN of role created by the user
-	RoleARN string `json:"role_arn"`
-}
-
-// ConnectorAuthFinishRequestOAuth OAuth connector authentication request, filled in after the user has authenticated through OAuth
-type ConnectorAuthFinishRequestOAuth struct {
-	// BaseURL Base of the URL the callback url was constructed from
-	BaseURL interface{} `json:"base_url"`
-
-	// Env Environment variables used in the spec.
-	Env *interface{} `json:"env,omitempty"`
-
-	// ReturnURL URL the user was redirected to (including new parameter values) after the OAuth flow is complete
-	ReturnURL            interface{}             `json:"return_url"`
-	Spec                 *map[string]interface{} `json:"spec,omitempty"`
-	AdditionalProperties map[string]interface{}  `json:"-"`
-}
-
-// ConnectorAuthRequestAWS AWS connector authentication request to start the authentication process
-type ConnectorAuthRequestAWS struct {
-	// Env Environment variables used in the spec.
-	Env *interface{} `json:"env,omitempty"`
-
-	// PluginKind Kind of the plugin
-	PluginKind interface{} `json:"plugin_kind"`
-
-	// PluginName Name of the plugin
-	PluginName interface{} `json:"plugin_name"`
-
-	// PluginTeam Team that owns the plugin we are authenticating the connector for
-	PluginTeam interface{} `json:"plugin_team"`
-
-	// PluginVersion Version of the plugin
-	PluginVersion *interface{} `json:"plugin_version,omitempty"`
-
-	// SkipDependentTables Whether to skip dependent tables, setting from the outer spec
-	SkipDependentTables *interface{} `json:"skip_dependent_tables,omitempty"`
-
-	// SkipTables Tables to skip authentication, setting from the outer spec
-	SkipTables *interface{}            `json:"skip_tables,omitempty"`
-	Spec       *map[string]interface{} `json:"spec,omitempty"`
-
-	// Tables Tables to authenticate, setting from the outer spec
-	Tables               *interface{}           `json:"tables,omitempty"`
+// ConsumePlatformTenantMagicLinkRequest defines model for ConsumePlatformTenantMagicLink_request.
+type ConsumePlatformTenantMagicLinkRequest struct {
+	Token                interface{}            `json:"token"`
 	AdditionalProperties map[string]interface{} `json:"-"`
-}
-
-// ConnectorAuthRequestGCP GCP connector authentication request to start the authentication process
-type ConnectorAuthRequestGCP struct {
-	// PluginKind Kind of the plugin
-	PluginKind string `json:"plugin_kind"`
-
-	// PluginName Name of the plugin
-	PluginName string `json:"plugin_name"`
-
-	// PluginTeam Team that owns the plugin we are authenticating the connector for
-	PluginTeam string `json:"plugin_team"`
-}
-
-// ConnectorAuthRequestOAuth OAuth connector authentication request to start the authentication process
-type ConnectorAuthRequestOAuth struct {
-	// BaseURL Base of the URL the callback url will be constructed from
-	BaseURL interface{} `json:"base_url"`
-
-	// Env Environment variables used in the spec.
-	Env *interface{} `json:"env,omitempty"`
-
-	// Flavor Override default flavor
-	Flavor *interface{} `json:"flavor,omitempty"`
-
-	// PluginKind Kind of the plugin
-	PluginKind interface{} `json:"plugin_kind"`
-
-	// PluginName Name of the plugin
-	PluginName interface{} `json:"plugin_name"`
-
-	// PluginTeam Team that owns the plugin we are authenticating the connector for
-	PluginTeam interface{} `json:"plugin_team"`
-
-	// PluginVersion Version of the plugin
-	PluginVersion *interface{} `json:"plugin_version,omitempty"`
-
-	// SkipDependentTables Whether to skip dependent tables, setting from the outer spec
-	SkipDependentTables *interface{} `json:"skip_dependent_tables,omitempty"`
-
-	// SkipTables Tables to skip authentication, setting from the outer spec
-	SkipTables *interface{}            `json:"skip_tables,omitempty"`
-	Spec       *map[string]interface{} `json:"spec,omitempty"`
-
-	// Tables Tables to authenticate, setting from the outer spec
-	Tables               *interface{}           `json:"tables,omitempty"`
-	AdditionalProperties map[string]interface{} `json:"-"`
-}
-
-// ConnectorAuthResponseAWS AWS connector authentication response to start the authentication process
-type ConnectorAuthResponseAWS struct {
-	// RedirectURL URL to redirect the user to, to authenticate
-	RedirectURL string `json:"redirect_url"`
-
-	// RoleTemplateURL URL to the role template, to present to the user
-	RoleTemplateURL string `json:"role_template_url"`
-
-	// SuggestedExternalID External ID suggested to enter into the role definition
-	SuggestedExternalID string `json:"suggested_external_id"`
-
-	// SuggestedPolicyARNs List of AWS policy ARNs suggested to grant inside the role definition
-	SuggestedPolicyARNs []string `json:"suggested_policy_arns"`
-}
-
-// ConnectorAuthResponseGCP GCP connector authentication response to start the authentication process
-type ConnectorAuthResponseGCP struct {
-	// ServiceAccount CloudQuery GCP Service Account to grant access to
-	ServiceAccount string `json:"service_account"`
-}
-
-// ConnectorAuthResponseOAuth OAuth connector authentication response to start the authentication process
-type ConnectorAuthResponseOAuth struct {
-	// RedirectURL URL to redirect the user to, to authenticate
-	RedirectURL string `json:"redirect_url"`
-}
-
-// ConnectorCreate Connector creation request
-type ConnectorCreate struct {
-	// Name Name of the connector
-	Name string `json:"name"`
-
-	// Type Type of the connector
-	Type string `json:"type"`
-}
-
-// ConnectorCredentialsResponseAWS AWS connector credentials response
-type ConnectorCredentialsResponseAWS struct {
-	AccessKeyId     string    `json:"access_key_id"`
-	CanExpire       bool      `json:"can_expire"`
-	Expires         time.Time `json:"expires"`
-	SecretAccessKey string    `json:"secret_access_key"`
-	SessionToken    string    `json:"session_token"`
-	Source          string    `json:"source"`
-}
-
-// ConnectorCredentialsResponseOAuth OAuth connector credentials response
-type ConnectorCredentialsResponseOAuth struct {
-	AccessToken string     `json:"access_token"`
-	Expires     *time.Time `json:"expires,omitempty"`
-}
-
-// ConnectorID ID of the Connector
-type ConnectorID = openapi_types.UUID
-
-// ConnectorIdentityResponseAWS AWS connector identity response
-type ConnectorIdentityResponseAWS struct {
-	// RoleARN Role ARN to assume
-	RoleARN string `json:"role_arn"`
-}
-
-// ConnectorStatus The status of the connector
-type ConnectorStatus string
-
-// ConnectorUpdate defines model for ConnectorUpdate.
-type ConnectorUpdate struct {
-	// Name Name of the connector
-	Name *string `json:"name,omitempty"`
 }
 
 // ContentType The HTTP Content-Type of the image or asset
@@ -894,6 +657,54 @@ type CreateAddonVersionRequest struct {
 
 	// PluginDeps plugin dependencies in the format of ['team_name/kind/plugin_name@version']
 	PluginDeps *[]string `json:"plugin_deps,omitempty"`
+}
+
+// CreatePlatformDestinationSession201Response defines model for CreatePlatformDestinationSession_201_response.
+type CreatePlatformDestinationSession201Response struct {
+	// ApiUrl Base URL of the tenant's platform API (e.g. https://acme.us.platform.cloudquery.io). The CLI uses it to reach /external-syncs/* directly — no CQ_PLATFORM_API_URL configuration needed.
+	ApiUrl string `json:"api_url"`
+
+	// ExpiresInSeconds Seconds until the token expires.
+	ExpiresInSeconds int `json:"expires_in_seconds"`
+
+	// Token HMAC-signed, tenant-scoped token for /external-syncs/*.
+	Token string `json:"token"`
+}
+
+// CreatePlatformDestinationSessionRequest defines model for CreatePlatformDestinationSession_request.
+type CreatePlatformDestinationSessionRequest struct {
+	// TenantId The platform tenant (instance) to mint a token for.
+	TenantId openapi_types.UUID `json:"tenant_id"`
+}
+
+// CreatePlatformSignup201Response defines model for CreatePlatformSignup_201_response.
+type CreatePlatformSignup201Response struct {
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
+	// Status Provisioning status of a platform tenant.
+	Status    PlatformTenantStatus `json:"status"`
+	Subdomain string               `json:"subdomain"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName           `json:"team_name"`
+	TenantId openapi_types.UUID `json:"tenant_id"`
+}
+
+// CreatePlatformSignupRequest defines model for CreatePlatformSignup_request.
+type CreatePlatformSignupRequest struct {
+	// Company Company name (free text). Captured for analytics. On the auto-create-team path it is also used as the new Cloud team's `display_name` (the team `name` slug stays the auto-generated subdomain).
+	Company interface{} `json:"company"`
+
+	// JobTitle User's job title (free text, e.g. "Engineering Manager"). Captured for analytics. Distinct from the Cloud team membership role (admin/member).
+	JobTitle interface{} `json:"job_title"`
+
+	// Name Full name of the user
+	Name interface{} `json:"name"`
+
+	// TeamName Optional. When set the new tenant is attached to this existing Cloud team and no team is auto-created; the caller must be an ADMIN of the team or the request 404s (same response shape as an unknown team, so membership existence is not leaked). When unset, a new Cloud team is auto-created with `name = subdomain` and the signing-up user as its sole admin.
+	TeamName             *TeamName              `json:"team_name,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // CreatePluginVersionDocs201Response defines model for CreatePluginVersionDocs_201_response.
@@ -937,30 +748,6 @@ type CreatePluginVersionRequest struct {
 
 	// SupportedTargets The targets supported by this plugin version, formatted as <os>_<arch>
 	SupportedTargets []string `json:"supported_targets"`
-}
-
-// CreateSyncRunProgressRequest defines model for CreateSyncRunProgress_request.
-type CreateSyncRunProgressRequest struct {
-	// Errors Number of errors encountered so far
-	Errors int64 `json:"errors"`
-
-	// Rows Number of rows synced so far
-	Rows int64 `json:"rows"`
-
-	// ShardNum The shard number that this progress update is for
-	ShardNum *int32 `json:"shard_num,omitempty"`
-
-	// ShardTotal The total number of shards for this sync run
-	ShardTotal *int32 `json:"shard_total,omitempty"`
-
-	// Status The status of the sync run
-	Status *SyncRunStatus `json:"status,omitempty"`
-
-	// TableProgress Table-specific progress information for a sync run
-	TableProgress *SyncRunTableProgress `json:"table_progress,omitempty"`
-
-	// Warnings Number of warnings encountered so far
-	Warnings int64 `json:"warnings"`
 }
 
 // CreateTeamAPIKeyRequest defines model for CreateTeamAPIKey_request.
@@ -1025,9 +812,6 @@ type DeterminePlatformTenantByEmail200Response struct {
 	Items []TenantUser `json:"items,omitempty"`
 }
 
-// DisplayName A human-readable display name
-type DisplayName = string
-
 // DockerError Error Returned from the Docker Authorization Handler to the Docker Registry
 type DockerError struct {
 	Details string `json:"details"`
@@ -1075,21 +859,6 @@ type FunctionCallOutput struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
-// GetConnectorAuthStatusAWS200Response defines model for GetConnectorAuthStatusAWS_200_response.
-type GetConnectorAuthStatusAWS200Response struct {
-	// ExternalID External ID used for the role
-	ExternalID *string `json:"external_id,omitempty"`
-
-	// RoleARN ARN of role created by the user
-	RoleARN *string `json:"role_arn,omitempty"`
-}
-
-// GetConnectorAuthStatusGCP200Response defines model for GetConnectorAuthStatusGCP_200_response.
-type GetConnectorAuthStatusGCP200Response struct {
-	// ServiceAccount CloudQuery GCP Service Account to grant access to
-	ServiceAccount *string `json:"service_account,omitempty"`
-}
-
 // GetCurrentUserMemberships200Response defines model for GetCurrentUserMemberships_200_response.
 type GetCurrentUserMemberships200Response struct {
 	Items    []MembershipWithTeam `json:"items"`
@@ -1100,21 +869,6 @@ type GetCurrentUserMemberships200Response struct {
 type GetManagedDatabases200Response struct {
 	Items    []ManagedDatabase `json:"items"`
 	Metadata ListMetadata      `json:"metadata"`
-}
-
-// GetSyncRunConnectorCredentials200Response defines model for GetSyncRunConnectorCredentials_200_response.
-type GetSyncRunConnectorCredentials200Response struct {
-	// Aws AWS connector credentials response
-	Aws *ConnectorCredentialsResponseAWS `json:"aws,omitempty"`
-
-	// Oauth OAuth connector credentials response
-	Oauth *ConnectorCredentialsResponseOAuth `json:"oauth,omitempty"`
-}
-
-// GetSyncRunConnectorIdentity200Response defines model for GetSyncRunConnectorIdentity_200_response.
-type GetSyncRunConnectorIdentity200Response struct {
-	// Aws AWS connector identity response
-	Aws *ConnectorIdentityResponseAWS `json:"aws,omitempty"`
 }
 
 // GetTeamMemberships200Response defines model for GetTeamMemberships_200_response.
@@ -1235,12 +989,6 @@ type ListAddons200Response struct {
 	Metadata ListMetadata `json:"metadata"`
 }
 
-// ListConnectors200Response defines model for ListConnectors_200_response.
-type ListConnectors200Response struct {
-	Items    []Connector  `json:"items"`
-	Metadata ListMetadata `json:"metadata"`
-}
-
 // ListCurrentUserInvitations200Response defines model for ListCurrentUserInvitations_200_response.
 type ListCurrentUserInvitations200Response struct {
 	Items    []InvitationWithToken `json:"items"`
@@ -1281,9 +1029,6 @@ type ListPlugin struct {
 	// LatestVersion The version in semantic version format.
 	LatestVersion *VersionName `json:"latest_version,omitempty"`
 	Logo          string       `json:"logo"`
-
-	// MinimumCloudVersion Minimum plugin version that is supported in CloudQuery managed syncs.
-	MinimumCloudVersion *string `json:"minimum_cloud_version,omitempty"`
 
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
@@ -1371,30 +1116,6 @@ type ListSubscriptionOrdersByTeam200Response struct {
 	Metadata ListMetadata            `json:"metadata"`
 }
 
-// ListSyncDestinations200Response defines model for ListSyncDestinations_200_response.
-type ListSyncDestinations200Response struct {
-	Items    []SyncDestination `json:"items"`
-	Metadata ListMetadata      `json:"metadata"`
-}
-
-// ListSyncRuns200Response defines model for ListSyncRuns_200_response.
-type ListSyncRuns200Response struct {
-	Items    []SyncRun    `json:"items"`
-	Metadata ListMetadata `json:"metadata"`
-}
-
-// ListSyncSourceSyncs200Response defines model for ListSyncSourceSyncs_200_response.
-type ListSyncSourceSyncs200Response struct {
-	Items    []Sync       `json:"items"`
-	Metadata ListMetadata `json:"metadata"`
-}
-
-// ListSyncSources200Response defines model for ListSyncSources_200_response.
-type ListSyncSources200Response struct {
-	Items    []SyncSource `json:"items"`
-	Metadata ListMetadata `json:"metadata"`
-}
-
 // ListTeamAPIKeys200Response defines model for ListTeamAPIKeys_200_response.
 type ListTeamAPIKeys200Response struct {
 	Items    []APIKey     `json:"items"`
@@ -1417,6 +1138,11 @@ type ListTeamPluginUsage200Response struct {
 type ListTeams200Response struct {
 	Items    []Team       `json:"items"`
 	Metadata ListMetadata `json:"metadata"`
+}
+
+// ListUserPlatformTenants200Response defines model for ListUserPlatformTenants_200_response.
+type ListUserPlatformTenants200Response struct {
+	Items []PlatformTenantSummary `json:"items"`
 }
 
 // ListUsersByTeam200Response defines model for ListUsersByTeam_200_response.
@@ -1474,6 +1200,26 @@ type MembershipWithUser struct {
 	User User `json:"user"`
 }
 
+// PlatformTenantStatus Provisioning status of a platform tenant.
+type PlatformTenantStatus string
+
+// PlatformTenantSummary Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.
+type PlatformTenantSummary struct {
+	// Host Full host (e.g. `<subdomain>.cloudquery.io`) the tenant is served on.
+	Host string `json:"host"`
+
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
+	// Status Provisioning status of a platform tenant.
+	Status    PlatformTenantStatus `json:"status"`
+	Subdomain string               `json:"subdomain"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName           `json:"team_name"`
+	TenantId openapi_types.UUID `json:"tenant_id"`
+}
+
 // Plugin CloudQuery Plugin
 type Plugin struct {
 	// Category Supported categories for plugins
@@ -1491,9 +1237,6 @@ type Plugin struct {
 	// Kind The kind of plugin, ie. source or destination.
 	Kind PluginKind `json:"kind"`
 	Logo string     `json:"logo"`
-
-	// MinimumCloudVersion Minimum plugin version that is supported in CloudQuery managed syncs.
-	MinimumCloudVersion *string `json:"minimum_cloud_version,omitempty"`
 
 	// Name The unique name for the plugin.
 	Name PluginName `json:"name"`
@@ -2065,47 +1808,23 @@ type PluginVersionUpdate struct {
 	SupportedTargets *[]string             `json:"supported_targets,omitempty"`
 }
 
-// PriceCategorySpend Spend by price category for a defined period.
-type PriceCategorySpend struct {
-	// Category Supported price categories for billing
-	Category PluginPriceCategory `json:"category"`
-	Total    string              `json:"total"`
+// RegisterUser201Response defines model for RegisterUser_201_response.
+type RegisterUser201Response struct {
+	// CustomToken Token to exchange for ID token
+	CustomToken string `json:"custom_token"`
+
+	// Email Indicates successful user creation
+	Email string `json:"email"`
 }
 
-// PromoteSyncDestinationTestConnection Sync Destination Definition
-type PromoteSyncDestinationTestConnection struct {
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
+// RegisterUserRequest defines model for RegisterUser_request.
+type RegisterUserRequest struct {
+	// Email Email address
+	Email interface{} `json:"email"`
 
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// OverwriteDestination Set this to allow overwriting an existing sync destination. Defaults to true to preserve compatibility.
-	OverwriteDestination *bool `json:"overwrite_destination,omitempty"`
-
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
-}
-
-// PromoteSyncSourceTestConnection Sync Source Definition
-type PromoteSyncSourceTestConnection struct {
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// OverwriteSource Set this to allow overwriting an existing sync source. Defaults to true to preserve compatibility.
-	OverwriteSource *bool `json:"overwrite_source,omitempty"`
-
-	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string `json:"skip_tables,omitempty"`
-
-	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
-	Tables []string `json:"tables"`
+	// Password Password for the new user account
+	Password             interface{}            `json:"password"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // RegistryAuthToken JWT token for the image registry
@@ -2148,6 +1867,23 @@ type ReportPlatformDataRequest struct {
 	UserAdditions        interface{}            `json:"user_additions,omitempty"`
 	UserRemovals         interface{}            `json:"user_removals,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// ReportTenantPlatformDataRequest defines model for ReportTenantPlatformData_request.
+type ReportTenantPlatformDataRequest struct {
+	Host                 string                 `json:"host"`
+	UserAdditions        interface{}            `json:"user_additions,omitempty"`
+	UserRemovals         interface{}            `json:"user_removals,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// RequestPlatformTenantMagicLink201Response defines model for RequestPlatformTenantMagicLink_201_response.
+type RequestPlatformTenantMagicLink201Response struct {
+	// ExpiresInSeconds Seconds until the embedded token expires.
+	ExpiresInSeconds int `json:"expires_in_seconds"`
+
+	// MagicUrl Absolute URL to navigate to. Contains the token as a query parameter.
+	MagicUrl string `json:"magic_url"`
 }
 
 // ResetUserPasswordRequest defines model for ResetUserPassword_request.
@@ -2193,612 +1929,6 @@ type Settings struct {
 type SettingsUpdate struct {
 	// EnforceMfa Whether or not to require MFA for all users
 	EnforceMfa *bool `json:"enforce_mfa,omitempty"`
-}
-
-// SpendSummary A spend summary for a team, summarizing the spend by each price category over a given time range.
-// Note that empty or all-zero values are not included in the response.
-type SpendSummary struct {
-	// Metadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
-	Metadata             SpendSummaryMetadata   `json:"metadata"`
-	Values               interface{}            `json:"values"`
-	AdditionalProperties map[string]interface{} `json:"-"`
-}
-
-// SpendSummaryValue A spend summary value.
-type SpendSummaryValue struct {
-	ByCategory []PriceCategorySpend `json:"by_category"`
-
-	// Date The timestamp for the spend summary.
-	Date time.Time `json:"date"`
-
-	// Total Total spend for the period in USD.
-	Total string `json:"total"`
-}
-
-// SpendSummaryMetadata Additional metadata about the spend summary. This may include information about the time range, the aggregation period, or other details.
-type SpendSummaryMetadata struct {
-	// End The exclusive end of the query time range.
-	End interface{} `json:"end"`
-
-	// Start The inclusive start of the query time range.
-	Start interface{} `json:"start"`
-}
-
-// SpendingLimit A configurable spending limit for the team. Empty values indicate no limit.
-type SpendingLimit struct {
-	// CreatedAt The date and time the team limit was created.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-
-	// UpdatedAt The date and time the team limit was last updated.
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-
-	// USD The maximum USD amount the team is allowed to use within a calendar month.
-	USD *int `json:"usd,omitempty"`
-}
-
-// SpendingLimitCreate A configurable monthly limit for team usage.
-type SpendingLimitCreate struct {
-	// USD The maximum USD amount the team is allowed to use within a calendar month.
-	USD int `json:"usd"`
-}
-
-// SpendingLimitUpdate A configurable spending limit for the team.
-type SpendingLimitUpdate struct {
-	// USD The maximum USD amount the team is allowed to use within a calendar month.
-	USD int `json:"usd"`
-}
-
-// Sync Managed Sync definition
-type Sync struct {
-	// CPU CPU quota for the sync
-	CPU string `json:"cpu"`
-
-	// CreatedAt Time when the sync was created
-	CreatedAt time.Time `json:"created_at"`
-	CreatedBy *string   `json:"created_by,omitempty"`
-
-	// Destinations List of destinations for the sync
-	Destinations []string `json:"destinations"`
-
-	// Disabled Whether the sync is disabled
-	Disabled bool `json:"disabled"`
-
-	// DisplayName A human-readable display name
-	DisplayName DisplayName `json:"display_name"`
-
-	// Incremental Managed Sync Incremental Options definition
-	Incremental *SyncIncremental `json:"incremental,omitempty"`
-
-	// Memory Memory quota for the sync
-	Memory string `json:"memory"`
-
-	// Name Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// Schedule Cron schedule for the sync
-	Schedule string `json:"schedule"`
-
-	// Source Unique name of the source
-	Source string `json:"source"`
-
-	// UpdatedAt Time when the sync was updated
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-// SyncCreate Managed Sync definition
-type SyncCreate struct {
-	// CPU CPU quota for the sync
-	CPU          *string  `json:"cpu,omitempty"`
-	Destinations []string `json:"destinations"`
-
-	// Disabled Whether the sync is disabled
-	Disabled *bool `json:"disabled,omitempty"`
-
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Incremental Managed Sync Incremental Options definition
-	Incremental *SyncIncremental `json:"incremental,omitempty"`
-
-	// Memory Memory quota for the sync
-	Memory *string `json:"memory,omitempty"`
-
-	// Name Descriptive, unique name for the sync. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// Schedule Cron schedule for the sync
-	Schedule *string `json:"schedule,omitempty"`
-
-	// Source Unique name of the source
-	Source string `json:"source"`
-}
-
-// SyncDestination defines model for SyncDestination.
-type SyncDestination struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// CreatedAt Time when the source was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Draft If a sync destination is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.
-	Draft bool `json:"draft"`
-
-	// Env Environment variables for the plugin.
-	Env []SyncEnv `json:"env"`
-
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath          `json:"path"`
-	Spec *map[string]interface{} `json:"spec,omitempty"`
-
-	// UpdatedAt Time when the source was last updated
-	UpdatedAt time.Time `json:"updated_at"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
-
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
-}
-
-// SyncDestinationCreate Sync Destination Definition
-type SyncDestinationCreate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// Name Descriptive, unique name for the destination. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath          `json:"path"`
-	Spec *map[string]interface{} `json:"spec,omitempty"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
-
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
-}
-
-// SyncDestinationMigrateMode Migrate mode for the destination
-type SyncDestinationMigrateMode string
-
-// SyncDestinationMigrateModeUpdate Migrate mode for the destination, for updating
-type SyncDestinationMigrateModeUpdate string
-
-// SyncDestinationTestConnection defines model for SyncDestinationTestConnection.
-type SyncDestinationTestConnection struct {
-	// CompletedAt Time the test connection was completed
-	CompletedAt *time.Time `json:"completed_at,omitempty"`
-
-	// CreatedAt Time the test connection was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// FailureCode Code for failure
-	FailureCode *string `json:"failure_code,omitempty"`
-
-	// FailureReason Reason for failure
-	FailureReason *string `json:"failure_reason,omitempty"`
-
-	// ID unique ID of the test connection
-	ID ID `json:"id"`
-
-	// PluginPath Plugin path in CloudQuery registry
-	PluginPath *SyncPluginPath `json:"plugin_path,omitempty"`
-
-	// PluginVersion The version in semantic version format.
-	PluginVersion *VersionName `json:"plugin_version,omitempty"`
-
-	// Status The status of the sync run
-	Status SyncTestConnectionStatus `json:"status"`
-}
-
-// SyncDestinationTestConnectionCreate defines model for SyncDestinationTestConnectionCreate.
-type SyncDestinationTestConnectionCreate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// DestinationName Name of an existing destination
-	DestinationName *string `json:"destination_name,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
-	// MigrateMode Migrate mode for the destination
-	MigrateMode *SyncDestinationMigrateMode `json:"migrate_mode,omitempty"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath          `json:"path"`
-	Spec *map[string]interface{} `json:"spec,omitempty"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
-
-	// WriteMode Write mode for the destination
-	WriteMode *SyncDestinationWriteMode `json:"write_mode,omitempty"`
-}
-
-// SyncDestinationTestConnectionID ID of the Sync Destination Test Connection
-type SyncDestinationTestConnectionID = openapi_types.UUID
-
-// SyncDestinationUpdate Sync Destination Update Definition
-type SyncDestinationUpdate struct {
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// MigrateMode Migrate mode for the destination, for updating
-	MigrateMode *SyncDestinationMigrateModeUpdate `json:"migrate_mode,omitempty"`
-
-	// WriteMode Write mode for the destination, for updating
-	WriteMode *SyncDestinationWriteModeUpdate `json:"write_mode,omitempty"`
-}
-
-// SyncDestinationWriteMode Write mode for the destination
-type SyncDestinationWriteMode string
-
-// SyncDestinationWriteModeUpdate Write mode for the destination, for updating
-type SyncDestinationWriteModeUpdate string
-
-// SyncEnv Environment variable. Environment variables are assumed to be secret.
-type SyncEnv struct {
-	// Name Name of the environment variable
-	Name string `json:"name"`
-}
-
-// SyncEnvCreate Environment variable. Environment variables are assumed to be secret.
-type SyncEnvCreate struct {
-	// Name Name of the environment variable
-	Name string `json:"name"`
-
-	// Value Value of the environment variable
-	Value *string `json:"value,omitempty"`
-}
-
-// SyncIncremental Managed Sync Incremental Options definition
-type SyncIncremental struct {
-	// Destination Name of the destination in which to store incremental sync data
-	Destination string `json:"destination"`
-
-	// Table Name of the table in which to store incremental sync data
-	Table string `json:"table"`
-}
-
-// SyncIncrementalUpdate Managed Sync Incremental Options Update definition
-type SyncIncrementalUpdate struct {
-	// Destination Name of the destination in which to store incremental sync data
-	Destination *string `json:"destination,omitempty"`
-
-	// Table Name of the table in which to store incremental sync data
-	Table *string `json:"table,omitempty"`
-}
-
-// SyncLastUpdateSource How was the source or destination been created or updated last
-type SyncLastUpdateSource string
-
-// SyncPluginPath Plugin path in CloudQuery registry
-type SyncPluginPath = string
-
-// SyncRun Managed Sync Run definition
-type SyncRun struct {
-	// CompletedAt Time the sync run was completed
-	CompletedAt *time.Time `json:"completed_at,omitempty"`
-
-	// CreatedAt Time the sync run was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// Errors Number of errors encountered during the sync
-	Errors int64 `json:"errors"`
-
-	// ID unique ID of the run
-	ID openapi_types.UUID `json:"id"`
-
-	// Status The status of the sync run
-	Status SyncRunStatus `json:"status"`
-
-	// StatusReason The reason for the status
-	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
-
-	// SyncName Name of the sync
-	SyncName string `json:"sync_name"`
-
-	// TotalRows Total number of rows in the sync
-	TotalRows int64 `json:"total_rows"`
-
-	// Warnings Number of warnings encountered during the sync
-	Warnings int64 `json:"warnings"`
-}
-
-// SyncRunDetails defines model for SyncRunDetails.
-type SyncRunDetails struct {
-	// CompletedAt Time the sync run was completed
-	CompletedAt *time.Time `json:"completed_at,omitempty"`
-
-	// CPUSeconds Total CPU seconds utilized during this sync run
-	CPUSeconds *float64 `json:"cpu_seconds,omitempty"`
-
-	// CreatedAt Time the sync run was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// Errors Number of errors encountered during the sync
-	Errors int64 `json:"errors"`
-
-	// ID unique ID of the run
-	ID openapi_types.UUID `json:"id"`
-
-	// MemoryByteSeconds Total memory byte seconds utilized during this sync run
-	MemoryByteSeconds *float64 `json:"memory_byte_seconds,omitempty"`
-
-	// NetworkEgressBytes Total network egress bytes during this sync run
-	NetworkEgressBytes *float64 `json:"network_egress_bytes,omitempty"`
-
-	// Status The status of the sync run
-	Status SyncRunStatus `json:"status"`
-
-	// StatusReason The reason for the status
-	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
-
-	// SyncName Name of the sync
-	SyncName string `json:"sync_name"`
-
-	// TotalRows Total number of rows in the sync
-	TotalRows int64 `json:"total_rows"`
-
-	// Warnings Number of warnings encountered during the sync
-	Warnings int64 `json:"warnings"`
-}
-
-// SyncRunID ID of the SyncRun
-type SyncRunID = openapi_types.UUID
-
-// SyncRunStatus The status of the sync run
-type SyncRunStatus string
-
-// SyncRunStatusReason The reason for the status
-type SyncRunStatusReason string
-
-// SyncRunTableProgress Table-specific progress information for a sync run
-type SyncRunTableProgress map[string]SyncRunTableProgressValue
-
-// SyncRunTableProgressValue defines model for SyncRunTableProgress_value.
-type SyncRunTableProgressValue struct {
-	// Errors Number of errors for this table
-	Errors int64 `json:"errors"`
-
-	// Rows Number of rows processed for this table
-	Rows int64 `json:"rows"`
-}
-
-// SyncSource defines model for SyncSource.
-type SyncSource struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// CreatedAt Time when the source was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Draft If a sync source is in draft, it cannot be used in syncs. To get it out of draft, 'promote' it using a successful test connection ID.
-	Draft bool `json:"draft"`
-
-	// Env Environment variables for the plugin.
-	Env []SyncEnv `json:"env"`
-
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath `json:"path"`
-
-	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string               `json:"skip_tables,omitempty"`
-	Spec       *map[string]interface{} `json:"spec,omitempty"`
-
-	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
-	Tables []string `json:"tables"`
-
-	// UpdatedAt Time when the source was last updated
-	UpdatedAt time.Time `json:"updated_at"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
-}
-
-// SyncSourceCreate Sync Source Definition
-type SyncSourceCreate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// Name Descriptive, unique name for the source. The name can only contain ASCII letters, digits, - and _.
-	Name string `json:"name"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath `json:"path"`
-
-	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string               `json:"skip_tables,omitempty"`
-	Spec       *map[string]interface{} `json:"spec,omitempty"`
-
-	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
-	Tables []string `json:"tables"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
-}
-
-// SyncSourceTestConnection defines model for SyncSourceTestConnection.
-type SyncSourceTestConnection struct {
-	// CompletedAt Time the test connection was completed
-	CompletedAt *time.Time `json:"completed_at,omitempty"`
-
-	// CreatedAt Time the test connection was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// FailureCode Code for failure
-	FailureCode *string `json:"failure_code,omitempty"`
-
-	// FailureReason Reason for failure
-	FailureReason *string `json:"failure_reason,omitempty"`
-
-	// ID unique ID of the test connection
-	ID ID `json:"id"`
-
-	// PluginPath Plugin path in CloudQuery registry
-	PluginPath *SyncPluginPath `json:"plugin_path,omitempty"`
-
-	// PluginVersion The version in semantic version format.
-	PluginVersion *VersionName `json:"plugin_version,omitempty"`
-
-	// Status The status of the sync run
-	Status SyncTestConnectionStatus `json:"status"`
-}
-
-// SyncSourceTestConnectionCreate defines model for SyncSourceTestConnectionCreate.
-type SyncSourceTestConnectionCreate struct {
-	// ConnectorID ID of the Connector
-	ConnectorID *ConnectorID `json:"connector_id,omitempty"`
-
-	// Env Environment variables for the plugin. All environment variables will be stored as secrets.
-	Env *[]SyncEnvCreate `json:"env,omitempty"`
-
-	// Path Plugin path in CloudQuery registry
-	Path SyncPluginPath `json:"path"`
-
-	// SourceName Name of an existing source
-	SourceName *string                 `json:"source_name,omitempty"`
-	Spec       *map[string]interface{} `json:"spec,omitempty"`
-
-	// Version Version of the plugin
-	Version string `json:"version"`
-}
-
-// SyncSourceTestConnectionID ID of the Sync Source Test Connection
-type SyncSourceTestConnectionID = openapi_types.UUID
-
-// SyncSourceUpdate Sync Source Update Definition
-type SyncSourceUpdate struct {
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// LastUpdateSource How was the source or destination been created or updated last
-	LastUpdateSource *SyncLastUpdateSource `json:"last_update_source,omitempty"`
-
-	// SkipTables Tables matched by `tables` that should be skipped. Wildcards are supported.
-	SkipTables *[]string `json:"skip_tables,omitempty"`
-
-	// Tables Tables to sync. Wildcards are supported. Note that child tables are excluded by default, and need to be explicitly specified.
-	Tables *[]string `json:"tables,omitempty"`
-}
-
-// SyncTestConnection defines model for SyncTestConnection.
-type SyncTestConnection struct {
-	// CompletedAt Time the test connection was completed
-	CompletedAt *time.Time `json:"completed_at,omitempty"`
-
-	// CreatedAt Time the test connection was created
-	CreatedAt time.Time `json:"created_at"`
-
-	// FailureCode Code for failure
-	FailureCode *string `json:"failure_code,omitempty"`
-
-	// FailureReason Reason for failure
-	FailureReason *string `json:"failure_reason,omitempty"`
-
-	// ID unique ID of the test connection
-	ID ID `json:"id"`
-
-	// PluginKind The kind of plugin, ie. source or destination.
-	PluginKind *PluginKind `json:"plugin_kind,omitempty"`
-
-	// PluginPath Plugin path in CloudQuery registry
-	PluginPath *SyncPluginPath `json:"plugin_path,omitempty"`
-
-	// PluginVersion The version in semantic version format.
-	PluginVersion *VersionName `json:"plugin_version,omitempty"`
-
-	// Status The status of the sync run
-	Status SyncTestConnectionStatus `json:"status"`
-}
-
-// ID unique ID of the test connection
-type ID = openapi_types.UUID
-
-// SyncTestConnectionStatus The status of the sync run
-type SyncTestConnectionStatus string
-
-// SyncUpdate Managed Sync definition
-type SyncUpdate struct {
-	// CPU CPU quota for the sync
-	CPU          *string   `json:"cpu,omitempty"`
-	Destinations *[]string `json:"destinations,omitempty"`
-
-	// Disabled Whether the sync is disabled
-	Disabled *bool `json:"disabled,omitempty"`
-
-	// DisplayName A human-readable display name
-	DisplayName *DisplayName `json:"display_name,omitempty"`
-
-	// Env Environment variables for the sync
-	Env *[]SyncEnv `json:"env,omitempty"`
-
-	// Incremental Managed Sync Incremental Options Update definition
-	Incremental *SyncIncrementalUpdate `json:"incremental,omitempty"`
-
-	// Memory Memory quota for the sync
-	Memory *string `json:"memory,omitempty"`
-
-	// Schedule Cron schedule for the sync
-	Schedule *string `json:"schedule,omitempty"`
-
-	// Source Unique name of the source
-	Source *string `json:"source,omitempty"`
-}
-
-// SyncRunLogs defines model for Sync_Run_Logs.
-type SyncRunLogs struct {
-	// Location The location to download the sync run logs from
-	Location             interface{}            `json:"location"`
-	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // Team CloudQuery Team
@@ -2895,6 +2025,9 @@ type TeamSubscriptionOrderStatus string
 
 // TenantUser Tenant information of a platform user
 type TenantUser struct {
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
 	// Provider Login provider of the tenant
 	Provider *string `json:"provider,omitempty"`
 
@@ -2905,7 +2038,10 @@ type TenantUser struct {
 // UpdateCurrentUserRequest defines model for UpdateCurrentUser_request.
 type UpdateCurrentUserRequest struct {
 	// Name The unique name for the user.
-	Name                 *UserName              `json:"name,omitempty"`
+	Name *UserName `json:"name,omitempty"`
+
+	// Onboarded Whether the user has completed onboarding
+	Onboarded            *UserOnboarded         `json:"onboarded,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -2918,27 +2054,6 @@ type UpdateCustomerRequest struct {
 	LearnedAboutCqFromOther *string                `json:"learned_about_cq_from_other,omitempty"`
 	Phone                   *string                `json:"phone,omitempty"`
 	AdditionalProperties    map[string]interface{} `json:"-"`
-}
-
-// UpdateSyncRunRequest defines model for UpdateSyncRun_request.
-type UpdateSyncRunRequest struct {
-	// Status The status of the sync run
-	Status *SyncRunStatus `json:"status,omitempty"`
-
-	// StatusReason The reason for the status
-	StatusReason *SyncRunStatusReason `json:"status_reason,omitempty"`
-}
-
-// UpdateSyncTestConnectionForSyncSourceRequest defines model for UpdateSyncTestConnectionForSyncSource_request.
-type UpdateSyncTestConnectionForSyncSourceRequest struct {
-	// FailureCode Code for failure
-	FailureCode *string `json:"failure_code,omitempty"`
-
-	// FailureReason Reason for failure
-	FailureReason *string `json:"failure_reason,omitempty"`
-
-	// Status The status of the sync run
-	Status SyncTestConnectionStatus `json:"status"`
 }
 
 // UpdateTeamRequest defines model for UpdateTeam_request.
@@ -2965,6 +2080,18 @@ type UploadPluginUIAssets201Response struct {
 // UploadPluginUIAssetsRequest defines model for UploadPluginUIAssets_request.
 type UploadPluginUIAssetsRequest struct {
 	Assets []PluginUIAssetUploadRequest `json:"assets"`
+}
+
+// UpsertPlatformDestinationSecretRequest defines model for UpsertPlatformDestinationSecret_request.
+type UpsertPlatformDestinationSecretRequest struct {
+	// Current The new current HMAC secret (cleartext; stored encrypted).
+	Current string `json:"current"`
+
+	// Previous The just-demoted secret, kept verifiable through the rotation grace window. Omit for backfill.
+	Previous *string `json:"previous,omitempty"`
+
+	// TenantId The platform tenant (instance) the secret belongs to.
+	TenantId openapi_types.UUID `json:"tenant_id"`
 }
 
 // UsageCurrent The usage of a plugin within the current calendar month.
@@ -3090,6 +2217,9 @@ type User struct {
 	// Name The unique name for the user.
 	Name *UserName `json:"name,omitempty"`
 
+	// Onboarded Whether the user has completed onboarding
+	Onboarded *UserOnboarded `json:"onboarded,omitempty"`
+
 	// ProfileImageURL Profile image URL of user
 	ProfileImageURL *string    `json:"profile_image_url,omitempty"`
 	UpdatedAt       *time.Time `json:"updated_at,omitempty"`
@@ -3100,6 +2230,9 @@ type UserID = openapi_types.UUID
 
 // UserName The unique name for the user.
 type UserName = string
+
+// UserOnboarded Whether the user has completed onboarding
+type UserOnboarded = bool
 
 // UserTOTPSetup200Response defines model for UserTOTPSetup_200_response.
 type UserTOTPSetup200Response struct {
@@ -3123,6 +2256,9 @@ type UserTOTPVerifyRequest struct {
 type VerifyUserEmailRequest struct {
 	// Email Email address to verify
 	Email interface{} `json:"email"`
+
+	// RequireBusiness When `true`, also reject the request with 400 if the email is on a public domain.
+	RequireBusiness *interface{} `json:"require_business,omitempty"`
 
 	// ReturnTo Return to this URL after verification
 	ReturnTo *interface{} `json:"return_to,omitempty"`
@@ -3176,21 +2312,6 @@ type PluginSortBy string
 
 // PluginTeam The unique name for the team.
 type PluginTeam = TeamName
-
-// SyncDestinationName Unique name of the sync destination
-type SyncDestinationName = string
-
-// SyncName Unique name of the sync
-type SyncName = string
-
-// SyncRunId ID of the SyncRun
-type SyncRunId = SyncRunID
-
-// SyncSourceName Unique name of the sync source
-type SyncSourceName = string
-
-// SyncTestConnectionId unique ID of the test connection
-type SyncTestConnectionId = ID
 
 // TargetName defines model for target_name.
 type TargetName = string
@@ -3406,21 +2527,6 @@ type ListTeamAPIKeysParams struct {
 	Page *Page `form:"page,omitempty" json:"page,omitempty"`
 }
 
-// ListConnectorsParams defines parameters for ListConnectors.
-type ListConnectorsParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-
-	// FilterType Filter connectors by a given type.
-	FilterType *string `form:"filter_type,omitempty" json:"filter_type,omitempty"`
-
-	// FilterPlugin Filter connectors by a given plugin reference. Mutually exclusive with `type`.
-	FilterPlugin *string `form:"filter_plugin,omitempty" json:"filter_plugin,omitempty"`
-}
-
 // ListTeamInvitationsParams defines parameters for ListTeamInvitations.
 type ListTeamInvitationsParams struct {
 	// Page Page number of the results to fetch
@@ -3474,15 +2580,6 @@ type DownloadPluginAssetByTeamParams struct {
 	Accept *string `json:"Accept,omitempty"`
 }
 
-// GetTeamSpendParams defines parameters for GetTeamSpend.
-type GetTeamSpendParams struct {
-	// Start A valid ISO 8601 date string representing the inclusive start of the period.
-	Start *time.Time `form:"start,omitempty" json:"start,omitempty"`
-
-	// End A valid ISO 8601 date string representing the exclusive end of the period.
-	End *time.Time `form:"end,omitempty" json:"end,omitempty"`
-}
-
 // ListSubscriptionOrdersByTeamParams defines parameters for ListSubscriptionOrdersByTeam.
 type ListSubscriptionOrdersByTeamParams struct {
 	// Page Page number of the results to fetch
@@ -3490,65 +2587,6 @@ type ListSubscriptionOrdersByTeamParams struct {
 
 	// PerPage The number of results per page (max 1000).
 	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-}
-
-// ListSyncDestinationsParams defines parameters for ListSyncDestinations.
-type ListSyncDestinationsParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// ListSyncDestinationSyncsParams defines parameters for ListSyncDestinationSyncs.
-type ListSyncDestinationSyncsParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// ListSyncSourcesParams defines parameters for ListSyncSources.
-type ListSyncSourcesParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// ListSyncSourceSyncsParams defines parameters for ListSyncSourceSyncs.
-type ListSyncSourceSyncsParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// ListSyncsParams defines parameters for ListSyncs.
-type ListSyncsParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// ListSyncRunsParams defines parameters for ListSyncRuns.
-type ListSyncRunsParams struct {
-	// PerPage The number of results per page (max 1000).
-	PerPage *PerPage `form:"per_page,omitempty" json:"per_page,omitempty"`
-
-	// Page Page number of the results to fetch
-	Page *Page `form:"page,omitempty" json:"page,omitempty"`
-}
-
-// GetSyncRunLogsParams defines parameters for GetSyncRunLogs.
-type GetSyncRunLogsParams struct {
-	Accept *string `json:"Accept,omitempty"`
 }
 
 // ListTeamPluginUsageParams defines parameters for ListTeamPluginUsage.
@@ -3644,6 +2682,15 @@ type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
 type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
 
+// UpsertPlatformDestinationSecretJSONRequestBody defines body for UpsertPlatformDestinationSecret for application/json ContentType.
+type UpsertPlatformDestinationSecretJSONRequestBody = UpsertPlatformDestinationSecretRequest
+
+// CreatePlatformDestinationSessionJSONRequestBody defines body for CreatePlatformDestinationSession for application/json ContentType.
+type CreatePlatformDestinationSessionJSONRequestBody = CreatePlatformDestinationSessionRequest
+
+// CreatePlatformSignupJSONRequestBody defines body for CreatePlatformSignup for application/json ContentType.
+type CreatePlatformSignupJSONRequestBody = CreatePlatformSignupRequest
+
 // ActivatePlatformJSONRequestBody defines body for ActivatePlatform for application/json ContentType.
 type ActivatePlatformJSONRequestBody = ActivatePlatformRequest
 
@@ -3652,6 +2699,12 @@ type RenewPlatformActivationJSONRequestBody = RenewPlatformActivationRequest
 
 // ReportPlatformDataJSONRequestBody defines body for ReportPlatformData for application/json ContentType.
 type ReportPlatformDataJSONRequestBody = ReportPlatformDataRequest
+
+// ConsumePlatformTenantMagicLinkJSONRequestBody defines body for ConsumePlatformTenantMagicLink for application/json ContentType.
+type ConsumePlatformTenantMagicLinkJSONRequestBody = ConsumePlatformTenantMagicLinkRequest
+
+// ReportTenantPlatformDataJSONRequestBody defines body for ReportTenantPlatformData for application/json ContentType.
+type ReportTenantPlatformDataJSONRequestBody = ReportTenantPlatformDataRequest
 
 // CreatePluginNotificationRequestJSONRequestBody defines body for CreatePluginNotificationRequest for application/json ContentType.
 type CreatePluginNotificationRequestJSONRequestBody = PluginNotificationRequestCreate
@@ -3710,27 +2763,6 @@ type AIOnboardingNewConversationJSONRequestBody = AIOnboardingNewConversationReq
 // CreateTeamAPIKeyJSONRequestBody defines body for CreateTeamAPIKey for application/json ContentType.
 type CreateTeamAPIKeyJSONRequestBody = CreateTeamAPIKeyRequest
 
-// CreateConnectorJSONRequestBody defines body for CreateConnector for application/json ContentType.
-type CreateConnectorJSONRequestBody = ConnectorCreate
-
-// UpdateConnectorJSONRequestBody defines body for UpdateConnector for application/json ContentType.
-type UpdateConnectorJSONRequestBody = ConnectorUpdate
-
-// AuthenticateConnectorFinishAWSJSONRequestBody defines body for AuthenticateConnectorFinishAWS for application/json ContentType.
-type AuthenticateConnectorFinishAWSJSONRequestBody = ConnectorAuthFinishRequestAWS
-
-// AuthenticateConnectorAWSJSONRequestBody defines body for AuthenticateConnectorAWS for application/json ContentType.
-type AuthenticateConnectorAWSJSONRequestBody = ConnectorAuthRequestAWS
-
-// AuthenticateConnectorGCPJSONRequestBody defines body for AuthenticateConnectorGCP for application/json ContentType.
-type AuthenticateConnectorGCPJSONRequestBody = ConnectorAuthRequestGCP
-
-// AuthenticateConnectorFinishOAuthJSONRequestBody defines body for AuthenticateConnectorFinishOAuth for application/json ContentType.
-type AuthenticateConnectorFinishOAuthJSONRequestBody = ConnectorAuthFinishRequestOAuth
-
-// AuthenticateConnectorOAuthJSONRequestBody defines body for AuthenticateConnectorOAuth for application/json ContentType.
-type AuthenticateConnectorOAuthJSONRequestBody = ConnectorAuthRequestOAuth
-
 // CreateTeamImagesJSONRequestBody defines body for CreateTeamImages for application/json ContentType.
 type CreateTeamImagesJSONRequestBody = CreateTeamImagesRequest
 
@@ -3752,50 +2784,8 @@ type RemoveTeamMembershipJSONRequestBody = RemoveTeamMembershipRequest
 // UpdateSettingsJSONRequestBody defines body for UpdateSettings for application/json ContentType.
 type UpdateSettingsJSONRequestBody = SettingsUpdate
 
-// CreateSpendingLimitJSONRequestBody defines body for CreateSpendingLimit for application/json ContentType.
-type CreateSpendingLimitJSONRequestBody = SpendingLimitCreate
-
-// UpdateSpendingLimitJSONRequestBody defines body for UpdateSpendingLimit for application/json ContentType.
-type UpdateSpendingLimitJSONRequestBody = SpendingLimitUpdate
-
 // CreateSubscriptionOrderForTeamJSONRequestBody defines body for CreateSubscriptionOrderForTeam for application/json ContentType.
 type CreateSubscriptionOrderForTeamJSONRequestBody = TeamSubscriptionOrderCreate
-
-// CreateSyncDestinationTestConnectionJSONRequestBody defines body for CreateSyncDestinationTestConnection for application/json ContentType.
-type CreateSyncDestinationTestConnectionJSONRequestBody = SyncDestinationTestConnectionCreate
-
-// UpdateSyncTestConnectionForSyncDestinationJSONRequestBody defines body for UpdateSyncTestConnectionForSyncDestination for application/json ContentType.
-type UpdateSyncTestConnectionForSyncDestinationJSONRequestBody = UpdateSyncTestConnectionForSyncSourceRequest
-
-// PromoteSyncDestinationTestConnectionJSONRequestBody defines body for PromoteSyncDestinationTestConnection for application/json ContentType.
-type PromoteSyncDestinationTestConnectionJSONRequestBody = PromoteSyncDestinationTestConnection
-
-// UpdateSyncDestinationJSONRequestBody defines body for UpdateSyncDestination for application/json ContentType.
-type UpdateSyncDestinationJSONRequestBody = SyncDestinationUpdate
-
-// CreateSyncSourceTestConnectionJSONRequestBody defines body for CreateSyncSourceTestConnection for application/json ContentType.
-type CreateSyncSourceTestConnectionJSONRequestBody = SyncSourceTestConnectionCreate
-
-// UpdateSyncTestConnectionForSyncSourceJSONRequestBody defines body for UpdateSyncTestConnectionForSyncSource for application/json ContentType.
-type UpdateSyncTestConnectionForSyncSourceJSONRequestBody = UpdateSyncTestConnectionForSyncSourceRequest
-
-// PromoteSyncSourceTestConnectionJSONRequestBody defines body for PromoteSyncSourceTestConnection for application/json ContentType.
-type PromoteSyncSourceTestConnectionJSONRequestBody = PromoteSyncSourceTestConnection
-
-// UpdateSyncSourceJSONRequestBody defines body for UpdateSyncSource for application/json ContentType.
-type UpdateSyncSourceJSONRequestBody = SyncSourceUpdate
-
-// CreateSyncJSONRequestBody defines body for CreateSync for application/json ContentType.
-type CreateSyncJSONRequestBody = SyncCreate
-
-// UpdateSyncJSONRequestBody defines body for UpdateSync for application/json ContentType.
-type UpdateSyncJSONRequestBody = SyncUpdate
-
-// UpdateSyncRunJSONRequestBody defines body for UpdateSyncRun for application/json ContentType.
-type UpdateSyncRunJSONRequestBody = UpdateSyncRunRequest
-
-// CreateSyncRunProgressJSONRequestBody defines body for CreateSyncRunProgress for application/json ContentType.
-type CreateSyncRunProgressJSONRequestBody = CreateSyncRunProgressRequest
 
 // IncreaseTeamPluginUsageJSONRequestBody defines body for IncreaseTeamPluginUsage for application/json ContentType.
 type IncreaseTeamPluginUsageJSONRequestBody = UsageIncrease
@@ -3817,6 +2807,9 @@ type SendUserEventJSONRequestBody = SendUserEventRequest
 
 // LoginUserJSONRequestBody defines body for LoginUser for application/json ContentType.
 type LoginUserJSONRequestBody = LoginUserRequest
+
+// RegisterUserJSONRequestBody defines body for RegisterUser for application/json ContentType.
+type RegisterUserJSONRequestBody = RegisterUserRequest
 
 // ResetUserPasswordJSONRequestBody defines body for ResetUserPassword for application/json ContentType.
 type ResetUserPasswordJSONRequestBody = ResetUserPasswordRequest
@@ -4520,61 +3513,37 @@ func (a ActivatePlatformRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-// Getter for additional properties for ConnectorAuthFinishRequestOAuth. Returns the specified
+// Getter for additional properties for ConsumePlatformTenantMagicLinkRequest. Returns the specified
 // element and whether it was found
-func (a ConnectorAuthFinishRequestOAuth) Get(fieldName string) (value interface{}, found bool) {
+func (a ConsumePlatformTenantMagicLinkRequest) Get(fieldName string) (value interface{}, found bool) {
 	if a.AdditionalProperties != nil {
 		value, found = a.AdditionalProperties[fieldName]
 	}
 	return
 }
 
-// Setter for additional properties for ConnectorAuthFinishRequestOAuth
-func (a *ConnectorAuthFinishRequestOAuth) Set(fieldName string, value interface{}) {
+// Setter for additional properties for ConsumePlatformTenantMagicLinkRequest
+func (a *ConsumePlatformTenantMagicLinkRequest) Set(fieldName string, value interface{}) {
 	if a.AdditionalProperties == nil {
 		a.AdditionalProperties = make(map[string]interface{})
 	}
 	a.AdditionalProperties[fieldName] = value
 }
 
-// Override default JSON handling for ConnectorAuthFinishRequestOAuth to handle AdditionalProperties
-func (a *ConnectorAuthFinishRequestOAuth) UnmarshalJSON(b []byte) error {
+// Override default JSON handling for ConsumePlatformTenantMagicLinkRequest to handle AdditionalProperties
+func (a *ConsumePlatformTenantMagicLinkRequest) UnmarshalJSON(b []byte) error {
 	object := make(map[string]json.RawMessage)
 	err := json.Unmarshal(b, &object)
 	if err != nil {
 		return err
 	}
 
-	if raw, found := object["base_url"]; found {
-		err = json.Unmarshal(raw, &a.BaseURL)
+	if raw, found := object["token"]; found {
+		err = json.Unmarshal(raw, &a.Token)
 		if err != nil {
-			return fmt.Errorf("error reading 'base_url': %w", err)
+			return fmt.Errorf("error reading 'token': %w", err)
 		}
-		delete(object, "base_url")
-	}
-
-	if raw, found := object["env"]; found {
-		err = json.Unmarshal(raw, &a.Env)
-		if err != nil {
-			return fmt.Errorf("error reading 'env': %w", err)
-		}
-		delete(object, "env")
-	}
-
-	if raw, found := object["return_url"]; found {
-		err = json.Unmarshal(raw, &a.ReturnURL)
-		if err != nil {
-			return fmt.Errorf("error reading 'return_url': %w", err)
-		}
-		delete(object, "return_url")
-	}
-
-	if raw, found := object["spec"]; found {
-		err = json.Unmarshal(raw, &a.Spec)
-		if err != nil {
-			return fmt.Errorf("error reading 'spec': %w", err)
-		}
-		delete(object, "spec")
+		delete(object, "token")
 	}
 
 	if len(object) != 0 {
@@ -4591,33 +3560,14 @@ func (a *ConnectorAuthFinishRequestOAuth) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// Override default JSON handling for ConnectorAuthFinishRequestOAuth to handle AdditionalProperties
-func (a ConnectorAuthFinishRequestOAuth) MarshalJSON() ([]byte, error) {
+// Override default JSON handling for ConsumePlatformTenantMagicLinkRequest to handle AdditionalProperties
+func (a ConsumePlatformTenantMagicLinkRequest) MarshalJSON() ([]byte, error) {
 	var err error
 	object := make(map[string]json.RawMessage)
 
-	object["base_url"], err = json.Marshal(a.BaseURL)
+	object["token"], err = json.Marshal(a.Token)
 	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'base_url': %w", err)
-	}
-
-	if a.Env != nil {
-		object["env"], err = json.Marshal(a.Env)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'env': %w", err)
-		}
-	}
-
-	object["return_url"], err = json.Marshal(a.ReturnURL)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'return_url': %w", err)
-	}
-
-	if a.Spec != nil {
-		object["spec"], err = json.Marshal(a.Spec)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'spec': %w", err)
-		}
+		return nil, fmt.Errorf("error marshaling 'token': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
@@ -4629,101 +3579,61 @@ func (a ConnectorAuthFinishRequestOAuth) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-// Getter for additional properties for ConnectorAuthRequestAWS. Returns the specified
+// Getter for additional properties for CreatePlatformSignupRequest. Returns the specified
 // element and whether it was found
-func (a ConnectorAuthRequestAWS) Get(fieldName string) (value interface{}, found bool) {
+func (a CreatePlatformSignupRequest) Get(fieldName string) (value interface{}, found bool) {
 	if a.AdditionalProperties != nil {
 		value, found = a.AdditionalProperties[fieldName]
 	}
 	return
 }
 
-// Setter for additional properties for ConnectorAuthRequestAWS
-func (a *ConnectorAuthRequestAWS) Set(fieldName string, value interface{}) {
+// Setter for additional properties for CreatePlatformSignupRequest
+func (a *CreatePlatformSignupRequest) Set(fieldName string, value interface{}) {
 	if a.AdditionalProperties == nil {
 		a.AdditionalProperties = make(map[string]interface{})
 	}
 	a.AdditionalProperties[fieldName] = value
 }
 
-// Override default JSON handling for ConnectorAuthRequestAWS to handle AdditionalProperties
-func (a *ConnectorAuthRequestAWS) UnmarshalJSON(b []byte) error {
+// Override default JSON handling for CreatePlatformSignupRequest to handle AdditionalProperties
+func (a *CreatePlatformSignupRequest) UnmarshalJSON(b []byte) error {
 	object := make(map[string]json.RawMessage)
 	err := json.Unmarshal(b, &object)
 	if err != nil {
 		return err
 	}
 
-	if raw, found := object["env"]; found {
-		err = json.Unmarshal(raw, &a.Env)
+	if raw, found := object["company"]; found {
+		err = json.Unmarshal(raw, &a.Company)
 		if err != nil {
-			return fmt.Errorf("error reading 'env': %w", err)
+			return fmt.Errorf("error reading 'company': %w", err)
 		}
-		delete(object, "env")
+		delete(object, "company")
 	}
 
-	if raw, found := object["plugin_kind"]; found {
-		err = json.Unmarshal(raw, &a.PluginKind)
+	if raw, found := object["job_title"]; found {
+		err = json.Unmarshal(raw, &a.JobTitle)
 		if err != nil {
-			return fmt.Errorf("error reading 'plugin_kind': %w", err)
+			return fmt.Errorf("error reading 'job_title': %w", err)
 		}
-		delete(object, "plugin_kind")
+		delete(object, "job_title")
 	}
 
-	if raw, found := object["plugin_name"]; found {
-		err = json.Unmarshal(raw, &a.PluginName)
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &a.Name)
 		if err != nil {
-			return fmt.Errorf("error reading 'plugin_name': %w", err)
+			return fmt.Errorf("error reading 'name': %w", err)
 		}
-		delete(object, "plugin_name")
+		delete(object, "name")
 	}
 
-	if raw, found := object["plugin_team"]; found {
-		err = json.Unmarshal(raw, &a.PluginTeam)
+	if raw, found := object["team_name"]; found {
+		err = json.Unmarshal(raw, &a.TeamName)
 		if err != nil {
-			return fmt.Errorf("error reading 'plugin_team': %w", err)
+			return fmt.Errorf("error reading 'team_name': %w", err)
 		}
-		delete(object, "plugin_team")
-	}
-
-	if raw, found := object["plugin_version"]; found {
-		err = json.Unmarshal(raw, &a.PluginVersion)
-		if err != nil {
-			return fmt.Errorf("error reading 'plugin_version': %w", err)
-		}
-		delete(object, "plugin_version")
-	}
-
-	if raw, found := object["skip_dependent_tables"]; found {
-		err = json.Unmarshal(raw, &a.SkipDependentTables)
-		if err != nil {
-			return fmt.Errorf("error reading 'skip_dependent_tables': %w", err)
-		}
-		delete(object, "skip_dependent_tables")
-	}
-
-	if raw, found := object["skip_tables"]; found {
-		err = json.Unmarshal(raw, &a.SkipTables)
-		if err != nil {
-			return fmt.Errorf("error reading 'skip_tables': %w", err)
-		}
-		delete(object, "skip_tables")
-	}
-
-	if raw, found := object["spec"]; found {
-		err = json.Unmarshal(raw, &a.Spec)
-		if err != nil {
-			return fmt.Errorf("error reading 'spec': %w", err)
-		}
-		delete(object, "spec")
-	}
-
-	if raw, found := object["tables"]; found {
-		err = json.Unmarshal(raw, &a.Tables)
-		if err != nil {
-			return fmt.Errorf("error reading 'tables': %w", err)
-		}
-		delete(object, "tables")
+		delete(object, "team_name")
 	}
 
 	if len(object) != 0 {
@@ -4740,275 +3650,30 @@ func (a *ConnectorAuthRequestAWS) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// Override default JSON handling for ConnectorAuthRequestAWS to handle AdditionalProperties
-func (a ConnectorAuthRequestAWS) MarshalJSON() ([]byte, error) {
+// Override default JSON handling for CreatePlatformSignupRequest to handle AdditionalProperties
+func (a CreatePlatformSignupRequest) MarshalJSON() ([]byte, error) {
 	var err error
 	object := make(map[string]json.RawMessage)
 
-	if a.Env != nil {
-		object["env"], err = json.Marshal(a.Env)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'env': %w", err)
-		}
-	}
-
-	object["plugin_kind"], err = json.Marshal(a.PluginKind)
+	object["company"], err = json.Marshal(a.Company)
 	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'plugin_kind': %w", err)
+		return nil, fmt.Errorf("error marshaling 'company': %w", err)
 	}
 
-	object["plugin_name"], err = json.Marshal(a.PluginName)
+	object["job_title"], err = json.Marshal(a.JobTitle)
 	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'plugin_name': %w", err)
+		return nil, fmt.Errorf("error marshaling 'job_title': %w", err)
 	}
 
-	object["plugin_team"], err = json.Marshal(a.PluginTeam)
+	object["name"], err = json.Marshal(a.Name)
 	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'plugin_team': %w", err)
+		return nil, fmt.Errorf("error marshaling 'name': %w", err)
 	}
 
-	if a.PluginVersion != nil {
-		object["plugin_version"], err = json.Marshal(a.PluginVersion)
+	if a.TeamName != nil {
+		object["team_name"], err = json.Marshal(a.TeamName)
 		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'plugin_version': %w", err)
-		}
-	}
-
-	if a.SkipDependentTables != nil {
-		object["skip_dependent_tables"], err = json.Marshal(a.SkipDependentTables)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'skip_dependent_tables': %w", err)
-		}
-	}
-
-	if a.SkipTables != nil {
-		object["skip_tables"], err = json.Marshal(a.SkipTables)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'skip_tables': %w", err)
-		}
-	}
-
-	if a.Spec != nil {
-		object["spec"], err = json.Marshal(a.Spec)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'spec': %w", err)
-		}
-	}
-
-	if a.Tables != nil {
-		object["tables"], err = json.Marshal(a.Tables)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'tables': %w", err)
-		}
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for ConnectorAuthRequestOAuth. Returns the specified
-// element and whether it was found
-func (a ConnectorAuthRequestOAuth) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for ConnectorAuthRequestOAuth
-func (a *ConnectorAuthRequestOAuth) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for ConnectorAuthRequestOAuth to handle AdditionalProperties
-func (a *ConnectorAuthRequestOAuth) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["base_url"]; found {
-		err = json.Unmarshal(raw, &a.BaseURL)
-		if err != nil {
-			return fmt.Errorf("error reading 'base_url': %w", err)
-		}
-		delete(object, "base_url")
-	}
-
-	if raw, found := object["env"]; found {
-		err = json.Unmarshal(raw, &a.Env)
-		if err != nil {
-			return fmt.Errorf("error reading 'env': %w", err)
-		}
-		delete(object, "env")
-	}
-
-	if raw, found := object["flavor"]; found {
-		err = json.Unmarshal(raw, &a.Flavor)
-		if err != nil {
-			return fmt.Errorf("error reading 'flavor': %w", err)
-		}
-		delete(object, "flavor")
-	}
-
-	if raw, found := object["plugin_kind"]; found {
-		err = json.Unmarshal(raw, &a.PluginKind)
-		if err != nil {
-			return fmt.Errorf("error reading 'plugin_kind': %w", err)
-		}
-		delete(object, "plugin_kind")
-	}
-
-	if raw, found := object["plugin_name"]; found {
-		err = json.Unmarshal(raw, &a.PluginName)
-		if err != nil {
-			return fmt.Errorf("error reading 'plugin_name': %w", err)
-		}
-		delete(object, "plugin_name")
-	}
-
-	if raw, found := object["plugin_team"]; found {
-		err = json.Unmarshal(raw, &a.PluginTeam)
-		if err != nil {
-			return fmt.Errorf("error reading 'plugin_team': %w", err)
-		}
-		delete(object, "plugin_team")
-	}
-
-	if raw, found := object["plugin_version"]; found {
-		err = json.Unmarshal(raw, &a.PluginVersion)
-		if err != nil {
-			return fmt.Errorf("error reading 'plugin_version': %w", err)
-		}
-		delete(object, "plugin_version")
-	}
-
-	if raw, found := object["skip_dependent_tables"]; found {
-		err = json.Unmarshal(raw, &a.SkipDependentTables)
-		if err != nil {
-			return fmt.Errorf("error reading 'skip_dependent_tables': %w", err)
-		}
-		delete(object, "skip_dependent_tables")
-	}
-
-	if raw, found := object["skip_tables"]; found {
-		err = json.Unmarshal(raw, &a.SkipTables)
-		if err != nil {
-			return fmt.Errorf("error reading 'skip_tables': %w", err)
-		}
-		delete(object, "skip_tables")
-	}
-
-	if raw, found := object["spec"]; found {
-		err = json.Unmarshal(raw, &a.Spec)
-		if err != nil {
-			return fmt.Errorf("error reading 'spec': %w", err)
-		}
-		delete(object, "spec")
-	}
-
-	if raw, found := object["tables"]; found {
-		err = json.Unmarshal(raw, &a.Tables)
-		if err != nil {
-			return fmt.Errorf("error reading 'tables': %w", err)
-		}
-		delete(object, "tables")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for ConnectorAuthRequestOAuth to handle AdditionalProperties
-func (a ConnectorAuthRequestOAuth) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["base_url"], err = json.Marshal(a.BaseURL)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'base_url': %w", err)
-	}
-
-	if a.Env != nil {
-		object["env"], err = json.Marshal(a.Env)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'env': %w", err)
-		}
-	}
-
-	if a.Flavor != nil {
-		object["flavor"], err = json.Marshal(a.Flavor)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'flavor': %w", err)
-		}
-	}
-
-	object["plugin_kind"], err = json.Marshal(a.PluginKind)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'plugin_kind': %w", err)
-	}
-
-	object["plugin_name"], err = json.Marshal(a.PluginName)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'plugin_name': %w", err)
-	}
-
-	object["plugin_team"], err = json.Marshal(a.PluginTeam)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'plugin_team': %w", err)
-	}
-
-	if a.PluginVersion != nil {
-		object["plugin_version"], err = json.Marshal(a.PluginVersion)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'plugin_version': %w", err)
-		}
-	}
-
-	if a.SkipDependentTables != nil {
-		object["skip_dependent_tables"], err = json.Marshal(a.SkipDependentTables)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'skip_dependent_tables': %w", err)
-		}
-	}
-
-	if a.SkipTables != nil {
-		object["skip_tables"], err = json.Marshal(a.SkipTables)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'skip_tables': %w", err)
-		}
-	}
-
-	if a.Spec != nil {
-		object["spec"], err = json.Marshal(a.Spec)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'spec': %w", err)
-		}
-	}
-
-	if a.Tables != nil {
-		object["tables"], err = json.Marshal(a.Tables)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'tables': %w", err)
+			return nil, fmt.Errorf("error marshaling 'team_name': %w", err)
 		}
 	}
 
@@ -5271,6 +3936,85 @@ func (a LoginUserRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
+// Getter for additional properties for RegisterUserRequest. Returns the specified
+// element and whether it was found
+func (a RegisterUserRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for RegisterUserRequest
+func (a *RegisterUserRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for RegisterUserRequest to handle AdditionalProperties
+func (a *RegisterUserRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["email"]; found {
+		err = json.Unmarshal(raw, &a.Email)
+		if err != nil {
+			return fmt.Errorf("error reading 'email': %w", err)
+		}
+		delete(object, "email")
+	}
+
+	if raw, found := object["password"]; found {
+		err = json.Unmarshal(raw, &a.Password)
+		if err != nil {
+			return fmt.Errorf("error reading 'password': %w", err)
+		}
+		delete(object, "password")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for RegisterUserRequest to handle AdditionalProperties
+func (a RegisterUserRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["email"], err = json.Marshal(a.Email)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	object["password"], err = json.Marshal(a.Password)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'password': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
 // Getter for additional properties for RenewPlatformActivation200Response. Returns the specified
 // element and whether it was found
 func (a RenewPlatformActivation200Response) Get(fieldName string) (value interface{}, found bool) {
@@ -5487,6 +4231,102 @@ func (a ReportPlatformDataRequest) MarshalJSON() ([]byte, error) {
 	object["installation_id"], err = json.Marshal(a.InstallationID)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'installation_id': %w", err)
+	}
+
+	if a.UserAdditions != nil {
+		object["user_additions"], err = json.Marshal(a.UserAdditions)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'user_additions': %w", err)
+		}
+	}
+
+	if a.UserRemovals != nil {
+		object["user_removals"], err = json.Marshal(a.UserRemovals)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'user_removals': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for ReportTenantPlatformDataRequest. Returns the specified
+// element and whether it was found
+func (a ReportTenantPlatformDataRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ReportTenantPlatformDataRequest
+func (a *ReportTenantPlatformDataRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ReportTenantPlatformDataRequest to handle AdditionalProperties
+func (a *ReportTenantPlatformDataRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["host"]; found {
+		err = json.Unmarshal(raw, &a.Host)
+		if err != nil {
+			return fmt.Errorf("error reading 'host': %w", err)
+		}
+		delete(object, "host")
+	}
+
+	if raw, found := object["user_additions"]; found {
+		err = json.Unmarshal(raw, &a.UserAdditions)
+		if err != nil {
+			return fmt.Errorf("error reading 'user_additions': %w", err)
+		}
+		delete(object, "user_additions")
+	}
+
+	if raw, found := object["user_removals"]; found {
+		err = json.Unmarshal(raw, &a.UserRemovals)
+		if err != nil {
+			return fmt.Errorf("error reading 'user_removals': %w", err)
+		}
+		delete(object, "user_removals")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ReportTenantPlatformDataRequest to handle AdditionalProperties
+func (a ReportTenantPlatformDataRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["host"], err = json.Marshal(a.Host)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'host': %w", err)
 	}
 
 	if a.UserAdditions != nil {
@@ -5768,151 +4608,6 @@ func (a SendUserEventRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-// Getter for additional properties for SpendSummary. Returns the specified
-// element and whether it was found
-func (a SpendSummary) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for SpendSummary
-func (a *SpendSummary) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for SpendSummary to handle AdditionalProperties
-func (a *SpendSummary) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["metadata"]; found {
-		err = json.Unmarshal(raw, &a.Metadata)
-		if err != nil {
-			return fmt.Errorf("error reading 'metadata': %w", err)
-		}
-		delete(object, "metadata")
-	}
-
-	if raw, found := object["values"]; found {
-		err = json.Unmarshal(raw, &a.Values)
-		if err != nil {
-			return fmt.Errorf("error reading 'values': %w", err)
-		}
-		delete(object, "values")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for SpendSummary to handle AdditionalProperties
-func (a SpendSummary) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["metadata"], err = json.Marshal(a.Metadata)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'metadata': %w", err)
-	}
-
-	object["values"], err = json.Marshal(a.Values)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'values': %w", err)
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
-// Getter for additional properties for SyncRunLogs. Returns the specified
-// element and whether it was found
-func (a SyncRunLogs) Get(fieldName string) (value interface{}, found bool) {
-	if a.AdditionalProperties != nil {
-		value, found = a.AdditionalProperties[fieldName]
-	}
-	return
-}
-
-// Setter for additional properties for SyncRunLogs
-func (a *SyncRunLogs) Set(fieldName string, value interface{}) {
-	if a.AdditionalProperties == nil {
-		a.AdditionalProperties = make(map[string]interface{})
-	}
-	a.AdditionalProperties[fieldName] = value
-}
-
-// Override default JSON handling for SyncRunLogs to handle AdditionalProperties
-func (a *SyncRunLogs) UnmarshalJSON(b []byte) error {
-	object := make(map[string]json.RawMessage)
-	err := json.Unmarshal(b, &object)
-	if err != nil {
-		return err
-	}
-
-	if raw, found := object["location"]; found {
-		err = json.Unmarshal(raw, &a.Location)
-		if err != nil {
-			return fmt.Errorf("error reading 'location': %w", err)
-		}
-		delete(object, "location")
-	}
-
-	if len(object) != 0 {
-		a.AdditionalProperties = make(map[string]interface{})
-		for fieldName, fieldBuf := range object {
-			var fieldVal interface{}
-			err := json.Unmarshal(fieldBuf, &fieldVal)
-			if err != nil {
-				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
-			}
-			a.AdditionalProperties[fieldName] = fieldVal
-		}
-	}
-	return nil
-}
-
-// Override default JSON handling for SyncRunLogs to handle AdditionalProperties
-func (a SyncRunLogs) MarshalJSON() ([]byte, error) {
-	var err error
-	object := make(map[string]json.RawMessage)
-
-	object["location"], err = json.Marshal(a.Location)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling 'location': %w", err)
-	}
-
-	for fieldName, field := range a.AdditionalProperties {
-		object[fieldName], err = json.Marshal(field)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
-		}
-	}
-	return json.Marshal(object)
-}
-
 // Getter for additional properties for UpdateCurrentUserRequest. Returns the specified
 // element and whether it was found
 func (a UpdateCurrentUserRequest) Get(fieldName string) (value interface{}, found bool) {
@@ -5946,6 +4641,14 @@ func (a *UpdateCurrentUserRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "name")
 	}
 
+	if raw, found := object["onboarded"]; found {
+		err = json.Unmarshal(raw, &a.Onboarded)
+		if err != nil {
+			return fmt.Errorf("error reading 'onboarded': %w", err)
+		}
+		delete(object, "onboarded")
+	}
+
 	if len(object) != 0 {
 		a.AdditionalProperties = make(map[string]interface{})
 		for fieldName, fieldBuf := range object {
@@ -5969,6 +4672,13 @@ func (a UpdateCurrentUserRequest) MarshalJSON() ([]byte, error) {
 		object["name"], err = json.Marshal(a.Name)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'name': %w", err)
+		}
+	}
+
+	if a.Onboarded != nil {
+		object["onboarded"], err = json.Marshal(a.Onboarded)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'onboarded': %w", err)
 		}
 	}
 
@@ -6379,6 +5089,14 @@ func (a *VerifyUserEmailRequest) UnmarshalJSON(b []byte) error {
 		delete(object, "email")
 	}
 
+	if raw, found := object["require_business"]; found {
+		err = json.Unmarshal(raw, &a.RequireBusiness)
+		if err != nil {
+			return fmt.Errorf("error reading 'require_business': %w", err)
+		}
+		delete(object, "require_business")
+	}
+
 	if raw, found := object["return_to"]; found {
 		err = json.Unmarshal(raw, &a.ReturnTo)
 		if err != nil {
@@ -6417,6 +5135,13 @@ func (a VerifyUserEmailRequest) MarshalJSON() ([]byte, error) {
 	object["email"], err = json.Marshal(a.Email)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	if a.RequireBusiness != nil {
+		object["require_business"], err = json.Marshal(a.RequireBusiness)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'require_business': %w", err)
+		}
 	}
 
 	if a.ReturnTo != nil {
