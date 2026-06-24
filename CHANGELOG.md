@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.11](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.10...v1.14.11) (2026-06-19)
+
+
+### Bug Fixes
+
+* Cleaner error when not authenticated and token file is missing ([#366](https://github.com/cloudquery/cloudquery-api-go/issues/366)) ([e559cba](https://github.com/cloudquery/cloudquery-api-go/commit/e559cbab0d571ee895a5835edc9cb5bccb6c2bc9))
+* Generate CloudQuery Go API Client from `spec.json` ([#364](https://github.com/cloudquery/cloudquery-api-go/issues/364)) ([c9fbe79](https://github.com/cloudquery/cloudquery-api-go/commit/c9fbe79d895447d47db27184b5e59035a5c7f034))
+
 ## [1.14.10](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.9...v1.14.10) (2026-06-09)
 
 
