@@ -667,6 +667,9 @@ type CreatePlatformDestinationSession201Response struct {
 	// ExpiresInSeconds Seconds until the token expires.
 	ExpiresInSeconds int `json:"expires_in_seconds"`
 
+	// PluginVersion Recommended cloudquery/platform destination plugin version for this tenant. Optional; when present the CLI pins the injected destination to it, otherwise it uses its own default.
+	PluginVersion *string `json:"plugin_version,omitempty"`
+
 	// Token HMAC-signed, tenant-scoped token for /external-syncs/*.
 	Token string `json:"token"`
 }

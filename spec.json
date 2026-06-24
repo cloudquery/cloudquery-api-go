@@ -8725,6 +8725,11 @@
           "api_url" : {
             "description" : "Base URL of the tenant's platform API (e.g. https://acme.us.platform.cloudquery.io). The CLI uses it to reach /external-syncs/* directly — no CQ_PLATFORM_API_URL configuration needed.",
             "type" : "string"
+          },
+          "plugin_version" : {
+            "description" : "Recommended cloudquery/platform destination plugin version for this tenant. Optional; when present the CLI pins the injected destination to it, otherwise it uses its own default.",
+            "example" : "v1.0.0",
+            "type" : "string"
           }
         },
         "required" : [ "api_url", "expires_in_seconds", "token" ]
