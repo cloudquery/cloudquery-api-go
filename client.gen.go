@@ -169,11 +169,6 @@ type ClientInterface interface {
 
 	RenewPlatformActivation(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ReportPlatformDataWithBody request with any body
-	ReportPlatformDataWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	ReportPlatformData(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// ConsumePlatformTenantMagicLinkWithBody request with any body
 	ConsumePlatformTenantMagicLinkWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -884,30 +879,6 @@ func (c *Client) RenewPlatformActivationWithBody(ctx context.Context, contentTyp
 
 func (c *Client) RenewPlatformActivation(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRenewPlatformActivationRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ReportPlatformDataWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReportPlatformDataRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ReportPlatformData(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReportPlatformDataRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3584,46 +3555,6 @@ func NewRenewPlatformActivationRequestWithBody(server string, contentType string
 	}
 
 	operationPath := fmt.Sprintf("/platform/activate/renew")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewReportPlatformDataRequest calls the generic ReportPlatformData builder with application/json body
-func NewReportPlatformDataRequest(server string, body ReportPlatformDataJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewReportPlatformDataRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewReportPlatformDataRequestWithBody generates requests for ReportPlatformData with any type of body
-func NewReportPlatformDataRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/platform/report")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -9352,11 +9283,6 @@ type ClientWithResponsesInterface interface {
 
 	RenewPlatformActivationWithResponse(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*RenewPlatformActivationResponse, error)
 
-	// ReportPlatformDataWithBodyWithResponse request with any body
-	ReportPlatformDataWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportPlatformDataResponse, error)
-
-	ReportPlatformDataWithResponse(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportPlatformDataResponse, error)
-
 	// ConsumePlatformTenantMagicLinkWithBodyWithResponse request with any body
 	ConsumePlatformTenantMagicLinkWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error)
 
@@ -10223,31 +10149,6 @@ func (r RenewPlatformActivationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r RenewPlatformActivationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ReportPlatformDataResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON400      *BadRequest
-	JSON404      *NotFound
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r ReportPlatformDataResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ReportPlatformDataResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -13148,23 +13049,6 @@ func (c *ClientWithResponses) RenewPlatformActivationWithResponse(ctx context.Co
 	return ParseRenewPlatformActivationResponse(rsp)
 }
 
-// ReportPlatformDataWithBodyWithResponse request with arbitrary body returning *ReportPlatformDataResponse
-func (c *ClientWithResponses) ReportPlatformDataWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportPlatformDataResponse, error) {
-	rsp, err := c.ReportPlatformDataWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseReportPlatformDataResponse(rsp)
-}
-
-func (c *ClientWithResponses) ReportPlatformDataWithResponse(ctx context.Context, body ReportPlatformDataJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportPlatformDataResponse, error) {
-	rsp, err := c.ReportPlatformData(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseReportPlatformDataResponse(rsp)
-}
-
 // ConsumePlatformTenantMagicLinkWithBodyWithResponse request with arbitrary body returning *ConsumePlatformTenantMagicLinkResponse
 func (c *ClientWithResponses) ConsumePlatformTenantMagicLinkWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error) {
 	rsp, err := c.ConsumePlatformTenantMagicLinkWithBody(ctx, tenantID, contentType, body, reqEditors...)
@@ -15342,53 +15226,6 @@ func ParseRenewPlatformActivationResponse(rsp *http.Response) (*RenewPlatformAct
 		}
 		response.JSON205 = &dest
 
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseReportPlatformDataResponse parses an HTTP response from a ReportPlatformDataWithResponse call
-func ParseReportPlatformDataResponse(rsp *http.Response) (*ReportPlatformDataResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ReportPlatformDataResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest BadRequest
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
