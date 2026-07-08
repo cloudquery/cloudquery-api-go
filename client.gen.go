@@ -159,16 +159,6 @@ type ClientInterface interface {
 
 	CreatePlatformSignup(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ActivatePlatformWithBody request with any body
-	ActivatePlatformWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	ActivatePlatform(ctx context.Context, body ActivatePlatformJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// RenewPlatformActivationWithBody request with any body
-	RenewPlatformActivationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	RenewPlatformActivation(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// ConsumePlatformTenantMagicLinkWithBody request with any body
 	ConsumePlatformTenantMagicLinkWithBody(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -831,54 +821,6 @@ func (c *Client) CreatePlatformSignupWithBody(ctx context.Context, contentType s
 
 func (c *Client) CreatePlatformSignup(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreatePlatformSignupRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ActivatePlatformWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewActivatePlatformRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ActivatePlatform(ctx context.Context, body ActivatePlatformJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewActivatePlatformRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) RenewPlatformActivationWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRenewPlatformActivationRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) RenewPlatformActivation(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRenewPlatformActivationRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3475,86 +3417,6 @@ func NewCreatePlatformSignupRequestWithBody(server string, contentType string, b
 	}
 
 	operationPath := fmt.Sprintf("/platform-signup")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewActivatePlatformRequest calls the generic ActivatePlatform builder with application/json body
-func NewActivatePlatformRequest(server string, body ActivatePlatformJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewActivatePlatformRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewActivatePlatformRequestWithBody generates requests for ActivatePlatform with any type of body
-func NewActivatePlatformRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/platform/activate")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewRenewPlatformActivationRequest calls the generic RenewPlatformActivation builder with application/json body
-func NewRenewPlatformActivationRequest(server string, body RenewPlatformActivationJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewRenewPlatformActivationRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewRenewPlatformActivationRequestWithBody generates requests for RenewPlatformActivation with any type of body
-func NewRenewPlatformActivationRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/platform/activate/renew")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -9273,16 +9135,6 @@ type ClientWithResponsesInterface interface {
 
 	CreatePlatformSignupWithResponse(ctx context.Context, body CreatePlatformSignupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePlatformSignupResponse, error)
 
-	// ActivatePlatformWithBodyWithResponse request with any body
-	ActivatePlatformWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ActivatePlatformResponse, error)
-
-	ActivatePlatformWithResponse(ctx context.Context, body ActivatePlatformJSONRequestBody, reqEditors ...RequestEditorFn) (*ActivatePlatformResponse, error)
-
-	// RenewPlatformActivationWithBodyWithResponse request with any body
-	RenewPlatformActivationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RenewPlatformActivationResponse, error)
-
-	RenewPlatformActivationWithResponse(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*RenewPlatformActivationResponse, error)
-
 	// ConsumePlatformTenantMagicLinkWithBodyWithResponse request with any body
 	ConsumePlatformTenantMagicLinkWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error)
 
@@ -10095,60 +9947,6 @@ func (r CreatePlatformSignupResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreatePlatformSignupResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ActivatePlatformResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *ActivatePlatform200Response
-	JSON205      *ActivatePlatform205Response
-	JSON400      *BadRequest
-	JSON404      *NotFound
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r ActivatePlatformResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ActivatePlatformResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type RenewPlatformActivationResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *RenewPlatformActivation200Response
-	JSON205      *ActivatePlatform205Response
-	JSON400      *BadRequest
-	JSON404      *NotFound
-	JSON429      *TooManyRequests
-	JSON500      *InternalError
-}
-
-// Status returns HTTPResponse.Status
-func (r RenewPlatformActivationResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r RenewPlatformActivationResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -13015,40 +12813,6 @@ func (c *ClientWithResponses) CreatePlatformSignupWithResponse(ctx context.Conte
 	return ParseCreatePlatformSignupResponse(rsp)
 }
 
-// ActivatePlatformWithBodyWithResponse request with arbitrary body returning *ActivatePlatformResponse
-func (c *ClientWithResponses) ActivatePlatformWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ActivatePlatformResponse, error) {
-	rsp, err := c.ActivatePlatformWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseActivatePlatformResponse(rsp)
-}
-
-func (c *ClientWithResponses) ActivatePlatformWithResponse(ctx context.Context, body ActivatePlatformJSONRequestBody, reqEditors ...RequestEditorFn) (*ActivatePlatformResponse, error) {
-	rsp, err := c.ActivatePlatform(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseActivatePlatformResponse(rsp)
-}
-
-// RenewPlatformActivationWithBodyWithResponse request with arbitrary body returning *RenewPlatformActivationResponse
-func (c *ClientWithResponses) RenewPlatformActivationWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RenewPlatformActivationResponse, error) {
-	rsp, err := c.RenewPlatformActivationWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseRenewPlatformActivationResponse(rsp)
-}
-
-func (c *ClientWithResponses) RenewPlatformActivationWithResponse(ctx context.Context, body RenewPlatformActivationJSONRequestBody, reqEditors ...RequestEditorFn) (*RenewPlatformActivationResponse, error) {
-	rsp, err := c.RenewPlatformActivation(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseRenewPlatformActivationResponse(rsp)
-}
-
 // ConsumePlatformTenantMagicLinkWithBodyWithResponse request with arbitrary body returning *ConsumePlatformTenantMagicLinkResponse
 func (c *ClientWithResponses) ConsumePlatformTenantMagicLinkWithBodyWithResponse(ctx context.Context, tenantID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ConsumePlatformTenantMagicLinkResponse, error) {
 	rsp, err := c.ConsumePlatformTenantMagicLinkWithBody(ctx, tenantID, contentType, body, reqEditors...)
@@ -15117,128 +14881,6 @@ func ParseCreatePlatformSignupResponse(rsp *http.Response) (*CreatePlatformSignu
 			return nil, err
 		}
 		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseActivatePlatformResponse parses an HTTP response from a ActivatePlatformWithResponse call
-func ParseActivatePlatformResponse(rsp *http.Response) (*ActivatePlatformResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ActivatePlatformResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ActivatePlatform200Response
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 205:
-		var dest ActivatePlatform205Response
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON205 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest TooManyRequests
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseRenewPlatformActivationResponse parses an HTTP response from a RenewPlatformActivationWithResponse call
-func ParseRenewPlatformActivationResponse(rsp *http.Response) (*RenewPlatformActivationResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &RenewPlatformActivationResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest RenewPlatformActivation200Response
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 205:
-		var dest ActivatePlatform205Response
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON205 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequest
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest NotFound
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
 		var dest TooManyRequests
