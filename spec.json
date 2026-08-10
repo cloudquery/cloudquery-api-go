@@ -6903,6 +6903,11 @@
             "format" : "date-time",
             "type" : "string"
           },
+          "trial_eligible" : {
+            "description" : "The team has not had its trial yet and will start one on its first sync that reports rows.",
+            "example" : false,
+            "type" : "boolean"
+          },
           "display_name" : {
             "description" : "The team's display name",
             "example" : "CloudQuery",
@@ -6914,7 +6919,7 @@
             "type" : "boolean"
           }
         },
-        "required" : [ "display_name", "internal", "is_trial_active", "name", "plan" ],
+        "required" : [ "display_name", "internal", "is_trial_active", "name", "plan", "trial_eligible" ],
         "title" : "Team"
       },
       "TeamImageCreate" : {
@@ -8459,6 +8464,7 @@
                 "display_name" : "CloudQuery",
                 "plan" : "free",
                 "is_trial_active" : false,
+                "trial_eligible" : false,
                 "internal" : false
               }
             } ],

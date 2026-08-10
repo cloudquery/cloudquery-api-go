@@ -1885,9 +1885,12 @@ type Team struct {
 	Name TeamName `json:"name"`
 
 	// Plan The plan the team is on (trial is deprecated)
-	Plan         TeamPlan   `json:"plan"`
-	PlanEndTime  *time.Time `json:"plan_end_time,omitempty"`
-	TrialEndTime *time.Time `json:"trial_end_time,omitempty"`
+	Plan        TeamPlan   `json:"plan"`
+	PlanEndTime *time.Time `json:"plan_end_time,omitempty"`
+
+	// TrialEligible The team has not had its trial yet and will start one on its first sync that reports rows.
+	TrialEligible bool       `json:"trial_eligible"`
+	TrialEndTime  *time.Time `json:"trial_end_time,omitempty"`
 }
 
 // TeamImage defines model for TeamImage.
