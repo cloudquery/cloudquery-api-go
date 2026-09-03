@@ -4297,6 +4297,61 @@
         "x-internal" : true
       }
     },
+    "/api/envzero/handoff" : {
+      "post" : {
+        "description" : "env0's entry point for the EZ→CQ seamless onboarding flow (ATL-404). env0's backend calls this when an org admin clicks Connect; cloud answers with a signup URL that hands the user to cloud's own signup with the handoff attached. Authenticated with env0's signed `ezhf_` bearer token (audience `envzero-handoff-create`); the token's `org` claim must match `envzero_org_id`.\nOne live handoff per org: a retried call while the previous handoff is live answers 201 with the SAME `handoff_id` and `signup_url` (refreshing the stored env0 API key); after expiry or consumption the handoff is replaced wholesale. An email that already runs a CloudQuery Platform tenant (or is held by another org's live handoff) returns 409 with code `email_exists` and env0 offers its manual connect fallback. An email with only a Cloud account is NOT a conflict: the signup page doubles as login, so the owner signs in and continues the same handoff.\n",
+        "operationId" : "CreateEnvZeroHandoff",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateEnvZeroHandoff_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateEnvZeroHandoff_201_response"
+                }
+              }
+            },
+            "description" : "Handoff created (or replayed while still live — same body either way, since env0 treats any non-201 as a failure).\n"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroConflictError"
+                }
+              }
+            },
+            "description" : "The email already owns a CloudQuery Platform tenant, or another org's live handoff holds it. A Cloud-only account does not conflict.\n"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ {
+          "envzeroHandoffAuth" : [ ]
+        } ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
     "/teams/{team_name}/platform/tenant/{tenant_id}" : {
       "get" : {
         "description" : "Read provisioning status of a Platform tenant owned by the given Cloud team. The authenticated user must be a member of `team_name`. Used by the signup wizard to poll until `status` becomes `active`.\n",
@@ -7520,6 +7575,24 @@
         "enum" : [ "pending", "created", "active" ],
         "type" : "string"
       },
+      "EnvZeroConflictError" : {
+        "additionalProperties" : false,
+        "description" : "env0 provisioning conflict",
+        "properties" : {
+          "message" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "code" : {
+            "description" : "Machine-readable conflict reason. `email_exists` means the email already runs a CloudQuery Platform tenant (or another org's live handoff holds it), so env0 should fall back to its manual connect flow instead of retrying. A Cloud-only account never triggers this — its owner signs in on the signup page and continues the handoff.",
+            "enum" : [ "email_exists" ],
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "message", "status" ]
+      },
       "PlatformTenantSummary" : {
         "description" : "Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.\n",
         "properties" : {
@@ -8617,6 +8690,11 @@
             "maxLength" : 255,
             "minLength" : 1
           },
+          "handoff" : {
+            "description" : "Optional env0 handoff capability (\"<handoff_id>.<secret>\"), carried by the signup_url env0 redirected the user from. When present and valid, the new tenant is tagged source=envzero and the env0 API key from the handoff is attached for platform provisioning. The signup email must match the handoff's email.\n",
+            "maxLength" : 200,
+            "minLength" : 1
+          },
           "team_name" : {
             "allOf" : [ {
               "$ref" : "#/components/schemas/TeamName"
@@ -8647,6 +8725,56 @@
           }
         },
         "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
+      },
+      "CreateEnvZeroHandoff_request" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "email" : {
+            "description" : "The env0 user's email; prefilled on the signup page.",
+            "format" : "email",
+            "maxLength" : 250,
+            "minLength" : 1
+          },
+          "envzero_org_id" : {
+            "description" : "env0 organization id. One live handoff per org.",
+            "maxLength" : 250,
+            "minLength" : 1
+          },
+          "envzero_api_key_id" : {
+            "description" : "env0 API key id for the envzero source plugin, passed to platform when the signup consumes the handoff.\n",
+            "maxLength" : 512,
+            "minLength" : 1
+          },
+          "envzero_api_key_secret" : {
+            "description" : "env0 API key secret for the envzero source plugin. Held encrypted; never stored in cleartext.\n",
+            "maxLength" : 4096,
+            "minLength" : 1
+          },
+          "source" : {
+            "enum" : [ "envzero" ]
+          },
+          "staging" : {
+            "description" : "Provision the CloudQuery Platform tenant on the staging platform instead of production. Must be true when (and only when) the token is signed with the staging credential — the prod and staging credentials are never interchangeable. Rejected when this cloud deployment has no staging platform configured. Defaults to false.\n"
+          }
+        },
+        "required" : [ "email", "envzero_api_key_id", "envzero_api_key_secret", "envzero_org_id", "source" ]
+      },
+      "CreateEnvZeroHandoff_201_response" : {
+        "properties" : {
+          "handoff_id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "signup_url" : {
+            "description" : "Cloud signup URL carrying the handoff capability; env0 redirects the user here.\n",
+            "type" : "string"
+          },
+          "expires_at" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "required" : [ "expires_at", "handoff_id", "signup_url" ]
       },
       "RequestPlatformTenantMagicLink_201_response" : {
         "properties" : {
@@ -8875,6 +9003,11 @@
       },
       "cookieAuth" : {
         "scheme" : "cookie",
+        "type" : "http"
+      },
+      "envzeroHandoffAuth" : {
+        "description" : "env0's signed ezhf_ handoff token (prefix + base64url(claimsJSON) + \".\" + base64url(HMAC-SHA256)), audience `envzero-handoff-create`. Verified in the handler, not the OpenAPI layer.",
+        "scheme" : "bearer",
         "type" : "http"
       }
     }
