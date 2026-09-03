@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	BasicAuthScopes  = "basicAuth.Scopes"
-	BearerAuthScopes = "bearerAuth.Scopes"
-	CookieAuthScopes = "cookieAuth.Scopes"
+	BasicAuthScopes          = "basicAuth.Scopes"
+	BearerAuthScopes         = "bearerAuth.Scopes"
+	CookieAuthScopes         = "cookieAuth.Scopes"
+	EnvzeroHandoffAuthScopes = "envzeroHandoffAuth.Scopes"
 )
 
 // Defines values for APIKeyScope.
@@ -67,6 +68,11 @@ const (
 const (
 	EmailTeamInvitationRequestRoleAdmin  EmailTeamInvitationRequestRole = "admin"
 	EmailTeamInvitationRequestRoleMember EmailTeamInvitationRequestRole = "member"
+)
+
+// Defines values for EnvZeroConflictErrorCode.
+const (
+	EnvZeroConflictErrorCodeEmailExists EnvZeroConflictErrorCode = "email_exists"
 )
 
 // Defines values for ManagedDatabaseStatus.
@@ -623,6 +629,35 @@ type CreateAddonVersionRequest struct {
 	PluginDeps *[]string `json:"plugin_deps,omitempty"`
 }
 
+// CreateEnvZeroHandoff201Response defines model for CreateEnvZeroHandoff_201_response.
+type CreateEnvZeroHandoff201Response struct {
+	ExpiresAt time.Time          `json:"expires_at"`
+	HandoffId openapi_types.UUID `json:"handoff_id"`
+
+	// SignupUrl Cloud signup URL carrying the handoff capability; env0 redirects the user here.
+	SignupUrl string `json:"signup_url"`
+}
+
+// CreateEnvZeroHandoffRequest defines model for CreateEnvZeroHandoff_request.
+type CreateEnvZeroHandoffRequest struct {
+	// Email The env0 user's email; prefilled on the signup page.
+	Email interface{} `json:"email"`
+
+	// EnvzeroApiKeyId env0 API key id for the envzero source plugin, passed to platform when the signup consumes the handoff.
+	EnvzeroApiKeyId interface{} `json:"envzero_api_key_id"`
+
+	// EnvzeroApiKeySecret env0 API key secret for the envzero source plugin. Held encrypted; never stored in cleartext.
+	EnvzeroApiKeySecret interface{} `json:"envzero_api_key_secret"`
+
+	// EnvzeroOrgId env0 organization id. One live handoff per org.
+	EnvzeroOrgId interface{} `json:"envzero_org_id"`
+	Source       interface{} `json:"source"`
+
+	// Staging Provision the CloudQuery Platform tenant on the staging platform instead of production. Must be true when (and only when) the token is signed with the staging credential — the prod and staging credentials are never interchangeable. Rejected when this cloud deployment has no staging platform configured. Defaults to false.
+	Staging              *interface{}           `json:"staging,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // CreatePlatformDestinationSession201Response defines model for CreatePlatformDestinationSession_201_response.
 type CreatePlatformDestinationSession201Response struct {
 	// ApiUrl Base URL of the tenant's platform API (e.g. https://acme.us.platform.cloudquery.io). The CLI uses it to reach /external-syncs/* directly — no CQ_PLATFORM_API_URL configuration needed.
@@ -662,6 +697,9 @@ type CreatePlatformSignup201Response struct {
 type CreatePlatformSignupRequest struct {
 	// Company Company name (free text). Captured for analytics. On the auto-create-team path it is also used as the new Cloud team's `display_name` (the team `name` slug stays the auto-generated subdomain).
 	Company interface{} `json:"company"`
+
+	// Handoff Optional env0 handoff capability ("<handoff_id>.<secret>"), carried by the signup_url env0 redirected the user from. When present and valid, the new tenant is tagged source=envzero and the env0 API key from the handoff is attached for platform provisioning. The signup email must match the handoff's email.
+	Handoff *interface{} `json:"handoff,omitempty"`
 
 	// JobTitle User's job title (free text, e.g. "Engineering Manager"). Captured for analytics. Distinct from the Cloud team membership role (admin/member).
 	JobTitle interface{} `json:"job_title"`
@@ -795,6 +833,17 @@ type EmailTeamInvitationRequest struct {
 
 // EmailTeamInvitationRequestRole defines model for EmailTeamInvitationRequest.Role.
 type EmailTeamInvitationRequestRole string
+
+// EnvZeroConflictError env0 provisioning conflict
+type EnvZeroConflictError struct {
+	// Code Machine-readable conflict reason. `email_exists` means the email already runs a CloudQuery Platform tenant (or another org's live handoff holds it), so env0 should fall back to its manual connect flow instead of retrying. A Cloud-only account never triggers this — its owner signs in on the signup page and continues the handoff.
+	Code    EnvZeroConflictErrorCode `json:"code"`
+	Message string                   `json:"message"`
+	Status  int                      `json:"status"`
+}
+
+// EnvZeroConflictErrorCode Machine-readable conflict reason. `email_exists` means the email already runs a CloudQuery Platform tenant (or another org's live handoff holds it), so env0 should fall back to its manual connect flow instead of retrying. A Cloud-only account never triggers this — its owner signs in on the signup page and continues the handoff.
+type EnvZeroConflictErrorCode string
 
 // FieldError defines model for FieldError.
 type FieldError struct {
@@ -2626,6 +2675,9 @@ type UpdateAddonVersionJSONRequestBody = AddonVersionUpdate
 // CreateAddonVersionJSONRequestBody defines body for CreateAddonVersion for application/json ContentType.
 type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
 
+// CreateEnvZeroHandoffJSONRequestBody defines body for CreateEnvZeroHandoff for application/json ContentType.
+type CreateEnvZeroHandoffJSONRequestBody = CreateEnvZeroHandoffRequest
+
 // UpsertPlatformDestinationSecretJSONRequestBody defines body for UpsertPlatformDestinationSecret for application/json ContentType.
 type UpsertPlatformDestinationSecretJSONRequestBody = UpsertPlatformDestinationSecretRequest
 
@@ -3247,6 +3299,139 @@ func (a ConsumePlatformTenantMagicLinkRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
+// Getter for additional properties for CreateEnvZeroHandoffRequest. Returns the specified
+// element and whether it was found
+func (a CreateEnvZeroHandoffRequest) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for CreateEnvZeroHandoffRequest
+func (a *CreateEnvZeroHandoffRequest) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for CreateEnvZeroHandoffRequest to handle AdditionalProperties
+func (a *CreateEnvZeroHandoffRequest) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["email"]; found {
+		err = json.Unmarshal(raw, &a.Email)
+		if err != nil {
+			return fmt.Errorf("error reading 'email': %w", err)
+		}
+		delete(object, "email")
+	}
+
+	if raw, found := object["envzero_api_key_id"]; found {
+		err = json.Unmarshal(raw, &a.EnvzeroApiKeyId)
+		if err != nil {
+			return fmt.Errorf("error reading 'envzero_api_key_id': %w", err)
+		}
+		delete(object, "envzero_api_key_id")
+	}
+
+	if raw, found := object["envzero_api_key_secret"]; found {
+		err = json.Unmarshal(raw, &a.EnvzeroApiKeySecret)
+		if err != nil {
+			return fmt.Errorf("error reading 'envzero_api_key_secret': %w", err)
+		}
+		delete(object, "envzero_api_key_secret")
+	}
+
+	if raw, found := object["envzero_org_id"]; found {
+		err = json.Unmarshal(raw, &a.EnvzeroOrgId)
+		if err != nil {
+			return fmt.Errorf("error reading 'envzero_org_id': %w", err)
+		}
+		delete(object, "envzero_org_id")
+	}
+
+	if raw, found := object["source"]; found {
+		err = json.Unmarshal(raw, &a.Source)
+		if err != nil {
+			return fmt.Errorf("error reading 'source': %w", err)
+		}
+		delete(object, "source")
+	}
+
+	if raw, found := object["staging"]; found {
+		err = json.Unmarshal(raw, &a.Staging)
+		if err != nil {
+			return fmt.Errorf("error reading 'staging': %w", err)
+		}
+		delete(object, "staging")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for CreateEnvZeroHandoffRequest to handle AdditionalProperties
+func (a CreateEnvZeroHandoffRequest) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["email"], err = json.Marshal(a.Email)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'email': %w", err)
+	}
+
+	object["envzero_api_key_id"], err = json.Marshal(a.EnvzeroApiKeyId)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'envzero_api_key_id': %w", err)
+	}
+
+	object["envzero_api_key_secret"], err = json.Marshal(a.EnvzeroApiKeySecret)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'envzero_api_key_secret': %w", err)
+	}
+
+	object["envzero_org_id"], err = json.Marshal(a.EnvzeroOrgId)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'envzero_org_id': %w", err)
+	}
+
+	object["source"], err = json.Marshal(a.Source)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'source': %w", err)
+	}
+
+	if a.Staging != nil {
+		object["staging"], err = json.Marshal(a.Staging)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'staging': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
 // Getter for additional properties for CreatePlatformSignupRequest. Returns the specified
 // element and whether it was found
 func (a CreatePlatformSignupRequest) Get(fieldName string) (value interface{}, found bool) {
@@ -3278,6 +3463,14 @@ func (a *CreatePlatformSignupRequest) UnmarshalJSON(b []byte) error {
 			return fmt.Errorf("error reading 'company': %w", err)
 		}
 		delete(object, "company")
+	}
+
+	if raw, found := object["handoff"]; found {
+		err = json.Unmarshal(raw, &a.Handoff)
+		if err != nil {
+			return fmt.Errorf("error reading 'handoff': %w", err)
+		}
+		delete(object, "handoff")
 	}
 
 	if raw, found := object["job_title"]; found {
@@ -3326,6 +3519,13 @@ func (a CreatePlatformSignupRequest) MarshalJSON() ([]byte, error) {
 	object["company"], err = json.Marshal(a.Company)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'company': %w", err)
+	}
+
+	if a.Handoff != nil {
+		object["handoff"], err = json.Marshal(a.Handoff)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'handoff': %w", err)
+		}
 	}
 
 	object["job_title"], err = json.Marshal(a.JobTitle)

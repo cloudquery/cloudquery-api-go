@@ -138,6 +138,11 @@ type ClientInterface interface {
 	// UploadAddonAsset request
 	UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateEnvZeroHandoffWithBody request with any body
+	CreateEnvZeroHandoffWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateEnvZeroHandoff(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CQHealthCheck request
 	CQHealthCheck(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -725,6 +730,30 @@ func (c *Client) DownloadAddonAsset(ctx context.Context, teamName TeamName, addo
 
 func (c *Client) UploadAddonAsset(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUploadAddonAssetRequest(c.Server, teamName, addonType, addonName, versionName)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateEnvZeroHandoffWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateEnvZeroHandoffRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateEnvZeroHandoff(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateEnvZeroHandoffRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3258,6 +3287,46 @@ func NewUploadAddonAssetRequest(server string, teamName TeamName, addonType Addo
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewCreateEnvZeroHandoffRequest calls the generic CreateEnvZeroHandoff builder with application/json body
+func NewCreateEnvZeroHandoffRequest(server string, body CreateEnvZeroHandoffJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateEnvZeroHandoffRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateEnvZeroHandoffRequestWithBody generates requests for CreateEnvZeroHandoff with any type of body
+func NewCreateEnvZeroHandoffRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envzero/handoff")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -9114,6 +9183,11 @@ type ClientWithResponsesInterface interface {
 	// UploadAddonAssetWithResponse request
 	UploadAddonAssetWithResponse(ctx context.Context, teamName TeamName, addonType AddonType, addonName AddonName, versionName VersionName, reqEditors ...RequestEditorFn) (*UploadAddonAssetResponse, error)
 
+	// CreateEnvZeroHandoffWithBodyWithResponse request with any body
+	CreateEnvZeroHandoffWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEnvZeroHandoffResponse, error)
+
+	CreateEnvZeroHandoffWithResponse(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvZeroHandoffResponse, error)
+
 	// CQHealthCheckWithResponse request
 	CQHealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CQHealthCheckResponse, error)
 
@@ -9821,6 +9895,33 @@ func (r UploadAddonAssetResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UploadAddonAssetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateEnvZeroHandoffResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CreateEnvZeroHandoff201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON409      *EnvZeroConflictError
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateEnvZeroHandoffResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateEnvZeroHandoffResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12744,6 +12845,23 @@ func (c *ClientWithResponses) UploadAddonAssetWithResponse(ctx context.Context, 
 	return ParseUploadAddonAssetResponse(rsp)
 }
 
+// CreateEnvZeroHandoffWithBodyWithResponse request with arbitrary body returning *CreateEnvZeroHandoffResponse
+func (c *ClientWithResponses) CreateEnvZeroHandoffWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEnvZeroHandoffResponse, error) {
+	rsp, err := c.CreateEnvZeroHandoffWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateEnvZeroHandoffResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateEnvZeroHandoffWithResponse(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvZeroHandoffResponse, error) {
+	rsp, err := c.CreateEnvZeroHandoff(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateEnvZeroHandoffResponse(rsp)
+}
+
 // CQHealthCheckWithResponse request returning *CQHealthCheckResponse
 func (c *ClientWithResponses) CQHealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CQHealthCheckResponse, error) {
 	rsp, err := c.CQHealthCheck(ctx, reqEditors...)
@@ -14646,6 +14764,67 @@ func ParseUploadAddonAssetResponse(rsp *http.Response) (*UploadAddonAssetRespons
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateEnvZeroHandoffResponse parses an HTTP response from a CreateEnvZeroHandoffWithResponse call
+func ParseCreateEnvZeroHandoffResponse(rsp *http.Response) (*CreateEnvZeroHandoffResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateEnvZeroHandoffResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CreateEnvZeroHandoff201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest EnvZeroConflictError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
