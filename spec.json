@@ -8766,7 +8766,7 @@
             "type" : "string"
           },
           "signup_url" : {
-            "description" : "Cloud signup URL carrying the handoff capability; env0 redirects the user here.\n",
+            "description" : "Cloud signup URL carrying the handoff capability and the handoff's email (prefilled read-only on the signup page); env0 redirects the user here.\n",
             "type" : "string"
           },
           "expires_at" : {

@@ -634,7 +634,7 @@ type CreateEnvZeroHandoff201Response struct {
 	ExpiresAt time.Time          `json:"expires_at"`
 	HandoffId openapi_types.UUID `json:"handoff_id"`
 
-	// SignupUrl Cloud signup URL carrying the handoff capability; env0 redirects the user here.
+	// SignupUrl Cloud signup URL carrying the handoff capability and the handoff's email (prefilled read-only on the signup page); env0 redirects the user here.
 	SignupUrl string `json:"signup_url"`
 }
 
