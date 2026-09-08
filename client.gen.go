@@ -11712,7 +11712,7 @@ func (r DeleteTeamMembershipResponse) StatusCode() int {
 type GetTeamPlatformTenantResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *CreatePlatformSignup201Response
+	JSON200      *GetTeamPlatformTenant200Response
 	JSON401      *RequiresAuthentication
 	JSON403      *Forbidden
 	JSON404      *NotFound
@@ -18616,7 +18616,7 @@ func ParseGetTeamPlatformTenantResponse(rsp *http.Response) (*GetTeamPlatformTen
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest CreatePlatformSignup201Response
+		var dest GetTeamPlatformTenant200Response
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
