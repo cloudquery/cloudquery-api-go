@@ -83,10 +83,18 @@ const (
 	ManagedDatabaseStatusReady   ManagedDatabaseStatus = "ready"
 )
 
+// Defines values for PlatformTenantFailureReason.
+const (
+	PlatformTenantFailureReasonEmailExists    PlatformTenantFailureReason = "email_exists"
+	PlatformTenantFailureReasonHostInUse      PlatformTenantFailureReason = "host_in_use"
+	PlatformTenantFailureReasonInvalidRequest PlatformTenantFailureReason = "invalid_request"
+)
+
 // Defines values for PlatformTenantStatus.
 const (
 	PlatformTenantStatusActive  PlatformTenantStatus = "active"
 	PlatformTenantStatusCreated PlatformTenantStatus = "created"
+	PlatformTenantStatusFailed  PlatformTenantStatus = "failed"
 	PlatformTenantStatusPending PlatformTenantStatus = "pending"
 )
 
@@ -684,7 +692,7 @@ type CreatePlatformSignup201Response struct {
 	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
 	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
 
-	// Status Provisioning status of a platform tenant.
+	// Status Provisioning status of a platform tenant. `failed` is terminal for a self-serve signup; `failure_reason` says why.
 	Status    PlatformTenantStatus `json:"status"`
 	Subdomain string               `json:"subdomain"`
 
@@ -891,6 +899,23 @@ type GetManagedDatabases200Response struct {
 type GetTeamMemberships200Response struct {
 	Items    []MembershipWithUser `json:"items"`
 	Metadata ListMetadata         `json:"metadata"`
+}
+
+// GetTeamPlatformTenant200Response defines model for GetTeamPlatformTenant_200_response.
+type GetTeamPlatformTenant200Response struct {
+	// FailureReason Why a self-serve platform signup failed; only present with `status: failed`. `email_exists`: the email already owns a Platform account, so the user should sign in there (or, from env0, connect it manually).
+	FailureReason *PlatformTenantFailureReason `json:"failure_reason,omitempty"`
+
+	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
+	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
+
+	// Status Provisioning status of a platform tenant. `failed` is terminal for a self-serve signup; `failure_reason` says why.
+	Status    PlatformTenantStatus `json:"status"`
+	Subdomain string               `json:"subdomain"`
+
+	// TeamName The unique name for the team.
+	TeamName TeamName           `json:"team_name"`
+	TenantId openapi_types.UUID `json:"tenant_id"`
 }
 
 // ImageURL defines model for ImageURL.
@@ -1216,7 +1241,10 @@ type MembershipWithUser struct {
 	User User `json:"user"`
 }
 
-// PlatformTenantStatus Provisioning status of a platform tenant.
+// PlatformTenantFailureReason Why a self-serve platform signup failed; only present with `status: failed`. `email_exists`: the email already owns a Platform account, so the user should sign in there (or, from env0, connect it manually).
+type PlatformTenantFailureReason string
+
+// PlatformTenantStatus Provisioning status of a platform tenant. `failed` is terminal for a self-serve signup; `failure_reason` says why.
 type PlatformTenantStatus string
 
 // PlatformTenantSummary Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.
@@ -1227,7 +1255,7 @@ type PlatformTenantSummary struct {
 	// MagicLoginEnabled Whether magic-link sign-in is available for this tenant.
 	MagicLoginEnabled *bool `json:"magic_login_enabled,omitempty"`
 
-	// Status Provisioning status of a platform tenant.
+	// Status Provisioning status of a platform tenant. `failed` is terminal for a self-serve signup; `failure_reason` says why.
 	Status    PlatformTenantStatus `json:"status"`
 	Subdomain string               `json:"subdomain"`
 

@@ -4374,7 +4374,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/CreatePlatformSignup_201_response"
+                  "$ref" : "#/components/schemas/GetTeamPlatformTenant_200_response"
                 }
               }
             },
@@ -7571,8 +7571,8 @@
         "required" : [ "tenant_url" ]
       },
       "PlatformTenantStatus" : {
-        "description" : "Provisioning status of a platform tenant.",
-        "enum" : [ "pending", "created", "active" ],
+        "description" : "Provisioning status of a platform tenant. `failed` is terminal for a self-serve signup; `failure_reason` says why.",
+        "enum" : [ "pending", "created", "active", "failed" ],
         "type" : "string"
       },
       "EnvZeroConflictError" : {
@@ -7592,6 +7592,11 @@
           }
         },
         "required" : [ "code", "message", "status" ]
+      },
+      "PlatformTenantFailureReason" : {
+        "description" : "Why a self-serve platform signup failed; only present with `status: failed`. `email_exists`: the email already owns a Platform account, so the user should sign in there (or, from env0, connect it manually).",
+        "enum" : [ "email_exists", "host_in_use", "invalid_request" ],
+        "type" : "string"
       },
       "PlatformTenantSummary" : {
         "description" : "Summary view of a Platform tenant returned by the self-serve list / status endpoints. Same shape as `POST /platform-signup` and `GET /teams/{team_name}/platform/tenant/{tenant_id}` responses.\n",
@@ -8775,6 +8780,31 @@
           }
         },
         "required" : [ "expires_at", "handoff_id", "signup_url" ]
+      },
+      "GetTeamPlatformTenant_200_response" : {
+        "properties" : {
+          "tenant_id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "subdomain" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/PlatformTenantStatus"
+          },
+          "team_name" : {
+            "$ref" : "#/components/schemas/TeamName"
+          },
+          "magic_login_enabled" : {
+            "description" : "Whether magic-link sign-in is available for this tenant.",
+            "type" : "boolean"
+          },
+          "failure_reason" : {
+            "$ref" : "#/components/schemas/PlatformTenantFailureReason"
+          }
+        },
+        "required" : [ "status", "subdomain", "team_name", "tenant_id" ]
       },
       "RequestPlatformTenantMagicLink_201_response" : {
         "properties" : {
