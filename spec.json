@@ -2375,6 +2375,41 @@
         "tags" : [ "addons" ]
       }
     },
+    "/teams/{team_name}/analytics-salt" : {
+      "get" : {
+        "description" : "Return the team's analytics salt, used by the CLI to pseudonymize cloud account identifiers before they are reported to CloudQuery analytics.",
+        "operationId" : "GetTeamAnalyticsSalt",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/team_name"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetTeamAnalyticsSalt_200_response"
+                }
+              }
+            },
+            "description" : "The team's analytics salt."
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/Forbidden"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "tags" : [ "teams" ],
+        "x-internal" : true
+      }
+    },
     "/teams/{team_name}/memberships" : {
       "delete" : {
         "description" : "Remove a user from the team",
@@ -8252,6 +8287,16 @@
           }
         },
         "required" : [ "items", "metadata" ]
+      },
+      "GetTeamAnalyticsSalt_200_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "salt" : {
+            "example" : "1a7c1cb2-2f47-4f8a-9a8b-4f9f4f8a9a8b",
+            "format" : "uuid"
+          }
+        },
+        "required" : [ "salt" ]
       },
       "GetTeamMemberships_200_response" : {
         "properties" : {

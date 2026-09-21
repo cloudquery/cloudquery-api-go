@@ -342,6 +342,9 @@ type ClientInterface interface {
 
 	AIOnboardingNewConversation(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetTeamAnalyticsSalt request
+	GetTeamAnalyticsSalt(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeamAPIKeys request
 	ListTeamAPIKeys(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -1642,6 +1645,18 @@ func (c *Client) AIOnboardingNewConversationWithBody(ctx context.Context, teamNa
 
 func (c *Client) AIOnboardingNewConversation(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAIOnboardingNewConversationRequest(c.Server, teamName, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTeamAnalyticsSalt(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTeamAnalyticsSaltRequest(c.Server, teamName)
 	if err != nil {
 		return nil, err
 	}
@@ -6356,6 +6371,40 @@ func NewAIOnboardingNewConversationRequestWithBody(server string, teamName strin
 	return req, nil
 }
 
+// NewGetTeamAnalyticsSaltRequest generates requests for GetTeamAnalyticsSalt
+func NewGetTeamAnalyticsSaltRequest(server string, teamName TeamName) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "team_name", runtime.ParamLocationPath, teamName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/teams/%s/analytics-salt", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListTeamAPIKeysRequest generates requests for ListTeamAPIKeys
 func NewListTeamAPIKeysRequest(server string, teamName TeamName, params *ListTeamAPIKeysParams) (*http.Request, error) {
 	var err error
@@ -9387,6 +9436,9 @@ type ClientWithResponsesInterface interface {
 
 	AIOnboardingNewConversationWithResponse(ctx context.Context, teamName string, body AIOnboardingNewConversationJSONRequestBody, reqEditors ...RequestEditorFn) (*AIOnboardingNewConversationResponse, error)
 
+	// GetTeamAnalyticsSaltWithResponse request
+	GetTeamAnalyticsSaltWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*GetTeamAnalyticsSaltResponse, error)
+
 	// ListTeamAPIKeysWithResponse request
 	ListTeamAPIKeysWithResponse(ctx context.Context, teamName TeamName, params *ListTeamAPIKeysParams, reqEditors ...RequestEditorFn) (*ListTeamAPIKeysResponse, error)
 
@@ -11257,6 +11309,32 @@ func (r AIOnboardingNewConversationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AIOnboardingNewConversationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTeamAnalyticsSaltResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetTeamAnalyticsSalt200Response
+	JSON401      *RequiresAuthentication
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTeamAnalyticsSaltResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTeamAnalyticsSaltResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -13503,6 +13581,15 @@ func (c *ClientWithResponses) AIOnboardingNewConversationWithResponse(ctx contex
 		return nil, err
 	}
 	return ParseAIOnboardingNewConversationResponse(rsp)
+}
+
+// GetTeamAnalyticsSaltWithResponse request returning *GetTeamAnalyticsSaltResponse
+func (c *ClientWithResponses) GetTeamAnalyticsSaltWithResponse(ctx context.Context, teamName TeamName, reqEditors ...RequestEditorFn) (*GetTeamAnalyticsSaltResponse, error) {
+	rsp, err := c.GetTeamAnalyticsSalt(ctx, teamName, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTeamAnalyticsSaltResponse(rsp)
 }
 
 // ListTeamAPIKeysWithResponse request returning *ListTeamAPIKeysResponse
@@ -17642,6 +17729,60 @@ func ParseAIOnboardingNewConversationResponse(rsp *http.Response) (*AIOnboarding
 			return nil, err
 		}
 		response.JSON405 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTeamAnalyticsSaltResponse parses an HTTP response from a GetTeamAnalyticsSaltWithResponse call
+func ParseGetTeamAnalyticsSaltResponse(rsp *http.Response) (*GetTeamAnalyticsSaltResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTeamAnalyticsSaltResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetTeamAnalyticsSalt200Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
