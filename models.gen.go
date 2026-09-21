@@ -895,6 +895,12 @@ type GetManagedDatabases200Response struct {
 	Metadata ListMetadata      `json:"metadata"`
 }
 
+// GetTeamAnalyticsSalt200Response defines model for GetTeamAnalyticsSalt_200_response.
+type GetTeamAnalyticsSalt200Response struct {
+	Salt                 interface{}            `json:"salt"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // GetTeamMemberships200Response defines model for GetTeamMemberships_200_response.
 type GetTeamMemberships200Response struct {
 	Items    []MembershipWithUser `json:"items"`
@@ -3755,6 +3761,72 @@ func (a FunctionCallOutput) MarshalJSON() ([]byte, error) {
 	object["output"], err = json.Marshal(a.Output)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'output': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for GetTeamAnalyticsSalt200Response. Returns the specified
+// element and whether it was found
+func (a GetTeamAnalyticsSalt200Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for GetTeamAnalyticsSalt200Response
+func (a *GetTeamAnalyticsSalt200Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for GetTeamAnalyticsSalt200Response to handle AdditionalProperties
+func (a *GetTeamAnalyticsSalt200Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["salt"]; found {
+		err = json.Unmarshal(raw, &a.Salt)
+		if err != nil {
+			return fmt.Errorf("error reading 'salt': %w", err)
+		}
+		delete(object, "salt")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for GetTeamAnalyticsSalt200Response to handle AdditionalProperties
+func (a GetTeamAnalyticsSalt200Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["salt"], err = json.Marshal(a.Salt)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'salt': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
