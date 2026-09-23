@@ -4387,6 +4387,307 @@
         "x-internal" : true
       }
     },
+    "/api/envzero/setup" : {
+      "post" : {
+        "description" : "Reserve a setup operation and create its tenant rows, server to server (ATL-476). env0's backend calls this from the confirm modal; Cloud writes the setup record, the tenant host, signup and envzero rows, the memberless team and the provision job in one transaction, then the provision job creates the Platform tenant asynchronously. Authenticated with env0's signed `ezhf_` assertion (audience `envzero-setup-create`) whose claims must equal the bindings in the body. A replay of an existing operation with matching bindings answers 200 with the same body and restarts any exhausted job. `staging` must agree with the credential that verified the assertion.",
+        "operationId" : "CreateEnvZeroSetup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateEnvZeroSetup_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupCreated"
+                }
+              }
+            },
+            "description" : "The operation already exists with matching bindings (retry)."
+          },
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupCreated"
+                }
+              }
+            },
+            "description" : "Operation reserved and tenant rows written."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupConflictError"
+                }
+              }
+            },
+            "description" : "`email_exists`, nothing written; or `setup_in_progress` with the record holding the org reservation."
+          },
+          "410" : {
+            "$ref" : "#/components/responses/EnvZeroSetupGone"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/TooManyRequests"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ {
+          "envzeroHandoffAuth" : [ ]
+        } ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/api/envzero/setup/{operation}/cancel" : {
+      "post" : {
+        "description" : "Cancel a setup operation (ATL-476). Inserts a `cancelled` row under the operation's primary key when no record exists, so a create racing this call loses and answers 410; an existing `failed` record becomes `cancelled`; a record holding the org reservation answers 409 with the record so env0 can adopt it. Idempotent.",
+        "operationId" : "CancelEnvZeroSetup",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/envzero_setup_operation"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CancelEnvZeroSetup_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Cancelled, or already cancelled or failed."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupConflictError"
+                }
+              }
+            },
+            "description" : "The record is live (`setup_in_progress`) and is returned."
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ {
+          "envzeroHandoffAuth" : [ ]
+        } ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/api/envzero/setup/{operation}/status" : {
+      "post" : {
+        "description" : "Report a setup operation's state (ATL-476). Audience `envzero-setup-status`. Side effects: restarts any exhausted or missing job whose completion condition is unmet, and asks Platform whether the first user can log in while `login` is pending and the host is linked.",
+        "operationId" : "GetEnvZeroSetupStatus",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/envzero_setup_operation"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CancelEnvZeroSetup_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupRecord"
+                }
+              }
+            },
+            "description" : "The record."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "410" : {
+            "$ref" : "#/components/responses/EnvZeroSetupGone"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          }
+        },
+        "security" : [ {
+          "envzeroHandoffAuth" : [ ]
+        } ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/api/envzero/setup/{operation}/login" : {
+      "post" : {
+        "description" : "Mint a single-use magic-login URL into the operation's tenant (ATL-476). Audience `envzero-setup-login`; the assertion carries `tenant` and its `jti` is burned in the same transaction that stamps `login_issued_at`, before any Redis call. Every mint re-checks Platform: signup not failed, magic login enabled, host linked, first user ready. Repeatable: a later call mints a fresh URL and keeps the first `login_issued_at`.",
+        "operationId" : "LoginEnvZeroSetup",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/envzero_setup_operation"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginEnvZeroSetup_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoginEnvZeroSetup_201_response"
+                }
+              }
+            },
+            "description" : "Magic URL minted."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupConflictError"
+                }
+              }
+            },
+            "description" : "`not_ready` or `login_unavailable`."
+          },
+          "410" : {
+            "$ref" : "#/components/responses/EnvZeroSetupGone"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "security" : [ {
+          "envzeroHandoffAuth" : [ ]
+        } ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
+    "/api/envzero/setup/{operation}/password" : {
+      "post" : {
+        "description" : "Forward the first user's password to Platform's create-only first-user-password (ATL-476). Audience `envzero-setup-create`. Cloud does not validate, hash, store or log the password. Requires `provisioning: created`, else 409 `not_ready`. Platform 204 and 409 `password_already_set` both mark `password: set` and answer 204; Platform field errors are returned verbatim as 422; anything else is 502.",
+        "operationId" : "SetEnvZeroSetupPassword",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/envzero_setup_operation"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SetEnvZeroSetupPassword_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Password set at Platform (now or on an earlier submit)."
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/RequiresAuthentication"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnvZeroSetupConflictError"
+                }
+              }
+            },
+            "description" : "`not_ready`: no tenant exists yet."
+          },
+          "410" : {
+            "$ref" : "#/components/responses/EnvZeroSetupGone"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/InternalError"
+          },
+          "502" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BasicError"
+                }
+              }
+            },
+            "description" : "Platform did not answer definitively; env0 offers a retry."
+          }
+        },
+        "security" : [ {
+          "envzeroHandoffAuth" : [ ]
+        } ],
+        "tags" : [ "platform" ],
+        "x-internal" : true
+      }
+    },
     "/teams/{team_name}/platform/tenant/{tenant_id}" : {
       "get" : {
         "description" : "Read provisioning status of a Platform tenant owned by the given Cloud team. The authenticated user must be a member of `team_name`. Used by the signup wizard to poll until `status` becomes `active`.\n",
@@ -5496,6 +5797,17 @@
         "style" : "simple",
         "x-go-name" : "TeamSubscriptionOrderID"
       },
+      "envzero_setup_operation" : {
+        "explode" : false,
+        "in" : "path",
+        "name" : "operation",
+        "required" : true,
+        "schema" : {
+          "format" : "uuid",
+          "type" : "string"
+        },
+        "style" : "simple"
+      },
       "user_id" : {
         "explode" : false,
         "in" : "path",
@@ -5620,6 +5932,16 @@
           }
         },
         "description" : "Method not allowed"
+      },
+      "EnvZeroSetupGone" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/BasicError"
+            }
+          }
+        },
+        "description" : "The operation was cancelled."
       },
       "DockerError" : {
         "content" : {
@@ -7628,6 +7950,128 @@
         },
         "required" : [ "code", "message", "status" ]
       },
+      "EnvZeroSetupBindings" : {
+        "description" : "The identity bindings fixed when the operation was reserved. Every setup call carries them and they must equal the assertion's claims.",
+        "properties" : {
+          "envzero_org_id" : {
+            "description" : "env0 organization id.",
+            "maxLength" : 250,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "envzero_user_id" : {
+            "description" : "env0 user id (Auth0 `sub`) of the admin driving the setup.",
+            "maxLength" : 250,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "email" : {
+            "description" : "The admin's email, lowercased.",
+            "format" : "email",
+            "maxLength" : 250,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "environment" : {
+            "description" : "env0 environment (`STAGE`) the operation belongs to.",
+            "maxLength" : 64,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "environment", "envzero_org_id", "envzero_user_id" ]
+      },
+      "EnvZeroSetupCreated" : {
+        "additionalProperties" : false,
+        "properties" : {
+          "operation" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "tenant_id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "tenant_url" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "operation", "tenant_id", "tenant_url" ]
+      },
+      "EnvZeroSetupRecordFields" : {
+        "description" : "The fields of a setup operation's state (ATL-468 contract section 4.1), none required. `EnvZeroSetupRecord` requires the identity and state axes; `EnvZeroSetupConflictError` carries them flat beside `code` only for `setup_in_progress`.",
+        "properties" : {
+          "operation" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "envzero_user_id" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "environment" : {
+            "type" : "string"
+          },
+          "tenant_id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "tenant_url" : {
+            "type" : "string"
+          },
+          "provisioning" : {
+            "enum" : [ "pending", "created", "failed", "blocked", "stuck" ],
+            "type" : "string"
+          },
+          "login" : {
+            "enum" : [ "pending", "ready", "unavailable" ],
+            "type" : "string"
+          },
+          "password" : {
+            "enum" : [ "unset", "set" ],
+            "type" : "string"
+          },
+          "delivery" : {
+            "enum" : [ "pending", "delivered", "failed", "undeliverable" ],
+            "type" : "string"
+          },
+          "failure" : {
+            "$ref" : "#/components/schemas/EnvZeroSetupRecordFields_failure"
+          }
+        }
+      },
+      "EnvZeroSetupConflictError" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EnvZeroSetupRecordFields"
+        }, {
+          "description" : "env0 setup conflict (ATL-468 contract section 5.1). For `setup_in_progress` the record holding the org's reservation is carried flat beside `code`, the same shape for create's and cancel's 409, so env0 can adopt it; the other codes carry only `message`, `status` and `code`.",
+          "properties" : {
+            "message" : {
+              "type" : "string"
+            },
+            "status" : {
+              "type" : "integer"
+            },
+            "code" : {
+              "description" : "Machine-readable conflict reason. `email_exists`: the email already runs a CloudQuery Platform tenant or another org's live record holds it; env0 falls back to its manual connect flow. `setup_in_progress`: another operation holds this org's reservation; its record is carried flat in this body so env0 can adopt it. `not_ready`: the tenant or its first user does not exist yet. `login_unavailable`: the first user exists but cannot use magic-link login.",
+              "enum" : [ "email_exists", "setup_in_progress", "not_ready", "login_unavailable" ],
+              "type" : "string"
+            }
+          },
+          "required" : [ "code", "message", "status" ]
+        } ]
+      },
+      "EnvZeroSetupRecord" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EnvZeroSetupRecordFields"
+        }, {
+          "description" : "A setup operation's state (ATL-468 contract section 4.1). `provisioning` is the only axis that gates other operations; `login` and `delivery` are facts reported alongside it. All axes are monotonic.",
+          "required" : [ "delivery", "email", "environment", "envzero_user_id", "login", "operation", "password", "provisioning" ],
+          "type" : "object"
+        } ]
+      },
       "PlatformTenantFailureReason" : {
         "description" : "Why a self-serve platform signup failed; only present with `status: failed`. `email_exists`: the email already owns a Platform account, so the user should sign in there (or, from env0, connect it manually).",
         "enum" : [ "email_exists", "host_in_use", "invalid_request" ],
@@ -8826,6 +9270,100 @@
         },
         "required" : [ "expires_at", "handoff_id", "signup_url" ]
       },
+      "CreateEnvZeroSetup_request" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EnvZeroSetupBindings"
+        }, {
+          "properties" : {
+            "operation" : {
+              "description" : "env0's id for this attempt; also the callback handoff_id.",
+              "format" : "uuid",
+              "type" : "string"
+            },
+            "terms_accepted_at" : {
+              "description" : "When the admin accepted the CloudQuery terms. Must not be in the future.",
+              "format" : "date-time",
+              "type" : "string"
+            },
+            "display_name" : {
+              "maxLength" : 250,
+              "type" : "string"
+            },
+            "envzero_api_key_id" : {
+              "maxLength" : 512,
+              "minLength" : 1,
+              "type" : "string"
+            },
+            "envzero_api_key_secret" : {
+              "maxLength" : 4096,
+              "minLength" : 1,
+              "type" : "string"
+            },
+            "source" : {
+              "enum" : [ "envzero" ],
+              "type" : "string"
+            },
+            "staging" : {
+              "type" : "boolean"
+            }
+          },
+          "required" : [ "envzero_api_key_id", "envzero_api_key_secret", "operation", "source", "terms_accepted_at" ]
+        } ]
+      },
+      "CancelEnvZeroSetup_request" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EnvZeroSetupBindings"
+        }, {
+          "properties" : {
+            "staging" : {
+              "type" : "boolean"
+            }
+          }
+        } ]
+      },
+      "LoginEnvZeroSetup_request" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EnvZeroSetupBindings"
+        }, {
+          "properties" : {
+            "tenant_id" : {
+              "format" : "uuid",
+              "type" : "string"
+            },
+            "staging" : {
+              "type" : "boolean"
+            }
+          },
+          "required" : [ "tenant_id" ]
+        } ]
+      },
+      "LoginEnvZeroSetup_201_response" : {
+        "additionalProperties" : { },
+        "properties" : {
+          "magic_url" : {
+            "type" : "string"
+          },
+          "expires_in_seconds" : { }
+        },
+        "required" : [ "expires_in_seconds", "magic_url" ]
+      },
+      "SetEnvZeroSetupPassword_request" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EnvZeroSetupBindings"
+        }, {
+          "properties" : {
+            "password" : {
+              "maxLength" : 1024,
+              "minLength" : 1,
+              "type" : "string"
+            },
+            "staging" : {
+              "type" : "boolean"
+            }
+          },
+          "required" : [ "password" ]
+        } ]
+      },
       "GetTeamPlatformTenant_200_response" : {
         "properties" : {
           "tenant_id" : {
@@ -9065,6 +9603,18 @@
           }
         },
         "required" : [ "aggregation_period", "end", "metrics", "start" ]
+      },
+      "EnvZeroSetupRecordFields_failure" : {
+        "additionalProperties" : false,
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "detail" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "code" ]
       }
     },
     "securitySchemes" : {

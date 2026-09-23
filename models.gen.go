@@ -64,6 +64,11 @@ const (
 	ContentTypeImagewebp ContentType = "image/webp"
 )
 
+// Defines values for CreateEnvZeroSetupRequestSource.
+const (
+	CreateEnvZeroSetupRequestSourceEnvzero CreateEnvZeroSetupRequestSource = "envzero"
+)
+
 // Defines values for EmailTeamInvitationRequestRole.
 const (
 	EmailTeamInvitationRequestRoleAdmin  EmailTeamInvitationRequestRole = "admin"
@@ -73,6 +78,104 @@ const (
 // Defines values for EnvZeroConflictErrorCode.
 const (
 	EnvZeroConflictErrorCodeEmailExists EnvZeroConflictErrorCode = "email_exists"
+)
+
+// Defines values for EnvZeroSetupConflictErrorCode.
+const (
+	EnvZeroSetupConflictErrorCodeEmailExists      EnvZeroSetupConflictErrorCode = "email_exists"
+	EnvZeroSetupConflictErrorCodeLoginUnavailable EnvZeroSetupConflictErrorCode = "login_unavailable"
+	EnvZeroSetupConflictErrorCodeNotReady         EnvZeroSetupConflictErrorCode = "not_ready"
+	EnvZeroSetupConflictErrorCodeSetupInProgress  EnvZeroSetupConflictErrorCode = "setup_in_progress"
+)
+
+// Defines values for EnvZeroSetupConflictErrorDelivery.
+const (
+	EnvZeroSetupConflictErrorDeliveryDelivered     EnvZeroSetupConflictErrorDelivery = "delivered"
+	EnvZeroSetupConflictErrorDeliveryFailed        EnvZeroSetupConflictErrorDelivery = "failed"
+	EnvZeroSetupConflictErrorDeliveryPending       EnvZeroSetupConflictErrorDelivery = "pending"
+	EnvZeroSetupConflictErrorDeliveryUndeliverable EnvZeroSetupConflictErrorDelivery = "undeliverable"
+)
+
+// Defines values for EnvZeroSetupConflictErrorLogin.
+const (
+	EnvZeroSetupConflictErrorLoginPending     EnvZeroSetupConflictErrorLogin = "pending"
+	EnvZeroSetupConflictErrorLoginReady       EnvZeroSetupConflictErrorLogin = "ready"
+	EnvZeroSetupConflictErrorLoginUnavailable EnvZeroSetupConflictErrorLogin = "unavailable"
+)
+
+// Defines values for EnvZeroSetupConflictErrorPassword.
+const (
+	EnvZeroSetupConflictErrorPasswordSet   EnvZeroSetupConflictErrorPassword = "set"
+	EnvZeroSetupConflictErrorPasswordUnset EnvZeroSetupConflictErrorPassword = "unset"
+)
+
+// Defines values for EnvZeroSetupConflictErrorProvisioning.
+const (
+	EnvZeroSetupConflictErrorProvisioningBlocked EnvZeroSetupConflictErrorProvisioning = "blocked"
+	EnvZeroSetupConflictErrorProvisioningCreated EnvZeroSetupConflictErrorProvisioning = "created"
+	EnvZeroSetupConflictErrorProvisioningFailed  EnvZeroSetupConflictErrorProvisioning = "failed"
+	EnvZeroSetupConflictErrorProvisioningPending EnvZeroSetupConflictErrorProvisioning = "pending"
+	EnvZeroSetupConflictErrorProvisioningStuck   EnvZeroSetupConflictErrorProvisioning = "stuck"
+)
+
+// Defines values for EnvZeroSetupRecordDelivery.
+const (
+	EnvZeroSetupRecordDeliveryDelivered     EnvZeroSetupRecordDelivery = "delivered"
+	EnvZeroSetupRecordDeliveryFailed        EnvZeroSetupRecordDelivery = "failed"
+	EnvZeroSetupRecordDeliveryPending       EnvZeroSetupRecordDelivery = "pending"
+	EnvZeroSetupRecordDeliveryUndeliverable EnvZeroSetupRecordDelivery = "undeliverable"
+)
+
+// Defines values for EnvZeroSetupRecordLogin.
+const (
+	EnvZeroSetupRecordLoginPending     EnvZeroSetupRecordLogin = "pending"
+	EnvZeroSetupRecordLoginReady       EnvZeroSetupRecordLogin = "ready"
+	EnvZeroSetupRecordLoginUnavailable EnvZeroSetupRecordLogin = "unavailable"
+)
+
+// Defines values for EnvZeroSetupRecordPassword.
+const (
+	EnvZeroSetupRecordPasswordSet   EnvZeroSetupRecordPassword = "set"
+	EnvZeroSetupRecordPasswordUnset EnvZeroSetupRecordPassword = "unset"
+)
+
+// Defines values for EnvZeroSetupRecordProvisioning.
+const (
+	EnvZeroSetupRecordProvisioningBlocked EnvZeroSetupRecordProvisioning = "blocked"
+	EnvZeroSetupRecordProvisioningCreated EnvZeroSetupRecordProvisioning = "created"
+	EnvZeroSetupRecordProvisioningFailed  EnvZeroSetupRecordProvisioning = "failed"
+	EnvZeroSetupRecordProvisioningPending EnvZeroSetupRecordProvisioning = "pending"
+	EnvZeroSetupRecordProvisioningStuck   EnvZeroSetupRecordProvisioning = "stuck"
+)
+
+// Defines values for EnvZeroSetupRecordFieldsDelivery.
+const (
+	EnvZeroSetupRecordFieldsDeliveryDelivered     EnvZeroSetupRecordFieldsDelivery = "delivered"
+	EnvZeroSetupRecordFieldsDeliveryFailed        EnvZeroSetupRecordFieldsDelivery = "failed"
+	EnvZeroSetupRecordFieldsDeliveryPending       EnvZeroSetupRecordFieldsDelivery = "pending"
+	EnvZeroSetupRecordFieldsDeliveryUndeliverable EnvZeroSetupRecordFieldsDelivery = "undeliverable"
+)
+
+// Defines values for EnvZeroSetupRecordFieldsLogin.
+const (
+	EnvZeroSetupRecordFieldsLoginPending     EnvZeroSetupRecordFieldsLogin = "pending"
+	EnvZeroSetupRecordFieldsLoginReady       EnvZeroSetupRecordFieldsLogin = "ready"
+	EnvZeroSetupRecordFieldsLoginUnavailable EnvZeroSetupRecordFieldsLogin = "unavailable"
+)
+
+// Defines values for EnvZeroSetupRecordFieldsPassword.
+const (
+	EnvZeroSetupRecordFieldsPasswordSet   EnvZeroSetupRecordFieldsPassword = "set"
+	EnvZeroSetupRecordFieldsPasswordUnset EnvZeroSetupRecordFieldsPassword = "unset"
+)
+
+// Defines values for EnvZeroSetupRecordFieldsProvisioning.
+const (
+	EnvZeroSetupRecordFieldsProvisioningBlocked EnvZeroSetupRecordFieldsProvisioning = "blocked"
+	EnvZeroSetupRecordFieldsProvisioningCreated EnvZeroSetupRecordFieldsProvisioning = "created"
+	EnvZeroSetupRecordFieldsProvisioningFailed  EnvZeroSetupRecordFieldsProvisioning = "failed"
+	EnvZeroSetupRecordFieldsProvisioningPending EnvZeroSetupRecordFieldsProvisioning = "pending"
+	EnvZeroSetupRecordFieldsProvisioningStuck   EnvZeroSetupRecordFieldsProvisioning = "stuck"
 )
 
 // Defines values for ManagedDatabaseStatus.
@@ -602,6 +705,22 @@ type BasicError struct {
 	Status  int    `json:"status"`
 }
 
+// CancelEnvZeroSetupRequest defines model for CancelEnvZeroSetup_request.
+type CancelEnvZeroSetupRequest struct {
+	// Email The admin's email, lowercased.
+	Email openapi_types.Email `json:"email"`
+
+	// Environment env0 environment (`STAGE`) the operation belongs to.
+	Environment string `json:"environment"`
+
+	// EnvzeroOrgId env0 organization id.
+	EnvzeroOrgId string `json:"envzero_org_id"`
+
+	// EnvzeroUserId env0 user id (Auth0 `sub`) of the admin driving the setup.
+	EnvzeroUserId string `json:"envzero_user_id"`
+	Staging       *bool  `json:"staging,omitempty"`
+}
+
 // CheckUserAuthStatus200Response defines model for CheckUserAuthStatus_200_response.
 type CheckUserAuthStatus200Response struct {
 	// Authenticated Whether the user is authenticated
@@ -665,6 +784,36 @@ type CreateEnvZeroHandoffRequest struct {
 	Staging              *interface{}           `json:"staging,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
+
+// CreateEnvZeroSetupRequest defines model for CreateEnvZeroSetup_request.
+type CreateEnvZeroSetupRequest struct {
+	DisplayName *string `json:"display_name,omitempty"`
+
+	// Email The admin's email, lowercased.
+	Email openapi_types.Email `json:"email"`
+
+	// Environment env0 environment (`STAGE`) the operation belongs to.
+	Environment         string `json:"environment"`
+	EnvzeroApiKeyId     string `json:"envzero_api_key_id"`
+	EnvzeroApiKeySecret string `json:"envzero_api_key_secret"`
+
+	// EnvzeroOrgId env0 organization id.
+	EnvzeroOrgId string `json:"envzero_org_id"`
+
+	// EnvzeroUserId env0 user id (Auth0 `sub`) of the admin driving the setup.
+	EnvzeroUserId string `json:"envzero_user_id"`
+
+	// Operation env0's id for this attempt; also the callback handoff_id.
+	Operation openapi_types.UUID              `json:"operation"`
+	Source    CreateEnvZeroSetupRequestSource `json:"source"`
+	Staging   *bool                           `json:"staging,omitempty"`
+
+	// TermsAcceptedAt When the admin accepted the CloudQuery terms. Must not be in the future.
+	TermsAcceptedAt time.Time `json:"terms_accepted_at"`
+}
+
+// CreateEnvZeroSetupRequestSource defines model for CreateEnvZeroSetupRequest.Source.
+type CreateEnvZeroSetupRequestSource string
 
 // CreatePlatformDestinationSession201Response defines model for CreatePlatformDestinationSession_201_response.
 type CreatePlatformDestinationSession201Response struct {
@@ -852,6 +1001,122 @@ type EnvZeroConflictError struct {
 
 // EnvZeroConflictErrorCode Machine-readable conflict reason. `email_exists` means the email already runs a CloudQuery Platform tenant (or another org's live handoff holds it), so env0 should fall back to its manual connect flow instead of retrying. A Cloud-only account never triggers this — its owner signs in on the signup page and continues the handoff.
 type EnvZeroConflictErrorCode string
+
+// EnvZeroSetupBindings The identity bindings fixed when the operation was reserved. Every setup call carries them and they must equal the assertion's claims.
+type EnvZeroSetupBindings struct {
+	// Email The admin's email, lowercased.
+	Email openapi_types.Email `json:"email"`
+
+	// Environment env0 environment (`STAGE`) the operation belongs to.
+	Environment string `json:"environment"`
+
+	// EnvzeroOrgId env0 organization id.
+	EnvzeroOrgId string `json:"envzero_org_id"`
+
+	// EnvzeroUserId env0 user id (Auth0 `sub`) of the admin driving the setup.
+	EnvzeroUserId string `json:"envzero_user_id"`
+}
+
+// EnvZeroSetupConflictError defines model for EnvZeroSetupConflictError.
+type EnvZeroSetupConflictError struct {
+	// Code Machine-readable conflict reason. `email_exists`: the email already runs a CloudQuery Platform tenant or another org's live record holds it; env0 falls back to its manual connect flow. `setup_in_progress`: another operation holds this org's reservation; its record is carried flat in this body so env0 can adopt it. `not_ready`: the tenant or its first user does not exist yet. `login_unavailable`: the first user exists but cannot use magic-link login.
+	Code          EnvZeroSetupConflictErrorCode          `json:"code"`
+	Delivery      *EnvZeroSetupConflictErrorDelivery     `json:"delivery,omitempty"`
+	Email         *string                                `json:"email,omitempty"`
+	Environment   *string                                `json:"environment,omitempty"`
+	EnvzeroUserId *string                                `json:"envzero_user_id,omitempty"`
+	Failure       *EnvZeroSetupRecordFieldsFailure       `json:"failure,omitempty"`
+	Login         *EnvZeroSetupConflictErrorLogin        `json:"login,omitempty"`
+	Message       string                                 `json:"message"`
+	Operation     *openapi_types.UUID                    `json:"operation,omitempty"`
+	Password      *EnvZeroSetupConflictErrorPassword     `json:"password,omitempty"`
+	Provisioning  *EnvZeroSetupConflictErrorProvisioning `json:"provisioning,omitempty"`
+	Status        int                                    `json:"status"`
+	TenantId      *openapi_types.UUID                    `json:"tenant_id,omitempty"`
+	TenantUrl     *string                                `json:"tenant_url,omitempty"`
+}
+
+// EnvZeroSetupConflictErrorCode Machine-readable conflict reason. `email_exists`: the email already runs a CloudQuery Platform tenant or another org's live record holds it; env0 falls back to its manual connect flow. `setup_in_progress`: another operation holds this org's reservation; its record is carried flat in this body so env0 can adopt it. `not_ready`: the tenant or its first user does not exist yet. `login_unavailable`: the first user exists but cannot use magic-link login.
+type EnvZeroSetupConflictErrorCode string
+
+// EnvZeroSetupConflictErrorDelivery defines model for EnvZeroSetupConflictError.Delivery.
+type EnvZeroSetupConflictErrorDelivery string
+
+// EnvZeroSetupConflictErrorLogin defines model for EnvZeroSetupConflictError.Login.
+type EnvZeroSetupConflictErrorLogin string
+
+// EnvZeroSetupConflictErrorPassword defines model for EnvZeroSetupConflictError.Password.
+type EnvZeroSetupConflictErrorPassword string
+
+// EnvZeroSetupConflictErrorProvisioning defines model for EnvZeroSetupConflictError.Provisioning.
+type EnvZeroSetupConflictErrorProvisioning string
+
+// EnvZeroSetupCreated defines model for EnvZeroSetupCreated.
+type EnvZeroSetupCreated struct {
+	Operation openapi_types.UUID `json:"operation"`
+	TenantId  openapi_types.UUID `json:"tenant_id"`
+	TenantUrl string             `json:"tenant_url"`
+}
+
+// EnvZeroSetupRecord defines model for EnvZeroSetupRecord.
+type EnvZeroSetupRecord struct {
+	Delivery      EnvZeroSetupRecordDelivery       `json:"delivery"`
+	Email         string                           `json:"email"`
+	Environment   string                           `json:"environment"`
+	EnvzeroUserId string                           `json:"envzero_user_id"`
+	Failure       *EnvZeroSetupRecordFieldsFailure `json:"failure,omitempty"`
+	Login         EnvZeroSetupRecordLogin          `json:"login"`
+	Operation     openapi_types.UUID               `json:"operation"`
+	Password      EnvZeroSetupRecordPassword       `json:"password"`
+	Provisioning  EnvZeroSetupRecordProvisioning   `json:"provisioning"`
+	TenantId      *openapi_types.UUID              `json:"tenant_id,omitempty"`
+	TenantUrl     *string                          `json:"tenant_url,omitempty"`
+}
+
+// EnvZeroSetupRecordDelivery defines model for EnvZeroSetupRecord.Delivery.
+type EnvZeroSetupRecordDelivery string
+
+// EnvZeroSetupRecordLogin defines model for EnvZeroSetupRecord.Login.
+type EnvZeroSetupRecordLogin string
+
+// EnvZeroSetupRecordPassword defines model for EnvZeroSetupRecord.Password.
+type EnvZeroSetupRecordPassword string
+
+// EnvZeroSetupRecordProvisioning defines model for EnvZeroSetupRecord.Provisioning.
+type EnvZeroSetupRecordProvisioning string
+
+// EnvZeroSetupRecordFields The fields of a setup operation's state (ATL-468 contract section 4.1), none required. `EnvZeroSetupRecord` requires the identity and state axes; `EnvZeroSetupConflictError` carries them flat beside `code` only for `setup_in_progress`.
+type EnvZeroSetupRecordFields struct {
+	Delivery      *EnvZeroSetupRecordFieldsDelivery     `json:"delivery,omitempty"`
+	Email         *string                               `json:"email,omitempty"`
+	Environment   *string                               `json:"environment,omitempty"`
+	EnvzeroUserId *string                               `json:"envzero_user_id,omitempty"`
+	Failure       *EnvZeroSetupRecordFieldsFailure      `json:"failure,omitempty"`
+	Login         *EnvZeroSetupRecordFieldsLogin        `json:"login,omitempty"`
+	Operation     *openapi_types.UUID                   `json:"operation,omitempty"`
+	Password      *EnvZeroSetupRecordFieldsPassword     `json:"password,omitempty"`
+	Provisioning  *EnvZeroSetupRecordFieldsProvisioning `json:"provisioning,omitempty"`
+	TenantId      *openapi_types.UUID                   `json:"tenant_id,omitempty"`
+	TenantUrl     *string                               `json:"tenant_url,omitempty"`
+}
+
+// EnvZeroSetupRecordFieldsDelivery defines model for EnvZeroSetupRecordFields.Delivery.
+type EnvZeroSetupRecordFieldsDelivery string
+
+// EnvZeroSetupRecordFieldsLogin defines model for EnvZeroSetupRecordFields.Login.
+type EnvZeroSetupRecordFieldsLogin string
+
+// EnvZeroSetupRecordFieldsPassword defines model for EnvZeroSetupRecordFields.Password.
+type EnvZeroSetupRecordFieldsPassword string
+
+// EnvZeroSetupRecordFieldsProvisioning defines model for EnvZeroSetupRecordFields.Provisioning.
+type EnvZeroSetupRecordFieldsProvisioning string
+
+// EnvZeroSetupRecordFieldsFailure defines model for EnvZeroSetupRecordFields_failure.
+type EnvZeroSetupRecordFieldsFailure struct {
+	Code   string  `json:"code"`
+	Detail *string `json:"detail,omitempty"`
+}
 
 // FieldError defines model for FieldError.
 type FieldError struct {
@@ -1196,6 +1461,30 @@ type ListUserPlatformTenants200Response struct {
 type ListUsersByTeam200Response struct {
 	Items    []User       `json:"items"`
 	Metadata ListMetadata `json:"metadata"`
+}
+
+// LoginEnvZeroSetup201Response defines model for LoginEnvZeroSetup_201_response.
+type LoginEnvZeroSetup201Response struct {
+	ExpiresInSeconds     interface{}            `json:"expires_in_seconds"`
+	MagicUrl             string                 `json:"magic_url"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// LoginEnvZeroSetupRequest defines model for LoginEnvZeroSetup_request.
+type LoginEnvZeroSetupRequest struct {
+	// Email The admin's email, lowercased.
+	Email openapi_types.Email `json:"email"`
+
+	// Environment env0 environment (`STAGE`) the operation belongs to.
+	Environment string `json:"environment"`
+
+	// EnvzeroOrgId env0 organization id.
+	EnvzeroOrgId string `json:"envzero_org_id"`
+
+	// EnvzeroUserId env0 user id (Auth0 `sub`) of the admin driving the setup.
+	EnvzeroUserId string             `json:"envzero_user_id"`
+	Staging       *bool              `json:"staging,omitempty"`
+	TenantId      openapi_types.UUID `json:"tenant_id"`
 }
 
 // LoginUserRequest defines model for LoginUser_request.
@@ -1943,6 +2232,23 @@ type SendUserEventRequest struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// SetEnvZeroSetupPasswordRequest defines model for SetEnvZeroSetupPassword_request.
+type SetEnvZeroSetupPasswordRequest struct {
+	// Email The admin's email, lowercased.
+	Email openapi_types.Email `json:"email"`
+
+	// Environment env0 environment (`STAGE`) the operation belongs to.
+	Environment string `json:"environment"`
+
+	// EnvzeroOrgId env0 organization id.
+	EnvzeroOrgId string `json:"envzero_org_id"`
+
+	// EnvzeroUserId env0 user id (Auth0 `sub`) of the admin driving the setup.
+	EnvzeroUserId string `json:"envzero_user_id"`
+	Password      string `json:"password"`
+	Staging       *bool  `json:"staging,omitempty"`
+}
+
 // Settings Platform settings definition
 type Settings struct {
 	// EnforceMfa Whether or not to require MFA for all users
@@ -2310,6 +2616,9 @@ type AddonTeam = TeamName
 // EmailBasic defines model for email_basic.
 type EmailBasic = string
 
+// EnvzeroSetupOperation defines model for envzero_setup_operation.
+type EnvzeroSetupOperation = openapi_types.UUID
+
 // IncludeDrafts defines model for include_drafts.
 type IncludeDrafts = bool
 
@@ -2351,6 +2660,9 @@ type BadRequest = FieldError
 
 // Conflict Basic Error
 type Conflict = BasicError
+
+// EnvZeroSetupGone Basic Error
+type EnvZeroSetupGone = BasicError
 
 // Forbidden defines model for Forbidden.
 type Forbidden = FieldError
@@ -2711,6 +3023,21 @@ type CreateAddonVersionJSONRequestBody = CreateAddonVersionRequest
 
 // CreateEnvZeroHandoffJSONRequestBody defines body for CreateEnvZeroHandoff for application/json ContentType.
 type CreateEnvZeroHandoffJSONRequestBody = CreateEnvZeroHandoffRequest
+
+// CreateEnvZeroSetupJSONRequestBody defines body for CreateEnvZeroSetup for application/json ContentType.
+type CreateEnvZeroSetupJSONRequestBody = CreateEnvZeroSetupRequest
+
+// CancelEnvZeroSetupJSONRequestBody defines body for CancelEnvZeroSetup for application/json ContentType.
+type CancelEnvZeroSetupJSONRequestBody = CancelEnvZeroSetupRequest
+
+// LoginEnvZeroSetupJSONRequestBody defines body for LoginEnvZeroSetup for application/json ContentType.
+type LoginEnvZeroSetupJSONRequestBody = LoginEnvZeroSetupRequest
+
+// SetEnvZeroSetupPasswordJSONRequestBody defines body for SetEnvZeroSetupPassword for application/json ContentType.
+type SetEnvZeroSetupPasswordJSONRequestBody = SetEnvZeroSetupPasswordRequest
+
+// GetEnvZeroSetupStatusJSONRequestBody defines body for GetEnvZeroSetupStatus for application/json ContentType.
+type GetEnvZeroSetupStatusJSONRequestBody = CancelEnvZeroSetupRequest
 
 // UpsertPlatformDestinationSecretJSONRequestBody defines body for UpsertPlatformDestinationSecret for application/json ContentType.
 type UpsertPlatformDestinationSecretJSONRequestBody = UpsertPlatformDestinationSecretRequest
@@ -3827,6 +4154,85 @@ func (a GetTeamAnalyticsSalt200Response) MarshalJSON() ([]byte, error) {
 	object["salt"], err = json.Marshal(a.Salt)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'salt': %w", err)
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for LoginEnvZeroSetup201Response. Returns the specified
+// element and whether it was found
+func (a LoginEnvZeroSetup201Response) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for LoginEnvZeroSetup201Response
+func (a *LoginEnvZeroSetup201Response) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for LoginEnvZeroSetup201Response to handle AdditionalProperties
+func (a *LoginEnvZeroSetup201Response) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["expires_in_seconds"]; found {
+		err = json.Unmarshal(raw, &a.ExpiresInSeconds)
+		if err != nil {
+			return fmt.Errorf("error reading 'expires_in_seconds': %w", err)
+		}
+		delete(object, "expires_in_seconds")
+	}
+
+	if raw, found := object["magic_url"]; found {
+		err = json.Unmarshal(raw, &a.MagicUrl)
+		if err != nil {
+			return fmt.Errorf("error reading 'magic_url': %w", err)
+		}
+		delete(object, "magic_url")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for LoginEnvZeroSetup201Response to handle AdditionalProperties
+func (a LoginEnvZeroSetup201Response) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["expires_in_seconds"], err = json.Marshal(a.ExpiresInSeconds)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'expires_in_seconds': %w", err)
+	}
+
+	object["magic_url"], err = json.Marshal(a.MagicUrl)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'magic_url': %w", err)
 	}
 
 	for fieldName, field := range a.AdditionalProperties {

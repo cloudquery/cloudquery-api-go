@@ -143,6 +143,31 @@ type ClientInterface interface {
 
 	CreateEnvZeroHandoff(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateEnvZeroSetupWithBody request with any body
+	CreateEnvZeroSetupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateEnvZeroSetup(ctx context.Context, body CreateEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CancelEnvZeroSetupWithBody request with any body
+	CancelEnvZeroSetupWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CancelEnvZeroSetup(ctx context.Context, operation EnvzeroSetupOperation, body CancelEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// LoginEnvZeroSetupWithBody request with any body
+	LoginEnvZeroSetupWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	LoginEnvZeroSetup(ctx context.Context, operation EnvzeroSetupOperation, body LoginEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetEnvZeroSetupPasswordWithBody request with any body
+	SetEnvZeroSetupPasswordWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetEnvZeroSetupPassword(ctx context.Context, operation EnvzeroSetupOperation, body SetEnvZeroSetupPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetEnvZeroSetupStatusWithBody request with any body
+	GetEnvZeroSetupStatusWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GetEnvZeroSetupStatus(ctx context.Context, operation EnvzeroSetupOperation, body GetEnvZeroSetupStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CQHealthCheck request
 	CQHealthCheck(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -757,6 +782,126 @@ func (c *Client) CreateEnvZeroHandoffWithBody(ctx context.Context, contentType s
 
 func (c *Client) CreateEnvZeroHandoff(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateEnvZeroHandoffRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateEnvZeroSetupWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateEnvZeroSetupRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateEnvZeroSetup(ctx context.Context, body CreateEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateEnvZeroSetupRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CancelEnvZeroSetupWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelEnvZeroSetupRequestWithBody(c.Server, operation, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CancelEnvZeroSetup(ctx context.Context, operation EnvzeroSetupOperation, body CancelEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelEnvZeroSetupRequest(c.Server, operation, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) LoginEnvZeroSetupWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLoginEnvZeroSetupRequestWithBody(c.Server, operation, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) LoginEnvZeroSetup(ctx context.Context, operation EnvzeroSetupOperation, body LoginEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLoginEnvZeroSetupRequest(c.Server, operation, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetEnvZeroSetupPasswordWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetEnvZeroSetupPasswordRequestWithBody(c.Server, operation, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetEnvZeroSetupPassword(ctx context.Context, operation EnvzeroSetupOperation, body SetEnvZeroSetupPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetEnvZeroSetupPasswordRequest(c.Server, operation, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetEnvZeroSetupStatusWithBody(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetEnvZeroSetupStatusRequestWithBody(c.Server, operation, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetEnvZeroSetupStatus(ctx context.Context, operation EnvzeroSetupOperation, body GetEnvZeroSetupStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetEnvZeroSetupStatusRequest(c.Server, operation, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3327,6 +3472,234 @@ func NewCreateEnvZeroHandoffRequestWithBody(server string, contentType string, b
 	}
 
 	operationPath := fmt.Sprintf("/api/envzero/handoff")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCreateEnvZeroSetupRequest calls the generic CreateEnvZeroSetup builder with application/json body
+func NewCreateEnvZeroSetupRequest(server string, body CreateEnvZeroSetupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateEnvZeroSetupRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateEnvZeroSetupRequestWithBody generates requests for CreateEnvZeroSetup with any type of body
+func NewCreateEnvZeroSetupRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envzero/setup")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCancelEnvZeroSetupRequest calls the generic CancelEnvZeroSetup builder with application/json body
+func NewCancelEnvZeroSetupRequest(server string, operation EnvzeroSetupOperation, body CancelEnvZeroSetupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCancelEnvZeroSetupRequestWithBody(server, operation, "application/json", bodyReader)
+}
+
+// NewCancelEnvZeroSetupRequestWithBody generates requests for CancelEnvZeroSetup with any type of body
+func NewCancelEnvZeroSetupRequestWithBody(server string, operation EnvzeroSetupOperation, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "operation", runtime.ParamLocationPath, operation)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envzero/setup/%s/cancel", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewLoginEnvZeroSetupRequest calls the generic LoginEnvZeroSetup builder with application/json body
+func NewLoginEnvZeroSetupRequest(server string, operation EnvzeroSetupOperation, body LoginEnvZeroSetupJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewLoginEnvZeroSetupRequestWithBody(server, operation, "application/json", bodyReader)
+}
+
+// NewLoginEnvZeroSetupRequestWithBody generates requests for LoginEnvZeroSetup with any type of body
+func NewLoginEnvZeroSetupRequestWithBody(server string, operation EnvzeroSetupOperation, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "operation", runtime.ParamLocationPath, operation)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envzero/setup/%s/login", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewSetEnvZeroSetupPasswordRequest calls the generic SetEnvZeroSetupPassword builder with application/json body
+func NewSetEnvZeroSetupPasswordRequest(server string, operation EnvzeroSetupOperation, body SetEnvZeroSetupPasswordJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetEnvZeroSetupPasswordRequestWithBody(server, operation, "application/json", bodyReader)
+}
+
+// NewSetEnvZeroSetupPasswordRequestWithBody generates requests for SetEnvZeroSetupPassword with any type of body
+func NewSetEnvZeroSetupPasswordRequestWithBody(server string, operation EnvzeroSetupOperation, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "operation", runtime.ParamLocationPath, operation)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envzero/setup/%s/password", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetEnvZeroSetupStatusRequest calls the generic GetEnvZeroSetupStatus builder with application/json body
+func NewGetEnvZeroSetupStatusRequest(server string, operation EnvzeroSetupOperation, body GetEnvZeroSetupStatusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGetEnvZeroSetupStatusRequestWithBody(server, operation, "application/json", bodyReader)
+}
+
+// NewGetEnvZeroSetupStatusRequestWithBody generates requests for GetEnvZeroSetupStatus with any type of body
+func NewGetEnvZeroSetupStatusRequestWithBody(server string, operation EnvzeroSetupOperation, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "operation", runtime.ParamLocationPath, operation)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/envzero/setup/%s/status", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -9237,6 +9610,31 @@ type ClientWithResponsesInterface interface {
 
 	CreateEnvZeroHandoffWithResponse(ctx context.Context, body CreateEnvZeroHandoffJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvZeroHandoffResponse, error)
 
+	// CreateEnvZeroSetupWithBodyWithResponse request with any body
+	CreateEnvZeroSetupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEnvZeroSetupResponse, error)
+
+	CreateEnvZeroSetupWithResponse(ctx context.Context, body CreateEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvZeroSetupResponse, error)
+
+	// CancelEnvZeroSetupWithBodyWithResponse request with any body
+	CancelEnvZeroSetupWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CancelEnvZeroSetupResponse, error)
+
+	CancelEnvZeroSetupWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body CancelEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*CancelEnvZeroSetupResponse, error)
+
+	// LoginEnvZeroSetupWithBodyWithResponse request with any body
+	LoginEnvZeroSetupWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LoginEnvZeroSetupResponse, error)
+
+	LoginEnvZeroSetupWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body LoginEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*LoginEnvZeroSetupResponse, error)
+
+	// SetEnvZeroSetupPasswordWithBodyWithResponse request with any body
+	SetEnvZeroSetupPasswordWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetEnvZeroSetupPasswordResponse, error)
+
+	SetEnvZeroSetupPasswordWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body SetEnvZeroSetupPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*SetEnvZeroSetupPasswordResponse, error)
+
+	// GetEnvZeroSetupStatusWithBodyWithResponse request with any body
+	GetEnvZeroSetupStatusWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetEnvZeroSetupStatusResponse, error)
+
+	GetEnvZeroSetupStatusWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body GetEnvZeroSetupStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*GetEnvZeroSetupStatusResponse, error)
+
 	// CQHealthCheckWithResponse request
 	CQHealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CQHealthCheckResponse, error)
 
@@ -9974,6 +10372,146 @@ func (r CreateEnvZeroHandoffResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r CreateEnvZeroHandoffResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateEnvZeroSetupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EnvZeroSetupCreated
+	JSON201      *EnvZeroSetupCreated
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON409      *EnvZeroSetupConflictError
+	JSON410      *EnvZeroSetupGone
+	JSON422      *UnprocessableEntity
+	JSON429      *TooManyRequests
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateEnvZeroSetupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateEnvZeroSetupResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CancelEnvZeroSetupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON409      *EnvZeroSetupConflictError
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r CancelEnvZeroSetupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CancelEnvZeroSetupResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type LoginEnvZeroSetupResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *LoginEnvZeroSetup201Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON409      *EnvZeroSetupConflictError
+	JSON410      *EnvZeroSetupGone
+	JSON500      *InternalError
+	JSON503      *ServiceUnavailable
+}
+
+// Status returns HTTPResponse.Status
+func (r LoginEnvZeroSetupResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r LoginEnvZeroSetupResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetEnvZeroSetupPasswordResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON409      *EnvZeroSetupConflictError
+	JSON410      *EnvZeroSetupGone
+	JSON422      *UnprocessableEntity
+	JSON500      *InternalError
+	JSON502      *BasicError
+}
+
+// Status returns HTTPResponse.Status
+func (r SetEnvZeroSetupPasswordResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetEnvZeroSetupPasswordResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetEnvZeroSetupStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EnvZeroSetupRecord
+	JSON400      *BadRequest
+	JSON401      *RequiresAuthentication
+	JSON404      *NotFound
+	JSON410      *EnvZeroSetupGone
+	JSON500      *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetEnvZeroSetupStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetEnvZeroSetupStatusResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -12940,6 +13478,91 @@ func (c *ClientWithResponses) CreateEnvZeroHandoffWithResponse(ctx context.Conte
 	return ParseCreateEnvZeroHandoffResponse(rsp)
 }
 
+// CreateEnvZeroSetupWithBodyWithResponse request with arbitrary body returning *CreateEnvZeroSetupResponse
+func (c *ClientWithResponses) CreateEnvZeroSetupWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateEnvZeroSetupResponse, error) {
+	rsp, err := c.CreateEnvZeroSetupWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateEnvZeroSetupResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateEnvZeroSetupWithResponse(ctx context.Context, body CreateEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateEnvZeroSetupResponse, error) {
+	rsp, err := c.CreateEnvZeroSetup(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateEnvZeroSetupResponse(rsp)
+}
+
+// CancelEnvZeroSetupWithBodyWithResponse request with arbitrary body returning *CancelEnvZeroSetupResponse
+func (c *ClientWithResponses) CancelEnvZeroSetupWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CancelEnvZeroSetupResponse, error) {
+	rsp, err := c.CancelEnvZeroSetupWithBody(ctx, operation, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelEnvZeroSetupResponse(rsp)
+}
+
+func (c *ClientWithResponses) CancelEnvZeroSetupWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body CancelEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*CancelEnvZeroSetupResponse, error) {
+	rsp, err := c.CancelEnvZeroSetup(ctx, operation, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelEnvZeroSetupResponse(rsp)
+}
+
+// LoginEnvZeroSetupWithBodyWithResponse request with arbitrary body returning *LoginEnvZeroSetupResponse
+func (c *ClientWithResponses) LoginEnvZeroSetupWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LoginEnvZeroSetupResponse, error) {
+	rsp, err := c.LoginEnvZeroSetupWithBody(ctx, operation, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLoginEnvZeroSetupResponse(rsp)
+}
+
+func (c *ClientWithResponses) LoginEnvZeroSetupWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body LoginEnvZeroSetupJSONRequestBody, reqEditors ...RequestEditorFn) (*LoginEnvZeroSetupResponse, error) {
+	rsp, err := c.LoginEnvZeroSetup(ctx, operation, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLoginEnvZeroSetupResponse(rsp)
+}
+
+// SetEnvZeroSetupPasswordWithBodyWithResponse request with arbitrary body returning *SetEnvZeroSetupPasswordResponse
+func (c *ClientWithResponses) SetEnvZeroSetupPasswordWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetEnvZeroSetupPasswordResponse, error) {
+	rsp, err := c.SetEnvZeroSetupPasswordWithBody(ctx, operation, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetEnvZeroSetupPasswordResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetEnvZeroSetupPasswordWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body SetEnvZeroSetupPasswordJSONRequestBody, reqEditors ...RequestEditorFn) (*SetEnvZeroSetupPasswordResponse, error) {
+	rsp, err := c.SetEnvZeroSetupPassword(ctx, operation, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetEnvZeroSetupPasswordResponse(rsp)
+}
+
+// GetEnvZeroSetupStatusWithBodyWithResponse request with arbitrary body returning *GetEnvZeroSetupStatusResponse
+func (c *ClientWithResponses) GetEnvZeroSetupStatusWithBodyWithResponse(ctx context.Context, operation EnvzeroSetupOperation, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetEnvZeroSetupStatusResponse, error) {
+	rsp, err := c.GetEnvZeroSetupStatusWithBody(ctx, operation, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetEnvZeroSetupStatusResponse(rsp)
+}
+
+func (c *ClientWithResponses) GetEnvZeroSetupStatusWithResponse(ctx context.Context, operation EnvzeroSetupOperation, body GetEnvZeroSetupStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*GetEnvZeroSetupStatusResponse, error) {
+	rsp, err := c.GetEnvZeroSetupStatus(ctx, operation, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetEnvZeroSetupStatusResponse(rsp)
+}
+
 // CQHealthCheckWithResponse request returning *CQHealthCheckResponse
 func (c *ClientWithResponses) CQHealthCheckWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CQHealthCheckResponse, error) {
 	rsp, err := c.CQHealthCheck(ctx, reqEditors...)
@@ -14912,6 +15535,346 @@ func ParseCreateEnvZeroHandoffResponse(rsp *http.Response) (*CreateEnvZeroHandof
 			return nil, err
 		}
 		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateEnvZeroSetupResponse parses an HTTP response from a CreateEnvZeroSetupWithResponse call
+func ParseCreateEnvZeroSetupResponse(rsp *http.Response) (*CreateEnvZeroSetupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateEnvZeroSetupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnvZeroSetupCreated
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest EnvZeroSetupCreated
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest EnvZeroSetupConflictError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 410:
+		var dest EnvZeroSetupGone
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON410 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest TooManyRequests
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCancelEnvZeroSetupResponse parses an HTTP response from a CancelEnvZeroSetupWithResponse call
+func ParseCancelEnvZeroSetupResponse(rsp *http.Response) (*CancelEnvZeroSetupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CancelEnvZeroSetupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest EnvZeroSetupConflictError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseLoginEnvZeroSetupResponse parses an HTTP response from a LoginEnvZeroSetupWithResponse call
+func ParseLoginEnvZeroSetupResponse(rsp *http.Response) (*LoginEnvZeroSetupResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &LoginEnvZeroSetupResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest LoginEnvZeroSetup201Response
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest EnvZeroSetupConflictError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 410:
+		var dest EnvZeroSetupGone
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON410 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest ServiceUnavailable
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetEnvZeroSetupPasswordResponse parses an HTTP response from a SetEnvZeroSetupPasswordWithResponse call
+func ParseSetEnvZeroSetupPasswordResponse(rsp *http.Response) (*SetEnvZeroSetupPasswordResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetEnvZeroSetupPasswordResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest EnvZeroSetupConflictError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 410:
+		var dest EnvZeroSetupGone
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON410 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest UnprocessableEntity
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest BasicError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetEnvZeroSetupStatusResponse parses an HTTP response from a GetEnvZeroSetupStatusWithResponse call
+func ParseGetEnvZeroSetupStatusResponse(rsp *http.Response) (*GetEnvZeroSetupStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetEnvZeroSetupStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnvZeroSetupRecord
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest RequiresAuthentication
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 410:
+		var dest EnvZeroSetupGone
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON410 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalError
