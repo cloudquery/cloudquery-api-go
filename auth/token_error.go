@@ -14,7 +14,7 @@ type TokenError struct {
 	} `json:"error"`
 }
 
-func (t TokenError) Error() string {
+func (t *TokenError) Error() string {
 	return string(t.Body)
 }
 
