@@ -5,7 +5,7 @@ go 1.27.1
 require (
 	github.com/adrg/xdg v0.5.3
 	github.com/hashicorp/go-retryablehttp v0.7.8
-	github.com/oapi-codegen/runtime v1.7.0
+	github.com/oapi-codegen/runtime v1.8.0
 	github.com/stretchr/testify v1.12.1
 )
 
