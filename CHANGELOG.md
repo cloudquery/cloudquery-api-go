@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.14.14](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.13...v1.14.14) (2026-11-02)
+
+
+### Bug Fixes
+
+* **deps:** Update go module directive to v1.27.1 ([#398](https://github.com/cloudquery/cloudquery-api-go/issues/398)) ([9096d60](https://github.com/cloudquery/cloudquery-api-go/commit/9096d6025125c38b5be51e9d79450ac00f58c3f5))
+* **deps:** Update go module directive to v1.27.2 ([#400](https://github.com/cloudquery/cloudquery-api-go/issues/400)) ([f95ef1a](https://github.com/cloudquery/cloudquery-api-go/commit/f95ef1a8fdae31bc8f6b238b8d4b6fb0b0155262))
+* **deps:** Update module github.com/oapi-codegen/runtime to v1.8.0 ([#402](https://github.com/cloudquery/cloudquery-api-go/issues/402)) ([a1e7862](https://github.com/cloudquery/cloudquery-api-go/commit/a1e786276f0d2a9bcb95a7810180d45ac79312a1))
+* Generate CloudQuery Go API Client from `spec.json` ([#394](https://github.com/cloudquery/cloudquery-api-go/issues/394)) ([b44116f](https://github.com/cloudquery/cloudquery-api-go/commit/b44116fbf1d364a2b3ea0e317d807afb5354dbf3))
+
 ## [1.14.13](https://github.com/cloudquery/cloudquery-api-go/compare/v1.14.12...v1.14.13) (2026-09-21)
 
 
