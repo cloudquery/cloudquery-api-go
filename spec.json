@@ -4460,7 +4460,7 @@
     },
     "/api/envzero/setup/{operation}/cancel" : {
       "post" : {
-        "description" : "Cancel a setup operation (ATL-476). Inserts a `cancelled` row under the operation's primary key when no record exists, so a create racing this call loses and answers 410; an existing `failed` record becomes `cancelled`; a record holding the org reservation answers 409 with the record so env0 can adopt it. Idempotent.",
+        "description" : "Cancel a setup operation (ATL-476). Inserts a `cancelled` row under the operation's primary key when no record exists, so a create racing this call loses and answers 410; an existing `failed` or `blocked` record becomes `cancelled`; any other record holding the org reservation answers 409 with the record so env0 can adopt it. Idempotent.",
         "operationId" : "CancelEnvZeroSetup",
         "parameters" : [ {
           "$ref" : "#/components/parameters/envzero_setup_operation"
@@ -4477,7 +4477,7 @@
         },
         "responses" : {
           "204" : {
-            "description" : "Cancelled, or already cancelled or failed."
+            "description" : "Cancelled, or already cancelled, failed or blocked."
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
