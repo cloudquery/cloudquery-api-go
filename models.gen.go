@@ -2308,7 +2308,7 @@ type TeamImageCreate struct {
 	// ContentType The HTTP Content-Type of the image or asset
 	ContentType ContentType `json:"content_type"`
 
-	// Name Name of image
+	// Name Name of image. Must not contain '/', '\' or '..'
 	Name string `json:"name"`
 }
 
