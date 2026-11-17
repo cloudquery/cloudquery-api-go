@@ -7338,9 +7338,10 @@
         "additionalProperties" : false,
         "properties" : {
           "name" : {
-            "description" : "Name of image",
+            "description" : "Name of image. Must not contain '/', '\\' or '..'",
             "maxLength" : 64,
             "minLength" : 1,
+            "pattern" : "^\\.?([^./\\\\]\\.?)*$",
             "type" : "string"
           },
           "checksum" : {
