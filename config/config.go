@@ -2,8 +2,10 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 
@@ -94,7 +96,7 @@ func setValue(key string, val *string) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal config: %w", err)
 	}
-	err = os.WriteFile(configFilePath, b, 0o644)
+	err = writeFileAtomically(configFilePath, b)
 	if err != nil {
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
@@ -117,19 +119,36 @@ func SaveDataString(relPath string, data string) error {
 	if err != nil {
 		return fmt.Errorf("failed to get file path: %w", err)
 	}
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to open file %q for writing: %w", filePath, err)
-	}
-	defer func() {
-		if closeErr := file.Close(); closeErr != nil {
-			fmt.Printf("error closing file: %v", closeErr)
-		}
-	}()
-	if _, err = file.WriteString(data); err != nil {
+	if err := writeFileAtomically(filePath, []byte(data)); err != nil {
 		return fmt.Errorf("failed to write data to %q: %w", filePath, err)
 	}
 	return nil
+}
+
+func writeFileAtomically(filePath string, data []byte) error {
+	tempFile, err := os.CreateTemp(filepath.Dir(filePath), "."+filepath.Base(filePath)+".tmp-*")
+	if err != nil {
+		return err
+	}
+	tempPath := tempFile.Name()
+	if err := writeSyncAndClose(tempFile, data); err != nil {
+		_ = os.Remove(tempPath)
+		return err
+	}
+	if err := os.Rename(tempPath, filePath); err != nil {
+		_ = os.Remove(tempPath)
+		return err
+	}
+	return nil
+}
+
+func writeSyncAndClose(file *os.File, data []byte) error {
+	_, writeErr := file.Write(data)
+	if writeErr == nil {
+		writeErr = file.Sync()
+	}
+	closeErr := file.Close()
+	return errors.Join(writeErr, closeErr)
 }
 
 // ReadDataString reads a string from a file in the data home directory
